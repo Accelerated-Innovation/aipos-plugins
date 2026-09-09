@@ -112,21 +112,18 @@ If a field is missing, record the gap. Do not invent product intent, thresholds,
 
 Read these reference files when present:
 
-- `references/gherkin-quality-rubric.md`
-- `references/example-mapping-facilitator.md`
-- `references/pm-review-checklist.md`
-- `references/qa-evidence-checklist.md`
-
-Use them as follows:
-
 | Reference | Use |
 |---|---|
-| `gherkin-quality-rubric.md` | Score Gherkin quality and identify blockers |
-| `example-mapping-facilitator.md` | Structure refinement discussion |
-| `pm-review-checklist.md` | Review intent, scope, rules, and business language |
-| `qa-evidence-checklist.md` | Review testability, edge cases, NFRs, and evidence |
+| `../../references/gherkin-authoring-standard.md` | **Load before reviewing or rewriting any Gherkin.** The shared authoring standard — BRIEF, explicit rules, scenario isolation, provenance, automation suitability, deterministic checks vs aggregate evaluations. Every skill in GovKit judges Gherkin against this one file. |
+| `../../references/spec-identifiers.md` | The `@rule:` / `@scenario:` identifier convention. Load before rewriting Gherkin, so a rewrite preserves what evaluations and evidence point at. |
+| `references/gherkin-quality-rubric.md` | Score Gherkin quality and identify blockers |
+| `references/example-mapping-facilitator.md` | Structure refinement discussion |
+| `references/pm-review-checklist.md` | Review intent, scope, rules, and business language |
+| `references/qa-evidence-checklist.md` | Review testability, edge cases, NFRs, and evidence |
 
-If a reference file is unavailable, continue from the guidance in this file.
+The standard is the authoring rule; the rubric is the scoring rule. They are written to agree — where they appear not to, the standard says what good looks like and the rubric says what it is worth.
+
+If a reference file is unavailable, continue from the guidance in this file and say which rules you are applying from memory.
 
 ## Collaboration rules
 
@@ -211,6 +208,10 @@ Watch for these common anti-patterns (see `gherkin-quality-rubric.md` for exampl
 - **Excessive detail** — data that does not affect the behavior. Remove it.
 - **Inconsistent actor** — switches between "I" and "the user". Pick one per feature.
 - **Weak title** — does not express what is unique about the scenario.
+- **Order-dependent** — relies on state a previous scenario left behind ("the invoice from the previous scenario"). Scenarios must be independently executable; move the state into this scenario's own `Given`.
+- **Missing boundary** — a rule with a threshold, limit or window that no example lands exactly on. The boundary is where the business disagrees with itself; ask for the example rather than inventing the value.
+- **Contradictory rules** — two stated rules that decide the same situation differently. This is a product decision, not a wording fix: name both rules and the case where they collide, and route it to Product.
+- **One scenario, two registers** — a deterministic assertion about one occasion mixed with an aggregate statistic over a dataset. Split them; see the standard.
 
 Do not overload the team with low-value edits. Focus on changes affecting shared understanding or delivery risk.
 
@@ -249,18 +250,21 @@ Do not create synthetic examples during real-work pilots. Use real examples from
 
 When enough intent exists, provide revised Gherkin.
 
-Rules for rewriting:
+Rewrite against `../../references/gherkin-authoring-standard.md`. The rules that matter most in a rewrite:
 
-- Keep Feature, Rule, and Scenario structure when useful
-- Use Given for starting context
-- Use When for the action or event
-- Use Then for observable result
-- Keep one behavior per scenario
-- Prefer short scenarios
-- Avoid internal code, database, framework, or automation detail
-- Avoid UI click mechanics unless UI behavior is the feature
-- Preserve business wording where clear
-- Add comments only for unresolved questions
+- **Preserve every `Rule:` block, and restore the ones that are missing.** Explicit rules are the GovKit convention (they are optional in standard Gherkin, and GovKit chooses them anyway) because the business rule is what the rest of the toolchain organizes on. A rewrite that flattens `Rule:` blocks undoes what creation established and takes rule coverage with it.
+- **Distinguish a missing grouping from a missing decision.** If the decisions are visible and only the `Rule:` lines are absent, propose the grouping in the team's own words and show which scenarios land where. If a scenario asserts something no stated policy explains, that is a product gap — raise it as a question naming the scenario. **Never write a `Rule:` line for a policy nobody stated**; downstream it will be read as a decision someone made.
+- Keep the Feature header, the persona intent block, and correctly scoped `Background:` blocks. A feature-level `Background` that is only true for some scenarios is a defect, not tidying.
+- Preserve `@rule:` / `@scenario:` identifiers through the rewrite, and keep every tag the skill does not own. Renaming a rule or a scenario must not change its identifier.
+- Use Given for starting context, When for the single triggering action, Then for observable results. Several related outcomes of one action are fine.
+- Keep one behavior per scenario, and keep each scenario independently executable.
+- Preserve `Scenario Outline` and its `Examples` when the variation is real; never flatten an outline into prose or lose a row.
+- Prefer short scenarios — three to six steps is typical. Treat that as a smell test, not a limit: never reject or pad a scenario on step count alone.
+- Avoid internal code, database, framework, or automation detail. Keep the public contract details an API or UI feature genuinely promises.
+- Preserve business wording where clear. Rewrite wording, not strategy.
+- Keep unresolved decisions visible as placeholders plus `# QUESTION:` comments, and never present an affected scenario as ready for execution.
+
+**Derive, do not invent.** Examples that illustrate a confirmed rule may be derived — given "at or above $10,000", proposing $9,999.99 / $10,000.00 / $12,500 is the right move, flagged as proposed for confirmation. Policies, thresholds, permission models and stakeholder approval may not be.
 
 If intent is not clear, do not rewrite beyond safe wording cleanup. Ask questions instead.
 
@@ -291,7 +295,11 @@ Mark missing thresholds or evidence as gaps.
 
 ### Step 8: Review evaluation criteria
 
-Evaluation criteria are required only when the feature has AI, decision-support, recommendation, classification, summarization, retrieval, extraction, ranking, or automation behavior. Do not penalize ordinary functional features for lacking GenAI evaluations; for those, ordinary test evidence is sufficient.
+Evaluation criteria are required only when the feature has AI, decision-support, recommendation, classification, summarization, retrieval, extraction, ranking, or automation behavior **in the running product**. Do not penalize ordinary functional features for lacking GenAI evaluations; for those, ordinary test evidence is sufficient.
+
+**A feature built with an AI coding agent is not thereby a GenAI feature.** The question is what the shipped product does at runtime, never what wrote the code. Invoice routing whose implementation was written by a coding agent is deterministic invoice routing: deterministic rules, deterministic tests, no evaluation dataset. Demanding groundedness metrics for it is a false gate, and false gates teach teams to ignore real ones.
+
+Where a dataset evaluation *is* required, it is a specification only when it names all five of: **dataset** (which set, how large, where it lives), **method** (the scorer, judge or metric), **threshold** (the team's number), **execution context** (where it runs and what it gates), and **evidence** (the artifact in the PR or release review, and its owner). Missing any of the five, it is an intention — record it as a gap. Never mix an aggregate dataset statistic and a single-occasion assertion in one scenario; one run cannot decide such a scenario either way.
 
 For evaluation criteria, check:
 
@@ -576,6 +584,10 @@ Do not:
 - Invent evaluation thresholds
 - Invent NFR thresholds
 - Add implementation design into Gherkin
+- Flatten or drop `Rule:` blocks during a rewrite, or write a `Rule:` for a policy nobody stated
+- Change a `@rule:` / `@scenario:` identifier while renaming or retagging
+- Present a scenario carrying an unresolved placeholder as ready for execution
+- Require GenAI evaluation criteria for a feature whose only AI involvement was the coding agent that built it
 - Create sample scenarios during real-work pilots
 - Set `multi_agent` in eval_criteria.yaml without the team's explicit yes/no answer
 - Replace PM, QA, or Engineering judgment

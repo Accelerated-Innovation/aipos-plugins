@@ -1,0 +1,114 @@
+# Stable Rule and Scenario Identifiers
+
+> **Shared reference.** Read by `govkit-feature-create`, `govkit-feature-refine`,
+> `govkit-feature-slice`, `govkit-feature-readiness` and `govkit-feature-map`.
+> From a skill folder: `../../references/spec-identifiers.md`.
+> Companion to [`gherkin-authoring-standard.md`](gherkin-authoring-standard.md).
+
+## The problem this solves
+
+A feature's rules and scenarios get reworded constantly — that is what refinement is for.
+But everything that points *at* them currently points by text: `rule_link` in
+`eval_criteria.yaml` quotes the rule sentence, NFR rows name a scenario, a readiness
+report's evidence table keys on a scenario title, a sizing verdict matches on `name`.
+
+Rewording a rule therefore silently breaks every link into it. Nothing errors; the
+evaluation just stops being about anything.
+
+## The convention
+
+**Identifiers are Gherkin tags.** No new file, no sidecar, no registry.
+
+| Element | Tag | Example |
+|---|---|---|
+| Business rule | `@rule:<slug>` on the `Rule:` line | `@rule:invoice-approval-threshold` |
+| Scenario or Scenario Outline | `@scenario:<slug>` on the scenario | `@scenario:approval-routing-by-amount` |
+
+Slugs are lowercase kebab-case, unique within their feature file, and describe the
+*decision or behavior* rather than its current wording. Prefer
+`@rule:invoice-approval-threshold` over `@rule:invoices-of-10000-or-more` — the second one
+is a rename waiting to happen the first time the threshold moves.
+
+```gherkin
+@feature
+Feature: Invoice approval routing
+
+  @rule:invoice-approval-threshold
+  Rule: Invoices of $10,000 or more require finance manager approval
+
+    @mvp @functional @scenario:approval-routing-by-amount
+    Scenario Outline: Invoice amount decides the approval path
+      ...
+```
+
+Tags in both positions are standard Gherkin, so nothing about this is GovKit-specific at
+the file level. A Cucumber run, a `--tags` filter and every other Gherkin tool see ordinary
+tags.
+
+## Why tags rather than a new field
+
+- **The delivery-tag vocabulary is untouched.** `@mvp` / `@v1` / `@v2` and
+  `@small` / `@medium` / `@large` keep their exact meanings and their closed sets.
+  Identifier tags are outside those sets, and downstream code already preserves unknown
+  tags verbatim while ignoring them for slicing and sizing.
+- **They survive the round trip.** Ingestion, rendering, tracker write-back and the
+  slice pass all carry tags through already.
+- **They are visible in the artifact people argue about.** An identifier in a sidecar file
+  is an identifier nobody maintains.
+
+## What identifiers connect
+
+| Points at | Field | Value |
+|---|---|---|
+| `eval_criteria.yaml` | `rule_link` | `@rule:<slug>` (the rule sentence may stay alongside as prose) |
+| `eval_criteria.yaml` | `scenario_link` | `@scenario:<slug>`, when the evaluation is about one scenario |
+| `nfrs.md` | `Scenarios` column | one or more `@scenario:<slug>` |
+| Readiness report | scenario verification plan rows | keyed by `@scenario:<slug>` |
+| Evidence artifacts | filenames or report keys | `@scenario:<slug>` where the runner allows it |
+| `features.json` | `rules[].id`, `rules[].scenarios[].id` | the slug, with `idSource` recording where it came from |
+
+## Stability rules
+
+**Renaming preserves identity.** Rewording a `Rule:` sentence or a `Scenario:` title does
+not change its identifier. That is the entire point — the identifier is what survives the
+rewording.
+
+**Retagging preserves identity.** Changing `@v1` to `@mvp`, adding `@security`, or applying
+a size tag never touches the identifier tag.
+
+**Splitting creates identity, deliberately.** A split is a product event, not a rename, and
+it has to be recorded:
+
+- *Scenario split into two.* One child keeps the original `@scenario:` slug — the one that
+  still verifies the behavior the original was about. The other gets a new slug. If neither
+  child is recognisably the original behavior, both get new slugs and the old one is
+  retired. Note the split in the feature's source notes: `approval-routing-by-amount split
+  into approval-routing-by-amount + approval-routing-when-manager-absent`.
+- *Rule split into two.* Both children get new slugs, the parent slug is retired, and every
+  `rule_link` that pointed at the parent has to be repointed. A retired slug is never
+  reused for a different decision.
+- *Two scenarios merged.* The surviving scenario keeps one slug; the other is retired.
+
+Slicing and retagging must not change identifiers. `govkit-feature-slice` may split a
+scenario for size reasons, and when it does, it applies the split rules above and says so
+in its output — a split that silently re-identifies its own outputs breaks every evaluation
+that pointed at them.
+
+## Packages with no identifiers
+
+Identifiers are **optional and additive**. Every existing feature package keeps working.
+
+Where no identifier tag is present, tools derive one from the name — lowercase, non
+alphanumeric runs collapsed to `-`, trimmed — and record `idSource: "derived"` beside it.
+`repo_ingest.py` does this per rule and per scenario, so `features.json` always has an
+`id`, and a consumer can tell an authored identity from a derived one.
+
+A derived identifier is stable only as long as the name is. That is the whole argument for
+adding explicit ones, and the migration is exactly as heavy as adding a tag line:
+
+1. Add `@rule:<slug>` above each `Rule:`.
+2. Add `@scenario:<slug>` to each scenario's tag line.
+3. Repoint `rule_link` values in `eval_criteria.yaml` from quoted sentences to slugs.
+
+Steps 1 and 2 can be done a feature at a time, with no coordination — a file with
+identifiers and a file without both ingest, render, score and slice identically.

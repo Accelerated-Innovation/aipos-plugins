@@ -36,3 +36,25 @@ jobs:
       # No API key required — this does not call the model.
       - name: Validate marketplace and plugins
         run: claude plugin validate .
+
+  checks:
+    name: pytest (skill scripts)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+
+      # Pinned in requirements-dev.txt so the gate stays reproducible.
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements-dev.txt
+
+      # Behaviour and semantic-preservation tests for the bundled skill scripts:
+      # Gherkin ingestion fidelity and the map renderer. Deterministic, offline, and
+      # needs no API key — these assert what the tools do, not how any skill is worded.
+      - name: Run deterministic checks
+        run: python -m pytest tests -q

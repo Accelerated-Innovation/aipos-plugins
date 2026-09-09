@@ -9,6 +9,8 @@ Every adapter normalizes into the same `features.json`: a JSON array of feature 
 - [Jira adapter](#jira-adapter)
 - [Aha adapter](#aha-adapter)
 - [Repo directory adapter](#repo-directory-adapter)
+- [Gherkin fidelity](#gherkin-fidelity)
+- [Parse failures](#parse-failures)
 - [Merging a tracker record with a repo spec](#merging-a-tracker-record-with-a-repo-spec)
 - [Artifact naming](#artifact-naming)
 
@@ -34,20 +36,59 @@ Every adapter normalizes into the same `features.json`: a JSON array of feature 
   "scope": ["…"],
   "outOfScope": ["…"],
 
+  "featureTags": ["@feature"],      // tags on the Feature: line
+  "language": "en",
+  "background": {                   // feature-level Background, or null
+    "name": "", "file": "acceptance.feature", "line": 6,
+    "steps": ["Given the finance period is open"],
+    "stepDetails": [ /* same shape as a scenario's, below */ ]
+  },
+  "backgrounds": [ /* every feature-level Background, when a dir holds several files */ ],
+
   "rules": [                        // the Gherkin
     {
       "rule": "The client is never asked for what the platform already knows",
+      "id": "context-reuse",        // @rule:<slug> tag, else a slug derived from the text
+      "idSource": "tag",            // "tag" | "derived"
+      "tags": ["@rule:context-reuse"],
+      "file": "acceptance.feature",
+      "line": 12,
+      "description": "",            // free text under the Rule: line
+      "background": null,           // Rule-scoped Background, or null
       "scenarios": [
         {
           "name": "The session opens on a prepared capsule",
+          "id": "session-opens-on-capsule",
+          "idSource": "derived",
+          "type": "scenario",       // "scenario" | "scenario_outline"
+          "keyword": "Scenario",
+          "file": "acceptance.feature",
+          "line": 15,
           "steps": ["Given a context pack exists", "When the session begins", "Then …"],
-          "tags": ["@mvp", "@small"] // Gherkin tags, verbatim; [] when untagged
+          "stepDetails": [          // the same steps, with what a flat string cannot hold
+            {"keyword": "Given", "text": "a context pack exists", "line": 16},
+            {"keyword": "When", "text": "the following packs exist:", "line": 17,
+             "dataTable": [["pack", "state"], ["P-1", "ready"]]},
+            {"keyword": "Then", "text": "the note reads:", "line": 20,
+             "docString": {"content": "…", "mediaType": ""}}
+          ],
+          "examples": [             // [] for a plain scenario
+            {"name": "Around the threshold", "tags": [], "line": 24,
+             "header": ["amount", "status"],
+             "rows": [["$9,999.99", "Approved"], ["$10,000.00", "Pending"]]}
+          ],
+          "exampleCount": 2,        // executable examples this scenario expands to
+          "tags": ["@mvp", "@small"],          // the scenario's OWN tags, verbatim
+          "inheritedTags": ["@feature"],       // from the Feature and the Rule
+          "effectiveTags": ["@feature", "@mvp", "@small"]
         }
       ]
     }
   ],
   "ruleCount": 7,                   // denormalized for the card metrics
-  "scenarioCount": 15,
+  "scenarioCount": 15,              // authored scenarios (an outline counts once)
+  "exampleCount": 23,               // executable examples (outlines expanded)
+  "parseErrors": [],                // see "Parse failures"
 
   "nfr": [
     {"id": "N1", "dim": "Performance", "req": "Turn response time",
@@ -72,6 +113,18 @@ Every adapter normalizes into the same `features.json`: a JSON array of feature 
 Every field except `key` and `title` is optional. Missing fields degrade the card gracefully; they do **not** get invented. An empty `nfr` array means this feature declares no NFRs, and the rubric will score that honestly.
 
 **Scenario tags** carry release-slicing and sizing decisions made by `govkit-feature-slice`: `@mvp` / `@v1` / `@v2` for the release slice, `@small` / `@medium` / `@large` for the size band. Ingest them verbatim, wherever the Gherkin lives — the repo adapter parses tag lines above each scenario, and a tracker adapter parsing Gherkin out of a description or Acceptance Criteria field must preserve those lines onto `tags` rather than dropping them. Tags are decisions someone made; an adapter that loses them silently un-decides a release plan. Never derive or invent tags during ingestion — an untagged scenario is untagged.
+
+**Tag inheritance.** Gherkin tags inherit: a tag on `Feature:` applies to every scenario in the file, and a tag on `Rule:` to every scenario beneath it. Three fields keep the two facts apart:
+
+| Field | Contents |
+|---|---|
+| `tags` | The scenario's own tag line, verbatim. The pre-existing contract; unchanged. |
+| `inheritedTags` | Tags from the `Feature:` and the `Rule:`, in that order. |
+| `effectiveTags` | Inherited then own, de-duplicated — what a `--tags` run would match. |
+
+Slice resolution reads **most specific first**: the scenario's own delivery tag, then an inherited one. A `@v1` on the `Feature:` is a default for the file; a scenario tagged `@mvp` has overridden that default deliberately. Records that predate `effectiveTags` and carry only `tags` keep resolving exactly as before.
+
+**Identifiers.** `rules[].id` and `rules[].scenarios[].id` are the stable identity used to link rules, scenarios, NFRs, evaluations and evidence. They come from an `@rule:<slug>` / `@scenario:<slug>` tag when the author wrote one (`idSource: "tag"`), and are otherwise slugified from the name (`idSource: "derived"`). See `../../../references/spec-identifiers.md`.
 
 ## Minimum viable feature
 
@@ -145,6 +198,40 @@ Feature keys are derived from the directory name — `ai204_content_and_gates` �
 
 Gherkin without explicit `Rule:` blocks parses into a single unnamed rule. That is deliberate: the rubric's rule-coverage dimension will mark it as a gap rather than the adapter inventing rules the author never wrote.
 
+A `Rule:` that declares a decision but carries **no scenarios** is kept, with an empty `scenarios` array. A declared rule nobody has illustrated is precisely the coverage gap a reviewer needs to see, and dropping it made it invisible. This does raise `ruleCount` for such files relative to older runs — deliberately, and it is the only count that moved.
+
+## Gherkin fidelity
+
+`repo_ingest.py` parses with [`gherkin-official`](https://pypi.org/project/gherkin-official/), the Cucumber team's own parser (MIT, same licence as this repository). Install it first:
+
+```bash
+python -m pip install -r scripts/requirements.txt
+```
+
+The dependency is pinned in that file. It exists because hand-rolled line scanning cannot preserve what a review actually needs:
+
+| Preserved | Where it lands |
+|---|---|
+| Rule association | `rules[].scenarios[]`, plus `rules[].id` |
+| Scenario vs Scenario Outline | `type`, `keyword` |
+| Feature-level Background | `background`, `backgrounds[]` |
+| Rule-level Background | `rules[].background` |
+| Examples tables | `scenarios[].examples[]` with `header` and `rows` |
+| Step data tables | `stepDetails[].dataTable` |
+| Doc strings | `stepDetails[].docString` |
+| Tags and inheritance | `tags`, `inheritedTags`, `effectiveTags`, `featureTags` |
+| Source locations | `line` and `file` on features, rules, scenarios and steps |
+
+**Authored scenarios and executable examples stay distinct.** `scenarioCount` counts what a person reviews — one `Scenario Outline` is one scenario. `exampleCount` counts what a runner executes — that same outline expanded over its `Examples` rows. Neither number is wrong; reporting one as the other is.
+
+## Parse failures
+
+A `.feature` file that does not parse contributes **no rules at all**. It does not contribute the scenarios that happened to appear before the error, because a partial feature that looks complete sends the reviewer to the wrong person.
+
+Instead the feature record carries `parseErrors` — `{file, line, column, message}` per error — and a `specNote` saying so. `repo_ingest.py` prints the same diagnostics to stderr as `path:line:column: message`, still writes `features.json` (one malformed spec should not make a corpus unmappable), and exits **3**. Other exit codes: `0` fine, `1` nothing found, `2` the parser is not installed.
+
+The renderer shows the diagnostics on the card. "Did not parse" and "has no acceptance criteria" need different responses, and only one of them is the author's fault.
+
 `feature_source.md` sections are matched loosely by heading name, because teams name them differently. "Out of scope" is tested before "scope" — otherwise every exclusion lands in the scope list.
 
 ## Merging a tracker record with a repo spec
@@ -153,7 +240,7 @@ Gherkin without explicit `Rule:` blocks parses into a single unnamed rule. That 
 python scripts/repo_ingest.py <repo-root> --merge tracker-features.json -o features.json
 ```
 
-Matched by `key`. The repo wins on spec content — `rules`, `ruleCount`, `scenarioCount`, `nfr`, `nfrTbd`, `evals`. The tracker keeps everything it uniquely knows: status, workstream, phases, ownership, and the `consumes`/`produces` arrays that build the chain. Any other field the tracker left empty is filled from the repo. Merged features are marked `"source": "tracker+repo"`.
+Matched by `key`. The repo wins on spec content — `rules`, `ruleCount`, `scenarioCount`, `exampleCount`, `featureTags`, `background`, `backgrounds`, `language`, `parseErrors`, `nfr`, `nfrTbd`, `evals`. The tracker keeps everything it uniquely knows: status, workstream, phases, ownership, and the `consumes`/`produces` arrays that build the chain. Any other field the tracker left empty is filled from the repo. Merged features are marked `"source": "tracker+repo"`.
 
 This is the case worth designing for. A team that deliberately keeps its spec in the repo — because two copies of a spec drift — should not be badged as though it has no spec.
 

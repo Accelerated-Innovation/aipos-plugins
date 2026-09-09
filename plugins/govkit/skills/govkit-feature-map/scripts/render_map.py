@@ -240,13 +240,27 @@ SLICE_TAGS = ("mvp", "v1", "v2")
 SIZE_TAGS = ("small", "medium", "large")
 
 
+def eff_tags(sc):
+    """Tags that actually apply to a scenario: its own, plus any inherited from the
+    Feature or the Rule. Gherkin says tags inherit, and a `--tags @mvp` run agrees; an
+    ingest that only reported a scenario's own tags quietly under-reported the slice a
+    team had declared one level up. Older features.json files carry only `tags`, so
+    fall back to those."""
+    return sc.get("effectiveTags") or sc.get("tags") or []
+
+
 def scen_slice(sc):
     """The scenario's tagged release slice, or "". Tags are decisions the team made;
-    only these drive grouping and filtering -- a batch recommendation never does."""
-    for t in sc.get("tags") or []:
-        n = t.lstrip("@").lower()
-        if n in SLICE_TAGS:
-            return n
+    only these drive grouping and filtering -- a batch recommendation never does.
+
+    Most specific declaration wins: the scenario's own tag, then one inherited from the
+    Rule or the Feature. A slice tag on a Feature is a default for everything beneath it,
+    and a scenario that names its own slice has overridden that default deliberately."""
+    for source in (sc.get("tags") or [], eff_tags(sc)):
+        for t in source:
+            n = t.lstrip("@").lower()
+            if n in SLICE_TAGS:
+                return n
     return ""
 
 
@@ -262,7 +276,7 @@ def size_badge(f, sizing):
     counts = dict.fromkeys(SIZE_TAGS, 0)
     for r in f.get("rules") or []:
         for sc in r.get("scenarios") or []:
-            for t in sc.get("tags") or []:
+            for t in eff_tags(sc):
                 n = t.lstrip("@").lower()
                 if n in counts:
                     counts[n] += 1
@@ -349,6 +363,66 @@ def readiness(f, scores):
     return tok, panel
 
 
+def table_html(rows, cls="gtab"):
+    """A Gherkin table (step data table or Examples block) as HTML. First row is the
+    header when there is more than one row."""
+    if not rows:
+        return ""
+    head = "".join(f"<th>{e(c)}</th>" for c in rows[0])
+    body = "".join("<tr>" + "".join(f"<td>{e(c)}</td>" for c in r) + "</tr>"
+                   for r in rows[1:])
+    return f'<table class="{cls}"><tr>{head}</tr>{body}</table>'
+
+
+def steps_block(sc):
+    """Steps with the detail the old line-scanner threw away: a step's data table and
+    doc string are part of what the step means, and a reviewer who cannot see them is
+    reviewing a different scenario."""
+    details = sc.get("stepDetails")
+    if not details:
+        return ('<ol class="steps">'
+                + "".join(f"<li>{e(x)}</li>" for x in sc.get("steps") or [])
+                + "</ol>")
+    out = ""
+    for d in details:
+        extra = ""
+        if d.get("dataTable"):
+            extra += table_html(d["dataTable"])
+        if d.get("docString"):
+            extra += f'<pre class="gdoc">{e(d["docString"].get("content", ""))}</pre>'
+        kw = (d.get("keyword") or "").strip()
+        out += f'<li>{e((kw + " " + (d.get("text") or "")).strip())}{extra}</li>'
+    return f'<ol class="steps">{out}</ol>'
+
+
+def examples_block(sc):
+    """Examples tables under an outline, with the expanded row count. One authored
+    outline is several executable examples, and the card says both numbers."""
+    exs = sc.get("examples") or []
+    if not exs:
+        return ""
+    out = ""
+    for ex in exs:
+        name = f' &#183; {e(ex.get("name"))}' if ex.get("name") else ""
+        rows = ([ex.get("header") or []] + (ex.get("rows") or [])) if ex.get("header") \
+            else (ex.get("rows") or [])
+        out += (f'<div class="exs"><span class="exh">Examples{name}'
+                f' <em>{len(ex.get("rows") or [])} row(s)</em></span>'
+                f'{table_html(rows)}</div>')
+    return out
+
+
+def bg_block(bg, label):
+    """A Background, with its scope named. Feature-level and Rule-level backgrounds run
+    for different scenarios, and a card that shows one without saying which is which
+    invites exactly the wrong conclusion."""
+    if not bg or not (bg.get("steps") or bg.get("stepDetails")):
+        return ""
+    steps = steps_block(bg)
+    nm = f' &#183; {e(bg.get("name"))}' if bg.get("name") else ""
+    return (f'<div class="bgb"><span class="bgh">{e(label)}{nm}</span>{steps}</div>')
+
+
 def card(f, scores, sizing, central):
     st = f.get("status") or ""
     cls = "ok" if st == "In Delivery" else ("rdy" if st.startswith("Ready") else "wip")
@@ -357,26 +431,41 @@ def card(f, scores, sizing, central):
     chips += "".join(f'<span class="chip out" data-art="{e(a)}">{e(a)} &#8594;</span>'
                      for a in f.get("produces") or [])
 
-    rules = ""
+    rules = bg_block(f.get("background"), "Feature background")
     for r in f.get("rules") or []:
         scs = ""
         for sc in r.get("scenarios") or []:
             sl = scen_slice(sc)
             tags = "".join(
                 f'<span class="stag st-{t.lstrip("@").lower()}">{e(t)}</span>'
-                for t in sc.get("tags") or []
+                for t in eff_tags(sc)
                 if t.lstrip("@").lower() in SLICE_TAGS + SIZE_TAGS)
-            steps = "".join(f"<li>{e(x)}</li>" for x in sc.get("steps") or [])
+            outline = ('<span class="stag st-outline">Outline</span>'
+                       if sc.get("type") == "scenario_outline" else "")
+            steps = steps_block(sc)
+            exb = examples_block(sc)
             slattr = f' data-slice="{sl}"' if sl else ""
             scs += (f'<li{slattr}><b>{e(sc.get("name", ""))}</b>'
-                    f'{tags}<ol class="steps">{steps}</ol></li>')
+                    f'{outline}{tags}{steps}{exb}</li>')
         label = e(r.get("rule") or "(no Rule declared)")
         rules += (f'<details class="rule"><summary><span class="rr">RULE</span>{label}'
                   f'<span class="ct">{len(r.get("scenarios") or [])}</span></summary>'
+                  f'{bg_block(r.get("background"), "Rule background")}'
                   f'<ul class="scen">{scs}</ul></details>')
     if not (f.get("rules") or []):
         note = f.get("specNote") or ("No acceptance criteria in this record.")
         rules = f'<p class="none">{e(note)}</p>'
+    if f.get("parseErrors"):
+        # A parse failure is not a thin spec, and a card that cannot tell them apart
+        # sends the reader to the wrong person. Name file, line and column.
+        errs = "".join(
+            '<li><code>{}:{}{}</code> {}</li>'.format(
+                e(x.get("file") or ""), x.get("line") or "?",
+                ":" + str(x["column"]) if x.get("column") else "", e(x.get("message") or ""))
+            for x in f["parseErrors"])
+        rules = (f'<div class="perr"><b>Gherkin did not parse &#8212; '
+                 f'{len(f["parseErrors"])} error(s).</b> No scenarios were ingested from '
+                 f'the failed file(s).<ul>{errs}</ul></div>' + rules)
 
     nfr = "".join(
         '<tr><td>{}</td><td>{}</td><td>{}</td><td class="{}">{}</td><td>{}</td></tr>'.format(
@@ -440,6 +529,7 @@ def card(f, scores, sizing, central):
 <div class="chips">{chips}</div>
 <div class="metrics"><span><b>{f.get('ruleCount',0)}</b> rules</span>
 <span><b>{f.get('scenarioCount',0)}</b> scenarios</span>
+{f"<span><b>{f.get('exampleCount')}</b> examples</span>" if f.get('exampleCount') and f.get('exampleCount') != f.get('scenarioCount') else ''}
 <span><b>{len(f.get('openQuestions') or [])}</b> open</span>
 <span class="{'amber' if ntbd else ''}"><b>{ntbd}</b> NFR gaps</span>{szb}</div></header>
 <div class="body">{panel}{sizb}{scopeb}<details class="sub ac" open>
@@ -615,6 +705,25 @@ font-family:ui-monospace,monospace;vertical-align:1px;white-space:nowrap}
 .stag.st-mvp{background:#E7EEF4;color:var(--cen);font-weight:700}
 .stag.st-v1{background:var(--hair2);color:var(--ink2)}
 .stag.st-v2{background:#F1F3F6;color:var(--mut)}
+.stag.st-outline{background:#EFEAF6;color:#5B4A86;font-weight:600}
+.bgb{margin:6px 0 8px;padding:7px 10px;border-left:3px solid var(--hair2);background:#FAFAFB;
+border-radius:0 5px 5px 0}
+.bgh{display:block;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;
+color:var(--mut);margin-bottom:2px}
+table.gtab{border-collapse:collapse;margin:4px 0 2px;font-size:11.5px}
+table.gtab th,table.gtab td{border:1px solid var(--hair);padding:2px 7px;text-align:left;
+color:var(--ink2)}
+table.gtab th{background:var(--hair2);font-weight:600}
+pre.gdoc{margin:4px 0 2px;padding:6px 9px;background:var(--hair2);border-radius:4px;
+font-size:11.5px;white-space:pre-wrap;color:var(--ink2)}
+.exs{margin:5px 0 2px}
+.exh{display:block;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;
+color:var(--mut)}
+.exh em{text-transform:none;letter-spacing:0;font-style:normal;color:var(--mut)}
+.perr{margin:0 0 10px;padding:9px 12px;background:#F7E9E6;border:1px solid #E4C6C0;
+border-radius:6px;font-size:12px;color:var(--ink)}
+.perr ul{margin:5px 0 0;padding-left:17px}
+.perr code{font-family:ui-monospace,monospace}
 .stag.st-small{border:1px solid var(--hair);color:var(--dep)}
 .stag.st-medium{border:1px solid var(--hair);color:var(--ink2)}
 .stag.st-large{border:1px solid var(--amb);color:var(--amb);font-weight:700}

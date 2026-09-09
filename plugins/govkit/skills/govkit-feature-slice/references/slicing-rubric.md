@@ -72,6 +72,7 @@ Map each scenario to a release slice using MoSCoW matched against its Gherkin st
 Slicing guidance:
 
 - **Compliance can promote a scenario.** The table puts security and error handling in `@v1`, but a scenario backed by a compliance, privacy, or safety NFR may be unshippable-without — in some organizations a login feature cannot go live without lockout. When an NFR or a privacy note implies promotion, flag it and let the PM make the call. Release intent is theirs.
+- **A tag category never defers risk-critical behavior by itself.** The "Gherkin indicators" column says where a scenario *usually* lands, not what it is worth. Authorization, privacy, safety, regulatory compliance, financial correctness and data loss are judged on the consequence of shipping without them, and that routinely puts an "edge case" in `@mvp`. When a recommendation would defer such a scenario, name what shipping without it risks and make the PM accept it explicitly — never let the category do the deferring silently.
 - **`Scenario Outline` rows can split across slices.** If the happy row is critical path and the edge rows are not, recommend splitting the outline rather than dragging the whole table into `@mvp`.
 - **Untagged is a valid state.** A scenario the PM has not decided on stays untagged; do not default it into a slice to make the table look finished.
 
@@ -96,6 +97,8 @@ Patterns for taking an 8–9 point scenario apart. After any split, re-size each
 | **Reduce interaction ambition** | The UI/UX dimension alone drives the score. | A static or simplified interaction in `@mvp`; the dynamic/real-time version as its own `@v2` scenario. |
 
 Splitting restructures scenarios; it never changes what they promise. If a split would alter product intent, that is a refinement conversation (`govkit-feature-refine`), not a slicing edit.
+
+**Behavior-preservation checklist — run it on every split before proposing it.** Each piece must carry across its rule association (still under the `Rule:` the original illustrated), its setup (feature-level `Background`, rule-level `Background`, and its own `Given` steps still reach it), every `Examples` row (distributed, never dropped), every `Then` from the original (asserted by some piece), the boundary case (losing the exact-threshold example while "simplifying" is the most expensive split there is), its identity (`@rule:` / `@scenario:` per `../../../references/spec-identifiers.md` — one piece keeps the original scenario slug, the other gets a new one, and the split is recorded), and its independence (no piece may depend on another having run). Say what moved where; a PM cannot confirm a split they have to reverse-engineer.
 
 ## Tag vocabulary
 

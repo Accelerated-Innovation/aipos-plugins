@@ -1,0 +1,13 @@
+# Runtime dependencies for the govkit-feature-map scripts.
+# Pinned to a tested range so ingestion is reproducible locally and in CI.
+#
+#   python -m pip install -r requirements.txt
+#
+# gherkin-official is the Cucumber team's own Gherkin parser (MIT, same licence as this
+# repository). repo_ingest.py needs it: hand-rolled parsing cannot preserve Background
+# scoping, Examples tables, step data tables, doc strings or tag inheritance.
+gherkin-official>=32,<40
+
+# PyYAML is optional. Without it eval_criteria.yaml falls back to a shallow parse, which
+# repo_ingest.py reports on stderr rather than failing.
+PyYAML>=6,<7

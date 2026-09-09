@@ -110,6 +110,8 @@ If a field is missing, record the gap and ask for it when you need it. **Never i
 
 | Reference | Use |
 |---|---|
+| `../../references/gherkin-authoring-standard.md` | **The shared Gherkin authoring standard.** BRIEF, explicit rules, scenario isolation, provenance, automation suitability, deterministic checks vs aggregate evaluations. Read before Step F6 and F7 — it is what the gates judge your Gherkin against. |
+| `../../references/spec-identifiers.md` | The `@rule:` / `@scenario:` identifier convention. Read before writing Gherkin. |
 | `references/story-mapping.md` | Backbone construction, horizontal slicing, feature candidate patterns, the overlap and vertical-slice checks. Read before Epic mode. |
 | `references/feature-template.md` | The feature package templates: `feature_source.md` structure, `nfrs.md` table, DoD checklist, privacy section, `eval_criteria.yaml`. Read before Feature mode. |
 | `references/gherkin-tagging.md` | Gherkin structure rules, the tag vocabulary, automatic tag assignment, and the validation checks. Read before writing any Gherkin. |
@@ -154,6 +156,8 @@ Switch on GenAI mode when you see model-generated behavior, in either mode.
 **Descriptions:** text generation · natural-language answers or interpretation · summarization or rewriting · retrieval of documents or passages · reasoning or decision-making · personalized responses or recommendations · transcript analysis · multi-step automation.
 
 (This keyword and behavior list is shared verbatim with `govkit-epic-create` — change one, change both.)
+
+**What does not count.** Using an AI coding agent to *build* the feature does not make the feature GenAI. The question is what the shipped product does at runtime. Ordinary software written with a coding agent needs ordinary test evidence, and demanding evaluation datasets for it is a false gate.
 
 When detected, say once:
 
@@ -290,13 +294,24 @@ Before any Gherkin, enumerate the business rules this feature enforces:
 
 Rules are the one thing the PM knows and a coding agent must never invent, and the entire downstream organizes around them: refine's rule-coverage dimension, Example Mapping's Rules cards, `eval_criteria.yaml`'s `rule_link`, the readiness gate, and the feature map's cards all group by rule. A feature usually has two to five; one is common; zero means the feature is pure mechanics and worth a second look.
 
-For each rule, capture one line in the PM's own words. Where a scenario will exist that no stated rule explains, that is a missing rule — surface it now, not at refinement.
+For each rule, capture one line in the PM's own words, and give it a stable identifier — `@rule:<slug>` per `../../references/spec-identifiers.md` — so evaluations, NFRs and evidence can point at the decision rather than at its current wording.
+
+For each rule, ask what the rule's **boundary** is. A rule with a threshold, limit, window or count has one, and the boundary is where the business most often disagrees with itself. "At or above $10,000" needs an example at exactly $10,000, not only comfortably above and comfortably below.
+
+Where a scenario will exist that no stated rule explains, that is a missing rule — surface it now, not at refinement. **Never write a rule the PM did not state.** A plausible policy in a Draft 0 is read downstream as a decision somebody made.
 
 ### Step F7 — Acceptance criteria
 
 > We'll write the acceptance criteria as executable behavior specs — fully-formed Gherkin with structured tags, so CI and evaluation can filter on them.
 
-Generate complete, syntactically valid Gherkin per `references/gherkin-tagging.md`: `Feature:` header, persona intent block, **one `Rule:` block per business rule from Step F6** with its scenarios grouped beneath, `Background:` only where setup is genuinely shared, atomic scenarios, no implementation detail.
+Generate complete, syntactically valid Gherkin per `../../references/gherkin-authoring-standard.md` (what good looks like) and `references/gherkin-tagging.md` (tags and validation): `Feature:` header, persona intent block, **one `Rule:` block per business rule from Step F6** with its scenarios grouped beneath, `Background:` scoped correctly — feature-level only when genuinely shared by every scenario, rule-level when shared by one rule's — atomic scenarios, no implementation detail.
+
+Four things from the standard are worth stating here because they are what the gates check first:
+
+- **Every scenario illustrates a stated rule, establishes a meaningful context and one trigger, and asserts observable outcomes.** Several related outcomes of one trigger are fine.
+- **Every scenario is independently executable.** Never write "the invoice from the previous scenario"; put the state in this scenario's own `Given`.
+- **Cover the boundary, the negative path, permissions and exceptions where they matter — then stop.** An exhaustive combinatorial catalog drives readers away from the document, which costs more understanding than the extra cases buy. Use `Scenario Outline` for real data variation of one behavior.
+- **Mark what is derived.** You may derive illustrating examples from a confirmed rule; say in the summary that the values are proposed for confirmation. You may not invent a policy, a threshold, a permission model, or anyone's approval. Unresolved decisions stay visible as `<TBD — …>` placeholders plus an open question, and a scenario carrying one is never reported as ready for execution.
 
 **Assign tags automatically.** Derive the delivery-phase tag from the feature's slice and the classification tags from each scenario's behavior. Do not make the PM pick tags. Ask only when the feature's slice is unclear, a scenario spans delivery phases, or the intent genuinely cannot be classified.
 
@@ -378,6 +393,9 @@ Do not:
 - Create multiple features without confirming the whole set in one preview first
 - Invent personas, success metrics, evidence, quotes, thresholds, or evaluation numbers
 - Invent business rules, or write a scenario no stated rule explains without surfacing the missing rule
+- Write a scenario that depends on another scenario having run first
+- Present a derived example as a confirmed requirement, or an unresolved placeholder as ready for execution
+- Switch on GenAI mode because a coding agent is building the feature
 - Set `multi_agent` without the PM's explicit yes/no answer
 - Put acceptance criteria, NFRs, or DoD on a stub
 - Present Draft 0 as reviewed, approved, or token-ready

@@ -3,16 +3,24 @@
   "evals": [
     {
       "id": 1,
-      "name": "strong-spec-approved-no-genai-penalty",
+      "name": "strong-spec-boundary-gap-surfaced",
       "prompt": "Here's a Draft 0 feature spec from our generator. Can you do a readiness review and give us a Development Token recommendation before we hand it to GovKit? Go straight through to the full analysis, no need to pause.",
       "files": [
         "files/feature-invoice-approval-strong.md"
       ],
-      "expected_output": "A single response that opens with a short prose summary of the feature, then the full Gherkin Collaboration Review using the SKILL.md template (pause skipped because the user asked). Decision should be Approved (or Approved with edits for minor wording only) with no critical blockers. The review must NOT penalize the feature for lacking GenAI evaluation criteria, since it has no AI or decision-support behavior. Score should land around 8 or above.",
+      "expected_output": "A single response that opens with a short prose summary of the feature, then the full Gherkin Collaboration Review using the SKILL.md template (pause skipped because the user asked). The spec is genuinely strong — explicit Rule blocks, concrete amounts, observable outcomes, a permission path, NFRs with thresholds, owners and evidence — so there are no critical blockers and the decision should be 'Approved' or 'Approved with edits'. But its stated rule is 'invoices of $10,000 or more require finance manager approval' and its examples are $12,500, $15,000 and $4,200: no example lands on $10,000 itself. That missing boundary example must be raised as a coverage finding (an edit or a refinement question), not suppressed to keep the verdict clean. The review must NOT penalize the feature for lacking GenAI evaluation criteria, since it has no AI or decision-support behavior.",
       "assertions": [
         {
           "name": "decision-is-approved",
           "text": "The Decision is 'Approved' or 'Approved with edits', not 'Blocked'."
+        },
+        {
+          "name": "boundary-gap-is-raised",
+          "text": "The review raises the missing exact-$10,000 boundary example as a coverage finding — an edit, a scenario-review row, or a refinement question. It does not claim example coverage is complete."
+        },
+        {
+          "name": "boundary-value-not-invented-as-policy",
+          "text": "Any suggested boundary example is derived from the stated $10,000 threshold and is offered as a proposed example for the team to confirm. The review does not invent a different threshold or a new business rule."
         },
         {
           "name": "no-genai-eval-penalty",
@@ -23,10 +31,6 @@
           "text": "The response uses the '# Gherkin Collaboration Review' template from SKILL.md, including a plain-language behavior summary and a Development Token decision."
         },
         {
-          "name": "no-invented-content",
-          "text": "The review does not invent new business rules, thresholds, or scenarios not grounded in the provided spec."
-        },
-        {
           "name": "opens-with-prose-summary",
           "text": "The response opens with a prose summary of the feature (paragraphs, not bullets) before any headings, scores, or findings."
         }
@@ -35,7 +39,7 @@
     {
       "id": 2,
       "name": "happy-path-only-blocked",
-      "prompt": "Our PM wants to send this feature straight into AI-assisted coding this sprint. Review it and tell us if it's ready \u2014 skip the summary pause and give us the full review in one go.",
+      "prompt": "Our PM wants to send this feature straight into AI-assisted coding this sprint. Review it and tell us if it's ready — skip the summary pause and give us the full review in one go.",
       "files": [
         "files/feature-bulk-export-weak.md"
       ],
@@ -66,7 +70,7 @@
       "files": [
         "files/feature-ai-summary-missing-evals.md"
       ],
-      "expected_output": "Decision must be Blocked because evaluation criteria are missing for AI behavior (a critical blocker per the rubric). The review should call for accuracy/groundedness/safety evaluation criteria with thresholds, data sources, and evidence artifacts \u2014 but must ask for thresholds or mark them as gaps, never invent numeric thresholds. The Gherkin itself is reasonable (including the failure-path rule), so the review should not manufacture Gherkin problems to justify the block. Because the pause was skipped and the spec does not answer it, the review should surface the explicit 'agentic behavior: yes/no' question as a refinement question and must not set multi_agent: true or false in eval_criteria.yaml without the team's answer.",
+      "expected_output": "Decision must be Blocked because evaluation criteria are missing for AI behavior (a critical blocker per the rubric). The review should call for accuracy/groundedness/safety evaluation criteria with thresholds, data sources, and evidence artifacts — but must ask for thresholds or mark them as gaps, never invent numeric thresholds. The Gherkin itself is reasonable (including the failure-path rule), so the review should not manufacture Gherkin problems to justify the block. Because the pause was skipped and the spec does not answer it, the review should surface the explicit 'agentic behavior: yes/no' question as a refinement question and must not set multi_agent: true or false in eval_criteria.yaml without the team's answer.",
       "assertions": [
         {
           "name": "decision-is-blocked",
@@ -97,7 +101,7 @@
       "files": [
         "files/feature-invoice-approval-strong.md"
       ],
-      "expected_output": "Stage 1 only: a short prose summary (one or two paragraphs, no bullets, no headings) covering the actor, business outcome, key rules, boundaries, and evidence expectations \u2014 then a stop that asks the user to confirm the summary and say 'continue' for the full analysis. The checkpoint must also ask the explicit 'agentic behavior: yes or no?' question, whose answer later sets multi_agent in eval_criteria.yaml. The response must NOT contain a readiness score, a Development Token decision, a blocker list, or the full review template. The full analysis comes only after the user confirms.",
+      "expected_output": "Stage 1 only: a short prose summary (one or two paragraphs, no bullets, no headings) covering the actor, business outcome, key rules, boundaries, and evidence expectations — then a stop that asks the user to confirm the summary and say 'continue' for the full analysis. The checkpoint must also ask the explicit 'agentic behavior: yes or no?' question, whose answer later sets multi_agent in eval_criteria.yaml. The response must NOT contain a readiness score, a Development Token decision, a blocker list, or the full review template. The full analysis comes only after the user confirms.",
       "assertions": [
         {
           "name": "summary-is-prose",
@@ -118,6 +122,126 @@
         {
           "name": "asks-agentic-question",
           "text": "The checkpoint explicitly asks the agentic behavior yes/no question (whether the feature will use autonomous/agentic AI behavior)."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "boundary-complete-spec-not-flagged-for-coverage",
+      "prompt": "Draft 0 from our generator. Please run the full readiness review and give us a Development Token recommendation — skip the summary pause.",
+      "files": [
+        "files/feature-invoice-approval-boundary-complete.md"
+      ],
+      "expected_output": "Decision should be Approved (or Approved with edits for genuinely minor points), with no critical blockers. This is the same invoice policy as the boundary-gap fixture, written with a Scenario Outline whose Examples cover $9,999.99 (below), $10,000.00 (exactly at the threshold) and $12,500.00 (above). The review must recognise that the boundary is covered and must not report a missing boundary example. It must not manufacture problems to justify a lower verdict, and must not require GenAI evaluation criteria for a feature with no runtime model behavior.",
+      "assertions": [
+        {
+          "name": "decision-is-approved",
+          "text": "The Decision is 'Approved' or 'Approved with edits', not 'Blocked'."
+        },
+        {
+          "name": "no-false-boundary-finding",
+          "text": "The review does not claim a missing boundary or missing threshold example; the $10,000.00 exact-threshold row is present and the review treats the boundary as covered."
+        },
+        {
+          "name": "outline-not-treated-as-a-defect",
+          "text": "The Scenario Outline is treated as legitimate data variation of one behavior, not as a defect or as something to be expanded into separate scenarios."
+        },
+        {
+          "name": "no-genai-eval-penalty",
+          "text": "The review does not require GenAI evaluation criteria for this non-AI feature."
+        },
+        {
+          "name": "no-invented-content",
+          "text": "The review does not invent business rules, thresholds, or scenarios that are not grounded in the provided spec."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "contradictory-rules-and-unresolved-threshold-blocked",
+      "prompt": "Our PM wants this in the next sprint. Review it and tell us whether it's ready — full review in one go, no pause.",
+      "files": [
+        "files/feature-loyalty-tier-contradictory.md"
+      ],
+      "expected_output": "Decision must be Blocked. Two stated rules decide the same situation differently: '50,000 or more points are upgraded to Gold' and 'below 60,000 points remain at their current tier' — a member with 52,000 points is covered by both, and the two scenarios in the spec assert opposite outcomes for the same band. That contradiction must be named as a blocker and routed to Product; the review must not silently pick one rule. The 'excessive share of returns' rule carries an unresolved threshold (an open question) and an unobservable outcome ('the upgrade is handled appropriately'); both must be raised, and the review must not invent a returns percentage. Because the boundary is exactly what is in dispute, the review should ask which value the rule turns on rather than proposing one as settled.",
+      "assertions": [
+        {
+          "name": "decision-is-blocked",
+          "text": "The Decision is 'Blocked'."
+        },
+        {
+          "name": "contradiction-named",
+          "text": "The review explicitly identifies that the 50,000-point rule and the 60,000-point rule contradict each other for members between those values, and names it as a blocker or critical finding."
+        },
+        {
+          "name": "contradiction-not-silently-resolved",
+          "text": "The review does not pick one of the two conflicting thresholds and proceed as if the conflict were settled; it routes the decision to Product."
+        },
+        {
+          "name": "unresolved-returns-threshold-raised",
+          "text": "The unresolved 'excessive share of returns' threshold is raised as a gap or blocker, and no numeric returns percentage is invented."
+        },
+        {
+          "name": "ambiguous-outcome-raised",
+          "text": "'Then the upgrade is handled appropriately' (and/or 'the member's tier is unchanged' without a stated tier) is identified as an outcome that is not observable enough to verify."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "scenario-dependency-and-ambiguous-outcome-flagged",
+      "prompt": "QA asked for a look at this before refinement. Run the whole review, no need to pause after the summary.",
+      "files": [
+        "files/feature-shift-swap-dependent.md"
+      ],
+      "expected_output": "The review must identify that the second and third scenarios depend on state left behind by earlier scenarios ('the offer from the previous scenario', 'the swap created above'). Scenarios must be independently executable; the review should say so and show the missing Given context being moved into each scenario, rather than accepting the sequence as a manual script. It must also flag 'Then the system responds appropriately' as an outcome that is not observable, and ask what the system should do when a swap would breach minimum staffing rather than inventing the rule. Decision is expected to be Blocked (unobservable outcome plus a missing safety rule), but the dependency finding is what this case is for.",
+      "assertions": [
+        {
+          "name": "dependency-identified",
+          "text": "The review explicitly identifies that scenarios depend on previous scenarios having run, and states that each scenario must stand alone."
+        },
+        {
+          "name": "dependency-fix-shown",
+          "text": "The review shows or describes moving the needed context into each scenario's own Given steps, rather than accepting the ordered sequence."
+        },
+        {
+          "name": "ambiguous-outcome-identified",
+          "text": "'Then the system responds appropriately' is identified as an outcome that is not observable or testable."
+        },
+        {
+          "name": "safety-rule-asked-not-invented",
+          "text": "The review asks what should happen when a swap would breach minimum staffing instead of inventing the rule or its threshold."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "agent-built-feature-is-not-a-genai-feature",
+      "prompt": "This one is being built by our coding agent like everything else this quarter. Review it and give us a Development Token recommendation — straight to the full review, no pause.",
+      "files": [
+        "files/feature-agent-built-stock-adjustments.md"
+      ],
+      "expected_output": "Decision should be Approved (or Approved with edits for genuinely minor points). The spec notes that the team will implement the feature with an AI coding agent, but the product performs no model inference at runtime — the rules are deterministic arithmetic against a stock ledger. The review must therefore treat it as ordinary software: no GenAI evaluation criteria required, no @genai or @evaluation scenarios demanded, no groundedness, accuracy or safety metrics, no evaluation dataset. Missing eval_criteria.yaml must not be a blocker here. The spec covers the variance threshold on both sides and exactly at it, has observable outcomes, a permission path, and NFRs with thresholds, owners and evidence.",
+      "assertions": [
+        {
+          "name": "decision-is-approved",
+          "text": "The Decision is 'Approved' or 'Approved with edits', not 'Blocked'."
+        },
+        {
+          "name": "no-genai-evaluation-required",
+          "text": "The review does not require GenAI evaluation criteria, evaluation thresholds, an evaluation dataset, or @genai/@evaluation scenarios for this feature."
+        },
+        {
+          "name": "coding-agent-not-treated-as-product-ai",
+          "text": "The review does not treat the fact that an AI coding agent will implement the feature as evidence that the product has AI or decision-support behavior."
+        },
+        {
+          "name": "missing-evals-not-a-blocker",
+          "text": "The absence of eval_criteria.yaml / evaluation criteria is not listed as a critical blocker."
+        },
+        {
+          "name": "no-invented-content",
+          "text": "The review does not invent business rules, thresholds, or scenarios that are not grounded in the provided spec."
         }
       ]
     }
