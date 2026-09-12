@@ -1,11 +1,34 @@
 {
   "name": "aipos",
-  "description": "AIPOS skills from Accelerated Innovation \u2014 GovKit governed AI delivery and Rapid Validation (Pillar 2).",
+  "description": "AIPOS skills from Accelerated Innovation — Continuous Discovery (Pillar 1), Rapid Validation (Pillar 2), and GovKit governed AI delivery (Pillar 3).",
   "owner": {
     "name": "Accelerated Innovation",
     "email": "marty@acceleratedinnovation.com"
   },
   "plugins": [
+    {
+      "name": "aipos-p1",
+      "source": "./plugins/aipos-p1",
+      "description": "AIPOS Pillar 1 (Continuous Discovery) skills: run evidence-governed planning over a Product Definition Graph — read the ranked opportunity list over MCP, grade the evidence behind each candidate, find the coverage and attention gaps, and record the Exploration Decisions (explore with budget and horizon, decline, or defer) that hand off to Pillar 2.",
+      "author": {
+        "name": "Accelerated Innovation"
+      },
+      "homepage": "https://acceleratedinnovation.com",
+      "repository": "https://github.com/Accelerated-Innovation/govkit-plugins",
+      "license": "MIT",
+      "keywords": [
+        "aipos",
+        "continuous-discovery",
+        "quarterly-planning",
+        "product-definition-graph",
+        "evidence",
+        "gap-analysis",
+        "portfolio",
+        "mcp",
+        "product-management"
+      ],
+      "category": "productivity"
+    },
     {
       "name": "govkit",
       "source": "./plugins/govkit",
@@ -38,7 +61,7 @@
     {
       "name": "aipos-p2",
       "source": "./plugins/aipos-p2",
-      "description": "AIPOS Pillar 2 (Rapid Validation) skills: test the riskiest assumptions before committing engineering capacity \u2014 interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the go / no-go / revise Validation Decision.",
+      "description": "AIPOS Pillar 2 (Rapid Validation) skills: test the riskiest assumptions before committing engineering capacity — interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the go / no-go / revise Validation Decision.",
       "author": {
         "name": "Accelerated Innovation"
       },

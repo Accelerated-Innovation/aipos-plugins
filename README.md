@@ -46,11 +46,12 @@ Settings → Customize → plugins, then add `Accelerated-Innovation/govkit-plug
 ### 2. Install the plugins
 
 ```
+/plugin install aipos-p1@aipos     # Pillar 1 — Continuous Discovery
 /plugin install aipos-p2@aipos     # Pillar 2 — Rapid Validation
 /plugin install govkit@aipos       # Pillar 3 — Accelerated Development
 ```
 
-Install both if you own a product end to end. Install one if you only live in that half of the lifecycle.
+Install all three if you own a product end to end. Install one if you only live in that part of the lifecycle.
 
 Pull later releases with:
 
@@ -159,7 +160,17 @@ None of it is new. All of it got dramatically more load-bearing the moment deliv
 
 ## Reference
 
-Skills group by the AIPOS pillar they serve. Every skill here is **model-invoked** — there are no slash commands. Describe your situation in your own words and the right one loads. Each states its own handoff, so the pillars chain: Pillar 2 ends at the Validation Decision, Pillar 3 begins there.
+Skills group by the AIPOS pillar they serve. Every skill here is **model-invoked** — there are no slash commands. Describe your situation in your own words and the right one loads. Each states its own handoff, so the pillars chain: Pillar 1 ends at the Exploration Decision, Pillar 2 begins there; Pillar 2 ends at the Validation Decision, Pillar 3 begins there.
+
+### Pillar 1 — Continuous Discovery
+
+*Evidence-governed planning.* Decide what deserves exploration capacity before anyone commits it. Runs against a live Product Definition Graph read over MCP — never from recollection, never from a slide deck.
+
+Primary output: the **Exploration Decisions** — explore with a declared budget and horizon, decline with a reason, or defer to a named session.
+
+- **[pdg-quarterly-planning](./plugins/aipos-p1/skills/pdg-quarterly-planning/SKILL.md)**: The quarterly session pack in five moves — portfolio read, evidence grading (Strong / Thin / Stale / Say-so, the grade beside the rank), gap analysis (coverage, attention, expiry pressure, funnel signals), the one-page agenda with its capacity ledger, and the Exploration Decision log. Every claim provenance-marked and traceable to an MCP tool call; the skill never writes — decisions enter the system of record through its own governed doors. Includes a dry-run rehearsal mode.
+
+Plugin: [`aipos-p1`](./plugins/aipos-p1/README.md) · `/plugin install aipos-p1@aipos`
 
 ### Pillar 2 — Rapid Validation
 
