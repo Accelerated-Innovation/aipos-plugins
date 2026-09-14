@@ -203,16 +203,24 @@ Where a Data Protection Impact Assessment is required, say so and name it as a d
 
 ## eval_criteria.yaml
 
-GenAI mode only. This is the shape `govkit-feature-map` parses and `govkit-feature-readiness` checks.
+GenAI mode only. Three consumers read this one file, and a single shape satisfies all of them:
+
+- `govkit-feature-map`'s repo ingester reads the top-level `evaluation_criteria:` list; each item's `id`, `type`, `rule_link`, `method`, `pass_threshold`, and `gate` land on the feature card.
+- `govkit-feature-readiness` checks the same list for thresholds, data, evidence, and owner.
+- `govkit-metrics-emit` reads `mode` (must be `llm`, `deterministic`, or `none`), counts `llm_evaluation.criteria` when mode is `llm`, collects each criterion's optional `tool`, and reads `unit_tests.enforce_FIRST` and `code_quality.enforce_virtues` — two separate top-level blocks; it does not look for `enforce_virtues` under `unit_tests`. A file without a valid `mode` scores zero on the emitter's `eval_criteria` completeness component.
+
+`llm_evaluation.criteria` is a YAML alias of `evaluation_criteria`, so the ingester's list and the emitter's mirror can never drift. Never write the mirror out by hand.
 
 ```yaml
+mode: llm                 # llm | deterministic | none — the mode govkit-metrics-emit reports
 multi_agent: false        # the PM's explicit answer to the agentic-behavior question — never inferred
 
-evaluation_criteria:
+evaluation_criteria: &criteria
   - id: E1
     type: groundedness
     rule_link: "Summaries reflect only the uploaded claim documents"
     method: "LLM-as-judge over the labelled eval set"
+    tool: promptfoo
     data_source: "200-item labelled claim-summary eval set"
     pass_threshold: ">= 0.95"
     evidence: "Eval report attached to the PR"
@@ -238,23 +246,40 @@ evaluation_criteria:
     evidence: "Detector report attached to the PR"
     owner: "QA / evaluation owner"
     gate: blocking
+
+# Mirror for govkit-metrics-emit (mode: llm requires llm_evaluation.criteria >= 1).
+llm_evaluation:
+  criteria: *criteria
+
+unit_tests:
+  enforce_FIRST: true
+
+code_quality:
+  enforce_virtues: true
 ```
 
 | Field | Meaning |
 |---|---|
+| `mode` | `llm`, `deterministic`, or `none` — how the feature's evaluation evidence is produced. GenAI features are `llm`. `govkit-metrics-emit` rejects any other value |
 | `multi_agent` | `true` / `false`, from the PM's explicit yes/no answer to the agentic-behavior question. Omit the field entirely if unanswered — never guess. `govkit-feature-refine` requires it and will otherwise carry it as an open question |
 | `id` | Stable identifier, referenced from `@evaluation` scenarios |
 | `type` | What is being measured — groundedness, accuracy, latency, cost, safety, toxicity, refusal rate |
 | `rule_link` | The business rule this evaluates, in the feature's own words |
 | `method` | How it is measured, specifically enough that someone else could run it |
+| `tool` | Optional — the evaluation tool that runs it (`promptfoo`, `ragas`, a named harness). `govkit-metrics-emit` aggregates these per package |
 | `data_source` | The dataset, prompt set, or trace set that drives the evaluation |
 | `pass_threshold` | The number, with its comparator |
 | `evidence` | The artifact that lands in the PR or release review |
 | `owner` | Who produces the evidence |
 | `gate` | `blocking` or `advisory` — whether a failure stops the release |
+| `llm_evaluation.criteria` | The alias `*criteria` and nothing else. `govkit-metrics-emit` counts this list when `mode: llm`; the alias keeps it identical to `evaluation_criteria` |
+| `unit_tests.enforce_FIRST` | `true` — the package expects FIRST-principle unit tests. Read by `govkit-metrics-emit` as `enforce_first` |
+| `code_quality.enforce_virtues` | `true` — the package expects the code virtues review. Read by `govkit-metrics-emit` as `enforce_virtues`. This lives in its own `code_quality` block, not under `unit_tests` |
 
 `method`/`data_source`/`evidence`/`owner` are the fields both gates check (`govkit-feature-refine` Step 8; `govkit-feature-readiness` dimension 8 — "thresholds, data, evidence, and owner"). Filling them at authoring costs one question each; leaving them lands as a 0.5 at the gate.
 
 Every criterion needs a `method` and a `pass_threshold`. Criteria without thresholds are a named readiness blocker, and a threshold you invented is worse than a gap you flagged: write `pass_threshold: "TBD"` with the gap listed in `feature_source.md` and let the PM supply the number.
 
 Keep this draft narrow. Full evaluation design belongs to refinement and to the team's eval tooling — this file's job is to make sure the feature arrives at refinement with the evaluation question already asked.
+
+Non-GenAI features normally ship without this file. If the team tracks the metrics emitter's completeness score, a minimal `mode: deterministic` file — one `evaluation_criteria` entry pointing at the automated acceptance tests, no `llm_evaluation` block, and the two enforce blocks — is enough to score the component.
