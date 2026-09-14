@@ -41,7 +41,8 @@ One question at a time.
 # Problem sizing — <problem>
 
 ## Evidence base
-<the four-line header from evidence-intake.md>
+<the evidence-base header from evidence-intake.md>
+**Mandate cost:** <desk time only — usually no mandate cost; say "none" rather than inventing one | <n> days of the horizon if inputs must be measured>
 
 ## What we're sizing
 <Cost of the problem today | value of solving it>, measured in <unit>.

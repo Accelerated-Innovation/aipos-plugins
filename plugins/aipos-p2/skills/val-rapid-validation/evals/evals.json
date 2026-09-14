@@ -1,0 +1,151 @@
+{
+  "skill_name": "val-rapid-validation",
+  "evals": [
+    {
+      "id": 1,
+      "name": "mandate-declared-carries-the-ledger",
+      "prompt": "Here's the Exploration Decision from planning and the shadowing notes our support lead wrote up. Build the interview guide.",
+      "files": [
+        "files/exploration-decision-ticket-search.md"
+      ],
+      "expected_output": "The skill reads the pasted Exploration Decision as the exploration mandate (owner Priya Natarajan, budget 5 interviews + 1 spike, horizon 2026-10-15, recorded as REOPS-2041) and the shadowing notes as Path B material, without asking the PM for anything already in either. It builds the interview guide: the evidence-base header carries a Mandate line in the declared form with the ledger (0 of 5 interviews used before this guide; the guide plans sessions that consume some or all of the 5), a Mandate cost line stating sessions planned against interviews budgeted and a run-by date inside the horizon, a hypothesis and decision rule, and a target n that does not exceed 5 without saying so. Shadowing observations are marked [E] where the lead observed them and [I] where they are the lead's reading; the 35–50 minutes figure is the lead's estimate and is marked accordingly. The close-the-loop step names what the guide retires, gives the one-line mandate ledger after it, prompts (does not perform) the save to the record, and names problem sizing as the next artifact.",
+      "assertions": [
+        {
+          "name": "mandate-line-present-and-declared",
+          "text": "The evidence-base header contains a Mandate line in the declared form naming the owner, the budget with its units (interviews and spike), the horizon date 2026-10-15, and a used/declared ledger."
+        },
+        {
+          "name": "mandate-cost-stated",
+          "text": "A Mandate cost line directly beneath the header states how many sessions the guide plans against the 5 interviews budgeted and a run-by date on or before 2026-10-15."
+        },
+        {
+          "name": "target-n-respects-budget-or-says-so",
+          "text": "Target n is 5 or fewer; if it is more, the guide explicitly says it exceeds the budget and names what drops first."
+        },
+        {
+          "name": "no-re-asking-known-facts",
+          "text": "The skill does not ask the PM for the owner, budget, horizon, team size, or loaded cost — all are in the provided material."
+        },
+        {
+          "name": "provenance-marks-honest",
+          "text": "Shadowing observations are marked [E]; the lead's summary figures (35–50 minutes, $38/hour) are marked as the lead's estimate ([I] or [A]), not [E] as measured fact; no figure appears that is not in the material."
+        },
+        {
+          "name": "close-the-loop-includes-ledger",
+          "text": "The closing summary includes one line on the mandate: this artifact's cost and what remains of the budget and horizon."
+        },
+        {
+          "name": "no-writes-without-yes",
+          "text": "The save-to-record offer is a prompt, not an action; nothing is written to any system of record."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "budget-exhausted-routes-to-the-brief-but-builds-what-is-asked",
+      "prompt": "All five interviews are done and they were strong. I want to run a concierge demand test next — build it.",
+      "files": [
+        "files/exploration-decision-budget-spent.md"
+      ],
+      "expected_output": "The skill reads the ledger (5 of 5 interviews used, 0 of 1 spike used, 13 days of horizon left) and notes that a demand test is not in the mandate and that a concierge instrument is a Weeks-class instrument inside a 13-day horizon. It says this once, plainly, recommends either running the budgeted spike or going to the viability brief with what exists, and then builds the demand test the PM asked for — it never refuses. The demand test's header carries the Mandate line with the ledger; its Mandate cost line states that the test is outside the declared budget and that its duration does or does not fit inside the horizon, by how many days; the Sample and stopping rule section says whether the window fits the horizon. The decision rule is set before running. Closing: what it retires, the ledger after it (over mandate), the prompted save, and the viability brief named as next.",
+      "assertions": [
+        {
+          "name": "exceedance-named-once",
+          "text": "The response states, once and without lecturing, that the demand test is not in the declared budget and/or that a concierge test's duration does not fit the remaining 13-day horizon."
+        },
+        {
+          "name": "never-gates",
+          "text": "The skill builds the demand test the PM asked for; it does not refuse, stall, or demand approval before proceeding."
+        },
+        {
+          "name": "cheaper-route-named",
+          "text": "The response names at least one cheaper alternative: the budgeted feasibility spike, a Days-class instrument (fake door, waitlist with a cost), or going straight to the viability brief with what exists."
+        },
+        {
+          "name": "mandate-cost-shows-horizon-fit",
+          "text": "The Mandate cost line and/or the Sample and stopping rule state explicitly whether the test's duration fits inside the horizon, and by how many days it misses if not."
+        },
+        {
+          "name": "ledger-updated",
+          "text": "The header's Mandate line shows 5/5 interviews used and reflects the demand test as beyond the declared budget."
+        },
+        {
+          "name": "viability-brief-is-next",
+          "text": "The closing names the viability brief as the next artifact."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "no-mandate-is-legitimate-and-nothing-is-invented",
+      "prompt": "I think our onboarding emails are landing in spam for a lot of new customers but I have no data and this isn't on any planning list. Build me an interview guide.",
+      "files": [],
+      "expected_output": "Path C, no mandate. The skill asks once whether there is evidence and once whether this is under an Exploration Decision; on 'no' to both it proceeds without treating either as a failure. It interviews the PM briefly for their observations and captures them as assumptions. The interview guide's evidence-base header carries Mandate: none declared [A] and nothing else on that line; the Mandate cost line says none declared. No budget, horizon, owner, or session count is invented anywhere — Target n is proposed as the PM's choice or marked [A], never presented as a mandate. The Path C note about artifacts 1 and 2 carrying weight appears once. Closing: what it retires, the prompted save, and the next artifact.",
+      "assertions": [
+        {
+          "name": "mandate-none-declared",
+          "text": "The evidence-base header's Mandate line reads 'none declared [A]' (or equivalent wording) and carries no budget, horizon, or owner."
+        },
+        {
+          "name": "no-invented-budget",
+          "text": "No budget, horizon date, owner, or decision ref appears anywhere in the artifact or the conversation that the PM did not supply."
+        },
+        {
+          "name": "no-lecture",
+          "text": "The absence of a mandate is stated neutrally once; the PM is not told they should have gone through planning first."
+        },
+        {
+          "name": "assumptions-marked",
+          "text": "The PM's beliefs (spam placement, share of customers affected) are captured as [A] and the guide is built to test them."
+        },
+        {
+          "name": "path-c-note-once",
+          "text": "The Path C note that artifacts 1 and 2 are how to get something that carries weight appears once, without lecturing."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "viability-brief-reconciles-the-mandate-and-closes-the-loop",
+      "prompt": "Here's everything we ran on the ticket-search assistant. Build the viability brief and help me make the call.",
+      "files": [
+        "files/validation-work-completed-ticket-search.md"
+      ],
+      "expected_output": "The viability brief leads with a Validation Decision (a go or a revise is defensible on this evidence; the brief's job is to state one with its confidence and the risk being accepted). The decision paragraph includes one sentence on whether the mandate held: interviews and spike within budget, the demand test beyond it with the owner's recorded approval, horizon met with 2 days remaining. The evidence-base header carries the Mandate line with the full ledger. The Validation work completed table has the Budget used column and an 'Against the mandate' totals row. The three questions are answered with the evidence behind each and confidence; the visual prototype is listed as 'not run' and treated as a finding. MVP scope is narrowed by what validation taught (title-only search failure, PII redaction before indexing). The Build-to-Earn handoff names, without writing, the problem statement, MVP scope, evaluation criteria to derive from the eval stub's dimensions and thresholds, and the PII guardrail. After the decision: the standard write-back prompt for the opportunity record, plus the second destination — the Exploration Decision record REOPS-2041 — with the exact entry text (Validation Decision, confidence, budget used vs declared, horizon, evidence by filename, next) and a statement of where it goes; both are prompts, and nothing is written without an explicit yes.",
+      "assertions": [
+        {
+          "name": "decision-leads",
+          "text": "The first line of the brief carries a single Validation Decision (GO, NO-GO, or REVISE) with a stated confidence."
+        },
+        {
+          "name": "mandate-reconciled-in-decision",
+          "text": "The decision paragraph states whether the mandate held, naming the demand test as beyond the declared budget and the owner's recorded approval for it."
+        },
+        {
+          "name": "budget-column-and-totals-row",
+          "text": "The Validation work completed table includes a Budget used column and a totals row against the declared budget (5/5 interviews, 1/1 spike, demand test outside budget) and the horizon (met, 2 days remaining)."
+        },
+        {
+          "name": "not-run-is-a-finding",
+          "text": "The visual prototype is listed as not run and this is treated as visible information, not omitted."
+        },
+        {
+          "name": "handoff-names-not-writes",
+          "text": "The Build-to-Earn handoff names the problem statement, MVP scope, evaluation criteria source, and the PII guardrail requirement without writing Gherkin, NFRs, or an evaluation schema."
+        },
+        {
+          "name": "loop-closed-to-decision-record",
+          "text": "After the decision, the brief offers a write-back to the Exploration Decision record REOPS-2041 as a second destination, with the exact entry text (Validation Decision, confidence, budget used vs declared, horizon, evidence by filename, next) and the door or destination it goes to."
+        },
+        {
+          "name": "two-prompts-no-writes",
+          "text": "Both write-backs (opportunity record and decision record) are offered as prompts; nothing is written without an explicit yes."
+        },
+        {
+          "name": "no-invented-evidence",
+          "text": "No figures, quotes, or results appear that are not in the provided material."
+        }
+      ]
+    }
+  ]
+}

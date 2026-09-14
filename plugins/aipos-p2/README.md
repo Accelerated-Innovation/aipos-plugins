@@ -25,6 +25,16 @@ differently depending on the result. Every claim is provenance-marked: `[E]` evi
 `[I]` inferred, `[A]` assumption. The skill never invents evidence, personas, metrics, or
 quotes; a missing number becomes a marked assumption, never a plausible-looking figure.
 
+When validation runs under an **Exploration Decision** from Pillar 1 (`aipos-p1`), the skill
+reads it as the *exploration mandate* — owner, budget, horizon — and carries it in every
+artifact's header as a running ledger. Each artifact states its cost in the mandate's own
+units; when the budget is spent or the horizon has passed, the default next step is the
+viability brief. The skill reports against the mandate and never gates on it: the owner holds
+the line. The viability brief reconciles the work done against the budget and, on an explicit
+yes, closes the loop by recording the Validation Decision against the Exploration Decision so
+the next planning session sees what it funded. No mandate is legitimate — most hunches have
+none — and the skill says `none declared` rather than inventing one.
+
 What it does **not** do: it is Build-to-**Learn**, deliberately ungoverned relative to
 delivery. It emits no Gherkin, no NFRs, no evaluation schemas, no build-ready specifications —
 those are born *at* the Validation Decision, in Build-to-Earn territory (see the companion
@@ -40,6 +50,7 @@ without a previewed, explicit yes.
 - "It's a GenAI feature and 'good' is fuzzy — what would prove it works?"
 - "We've done the discovery work — should we kill this or build it?"
 - "Prep me for user interviews"
+- "We've spent the exploration budget" / "the horizon is up — what do we know?"
 
 **When not to use it:** once the Validation Decision is *go* and you need acceptance
 criteria, NFRs, or a readiness gate — that is `govkit`, not this plugin.
@@ -114,14 +125,18 @@ artifact — validation is a sequence, not a menu visit.
   in your working directory.
 - A demand test without a sized problem produces a number nobody can interpret; the skill
   will build what you ask for, but it says once what's missing and why it weakens the result.
+- **It reports against an exploration mandate; it never enforces one.** Over budget or past
+  the horizon, it says so once, names the cheaper route, and builds what you asked for.
+  Enforcement lives with the decision owner and Pillar 1's governed doors.
 
 ## Components
 
 | Kind | Name | What it does |
 |---|---|---|
 | Skill | `val-rapid-validation` | The menu, routing, behaviour rules, and the four-step loop (pick → intake → build → close) |
-| Reference | `evidence-intake.md` | Three intake paths (Aha! record, pasted material, nothing) and provenance marking |
-| Reference | `record-writeback.md` | The prompted, explicit-yes save-to-record protocol |
+| Reference | `evidence-intake.md` | Three intake paths (Aha! record, pasted material, nothing), the exploration mandate read alongside them, the evidence-base header with its mandate ledger, and provenance marking |
+| Reference | `record-writeback.md` | The prompted, explicit-yes save-to-record protocol, including the decision record as the viability brief's second destination |
+| Evals | `evals/evals.json` | Four model-graded cases: mandate declared, budget exhausted, no mandate, viability brief reconciles and closes the loop |
 | References | `interview-guide.md` … `viability-brief.md` | One per artifact: interview steps, output template, quality bar |
 
 ## Version history
@@ -129,3 +144,4 @@ artifact — validation is a sequence, not a menu visit.
 | Version | Change |
 |---|---|
 | 0.1.0 | Initial release: seven validation artifacts and the Validation Decision workflow. |
+| 0.2.0 | Exploration mandate intake: reads the Pillar 1 Exploration Decision (owner, budget, horizon), carries it as a ledger in every artifact header, states each artifact's cost, routes to the viability brief on exhaustion, reconciles in the brief, and offers the write-back that closes the loop to the decision record. Reports, never gates. First eval cases. |

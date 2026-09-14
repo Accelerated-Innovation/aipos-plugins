@@ -1,7 +1,7 @@
 {
   "name": "aipos-p2",
   "description": "AIPOS Pillar 2 (Rapid Validation) skills: test the riskiest assumptions before committing engineering capacity — interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the go / no-go / revise Validation Decision.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Accelerated Innovation"
   },
@@ -17,6 +17,7 @@
     "demand-test",
     "feasibility",
     "viability",
-    "product-management"
+    "product-management",
+    "exploration-decision"
   ]
 }

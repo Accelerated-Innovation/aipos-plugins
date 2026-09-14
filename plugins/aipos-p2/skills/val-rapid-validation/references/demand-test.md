@@ -50,7 +50,8 @@ audience. Say this to the PM once; most already know, and the ones who don't nee
 # Demand test — <capability>
 
 ## Evidence base
-<the four-line header from evidence-intake.md>
+<the evidence-base header from evidence-intake.md>
+**Mandate cost:** <the instrument's duration against the horizon — a Weeks-class instrument inside a two-week horizon does not fit; say so and name the Days-class alternative | none declared>
 
 ## Hypothesis
 If <audience> is offered <capability, in their language>, at least <rate> will <action>.
@@ -75,7 +76,8 @@ the highest-cost signal we can actually run>.
 ## Sample and stopping rule
 - **Exposure needed:** <n> — because at the baseline rate, fewer than this can't
   distinguish <strong> from <weak>.
-- **Duration:** <window>, covering <at least one full weekly cycle>.
+- **Duration:** <window>, covering <at least one full weekly cycle>. Inside the horizon:
+  <yes | no, by <n> days>.
 - **Stop when:** <n reached, or the window closes> — whichever comes first.
 - **Do not stop early on a good result.** Early stopping on a favourable number is the
   most common way these tests lie.
