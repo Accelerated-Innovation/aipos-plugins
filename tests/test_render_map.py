@@ -71,3 +71,39 @@ def test_a_plain_feature_still_renders_its_steps(render_map, ingested):
     assert "2 scenarios" in text
     # No example count is shown when it would just repeat the scenario count.
     assert "2 examples" not in text
+
+
+FILE_A = """Feature: Part A
+  Background:
+    Given the setup for part A
+  Rule: Rule A
+    Scenario: Scenario A
+      When A happens
+      Then A worked
+"""
+
+FILE_B = """Feature: Part B
+  Background:
+    Given the setup for part B
+  Rule: Rule B
+    Scenario: Scenario B
+      When B happens
+      Then B worked
+"""
+
+
+def test_each_file_background_precedes_its_own_rules(render_map, repo_ingest, tmp_path):
+    """Two .feature files in one package each have their own Background. The card must
+    show each one ahead of that file's rules, not the first one above everything."""
+    d = tmp_path / "split_pkg"
+    d.mkdir()
+    (d / "a.feature").write_text(FILE_A)
+    (d / "b.feature").write_text(FILE_B)
+    feat = repo_ingest.ingest_dir(str(d), "dir", "")
+    assert len(feat["backgrounds"]) == 2
+    text = " ".join(strip_tags(html(render_map, [feat])).split())
+    order = [text.index(s) for s in
+             ("setup for part A", "Scenario A", "setup for part B", "Scenario B")]
+    assert order == sorted(order), text
+    assert "Feature background · a.feature" in text
+    assert "Feature background · b.feature" in text

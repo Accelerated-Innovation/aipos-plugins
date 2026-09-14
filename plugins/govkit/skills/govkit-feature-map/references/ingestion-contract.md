@@ -73,13 +73,14 @@ Every adapter normalizes into the same `features.json`: a JSON array of feature 
              "docString": {"content": "…", "mediaType": ""}}
           ],
           "examples": [             // [] for a plain scenario
-            {"name": "Around the threshold", "tags": [], "line": 24,
+            {"name": "Around the threshold", "tags": ["@boundary"], "line": 24,
+             "effectiveTags": ["@feature", "@mvp", "@small", "@boundary"],
              "header": ["amount", "status"],
              "rows": [["$9,999.99", "Approved"], ["$10,000.00", "Pending"]]}
           ],
           "exampleCount": 2,        // executable examples this scenario expands to
           "tags": ["@mvp", "@small"],          // the scenario's OWN tags, verbatim
-          "inheritedTags": ["@feature"],       // from the Feature and the Rule
+          "inheritedTags": ["@feature"],       // from the Rule, then the Feature
           "effectiveTags": ["@feature", "@mvp", "@small"]
         }
       ]
@@ -119,10 +120,10 @@ Every field except `key` and `title` is optional. Missing fields degrade the car
 | Field | Contents |
 |---|---|
 | `tags` | The scenario's own tag line, verbatim. The pre-existing contract; unchanged. |
-| `inheritedTags` | Tags from the `Feature:` and the `Rule:`, in that order. |
-| `effectiveTags` | Inherited then own, de-duplicated — what a `--tags` run would match. |
+| `inheritedTags` | Tags from the `Rule:` and then the `Feature:` — most specific first. |
+| `effectiveTags` | Inherited then own, de-duplicated — what a `--tags` run would match for the scenario as a whole. Tags on an `Examples:` block apply only to that block's rows, so they are **not** folded in here; each block carries its own `examples[].effectiveTags` (the scenario's effective tags plus the block's own). |
 
-Slice resolution reads **most specific first**: the scenario's own delivery tag, then an inherited one. A `@v1` on the `Feature:` is a default for the file; a scenario tagged `@mvp` has overridden that default deliberately. Records that predate `effectiveTags` and carry only `tags` keep resolving exactly as before.
+Slice resolution reads **most specific first**: the scenario's own delivery tag, then the `Rule:`'s, then the `Feature:`'s. A `@v1` on the `Feature:` is a default for the file; a `@mvp` on a `Rule:` narrows that default for its scenarios; a scenario tagged `@mvp` has overridden both deliberately. `inheritedTags` is ordered so that a consumer walking it front to back gets this precedence for free. Records that predate `effectiveTags` and carry only `tags` keep resolving exactly as before.
 
 **Identifiers.** `rules[].id` and `rules[].scenarios[].id` are the stable identity used to link rules, scenarios, NFRs, evaluations and evidence. They come from an `@rule:<slug>` / `@scenario:<slug>` tag when the author wrote one (`idSource: "tag"`), and are otherwise slugified from the name (`idSource: "derived"`). See `../../../references/spec-identifiers.md`.
 

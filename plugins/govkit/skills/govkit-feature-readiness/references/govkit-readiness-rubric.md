@@ -359,7 +359,7 @@ Review checks:
 - Is the Development Token decision recorded?
 - Is `readiness_report.md` generated or ready to generate?
 - Does the scenario verification plan cover every scenario, naming the behavior and the rule each one verifies?
-- Are rules, scenarios, NFRs, evaluations and evidence connected by stable identifiers (`@rule:` / `@scenario:`) rather than by quoted wording that the next rewrite will break?
+- Are rules, scenarios, NFRs, evaluations and evidence connected by stable identifiers (`@rule:` / `@scenario:`) rather than by quoted wording that the next rewrite will break? A package without authored tags is keyed by derived ids and is not blocked for it; recommend the tags as an improvement.
 - Are blockers separated from improvements?
 - Are deferred items recorded?
 - Is the next GovKit command or agent task clear?
@@ -440,14 +440,14 @@ Approved | Not approved
 ## Scenario readiness
 | Scenario | ID | Status | Issue |
 |---|---|---|---|
-| <name> | @scenario:<slug> | Ready | None |
+| <name> | @scenario:<slug>, or <slug> (derived) | Ready | None |
 
 ## Scenario verification plan
 <!-- One row per scenario. This is the handoff an implementer or coding agent works from.
      "To be established" is a legitimate value and far better than a confident blank. -->
 | Scenario | Verifies (behavior · rule) | Boundary | Existing tests / step definitions | Proposed additions | Fixtures · time · isolation · dependencies | Command | Expected evidence | To establish |
 |---|---|---|---|---|---|---|---|---|
-| @scenario:<slug> | <behavior> · @rule:<slug> | domain \| service \| API \| UI \| evaluation \| manual (justified) | <path::name, or None found> | <new step defs / test files> | <fixture, frozen clock, isolation, stub or contract test> | `<known command, or —>` | <artifact that lands in the PR> | <what is not yet known> |
+| @scenario:<slug>, or <slug> (derived) | <behavior> · @rule:<slug>, or <slug> (derived) | domain \| service \| API \| UI \| evaluation \| manual (justified) | <path::name, or None found> | <new step defs / test files> | <fixture, frozen clock, isolation, stub or contract test> | `<known command, or —>` | <artifact that lands in the PR> | <what is not yet known> |
 
 ## NFR readiness
 | Area | Status | Threshold | Evidence |

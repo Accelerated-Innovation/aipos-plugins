@@ -156,7 +156,7 @@ Batch mode (below) **never** writes a token record — batch verdicts are adviso
 
 Produce the readiness report defined in `references/govkit-readiness-rubric.md`. In short, it includes: work item, advisory score, decision, Development Token, critical blockers, required edits, spec package status, scenario readiness, the **scenario verification plan** (one row per scenario — behavior and rule verified, boundary, existing and proposed tests, fixtures and isolation, command, expected evidence, what is still to be established), NFR and evaluation readiness tables, repo fit, AI coding agent instructions, "do not assume" list, deferred items, and the next GovKit step.
 
-Key rules and scenarios by their `@rule:` / `@scenario:` identifiers throughout, so the report keeps pointing at the same things after the next rewording.
+Key rules and scenarios by their identifiers throughout, so the report keeps pointing at the same things after the next rewording. Use the authored `@rule:<slug>` / `@scenario:<slug>` where the package has one. Where it does not — identifiers are optional, per `../../references/spec-identifiers.md` — use the derived id `repo_ingest.py` records (`idSource: "derived"`, slugified from the name) and mark it `(derived)`, so the reader knows it is only as stable as the wording. Never write a tag the feature file does not contain, and never make adding identifiers a blocker.
 
 ## Batch mode (non-interactive corpus validation)
 

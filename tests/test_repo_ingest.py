@@ -105,10 +105,70 @@ def test_scenario_own_tags_are_unchanged(ingested):
 def test_feature_and_rule_tags_are_inherited_into_effective_tags(ingested):
     sc = by_name(ingested["inv_full"], "Manager rejects a high-value invoice with a reason")
     assert sc["tags"] == ["@scenario:manager-rejects-with-reason"]
-    # @feature and @v1 from the Feature, @rule:... from the Rule.
-    assert sc["inheritedTags"] == ["@feature", "@v1", "@rule:invoice-approval-threshold"]
-    assert sc["effectiveTags"][:3] == ["@feature", "@v1", "@rule:invoice-approval-threshold"]
+    # @rule:... from the Rule first (most specific), then @feature and @v1 from the Feature.
+    assert sc["inheritedTags"] == ["@rule:invoice-approval-threshold", "@feature", "@v1"]
+    assert sc["effectiveTags"][:3] == ["@rule:invoice-approval-threshold", "@feature", "@v1"]
     assert "@scenario:manager-rejects-with-reason" in sc["effectiveTags"]
+
+
+RULE_OVERRIDES_FEATURE = """@v1
+Feature: Slice precedence
+
+  @mvp
+  Rule: The first rule ships early
+    Scenario: Inherits the rule's slice
+      Given a thing
+      When it happens
+      Then it worked
+
+  Rule: The second rule takes the file default
+    Scenario: Inherits the feature's slice
+      Given a thing
+      When it happens
+      Then it worked
+"""
+
+
+def test_a_rule_slice_beats_the_feature_default(repo_ingest, render_map):
+    """A slice on the Rule is more specific than one on the Feature, and both the
+    inherited order and slice resolution have to agree on that."""
+    _, _, rules, _ = repo_ingest.parse_feature_file(RULE_OVERRIDES_FEATURE, "f.feature")
+    early, default = rules[0]["scenarios"][0], rules[1]["scenarios"][0]
+    assert early["inheritedTags"][0] == "@mvp"
+    assert render_map.scen_slice(early) == "mvp"
+    assert render_map.scen_slice(default) == "v1"
+
+
+TAGGED_EXAMPLES = """@v1
+Feature: Examples carry their own tags
+
+  @functional
+  Scenario Outline: Amount decides the path
+    Given an invoice of <amount>
+    Then the status is <status>
+
+    @boundary
+    Examples: At the threshold
+      | amount     | status  |
+      | $10,000.00 | Pending |
+
+    @v2
+    Examples: Later cases
+      | amount     | status   |
+      | $1.00      | Approved |
+"""
+
+
+def test_examples_block_tags_get_their_own_effective_tags(repo_ingest):
+    """Tags on an Examples: block apply to that block's rows only. They must not leak
+    into the scenario's effectiveTags, and each block must report what a --tags run
+    would match for its rows."""
+    _, _, rules, _ = repo_ingest.parse_feature_file(TAGGED_EXAMPLES, "f.feature")
+    sc = rules[0]["scenarios"][0]
+    assert "@boundary" not in sc["effectiveTags"] and "@v2" not in sc["effectiveTags"]
+    boundary, later = sc["examples"]
+    assert boundary["effectiveTags"] == ["@v1", "@functional", "@boundary"]
+    assert later["effectiveTags"] == ["@v1", "@functional", "@v2"]
 
 
 def test_feature_tags_are_reported_on_the_feature(ingested):
@@ -225,3 +285,34 @@ def test_cli_exits_nonzero_and_names_the_source_location(corpus, tmp_path):
     assert "acceptance.feature:6:3" in proc.stderr
     # The corpus is still written so one bad spec cannot make the rest unmappable.
     assert json.loads(out.read_text())
+
+
+# ------------------------------------------------------------------ merge
+
+def test_merge_replaces_tracker_spec_when_the_repo_file_failed_to_parse(repo_ingest, ingested):
+    """A failed parse contributes no scenarios. The merged record must say so instead of
+    keeping the tracker's stale scenarios next to the parse diagnostic."""
+    repo = dict(ingested["broken_syntax"])
+    assert repo["parseErrors"] and repo["rules"] == []
+    tracker = [{
+        "key": repo["key"], "status": "In Delivery", "workstream": "Finance",
+        "rules": [{"rule": "Old rule", "scenarios": [{"name": "Stale scenario", "tags": []}]}],
+        "ruleCount": 1, "scenarioCount": 1, "exampleCount": 1,
+    }]
+    merged = repo_ingest.merge(tracker, [repo])[0]
+    assert merged["rules"] == [] and merged["scenarioCount"] == 0
+    assert merged["ruleCount"] == 0 and merged["exampleCount"] == 0
+    assert merged["parseErrors"] == repo["parseErrors"]
+    # The tracker still owns what the repo cannot know.
+    assert merged["status"] == "In Delivery" and merged["workstream"] == "Finance"
+    assert merged["source"] == "tracker+repo"
+
+
+def test_merge_still_keeps_tracker_scenarios_when_the_repo_has_no_feature_files(repo_ingest):
+    tracker = [{"key": "X-1", "rules": [{"rule": "r", "scenarios": [{"name": "s"}]}],
+                "scenarioCount": 1, "ruleCount": 1}]
+    repo = [{"key": "X-1", "rules": [], "ruleCount": 0, "scenarioCount": 0,
+             "parseErrors": [], "sourcePath": "features/x-1", "nfr": [{"id": "N1"}]}]
+    merged = repo_ingest.merge(tracker, repo)[0]
+    assert merged["scenarioCount"] == 1 and merged["rules"][0]["rule"] == "r"
+    assert merged["nfr"] == [{"id": "N1"}]

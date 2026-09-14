@@ -171,6 +171,11 @@ def _scenario(node, inherited, file_name):
     # reads. Inheritance is real Gherkin semantics, so it is preserved too -- in its own
     # field, and in `effectiveTags`, which is what a --tags filter would actually match.
     effective = list(inherited) + [t for t in own if t not in inherited]
+    # Tags on an Examples: block apply only to that block's rows, so they stay out of
+    # the scenario's effectiveTags (which would over-claim for the other rows) and get
+    # their own effective set instead -- what a --tags run matches for those rows.
+    for ex in examples:
+        ex["effectiveTags"] = effective + [t for t in ex["tags"] if t not in effective]
     return {
         "name": name,
         "id": sid,
@@ -255,7 +260,10 @@ def parse_feature_file(text, file_name="acceptance.feature"):
             rule = _new_rule(rn.get("name") or "", rtags,
                              (rn.get("location") or {}).get("line"), file_name,
                              (rn.get("description") or "").strip())
-            inherited = ftags + [t for t in rtags if t not in ftags]
+            # Most specific first: a Rule's tags before the Feature's, so a slice
+            # declared on the Rule beats the file-wide default when a consumer walks
+            # the inherited list in order (scen_slice, compute_size.slice_of).
+            inherited = rtags + [t for t in ftags if t not in rtags]
             for rc in rn.get("children") or []:
                 if "background" in rc:
                     rule["background"] = _background(rc["background"], file_name)
@@ -561,6 +569,14 @@ MERGE_PREFER_REPO = ("rules", "ruleCount", "scenarioCount", "exampleCount",
                      "featureTags", "background", "backgrounds", "language",
                      "parseErrors", "nfr", "nfrTbd", "evals")
 
+# The subset of MERGE_PREFER_REPO that *is* the Gherkin spec. When the repo package had
+# .feature files, these replace the tracker's copy even when they are empty: a file that
+# failed to parse contributes no scenarios, and the card must say so rather than keep
+# showing the tracker's stale ones beside the parse diagnostic.
+MERGE_SPEC_KEYS = ("rules", "ruleCount", "scenarioCount", "exampleCount",
+                   "featureTags", "background", "backgrounds", "language",
+                   "parseErrors")
+
 
 def merge(tracker, repo):
     """Overlay repo specs onto tracker records, keyed by feature key.
@@ -577,9 +593,10 @@ def merge(tracker, repo):
         if t is None:
             by_key[r["key"]] = r
             continue
+        had_feature_files = bool(r.get("rules") or r.get("parseErrors"))
         for k in MERGE_PREFER_REPO:
-            if r.get(k):
-                t[k] = r[k]
+            if r.get(k) or (had_feature_files and k in MERGE_SPEC_KEYS):
+                t[k] = r.get(k)
         for k, v in r.items():
             if k in MERGE_PREFER_REPO or k == "key":
                 continue

@@ -431,8 +431,23 @@ def card(f, scores, sizing, central):
     chips += "".join(f'<span class="chip out" data-art="{e(a)}">{e(a)} &#8594;</span>'
                      for a in f.get("produces") or [])
 
-    rules = bg_block(f.get("background"), "Feature background")
+    # One .feature file has one Feature background, and a package may hold several
+    # files. Render each file's background ahead of that file's rules, so a later file's
+    # scenarios never sit under the first file's unrelated setup. A single-file package
+    # renders exactly as before.
+    bgs = [b for b in (f.get("backgrounds") or [f.get("background")]) if b]
+    by_file = {}
+    for b in bgs:
+        by_file.setdefault(b.get("file") or "", b)
+    multi = len(bgs) > 1
+    rules = "" if multi else bg_block(bgs[0] if bgs else None, "Feature background")
+    shown = set()
     for r in f.get("rules") or []:
+        if multi:
+            fn = r.get("file") or ""
+            if fn not in shown:
+                shown.add(fn)
+                rules += bg_block(by_file.get(fn), f"Feature background \u00b7 {fn}")
         scs = ""
         for sc in r.get("scenarios") or []:
             sl = scen_slice(sc)
@@ -452,6 +467,12 @@ def card(f, scores, sizing, central):
                   f'<span class="ct">{len(r.get("scenarios") or [])}</span></summary>'
                   f'{bg_block(r.get("background"), "Rule background")}'
                   f'<ul class="scen">{scs}</ul></details>')
+    if multi:
+        # A background whose file produced no rules (or a record without file names)
+        # still belongs to the reader; show it up front rather than drop it.
+        for fn, b in by_file.items():
+            if fn not in shown:
+                rules = bg_block(b, f"Feature background \u00b7 {fn}") + rules
     if not (f.get("rules") or []):
         note = f.get("specNote") or ("No acceptance criteria in this record.")
         rules = f'<p class="none">{e(note)}</p>'
