@@ -22,6 +22,15 @@ A directory is treated as a feature when it contains at least one *.feature file
 feature_source.md. The artifact names are the ones govkit-feature-refine already
 declares in its Inputs section, so a repo laid out for refinement needs no changes.
 
+Gherkin is parsed with gherkin-official, the Cucumber team's own parser (MIT). Install it
+before running:
+
+    python -m pip install -r requirements.txt
+
+Exit codes: 0 fine, 1 nothing found, 2 the parser is not installed, 3 one or more
+.feature files failed to parse (features.json is still written; the failed files
+contribute no scenarios, and the diagnostics name file, line and column on stderr).
+
 Usage:
     python repo_ingest.py <root> [-o features.json] [--epic AI-123] [--key-from dir|feature]
     python repo_ingest.py <root> --merge tracker.json -o features.json
@@ -44,82 +53,234 @@ DIR_KEY_RE = re.compile(r"^([a-zA-Z]+)(\d+)[_-]")
 
 # ---------------------------------------------------------------- gherkin
 
-def parse_feature_file(text):
-    """Parse Gherkin into the contract's rules[] shape.
+def _load_parser():
+    """Import the official Cucumber Gherkin parser, or explain how to get it.
 
-    Scenarios are grouped under the Rule: they follow. Gherkin without explicit
-    Rule: blocks is still valid -- those scenarios land under a single unnamed rule,
-    which the rubric's "rule coverage" dimension will correctly mark as a gap rather
-    than silently inventing rules that the author never wrote.
+    Hand-rolled line scanning is what this replaced. It could not see Background
+    scoping, Examples tables, step data tables, doc strings or tag inheritance, and it
+    turned malformed Gherkin into a plausible-looking partial feature. A maintained
+    parser is the only way the ingested record can mean the same thing the .feature
+    file means.
     """
-    rules, cur_rule, cur_scen = [], None, None
-    title = description = ""
-    in_desc = False
-    pending_tags = []
+    try:
+        from gherkin.parser import Parser  # noqa: PLC0415
+        from gherkin.errors import CompositeParserException  # noqa: PLC0415
+    except ImportError:
+        sys.stderr.write(
+            "repo_ingest requires the official Gherkin parser (MIT, Cucumber team).\n"
+            "Install it with:\n"
+            "    python -m pip install -r "
+            + os.path.join(os.path.dirname(os.path.abspath(__file__)), "requirements.txt")
+            + "\n"
+            "or:  python -m pip install 'gherkin-official>=32,<40'\n"
+        )
+        raise SystemExit(2)
+    return Parser, CompositeParserException
 
-    def flush_scenario():
-        nonlocal cur_scen
-        if cur_scen and cur_scen["steps"]:
-            cur_rule["scenarios"].append(cur_scen)
-        cur_scen = None
 
-    def flush_rule():
-        nonlocal cur_rule
-        flush_scenario()
-        if cur_rule and cur_rule["scenarios"]:
-            rules.append(cur_rule)
-        cur_rule = None
+ID_TAG_PREFIXES = {"rule": "@rule:", "scenario": "@scenario:"}
+OUTLINE_KEYWORDS = ("Scenario Outline", "Scenario Template")
 
-    for raw in text.splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#"):
-            continue
 
-        if line.startswith("@"):
-            # Tag line; attaches to the next Scenario. Slice (@mvp/@v1/@v2) and
-            # size (@small/@medium/@large) tags are govkit-feature-slice's output.
-            in_desc = False
-            pending_tags.extend(t for t in line.split() if t.startswith("@"))
-            continue
+def slugify(name):
+    """Derive a stable-ish identifier from a name. Stable only while the name is --
+    which is the argument for authoring explicit @rule:/@scenario: tags. See
+    ../../../references/spec-identifiers.md."""
+    s = re.sub(r"[^A-Za-z0-9]+", "-", (name or "").strip()).strip("-").lower()
+    return s or "unnamed"
 
-        if line.startswith("Feature:"):
-            title = line[len("Feature:"):].strip()
-            in_desc = True
-            pending_tags = []  # feature-level tags are not scenario tags
-            continue
 
-        if line.startswith("Rule:"):
-            in_desc = False
-            flush_rule()
-            cur_rule = {"rule": line[len("Rule:"):].strip(), "scenarios": []}
-            pending_tags = []
-            continue
+def tag_names(nodes):
+    """Tag names verbatim, in source order, including the leading @."""
+    return [t["name"] for t in nodes or []]
 
-        if line.startswith(("Scenario Outline:", "Scenario:", "Example:")):
-            in_desc = False
-            flush_scenario()
-            if cur_rule is None:
-                cur_rule = {"rule": "", "scenarios": []}
-            name = line.split(":", 1)[1].strip()
-            cur_scen = {"name": name, "steps": [], "tags": pending_tags}
-            pending_tags = []
-            continue
 
-        if line.startswith(("Given ", "When ", "Then ", "And ", "But ")):
-            in_desc = False
-            if cur_scen is not None:
-                cur_scen["steps"].append(line)
-            continue
+def identity(kind, tags, name):
+    """(id, idSource) for a rule or scenario. An explicit @rule:/@scenario: tag is the
+    authored identity; otherwise the name is slugified and marked derived so a consumer
+    can tell the difference."""
+    prefix = ID_TAG_PREFIXES[kind]
+    for t in tags:
+        if t.lower().startswith(prefix):
+            slug = t[len(prefix):].strip()
+            if slug:
+                return slug, "tag"
+    return slugify(name), "derived"
 
-        if line.startswith(("Background:", "Examples:", "Scenarios:", "|", '"""')):
-            in_desc = False
-            continue
 
-        if in_desc:
-            description += (" " if description else "") + line
+def _table(rows):
+    """A Gherkin table as a list of rows of cell values."""
+    return [[c["value"] for c in r.get("cells") or []] for r in rows or []]
 
-    flush_rule()
-    return title, description, rules
+
+def _steps(step_nodes):
+    """Both step renderings: the flat strings downstream already reads, and the
+    structured detail (data tables, doc strings, source lines) it could not see."""
+    flat, detail = [], []
+    for st in step_nodes or []:
+        kw = st.get("keyword") or ""
+        text = st.get("text") or ""
+        flat.append((kw + text).strip())
+        d = {"keyword": kw.strip(), "text": text,
+             "line": (st.get("location") or {}).get("line")}
+        if st.get("dataTable"):
+            d["dataTable"] = _table(st["dataTable"].get("rows"))
+        if st.get("docString"):
+            ds = st["docString"]
+            d["docString"] = {"content": ds.get("content", ""),
+                              "mediaType": ds.get("mediaType") or ""}
+        detail.append(d)
+    return flat, detail
+
+
+def _background(node, file_name):
+    if not node:
+        return None
+    flat, detail = _steps(node.get("steps"))
+    return {"name": node.get("name") or "", "file": file_name,
+            "line": (node.get("location") or {}).get("line"),
+            "steps": flat, "stepDetails": detail}
+
+
+def _examples(nodes):
+    """Examples blocks, header and body preserved. The body row count is the number of
+    executable examples the outline expands to -- a different number from the one
+    authored scenario a person reviews, and both are worth keeping."""
+    out = []
+    for ex in nodes or []:
+        header = [c["value"] for c in (ex.get("tableHeader") or {}).get("cells") or []]
+        out.append({
+            "name": ex.get("name") or "",
+            "tags": tag_names(ex.get("tags")),
+            "line": (ex.get("location") or {}).get("line"),
+            "header": header,
+            "rows": _table(ex.get("tableBody")),
+        })
+    return out
+
+
+def _scenario(node, inherited, file_name):
+    own = tag_names(node.get("tags"))
+    keyword = (node.get("keyword") or "Scenario").strip()
+    examples = _examples(node.get("examples"))
+    is_outline = keyword in OUTLINE_KEYWORDS or bool(examples)
+    flat, detail = _steps(node.get("steps"))
+    name = node.get("name") or ""
+    sid, isrc = identity("scenario", own, name)
+    # `tags` stays the scenario's own tags: that is the field every existing consumer
+    # reads. Inheritance is real Gherkin semantics, so it is preserved too -- in its own
+    # field, and in `effectiveTags`, which is what a --tags filter would actually match.
+    effective = list(inherited) + [t for t in own if t not in inherited]
+    # Tags on an Examples: block apply only to that block's rows, so they stay out of
+    # the scenario's effectiveTags (which would over-claim for the other rows) and get
+    # their own effective set instead -- what a --tags run matches for those rows.
+    for ex in examples:
+        ex["effectiveTags"] = effective + [t for t in ex["tags"] if t not in effective]
+    return {
+        "name": name,
+        "id": sid,
+        "idSource": isrc,
+        "type": "scenario_outline" if is_outline else "scenario",
+        "keyword": keyword,
+        "file": file_name,
+        "line": (node.get("location") or {}).get("line"),
+        "tags": own,
+        "inheritedTags": list(inherited),
+        "effectiveTags": effective,
+        "steps": flat,
+        "stepDetails": detail,
+        "examples": examples,
+        "exampleCount": (sum(len(x["rows"]) for x in examples) if is_outline else 1),
+    }
+
+
+def _new_rule(name, tags, line, file_name, description=""):
+    rid, isrc = identity("rule", tags, name)
+    return {"rule": name, "id": rid, "idSource": isrc, "tags": tags,
+            "file": file_name, "line": line, "description": description,
+            "background": None, "scenarios": []}
+
+
+def parse_feature_file(text, file_name="acceptance.feature"):
+    """Parse one .feature file with the official Cucumber parser.
+
+    Returns (title, description, rules, meta). `meta` carries what the flat rules list
+    cannot: feature tags and description, the feature-level Background, the source
+    language, and any parse errors.
+
+    Scenarios are grouped under the Rule: they belong to. Scenarios written outside any
+    Rule: land under a single unnamed rule -- deliberate, so the rubric's rule-coverage
+    dimension marks the missing grouping instead of the adapter inventing rules the
+    author never wrote. A Rule: with no scenarios is kept, because a declared rule with
+    no example is exactly the coverage gap a reviewer needs to see.
+
+    On a syntax error nothing is returned from the failed file except the diagnostics.
+    A partial feature that looks complete is worse than an empty one that says why.
+    """
+    Parser, CompositeParserException = _load_parser()
+    meta = {"featureTags": [], "featureDescription": "", "featureLine": None,
+            "language": "", "background": None, "errors": []}
+    try:
+        doc = Parser().parse(text)
+    except CompositeParserException as exc:
+        for err in exc.errors:
+            loc = getattr(err, "location", None) or {}
+            meta["errors"].append({
+                "file": file_name,
+                "line": loc.get("line"),
+                "column": loc.get("column"),
+                "message": str(err).strip(),
+            })
+        return "", "", [], meta
+    except Exception as exc:  # noqa: BLE001 - any parser failure is a diagnostic
+        meta["errors"].append({"file": file_name, "line": None, "column": None,
+                               "message": f"{type(exc).__name__}: {exc}"})
+        return "", "", [], meta
+
+    feature = (doc or {}).get("feature")
+    if not feature:
+        meta["errors"].append({"file": file_name, "line": None, "column": None,
+                               "message": "no Feature: found in this file"})
+        return "", "", [], meta
+
+    ftags = tag_names(feature.get("tags"))
+    meta["featureTags"] = ftags
+    meta["featureLine"] = (feature.get("location") or {}).get("line")
+    meta["language"] = feature.get("language") or ""
+    description = (feature.get("description") or "").strip()
+    meta["featureDescription"] = description
+
+    rules, ungrouped = [], None
+    for child in feature.get("children") or []:
+        if "background" in child:
+            meta["background"] = _background(child["background"], file_name)
+        elif "rule" in child:
+            rn = child["rule"]
+            rtags = tag_names(rn.get("tags"))
+            rule = _new_rule(rn.get("name") or "", rtags,
+                             (rn.get("location") or {}).get("line"), file_name,
+                             (rn.get("description") or "").strip())
+            # Most specific first: a Rule's tags before the Feature's, so a slice
+            # declared on the Rule beats the file-wide default when a consumer walks
+            # the inherited list in order (scen_slice, compute_size.slice_of).
+            inherited = rtags + [t for t in ftags if t not in rtags]
+            for rc in rn.get("children") or []:
+                if "background" in rc:
+                    rule["background"] = _background(rc["background"], file_name)
+                elif "scenario" in rc:
+                    rule["scenarios"].append(
+                        _scenario(rc["scenario"], inherited, file_name))
+            rules.append(rule)
+        elif "scenario" in child:
+            if ungrouped is None:
+                ungrouped = _new_rule("", [], None, file_name)
+                rules.append(ungrouped)
+            ungrouped["scenarios"].append(_scenario(child["scenario"], ftags, file_name))
+
+    # A single squashed description line, for the card lede. Kept for compatibility with
+    # the previous parser, which folded the feature description into one string.
+    desc_line = " ".join(x.strip() for x in description.splitlines() if x.strip())
+    return feature.get("name") or "", desc_line, rules, meta
 
 
 # ---------------------------------------------------------------- nfrs
@@ -314,13 +475,23 @@ def ingest_dir(d, mode, epic):
         return None
 
     title, desc, rules = "", "", []
+    feature_tags, backgrounds, parse_errors = [], [], []
+    language = ""
     for f in fpaths:
-        t, dsc, r = parse_feature_file(
-            open(os.path.join(d, f), encoding="utf-8", errors="replace").read()
+        t, dsc, r, fmeta = parse_feature_file(
+            open(os.path.join(d, f), encoding="utf-8", errors="replace").read(),
+            file_name=f,
         )
         title = title or t
         desc = desc or dsc
         rules.extend(r)
+        parse_errors.extend(fmeta["errors"])
+        language = language or fmeta["language"]
+        for tg in fmeta["featureTags"]:
+            if tg not in feature_tags:
+                feature_tags.append(tg)
+        if fmeta["background"]:
+            backgrounds.append(fmeta["background"])
 
     name = os.path.basename(d.rstrip("/"))
     meta = parse_source(src) if src else {
@@ -347,7 +518,17 @@ def ingest_dir(d, mode, epic):
         "outOfScope": meta["outOfScope"],
         "rules": rules,
         "ruleCount": len(rules),
+        # scenarioCount is the authored count -- one Scenario Outline is one scenario a
+        # person reviews. exampleCount is what a runner executes, expanding each outline
+        # over its Examples rows. Conflating the two flatters or penalises outlines.
         "scenarioCount": sum(len(r["scenarios"]) for r in rules),
+        "exampleCount": sum(sc.get("exampleCount", 1)
+                            for r in rules for sc in r["scenarios"]),
+        "featureTags": feature_tags,
+        "language": language,
+        "background": backgrounds[0] if backgrounds else None,
+        "backgrounds": backgrounds,
+        "parseErrors": parse_errors,
         "nfr": nfr,
         "nfrTbd": [n for n in nfr if "TBD" in (n.get("threshold") or "").upper()
                    or not (n.get("threshold") or "").strip()],
@@ -356,6 +537,18 @@ def ingest_dir(d, mode, epic):
         "dod": meta["dod"],
         "privacy": meta["privacy"],
     }
+    if parse_errors:
+        # A file that did not parse contributes no rules at all. Say so on the card
+        # rather than letting a partial parse read as a thin spec -- the two need very
+        # different responses, and only one of them is the author's fault.
+        where = "; ".join(
+            "{}:{}{}".format(x["file"], x["line"] or "?",
+                             ":" + str(x["column"]) if x.get("column") else "")
+            for x in parse_errors[:3])
+        feat["specNote"] = (
+            "Gherkin did not parse; no scenarios were ingested from the failed file(s). "
+            "Fix the syntax at " + where +
+            ("" if len(parse_errors) <= 3 else " (+%d more)" % (len(parse_errors) - 3)))
     return feat
 
 
@@ -372,7 +565,17 @@ def walk(root, mode, epic):
 
 # ---------------------------------------------------------------- merge
 
-MERGE_PREFER_REPO = ("rules", "ruleCount", "scenarioCount", "nfr", "nfrTbd", "evals")
+MERGE_PREFER_REPO = ("rules", "ruleCount", "scenarioCount", "exampleCount",
+                     "featureTags", "background", "backgrounds", "language",
+                     "parseErrors", "nfr", "nfrTbd", "evals")
+
+# The subset of MERGE_PREFER_REPO that *is* the Gherkin spec. When the repo package had
+# .feature files, these replace the tracker's copy even when they are empty: a file that
+# failed to parse contributes no scenarios, and the card must say so rather than keep
+# showing the tracker's stale ones beside the parse diagnostic.
+MERGE_SPEC_KEYS = ("rules", "ruleCount", "scenarioCount", "exampleCount",
+                   "featureTags", "background", "backgrounds", "language",
+                   "parseErrors")
 
 
 def merge(tracker, repo):
@@ -390,9 +593,10 @@ def merge(tracker, repo):
         if t is None:
             by_key[r["key"]] = r
             continue
+        had_feature_files = bool(r.get("rules") or r.get("parseErrors"))
         for k in MERGE_PREFER_REPO:
-            if r.get(k):
-                t[k] = r[k]
+            if r.get(k) or (had_feature_files and k in MERGE_SPEC_KEYS):
+                t[k] = r.get(k)
         for k, v in r.items():
             if k in MERGE_PREFER_REPO or k == "key":
                 continue
@@ -429,9 +633,26 @@ def main():
     print(f"{len(feats)} feature(s) -> {a.out}")
     for f in feats:
         flag = "" if f.get("ruleCount") else "   <- no Gherkin parsed"
+        if f.get("parseErrors"):
+            flag = f"   <- {len(f['parseErrors'])} parse error(s)"
         print(f"  {f['key']:<12} {f.get('ruleCount', 0):>2} rules  "
-              f"{f.get('scenarioCount', 0):>3} scenarios  {len(f.get('nfr') or []):>2} nfr  "
+              f"{f.get('scenarioCount', 0):>3} scenarios  "
+              f"{f.get('exampleCount', 0):>3} examples  {len(f.get('nfr') or []):>2} nfr  "
               f"{len(f.get('evals') or []):>2} evals  [{f.get('source', 'tracker')}]{flag}")
+
+    # Diagnostics go to stderr with file:line:column so an editor or CI annotation can
+    # jump straight to them. The output file is still written -- a corpus should not be
+    # unmappable because one spec is malformed -- but the exit code says something is
+    # wrong, so a pipeline can decide rather than silently rendering a hole.
+    bad = [(f, e) for f in feats for e in f.get("parseErrors") or []]
+    if bad:
+        sys.stderr.write(f"\n{len(bad)} Gherkin parse error(s):\n")
+        for f, err in bad:
+            loc = f"{err['line'] or '?'}" + (f":{err['column']}" if err.get("column") else "")
+            path = os.path.join(f.get("sourcePath") or "", err.get("file") or "")
+            sys.stderr.write(f"  {path}:{loc}: {err['message']}\n")
+        sys.stderr.write("No scenarios were ingested from the failed file(s).\n")
+        return 3
     return 0
 
 

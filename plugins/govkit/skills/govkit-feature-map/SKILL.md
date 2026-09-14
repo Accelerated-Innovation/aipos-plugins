@@ -40,9 +40,19 @@ Pick the adapter that matches the source. `references/ingestion-contract.md` has
 | Repo directory | `scripts/repo_ingest.py <root>` — walks nested epic/feature folders |
 | Tracker + repo | `scripts/repo_ingest.py <root> --merge tracker.json` |
 
+The repo adapter needs the official Cucumber Gherkin parser (MIT), pinned in `scripts/requirements.txt`:
+
+```bash
+python -m pip install -r scripts/requirements.txt
+```
+
+It parses rather than pattern-matches, so `Background` scoping, `Scenario Outline` and its `Examples`, step data tables, doc strings, tag inheritance and source locations all survive into `features.json` — and invalid Gherkin produces file/line/column diagnostics instead of a partial feature that looks complete. `repo_ingest.py` exits 3 when any file failed to parse; the output is still written, so a corpus stays mappable, but a pipeline can act on the code.
+
 That last row matters more than it looks. Teams that keep Gherkin under version control rather than pasting it into a tracker have made a defensible call — two copies of a spec drift. But it leaves the tracker record thin, and a map built from the tracker alone will score that feature near zero and badge the most disciplined team in the portfolio as the worst. Merging the repo spec onto the tracker record fixes that: the tracker keeps status, ownership, phase and the artifact chain, and the repo supplies the spec.
 
-Always show the user what was ingested — counts of rules, scenarios, NFRs and evals per feature — before scoring. A feature that ingested zero rules is either genuinely empty or a parse failure, and those need different responses.
+Always show the user what was ingested — counts of rules, scenarios, examples, NFRs and evals per feature — before scoring. A feature that ingested zero rules is either genuinely empty or a parse failure, and those need different responses; `parseErrors` tells you which, and the card says so too.
+
+Scenario and example counts are different numbers on purpose: `scenarioCount` is what a person reviews (one `Scenario Outline` is one scenario), `exampleCount` is what a runner executes (that outline expanded over its rows). Report whichever the question calls for, and never present one as the other.
 
 ### 3. Derive the chain
 
@@ -133,7 +143,10 @@ Lead with the cluster, name the two or three features where it bites hardest, an
 
 | Path | Use |
 |---|---|
-| `references/ingestion-contract.md` | The `features.json` schema and per-adapter field mapping. Read before ingesting. |
+| `references/ingestion-contract.md` | The `features.json` schema, per-adapter field mapping, Gherkin fidelity and parse-failure handling. Read before ingesting. |
+| `../../references/gherkin-authoring-standard.md` | The shared Gherkin authoring standard the corpus is judged against. |
+| `../../references/spec-identifiers.md` | The `@rule:` / `@scenario:` identifiers carried through `features.json`. |
+| `scripts/requirements.txt` | Pinned ingestion dependencies. Install before running `repo_ingest.py`. |
 | `references/scoring.md` | Fan-out pattern, rubric selection, and the subagent prompt. Read before scoring. |
 | `references/rendering.md` | `config.json` options, visual grammar, and the render verification script. |
 | `scripts/repo_ingest.py` | Walk a repo of feature specs; `--merge` overlays them onto a tracker export. |

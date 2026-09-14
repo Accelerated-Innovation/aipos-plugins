@@ -223,6 +223,7 @@ govkit-plugins/
 │   ├── govkit/
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json        # plugin manifest
+│   │   ├── references/            # shared across skills (Gherkin standard, identifiers)
 │   │   └── skills/
 │   │       ├── govkit-feature-refine/
 │   │       │   ├── SKILL.md
@@ -238,9 +239,16 @@ govkit-plugins/
 │               └── references/     # per-artifact templates and quality bars
 ├── templates/
 │   └── skill-template/SKILL.md     # starting point for new skills (does not auto-load)
+├── tests/                          # deterministic checks for the bundled skill scripts
+├── requirements-dev.txt
 ├── LICENSE
 └── README.md
 ```
+
+Two references sit at the plugin level rather than inside one skill, because five skills depend on them and a second copy drifts:
+
+- [`plugins/govkit/references/gherkin-authoring-standard.md`](./plugins/govkit/references/gherkin-authoring-standard.md) — the shared Gherkin authoring standard: BRIEF, explicit `Rule:` blocks, boundary coverage, scenario isolation, the confirmed/proposed/unresolved registers, what makes a spec automatable without turning it into implementation instructions, and the line between a deterministic behavior check and an aggregate GenAI evaluation.
+- [`plugins/govkit/references/spec-identifiers.md`](./plugins/govkit/references/spec-identifiers.md) — `@rule:` / `@scenario:` identifiers that survive rewording, connecting rules, scenarios, NFRs, evaluations and evidence. Optional and additive; existing packages keep working.
 
 ## Adding another skill
 
@@ -253,7 +261,12 @@ Skills in a plugin's `skills/` directory load automatically — you don't need t
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add a skill, validate locally, and open a PR. Every pull request runs `claude plugin validate` in CI.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add a skill, validate locally, and open a PR. Every pull request runs `claude plugin validate` and a deterministic `pytest` suite in CI; both are offline and need no API key.
+
+```bash
+claude plugin validate .
+python -m pip install -r requirements-dev.txt && python -m pytest tests -q
+```
 
 ## License
 

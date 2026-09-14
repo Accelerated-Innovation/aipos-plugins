@@ -1,6 +1,8 @@
 # Gherkin Structure and Automatic Tagging
 
 > **Tool-agnostic.** These are standard Cucumber/Gherkin tags. A team can run `cucumber --tags @mvp` and execute exactly the MVP slice — that is the point, not a coincidence.
+>
+> **This file owns tags and the validation checks.** How to write the scenarios themselves — BRIEF, explicit rules, boundaries, scenario isolation, provenance, backgrounds, outlines, deterministic checks versus aggregate evaluations — lives once in `../../../references/gherkin-authoring-standard.md`. Read that first; this file does not restate it.
 
 ## Contents
 
@@ -25,19 +27,24 @@ Feature: <Feature Name>
   So that <outcome>
 
   Background:
-    Given <shared setup, only when genuinely shared>
+    Given <setup shared by EVERY scenario in the file>
 
+  @rule:<stable-slug>
   Rule: <One business rule, in the PM's own words>
 
-    @mvp @functional
+    Background:
+      Given <setup shared by this rule's scenarios only>
+
+    @mvp @functional @scenario:<stable-slug>
     Scenario: <Clear scenario title>
       Given <precondition>
       When <the single action under test>
       Then <observable outcome>
 
+  @rule:<stable-slug>
   Rule: <The next business rule>
 
-    @v1 @edge-case
+    @v1 @edge-case @scenario:<stable-slug>
     Scenario: <Clear scenario title>
       Given ...
 ```
@@ -46,7 +53,7 @@ Rules:
 
 - Always include the `Feature:` header and the persona intent block. The intent block is what makes the file readable six months later by someone who never attended the refinement.
 - **One `Rule:` block per business rule**, scenarios grouped beneath the rule they prove. The whole downstream organizes on rules: `govkit-feature-refine`'s rule-coverage dimension, Example Mapping's Rules cards, `eval_criteria.yaml`'s `rule_link`, the readiness gate's structure check, and the feature map's cards (which render "(no Rule declared)" for ungrouped scenarios). A scenario that proves no stated rule is a missing rule to surface, not an orphan to leave.
-- Use `Background:` **only** when setup is genuinely shared by every scenario in the file. A `Background` that applies to three of five scenarios is a bug: it silently changes the meaning of the other two.
+- Use a feature-level `Background:` **only** when setup is genuinely shared by every scenario in the file. A `Background` that applies to three of five scenarios is a bug: it silently changes the meaning of the other two. Where setup is shared by one rule's scenarios, put it in a `Background:` inside that `Rule:` — Gherkin scopes it there, and so does GovKit's ingestion.
 - Keep scenarios atomic — one behavior, one `When`.
 - No implementation detail. "When the user submits the form", not "When a POST is sent to `/api/claims`". The Gherkin outlives the endpoint.
 - Prefer several concise scenarios over one long one. A scenario with four `When` steps is usually three scenarios.
@@ -93,6 +100,19 @@ More than one is normal and expected: `@v1 @edge-case @security` is a well-tagge
 
 Preserve any tag this skill does not own — `@wip`, `@smoke`, team conventions — exactly as found.
 
+### Identity — recommended
+
+| Tag | On | Meaning |
+|---|---|---|
+| `@rule:<slug>` | a `Rule:` | Stable identity for the business decision |
+| `@scenario:<slug>` | a scenario or outline | Stable identity for the behavior |
+
+Outside the delivery and classification vocabularies, so they never affect slicing, sizing or filtering. They exist so `rule_link` in `eval_criteria.yaml`, NFR rows, readiness evidence and test names survive rewording. Optional and additive: a package without them still ingests, renders, scores and slices identically — ingestion derives a slug from the name and marks it `derived`. See `../../../references/spec-identifiers.md`.
+
+### Inheritance
+
+Tags inherit downward: a tag on `Feature:` applies to every scenario in the file, a tag on `Rule:` to that rule's scenarios. GovKit resolves a delivery slice **most specific first** — a scenario's own `@mvp` overrides an `@v1` declared on the Feature. Use a feature-level slice tag as a deliberate default for a file, never as a substitute for deciding per scenario where the phases actually differ.
+
 ## Automatic tag assignment
 
 **Derive tags. Do not ask the PM to pick them.**
@@ -118,18 +138,31 @@ When GenAI mode is active, the file must satisfy all of:
 
 Generate these without prompting the PM. They are the difference between a GenAI feature that can be gated and one that ships on vibes.
 
-An `@evaluation` scenario must assert a number, and the number must come from the PM or from inherited epic criteria — never from you:
+**Keep the two registers in separate scenarios.** A deterministic behavior check says what happens on one occasion; an aggregate evaluation says what a statistic does over a dataset. A scenario that asserts both is unfalsifiable, because a single run cannot decide it. This is the most common defect in GenAI Gherkin:
 
 ```gherkin
-  @mvp @genai @evaluation
-  Scenario: Summaries stay grounded in the source claim
+  @mvp @genai @functional @scenario:summary-cites-its-sources
+  Scenario: A generated summary cites the documents it drew on
     Given a claim file with 12 uploaded documents
     When the assistant generates a claim summary
-    Then every factual statement in the summary is traceable to a source document
-    And the groundedness score is at least 0.95 across the evaluation set
+    Then the summary is labelled "AI-generated summary"
+    And every factual statement in the summary carries a link to a source document
 ```
 
-If the PM has not given a threshold, write the scenario with the threshold marked as an open gap (`Then the groundedness score is at least <TBD — threshold needed>`) and list it in the summary as a gap. A `0.95` you invented will be treated as a commitment by everyone downstream.
+```gherkin
+  @mvp @genai @evaluation @scenario:groundedness-gate
+  Scenario: Summary groundedness clears the release gate
+    Given the claim-summary evaluation set of 300 reviewed claim files
+    When groundedness is scored with the reviewed-reference scorer
+    Then the mean groundedness score is at least 0.95
+    And the evaluation report is attached to the release review
+```
+
+The first is checkable on one claim file and belongs in the ordinary suite. The second is a property of the dataset, and it is a specification only when all five parts are present: **dataset** (which set, how large, where it lives), **method** (the scorer, judge or metric, named), **threshold** (the team's number), **execution context** (where it runs and what it gates), and **evidence** (the artifact and its owner). The `eval_criteria.yaml` entry carries the rest; the scenario names enough that a reader knows what is being claimed.
+
+The number must come from the PM or from inherited epic criteria — never from you. If the PM has not given a threshold, write it as an open gap (`Then the mean groundedness score is at least <TBD — threshold needed>`), list it in the summary, and do not report that scenario as ready for execution. A `0.95` you invented will be treated as a commitment by everyone downstream.
+
+**An AI coding agent building the feature does not make the feature GenAI.** These tags describe what the product does at runtime. Ordinary software written with a coding agent gets ordinary test evidence and no `@genai` tag.
 
 ## Validation checks
 
@@ -145,7 +178,12 @@ Run these before presenting Gherkin. Fix what fails — a missing tag is a defec
 8. Every `@evaluation` scenario asserts a threshold, or marks the threshold as an open gap.
 9. Every scenario has an observable outcome.
 10. Every scenario sits under the `Rule:` block it proves; a scenario no stated rule explains is a missing-rule gap to surface, not a formatting fix.
-11. The file parses: `Feature:` header present, persona block present, `Rule:` blocks present, no orphaned steps.
+11. The file parses: `Feature:` header present, persona block present, `Rule:` blocks present, no orphaned steps. GovKit ingestion parses with the official Cucumber parser, so anything it rejects is genuinely invalid Gherkin, not a house-style quibble.
+12. No scenario depends on another scenario having run — each is independently executable.
+13. Every `Background:` is correctly scoped: a feature-level one is true for every scenario in the file; setup true for only one rule's scenarios sits in that rule's `Background:`.
+14. Every rule with a threshold, limit, window or count has an example **on** the boundary, not only either side of it.
+15. No scenario mixes a single-occasion assertion with an aggregate statistic over a dataset.
+16. Every scenario carrying an unresolved `<TBD — …>` placeholder is listed as not ready for execution.
 
 Correcting a tag needs no announcement. **Hiding the result does** — always present the full Gherkin plus a one-line coverage summary so the tagging is inspectable even though it was automatic:
 

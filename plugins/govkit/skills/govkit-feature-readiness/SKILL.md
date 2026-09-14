@@ -94,11 +94,13 @@ Also inspect, when available: repo architecture docs, existing tests, existing s
 
 ## Required references
 
-Read this reference when present:
+| Reference | Use |
+|---|---|
+| `references/govkit-readiness-rubric.md` | The 12 scoring dimensions, the critical blocker list, the Development Token rules, and the required readiness report format — including the scenario verification plan. |
+| `../../references/gherkin-authoring-standard.md` | The shared Gherkin authoring standard. Validate the behavior contract against it rather than against a private notion of good Gherkin. |
+| `../../references/spec-identifiers.md` | The `@rule:` / `@scenario:` convention that connects rules, scenarios, NFRs, evaluations and evidence. |
 
-- `references/govkit-readiness-rubric.md`
-
-It provides the 12 scoring dimensions, the critical blocker list, the Development Token rules, and the required readiness report format. If it is unavailable, continue from the guidance in this file.
+If a reference is unavailable, continue from the guidance in this file and say which rules you are applying from memory.
 
 ## Readiness process
 
@@ -106,7 +108,9 @@ It provides the 12 scoring dimensions, the critical blocker list, the Developmen
 2. **Validate the behavior contract.** Check Gherkin structure, behavior clarity, observable outcomes, and rule/edge-case coverage.
 3. **Validate quality constraints.** Check NFRs for measurable thresholds, evidence, and owners. Check evaluation criteria only where AI, decision-support, or data behavior is present.
 4. **Validate repo fit.** Confirm the spec aligns with architecture, existing tests, conventions, and that target areas are identifiable.
-5. **Validate the evidence path.** Confirm the team knows how each outcome will be proven (tests, eval runs, CI evidence).
+5. **Validate the evidence path, scenario by scenario.** For every scenario, establish a *credible* path — not a completed one. Fill the verification plan in the rubric's report format: what behavior and which rule it verifies; the existing tests and step definitions that relate to it and whose step language can be reused; the proposed additions; the right verification boundary (domain/service, API, UI, evaluation, or manual evidence with a stated justification for why automation is not appropriate); the fixtures, controlled time, isolation and dependency handling it needs; and the command and evidence artifact where those are known. Where something is not yet known, write "to be established" — a confident blank is worse than an admitted gap.
+
+   **Keep three states apart.** *Ready to implement* is this gate. *Automated* happens during implementation. *Verified passing* happens after it. Missing step definitions and unwritten tests are the work the token authorizes, not a reason to withhold it; not knowing how a scenario could be verified at all is a blocker, because it means nobody has decided what done looks like. This gate runs nothing, so it never reports a test as passing.
 6. **Check AI coding agent safety.** Confirm the agent has enough context, that open questions are resolved or deferred, and that the spec does not ask it to invent intent.
 7. **Identify critical blockers.** The blocker list is the gate (see rubric).
 8. **Score (advisory) and decide.** Produce the readiness report and Development Token decision.
@@ -150,7 +154,9 @@ Batch mode (below) **never** writes a token record — batch verdicts are adviso
 
 ## Output format
 
-Produce the readiness report defined in `references/govkit-readiness-rubric.md`. In short, it includes: work item, advisory score, decision, Development Token, critical blockers, required edits, spec package status, scenario/NFR/evaluation readiness tables, repo fit, AI coding agent instructions, "do not assume" list, deferred items, and the next GovKit step.
+Produce the readiness report defined in `references/govkit-readiness-rubric.md`. In short, it includes: work item, advisory score, decision, Development Token, critical blockers, required edits, spec package status, scenario readiness, the **scenario verification plan** (one row per scenario — behavior and rule verified, boundary, existing and proposed tests, fixtures and isolation, command, expected evidence, what is still to be established), NFR and evaluation readiness tables, repo fit, AI coding agent instructions, "do not assume" list, deferred items, and the next GovKit step.
+
+Key rules and scenarios by their identifiers throughout, so the report keeps pointing at the same things after the next rewording. Use the authored `@rule:<slug>` / `@scenario:<slug>` where the package has one. Where it does not — identifiers are optional, per `../../references/spec-identifiers.md` — use the derived id `repo_ingest.py` records (`idSource: "derived"`, slugified from the name) and mark it `(derived)`, so the reader knows it is only as stable as the wording. Never write a tag the feature file does not contain, and never make adding identifiers a blocker.
 
 ## Batch mode (non-interactive corpus validation)
 
@@ -201,6 +207,9 @@ Do not:
 - Start implementation when blocked
 - Rewrite architecture to fit the spec
 - Treat collaboration approval as repo readiness approval
+- Require step definitions, written tests, or a passing run as a precondition for the token
+- Report a scenario as automated or verified passing — this gate executes nothing
+- Present a scenario carrying an unresolved placeholder as ready for execution
 - Replace human approval for risk-sensitive decisions
 
 Always:
@@ -210,4 +219,5 @@ Always:
 - Preserve traceability to the approved source
 - Surface repo conflicts early
 - Keep the Development Token decision explicit
+- Give every scenario a verification plan row, with "to be established" where the path is genuinely unknown
 - Produce a clean handoff for AI-assisted coding

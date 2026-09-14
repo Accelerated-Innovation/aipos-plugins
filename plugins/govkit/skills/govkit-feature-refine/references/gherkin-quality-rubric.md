@@ -1,6 +1,8 @@
 # Gherkin Quality Rubric
 
 > **Tool-agnostic.** *Generator* = whatever produced Draft 0 (e.g. Aha!, an LLM prompt, a human author). *Tracker* = wherever the feature fields live (e.g. Azure DevOps, Jira, Linear, a markdown file). Named tools are examples, not requirements.
+>
+> **This file owns scoring.** What good Gherkin looks like — BRIEF, explicit rules, boundaries, scenario isolation, provenance, backgrounds, outlines, deterministic checks versus aggregate evaluations — lives once in `../../../references/gherkin-authoring-standard.md`. Read that first; the dimensions below score against it.
 
 ## Contents
 
@@ -132,15 +134,24 @@ Important business rules are represented by scenarios.
 
 | Score | Guidance                                        |
 | ----: | ----------------------------------------------- |
-|   1.0 | Each key rule has scenario coverage.            |
-|   0.5 | Some rules are covered, but gaps remain.        |
+|   1.0 | Rules are explicit as `Rule:` blocks, each with scenario coverage.            |
+|   0.5 | Some rules are covered, but gaps remain — or the decisions are all visible and only the `Rule:` grouping is missing.        |
 |   0.0 | Rules are implied, missing, or buried in prose. |
+
+Explicit `Rule:` blocks are the GovKit convention (optional in standard Gherkin; GovKit chooses them anyway), because the rule is what evaluations, evidence and coverage all organize on.
+
+Separate the two findings a rule-less file can carry, because they go to different people:
+
+* **Missing grouping** — the decisions are there, the `Rule:` lines are not. A formatting gap; propose the grouping in the team's words. Score 0.5, not 0.0.
+* **Missing decision** — a scenario asserts something no stated policy explains. A product gap, and the more valuable finding; raise it as a question.
+
+Never write a `Rule:` for a policy nobody stated. A tidy heading becomes a committed decision the moment it is read downstream.
 
 Review prompts:
 
 * What rule is this scenario proving?
 * Which rule lacks a scenario?
-* Which scenario exists without a clear rule?
+* Which scenario exists without a clear rule — and is the rule absent, or just ungrouped?
 
 ### 4. Example specificity
 
@@ -152,10 +163,13 @@ Scenarios include concrete roles, states, inputs, events, and outcomes where use
 |   0.5 | Scenarios are mostly clear, but some inputs, states, or outcomes need detail. |
 |   0.0 | Scenarios are generic, abstract, or open to multiple interpretations.         |
 
+Concrete means real domain values with their units, roles, and states — `$12,500`, `finance manager`, `"Pending manager approval"` — not "a valid invoice". A rule with a threshold, limit, window or count is not fully illustrated until an example lands **on** the boundary, not only either side of it.
+
 Review prompts:
 
 * What concrete situation does this scenario represent?
 * What data, role, state, or event is missing?
+* Where is the boundary example for this rule's threshold?
 * What would cause two people to interpret this differently?
 
 ### 5. Scenario structure
@@ -170,15 +184,16 @@ Each scenario follows clear Given / When / Then structure.
 
 Guidance:
 
-* Prefer 3 to 5 steps for common scenarios.
+* Three to six steps is typical. Treat it as a smell test, never a limit: a scenario that genuinely needs seven steps to state one behavior is fine, and a four-step scenario hiding two behaviors is not. Do not score down on step count alone, and never ask for padding to reach a number.
 * Use Given for starting context.
-* Use When for the action or event.
-* Use Then for observable outcome.
+* Use When for the single triggering action.
+* Use Then for observable outcome. Several related outcomes of one trigger are fine.
 * Use And only when it improves readability.
+* Each scenario must be independently executable — a scenario relying on state a previous scenario left behind scores 0.0 here regardless of how it reads.
 
 Review prompts:
 
-* Is the Given a true starting state?
+* Is the Given a true starting state, or does it assume another scenario ran?
 * Is the When a single meaningful action or event?
 * Is the Then an outcome, not another action?
 
@@ -224,10 +239,15 @@ Relevant failure paths, boundaries, invalid states, duplicate actions, and permi
 |   0.5 | Some edge cases are included, but key risks remain open.                                              |
 |   0.0 | Only the happy path exists, with no decision about risk paths.                                        |
 
+Judge coverage, not volume. The target is the set of examples that makes each rule unambiguous — boundaries, negative paths, permissions, exceptions — not every combination of every input. An exhaustive combinatorial catalog is its own defect: it drives readers away from the document, and understanding is what the document is for.
+
+A case deferred deliberately, with a reason recorded in the out-of-scope section, scores as covered. An unexamined gap does not.
+
 Review prompts:
 
 * What happens when input is missing, invalid, duplicated, late, or unauthorized?
 * Which role is allowed to perform the action?
+* Is the boundary itself illustrated, not just either side of it?
 * What failure would create production risk?
 
 ### 9. NFR alignment
@@ -268,6 +288,12 @@ Scenarios connect to evaluation criteria, test evidence, or release evidence.
 |   1.0 | Each important scenario maps to pass/fail evidence.         |
 |   0.5 | Evidence is named, but thresholds or artifacts need detail. |
 |   0.0 | The team has no clear way to prove success.                 |
+
+Two registers, never in one scenario. A **deterministic behavior check** asserts what happens on one occasion. An **aggregate evaluation** asserts a statistic over a dataset and says nothing about any single case. A scenario asserting both is unfalsifiable, and scores 0.0 here.
+
+An aggregate evaluation is a specification only when it names all five of: dataset, method, threshold, execution context, and evidence artifact with an owner. Missing any of them, it is an intention — score 0.5 at best and record the gap.
+
+**Using an AI coding agent to build a feature does not make it a GenAI feature.** Evaluation requirements attach to what the shipped product does at runtime, never to what wrote the code. Do not score down ordinary software for lacking an evaluation dataset it has no use for.
 
 Evidence types:
 
@@ -393,6 +419,10 @@ Common feedback categories:
 * Outcome not observable
 * Scenario duplicates another scenario
 * Rule missing scenario coverage
+* Boundary example missing for a stated threshold
+* Scenario depends on a previous scenario
+* Single-occasion assertion mixed with a dataset statistic
+* Rules present as decisions but not grouped into `Rule:` blocks
 
 ## Repo readiness note
 

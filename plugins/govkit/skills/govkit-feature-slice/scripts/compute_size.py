@@ -171,11 +171,22 @@ def main():
                     f"{key}: sized {got} scenario(s) but features.json says {want}"
                 )
             # taggedSlice must mirror the record's tags -- a verdict that drops or
-            # invents a tag silently un-decides (or decides) a release plan
+            # invents a tag silently un-decides (or decides) a release plan. Read the
+            # effective tags: a slice declared on the Feature or the Rule applies to the
+            # scenarios beneath it, and older records that carry only `tags` still work.
+            def slice_of(s):
+                # Most specific declaration wins: the scenario's own tag, then one
+                # inherited from the Rule or the Feature.
+                for source in (s.get("tags") or [],
+                               s.get("effectiveTags") or s.get("tags") or []):
+                    for t in source:
+                        n = t.lstrip("@").lower()
+                        if n in SLICES:
+                            return n
+                return None
+
             tag_of = {
-                s.get("name"): next((t.lstrip("@").lower()
-                                     for t in s.get("tags") or []
-                                     if t.lstrip("@").lower() in SLICES), None)
+                s.get("name"): slice_of(s)
                 for r in by_key[key].get("rules") or []
                 for s in r.get("scenarios") or []
             }

@@ -1,0 +1,9 @@
+# Deterministic local and CI checks for this repository.
+#
+#   python -m pip install -r requirements-dev.txt
+#   python -m pytest tests -q
+#
+# Nothing here calls a model or the network at test time. The model-graded cases in each
+# skill's evals/evals.json are a separate, optional pass.
+-r plugins/govkit/skills/govkit-feature-map/scripts/requirements.txt
+pytest>=7,<9

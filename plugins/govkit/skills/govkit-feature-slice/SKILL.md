@@ -66,6 +66,8 @@ If scenarios already carry slice or size tags, read them — they are prior deci
 |---|---|
 | `references/slicing-rubric.md` | The Scenario Complexity Matrix, the MoSCoW slice definitions, the tag vocabulary, and the split patterns. Read before sizing anything. |
 | `references/tracker-writeback.md` | Per-tracker write-back adapters and the preview-confirm protocol. Read before offering to write. |
+| `../../references/gherkin-authoring-standard.md` | The shared authoring standard. Read before proposing any split — the pieces have to satisfy it too. |
+| `../../references/spec-identifiers.md` | The `@rule:` / `@scenario:` convention, and what a split does to identity. Read before splitting or retagging. |
 
 ## Process — interactive slicing (default)
 
@@ -89,12 +91,30 @@ The script computes points, bands, the feature rollup, per-slice points, and ris
 
 Apply the MoSCoW mapping from the rubric. The MVP test is strict: *can the feature fundamentally function without this scenario?* If yes, it is not `@mvp`. Give a one-line rationale per recommendation, citing the rubric's Gherkin indicators (happy path, error pathway, third-party integration, …).
 
+**Never defer risk-critical behavior on the strength of a tag category alone.** "Error pathway", "edge case" and "permission" are indicators of where a scenario usually lands, not a licence to postpone. A scenario that guards authorization, privacy, safety, regulatory compliance, financial correctness or data loss is judged on the consequence of shipping without it — and that consequence often puts an "edge case" squarely in the MVP. When a recommendation defers such a scenario, say what shipping without it risks and make the PM accept it explicitly rather than letting a category do the deferring silently.
+
 ### Step 4: Flag risk and propose splits
 
 Two things must be surfaced before the PM decides:
 
 - **Large scenarios on the critical path.** A Large `@mvp` scenario means the smallest shippable version contains the riskiest work. Propose a split, or make the PM accept the risk explicitly.
 - **Any Large scenario.** Per the rubric, 8–9 points means "consider slicing this scenario down further." Propose concrete splits using the rubric's split patterns, with draft Gherkin. After a split, re-size the pieces — splits should land Small or Medium, and a split that doesn't shrink anything is not a split.
+
+**A split must preserve business meaning.** Restructuring is the only thing a split may change. Every piece has to carry across:
+
+| What | Rule |
+|---|---|
+| Rule association | Each piece stays under the `Rule:` the original illustrated. A split never orphans a scenario or invents a new rule to house one. |
+| Setup | Whatever the original needed — a feature-level `Background`, its rule's `Background`, its own `Given` steps — still reaches every piece that needs it. Splitting is the classic way a `Background` silently stops applying. |
+| Examples | An outline's `Examples` rows are distributed, never dropped. If a split leaves a row belonging to neither piece, the split is wrong, not the row. |
+| Outcomes | Every `Then` from the original is asserted by some piece. A split that quietly sheds an outcome has changed what the feature promises. |
+| Boundaries | The boundary case survives the split. Losing the exact-threshold example while "simplifying" is the most expensive split there is. |
+| Identity | One piece keeps the original `@scenario:` slug — the one that still verifies the original behavior; the other gets a new one. Record the split. See `../../references/spec-identifiers.md`. |
+| Independence | Each piece stands alone. A split that leaves piece B depending on piece A having run has produced a script, not two scenarios. |
+
+Say explicitly, for each split, what moved where. A PM cannot confirm a split they have to reverse-engineer.
+
+**Retagging preserves meaning too.** Changing a delivery tag re-times work; it never changes what a scenario asserts, what rule it sits under, or its identifier.
 
 ### Step 5: Pause for the PM's decisions
 
@@ -175,6 +195,8 @@ Do not:
 - Size a feature whose Gherkin is too weak to read — route to `govkit-feature-refine`
 - Invent scenarios, context, or integrations the spec does not contain
 - Let a size argument rewrite product intent — splitting restructures scenarios, it does not change what they promise
+- Lose a rule association, a background, an Examples row, an outcome, a boundary case or an identifier in a split
+- Defer risk-critical behavior because its tag category usually lands later
 - Create or delete tracker records
 - Conflate size with quality — a well-written scenario can be Large, a sloppy one Small
 
@@ -183,7 +205,8 @@ Always:
 - Ground every dimension note in the scenario's own text
 - Run `compute_size.py` before presenting any number
 - Preserve existing tags this skill does not own
-- Re-size the pieces after any split
+- Re-size the pieces after any split, and state what moved where
+- Preserve `@rule:` / `@scenario:` identifiers through splits and retagging, recording any new identity a split creates
 - Flag Large + `@mvp` combinations explicitly
 - Show the exact write-back preview before any tracker write, and verify by reading back
 

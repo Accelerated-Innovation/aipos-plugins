@@ -306,20 +306,24 @@ Review checks:
 
 ### 10. Test and evidence execution path
 
-The team knows how evidence will be produced.
+The team knows how evidence will be produced — **credibly**, not yet actually.
 
 | Score | Guidance |
 |---:|---|
-| 1.0 | Automated tests, manual checks, evaluation runs, and CI evidence are identified. |
-| 0.5 | Evidence path is partially clear, but automation or ownership needs detail. |
-| 0.0 | No credible evidence path exists. |
+| 1.0 | Every scenario has a named verification boundary, an identified place in the existing suite, and a known or explicitly-to-be-established command and evidence artifact. |
+| 0.5 | The boundary and the suite are identified for most scenarios, but fixtures, isolation, or the evidence artifact need detail. |
+| 0.0 | No credible evidence path exists, or the path is unknown for scenarios that carry real risk. |
+
+This dimension scores the **plan**, not its execution. New step definitions and passing tests are **not** prerequisites for the Development Token — see "Ready, automated, verified" below. What is required is that nobody has to invent the approach after coding starts.
 
 Review checks:
 
 - Which tests should be added or updated?
-- Which existing tests relate to the spec?
-- Which eval runner or script will execute criteria?
-- Which CI step will produce evidence?
+- Which existing tests and step definitions relate to the spec, and can their step language be reused?
+- What is the right verification boundary for each scenario — domain/service, API, UI, evaluation, or justified manual evidence?
+- What fixtures, controlled time, isolation and dependency handling does each scenario need?
+- Which eval runner or script will execute the criteria?
+- Which command produces the evidence, and which CI step runs it? Where no command exists yet, is that stated as still to be established rather than left blank?
 - What evidence belongs in the PR?
 
 ### 11. AI coding agent safety
@@ -354,9 +358,29 @@ Review checks:
 
 - Is the Development Token decision recorded?
 - Is `readiness_report.md` generated or ready to generate?
+- Does the scenario verification plan cover every scenario, naming the behavior and the rule each one verifies?
+- Are rules, scenarios, NFRs, evaluations and evidence connected by stable identifiers (`@rule:` / `@scenario:`) rather than by quoted wording that the next rewrite will break? A package without authored tags is keyed by derived ids and is not blocked for it; recommend the tags as an improvement.
 - Are blockers separated from improvements?
 - Are deferred items recorded?
 - Is the next GovKit command or agent task clear?
+
+## Ready, automated, verified
+
+Three different states, routinely collapsed into one, and collapsing them is how a
+readiness gate turns into a build blocker:
+
+| State | What it means | When |
+|---|---|---|
+| **Ready to implement** | The behavior contract is complete and a credible execution path exists for every scenario | This gate. What the Development Token authorizes. |
+| **Automated** | Step definitions and tests exist and run | During implementation |
+| **Verified passing** | Those tests have actually run and passed, and the evidence exists | After implementation, at PR |
+
+**At readiness, require a credible path; after implementation, require actual results.**
+Missing step definitions and unwritten tests are not blockers at this gate — writing them
+is the work the token authorizes. What *is* a blocker is not knowing how a scenario could
+be verified at all, because that means nobody has decided what "done" looks like.
+
+Never report "automated" or "verified passing" from this gate. It has not run anything.
 
 ## Development Token rules
 
@@ -414,9 +438,16 @@ Approved | Not approved
 
 
 ## Scenario readiness
-| Scenario | Status | Issue | Evidence path |
+| Scenario | ID | Status | Issue |
 |---|---|---|---|
-| <name> | Ready | None | <evidence> |
+| <name> | @scenario:<slug>, or <slug> (derived) | Ready | None |
+
+## Scenario verification plan
+<!-- One row per scenario. This is the handoff an implementer or coding agent works from.
+     "To be established" is a legitimate value and far better than a confident blank. -->
+| Scenario | Verifies (behavior · rule) | Boundary | Existing tests / step definitions | Proposed additions | Fixtures · time · isolation · dependencies | Command | Expected evidence | To establish |
+|---|---|---|---|---|---|---|---|---|
+| @scenario:<slug>, or <slug> (derived) | <behavior> · @rule:<slug>, or <slug> (derived) | domain \| service \| API \| UI \| evaluation \| manual (justified) | <path::name, or None found> | <new step defs / test files> | <fixture, frozen clock, isolation, stub or contract test> | `<known command, or —>` | <artifact that lands in the PR> | <what is not yet known> |
 
 ## NFR readiness
 | Area | Status | Threshold | Evidence |
@@ -480,6 +511,9 @@ The feature-readiness skill must not:
 - Start implementation when blocked
 - Rewrite architecture to fit the spec
 - Treat collaboration approval as repo readiness approval
+- Require step definitions, written tests, or passing runs as a precondition for the token
+- Report a scenario as automated or verified passing — this gate runs nothing
+- Present a scenario carrying an unresolved placeholder as ready for execution
 - Replace human approval for risk-sensitive decisions
 
 The skill should:
