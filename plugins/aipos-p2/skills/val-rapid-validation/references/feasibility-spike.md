@@ -36,7 +36,8 @@ or a number.
 # Feasibility spike — <the question>
 
 ## Evidence base
-<the four-line header from evidence-intake.md>
+<the evidence-base header from evidence-intake.md>
+**Mandate cost:** <plans: the timebox below, against the spike budget and the horizon — spend is recorded in the findings, once the spike has run | none declared>
 
 ## The question
 <One question with a yes / no / numeric answer.>
@@ -49,7 +50,7 @@ We stop or reframe if <specific finding>. We proceed if <specific finding>.
 Anything between is a **revise** signal, and here is what we'd change: <...>
 
 ## Timebox
-<n> days · Owner: <name> · Hard stop: <date>
+<n> days · Owner: <name> · Hard stop: <date> · Inside the horizon: <yes | no, by <n> days>
 
 ## Method
 <What will actually be done. Load real volumes of representative data. Call the actual

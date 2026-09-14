@@ -92,6 +92,7 @@ If the PM describes their situation instead of picking, route them:
 | "We don't know if it's buildable / the data may not exist" | 5 — Feasibility spike |
 | "It's a GenAI feature and 'good' is fuzzy" | 6 — Eval stub & brief |
 | "We've done the work, I need to decide" | 7 — Viability brief |
+| "We've spent the budget" / "the horizon has passed" | 7 — Viability brief, with what exists; *revise* is a real answer |
 
 If they ask for an artifact whose prerequisite is missing, build what they asked for —
 they own the call — but say once what is missing and why it weakens the result. A demand
@@ -100,8 +101,9 @@ test with no sized problem produces a number nobody can interpret.
 ## Step 2 — Take in whatever evidence exists
 
 Read `references/evidence-intake.md` and follow it. It covers the three intake paths — an
-Aha! record, material the PM pastes or attaches, or nothing at all — and the provenance
-convention every artifact uses.
+Aha! record, material the PM pastes or attaches, or nothing at all — the **exploration
+mandate** read alongside them (the Exploration Decision's owner, budget, and horizon, if
+planning issued one), and the provenance convention every artifact uses.
 
 **Evidence is optional input, never a prerequisite.** Plenty of real validation starts from
 a hunch. What is not acceptable is an artifact that *looks* evidence-backed when it is not.
@@ -132,6 +134,10 @@ End every artifact the same way:
    them into the conversation.
 2. **Say what it retires and what it doesn't.** One or two lines: which of the three
    Validation Decision questions this moves, and what remains unevidenced.
+   Then one line against the mandate: what this artifact plans to consume (or consumed,
+   for findings from work that has run), what has actually been used, what remains of the
+   budget and horizon, and — if either is now exhausted — that the viability brief is the
+   next artifact unless the PM chooses to exceed.
 3. **Prompt to save it to the record.** Every artifact, every time. Read
    `references/record-writeback.md` and follow it — it covers the three pieces (attachment,
    index comment, to-do), which artifacts warrant a to-do and which do not, the naming
@@ -165,6 +171,12 @@ the discipline behind it.
   problem belongs, reframe to the user's problem and show them the reframe.
 - **Refuse to pad.** If three interview questions carry the risk, write three. Length is
   not rigour.
+- **Report against the mandate; never gate on it.** Every artifact states its cost in the
+  Exploration Decision's own units — as a plan until the work has run, as spend once it
+  has — and the header's ledger moves only on spend. An artifact whose
+  decision rule cannot be reached inside the remaining budget or horizon says so and names
+  the cheaper route — then builds what the PM chose. The owner holds the line, not this
+  skill.
 
 ### Proceed protocol
 

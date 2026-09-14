@@ -81,6 +81,23 @@ Date every comment in its first line. When an artifact supersedes an earlier one
 the comment and name what changed — a record with two sizings and no indication of which is
 current is worse than a record with one.
 
+## The decision record
+
+When validation ran under an Exploration Decision, the viability brief has a second
+destination beyond the opportunity record: the decision record itself, reached through the
+governed door Pillar 1 named in the decision log's `Record via` line. The opportunity gets
+the artifacts; the decision record gets the outcome — the Validation Decision, its
+confidence, the budget used against the budget declared, and the evidence by filename.
+
+This is what lets the next planning session see that what it funded came back with an
+answer. Offer it in the same prompt as the three pieces above, as a fourth item, only for
+the viability brief. Name the destination exactly (the ref, the door). If the door is not
+something the skill can write through — most are not — hand the PM the entry text verbatim
+and say where it goes. An entry the PM pastes is a closed loop; an entry the skill
+describes is not.
+
+Name it like the artifacts: `<record>-validation-decision.md`, dated on re-runs.
+
 ## Prototypes specifically
 
 A prototype is three files, and all three belong on the record:

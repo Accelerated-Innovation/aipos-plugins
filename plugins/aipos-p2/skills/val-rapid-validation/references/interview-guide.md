@@ -46,7 +46,8 @@ One question at a time.
 # Interview guide — <problem in the user's terms>
 
 ## Evidence base
-<the four-line header from evidence-intake.md>
+<the evidence-base header from evidence-intake.md>
+**Mandate cost:** <plans n sessions of the <budget> interviews budgeted · run by <date>, inside the horizon of <date> · used so far <n> | none declared>
 
 ## Hypothesis
 We believe <specific, falsifiable claim about a behaviour or cost>. [E/I/A]
@@ -60,6 +61,8 @@ We believe <specific, falsifiable claim about a behaviour or cost>. [E/I/A]
 - **Target:** <role, context, and what makes them relevant>
 - **Screener:** <2–3 qualifying questions with in/out criteria>
 - **Target n:** <number> · **By:** <date>
+<If Target n exceeds the interviews budgeted, or By falls past the horizon, say so here and
+name what drops first — sessions, or questions — rather than quietly overrunning.>
 
 ---
 

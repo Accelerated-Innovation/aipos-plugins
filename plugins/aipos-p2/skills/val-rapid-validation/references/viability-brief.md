@@ -43,24 +43,28 @@ evidence, say so in the same voice — an empty cell is information.
 
 <One paragraph. The decision, the single most important reason for it, and the biggest
 risk being accepted by making it. Someone should be able to read only this and act
-correctly.>
+correctly. If there was a mandate, one sentence on whether it held — and if validation
+exceeded it, by how much and why that was the right call.>
 
 ---
 
 ## Evidence base
-<the four-line header from evidence-intake.md>
+<the evidence-base header from evidence-intake.md>
+**Mandate cost:** none — the brief is the decision; the ledger below is the reconciliation
 
 **Validation work completed:**
-| Artifact | Done | Result |
-|---|---|---|
-| Interview guide | <date / not run> | <finding> |
-| Problem sizing | | |
-| Visual prototype | | |
-| Demand test | | |
-| Feasibility spike | | |
-| Eval stub | | |
+| Artifact | Done | Result | Budget used |
+|---|---|---|---|
+| Interview guide | <date / not run> | <finding> | <n of the interviews budgeted> |
+| Problem sizing | | | <none> |
+| Visual prototype | | | |
+| Demand test | | | |
+| Feasibility spike | | | <n days of the spike budgeted> |
+| Eval stub | | | |
+| **Against the mandate** | | | <used / declared, e.g. 4/5 interviews, 1/1 spike · horizon <date>: met / passed by <n> days | none declared [A]> |
 
-<Gaps stay visible. "Not run" is a finding.>
+<Gaps stay visible. "Not run" is a finding. So is an unused budget: say why it was not
+needed, or that it still should be spent before this decision is trusted.>
 
 ---
 
@@ -153,3 +157,21 @@ Remind the PM once:
 > this work.
 
 Offer to write it back to the tracker. Do it only on explicit approval.
+
+**If there was an Exploration Decision, close its loop too.** The mandate came out of a
+planning session; the next session's gap analysis reads funnel signals, and an explored
+problem that never reports back looks identical to one that was never explored. So the
+second destination is the decision record itself, through the same governed door Pillar 1
+named. What goes there, in one entry:
+
+```
+Exploration Decision:  <ref>
+Validation Decision:   go | no-go | revise · confidence <high / medium / low>
+Budget used:           <used / declared> · horizon <met / passed by n days>
+Evidence:              <the artifacts, by filename, attached or linked to the opportunity>
+Next:                  <Pillar 3 handoff | what would have to be true to revisit>
+```
+
+Same rules as every write: prompt every time, write only on an explicit yes, and where the
+skill cannot write to that door, hand the PM the exact text and the exact destination. See
+`references/record-writeback.md`, "The decision record".

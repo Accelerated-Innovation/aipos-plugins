@@ -41,7 +41,8 @@ criteria later.
 # Eval stub & brief — <capability>
 
 ## Evidence base
-<the four-line header from evidence-intake.md>
+<the evidence-base header from evidence-intake.md>
+**Mandate cost:** <starter-set construction effort, if any — otherwise "none">
 
 ## What "good" means
 <2–3 sentences in plain language. If a new team member read only this, would they

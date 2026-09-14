@@ -78,6 +78,64 @@ viability brief with no evidence is an opinion in a document's clothing. Offer t
 interview guide or problem sizing first. If they still want to proceed, proceed — but the
 evidence-base header has to say plainly that this rests on the PM's judgment alone.
 
+## The exploration mandate
+
+Separately from the evidence, ask once whether this validation has a mandate:
+
+> Is this under an Exploration Decision from planning? If so, paste the log entry or name
+> the record. If not, we'll work unbounded and say so.
+
+An Exploration Decision is Pillar 1's output (`pdg-quarterly-planning`): an accountable
+owner decided *explore* for this problem with a declared **budget** (in its own units —
+"five interviews", "one two-day spike") and a **horizon** (a date, or a duration from the
+decision date). It is not evidence about the problem. It is the capacity the organisation
+agreed to spend finding out, and it travels with every artifact so that six weeks later
+anyone can tell whether the work stayed inside it.
+
+Read it from whichever of these exists, in this order:
+
+1. **A decision ref** — the id the governed door produced when a human recorded the
+   decision. If a connector can read that record, read it the way Path A reads a tracker;
+   never require one.
+2. **The pasted log entry** — the `Problem / Decision / Owner / Budget / Horizon /
+   Evidence cited / Status / Record via` block from the planning session. A `Status:
+   draft — not yet recorded` entry is still a mandate; say it is unrecorded.
+3. **The PM's answer** — owner, budget and horizon in their words, marked `[A]` if nobody
+   recorded them anywhere.
+
+Take from it: **owner**, **budget** with its units, the **decision date** (the log's
+`Decided` line, or the session date the PM names), **horizon** as a date, the **evidence
+cited** (so Path A or B can start from the same material Pillar 1 graded), and **where
+the decision is recorded**. Planning often states the horizon as a duration — "two
+weeks". A duration is only a deadline once it is added to the decision date, so derive
+the date and carry that (`horizon 2026-10-15`). If the decision date is not known,
+carry the duration verbatim, mark the horizon `[A]`, and say on every Mandate cost line
+that horizon fit cannot be judged until the date is supplied — never pick a plausible
+start date to make the arithmetic work. If any other part is missing, mark it `[A]`.
+Never invent a budget or a horizon — a mandate is a number someone agreed to, and a
+plausible-looking one that nobody agreed to is exactly the fabrication the provenance
+marks exist to prevent.
+
+**Having no mandate is legitimate.** Most validation that starts from a hunch has none.
+When the PM says there is none, write `none declared [A]` in the header and carry on; do
+not lecture, and do not manufacture a budget to fill the line. When there *is* one, in any
+of the three forms above, carry it — a supplied mandate is never replaced with
+`none declared`.
+
+**The mandate constrains the plan, never the work.** Pillar 2 is deliberately ungoverned.
+The skill never refuses an artifact for exceeding the budget or the horizon. It *reports*:
+every artifact states its cost against the mandate, the header carries the running ledger,
+and an artifact whose decision rule cannot be reached inside what remains says so and names
+the cheaper route. The PM owns the call to exceed. The skill's job is to make sure the
+exceedance is visible when they make it, not to stop them.
+
+**When the budget is spent or the horizon has passed**, the default recommendation is
+artifact 7, the viability brief: make the call with what exists. *Revise* is a legitimate
+answer there, and a brief that says "the mandate is exhausted, here is what we know and
+what would settle it" is a better outcome than quietly building an eighth artifact past the
+date someone agreed to. If the PM still wants another artifact, build it, and say once what
+it costs against the mandate.
+
 ## Provenance marking
 
 Every artifact marks its claims. This is the single most useful convention in the skill:
@@ -99,7 +157,7 @@ about.
 
 ## The evidence-base header
 
-Every artifact opens with this block. It takes four lines and it is the first thing a
+Every artifact opens with this block. It takes five lines and it is the first thing a
 reader should see.
 
 ```markdown
@@ -107,8 +165,25 @@ reader should see.
 **Source:** <Aha! OPP-5 (13 refs, read-only) | 6 interview transcripts | PM interview only>
 **What's backed:** <the problem statement, the persona set>
 **What isn't:** <the urgency claim, every number in the sizing>
+**Mandate:** <OPP-5 explore · owner J. Diaz · budget 5 interviews + 1 spike (2d) · decided 2026-09-30 · horizon 2026-10-15 · used 2/5 interviews, 0/1 spike · plans 3 interviews | none declared [A]>
 Claims below are marked [E] evidence-backed, [I] inferred, [A] assumption.
 ```
+
+The `Mandate` line is the running ledger. Declared form: the decision ref, the owner, the
+budget in its units, the decision date, the horizon date, what has been **used** so far,
+and what this artifact **plans** to consume. Undeclared form: `none declared [A]`, nothing
+else. One line either way, so the header still fits on a screen.
+
+**Used means consumed by work that has actually run** — sessions held, test days elapsed,
+spike days spent. Most artifacts here are plans: an interview guide, a demand test, a
+prototype brief, a spike plan describe work that has not happened yet. **A plan reserves;
+it does not spend.** An interview guide with five sessions planned and none held reads
+`used 0/5 · plans 5`, and the ledger moves to `used 5/5` only when the sessions are run.
+Exhaustion — and the routing to the viability brief that follows it — is judged on `used`.
+A plan that would carry `used` past the budget is over-plan, not over-spent: it says so on
+its Mandate cost line, and the PM decides. Each artifact's own cost goes on the
+`Mandate cost` line directly beneath the header (each artifact reference shows where),
+phrased as a plan until the work has run and as spend once it has.
 
 Write it honestly, including when the honest version is unflattering. An artifact that
 admits it rests on assumption is useful. One that hides it is a liability that gets more
