@@ -5,7 +5,7 @@
 the seven artifact references, `references/record-writeback.md`), a new `evals/`; `plugins/aipos-p1`
 — the handoff paragraph in `pdg-quarterly-planning/SKILL.md` and the plugin README; root README.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status: in progress — PR 1 (`aipos-p2`, batches A–C, E, and D3) open; PR 2 (`aipos-p1` + root README) follows.**
+**Status: implemented — aipos-p2 0.2.0 (#13), aipos-p1 0.1.1 (#14).** `claude plugin validate .` and `pytest tests` pass. The model-graded `evals.json` cases were **not** run; no behavioural result is claimed. Qodo's three findings on #13 (ambiguous "no mandate" wording; plans counted as spend; duration horizons with no decision date) were fixed before merge, and #14 gained a `Decided:` line in the decision log for the third.
 
 ## Context
 
@@ -151,15 +151,16 @@ Keep each to a line; the point is visibility, not ceremony.
 
 ### D. Pillar 1 side and documentation (`aipos-p1`, root)
 
-- [ ] **D1** `pdg-quarterly-planning/SKILL.md` handoff paragraph (the PR #12 wording): replace
+- [x] **D1** `pdg-quarterly-planning/SKILL.md` handoff paragraph (the PR #12 wording): replace
   with D7's description. Decision log template: add an optional `Record ref:` line for the id
-  the door produces once a human has walked through it, so Pillar 2 can cite it.
-- [ ] **D2** `plugins/aipos-p1/README.md` "The handoff": describe the real behaviour — the
+  the door produces once a human has walked through it, so Pillar 2 can cite it. Also a
+  `Decided:` date line, so a horizon stated as a duration has a start date to count from.
+- [x] **D2** `plugins/aipos-p1/README.md` "The handoff": describe the real behaviour — the
   mandate is carried in every Pillar 2 artifact header and reconciled in the viability brief;
   the owner holds the line.
 - [x] **D3** `plugins/aipos-p2/README.md`: mention the mandate intake and the loop closure
   under "What it does"; add the exhaustion phrase to "When to use it".
-- [ ] **D4** Root README Pillar 2 blurb: one clause on picking up the Exploration Decision's
+- [x] **D4** Root README Pillar 2 blurb: one clause on picking up the Exploration Decision's
   budget and horizon and reporting against them.
 
 ### E. Evaluations, versions, validation
