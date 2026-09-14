@@ -43,9 +43,14 @@ the skill stops and says what is missing rather than planning from memory.
 ## The handoff
 
 **Pillar 1 ends at the Exploration Decision. Pillar 2 begins there.** An explored
-problem enters Rapid Validation carrying its budget and horizon, where the
-companion plugin's `val-rapid-validation` skill builds the evidence for the
-go / no-go / revise Validation Decision.
+problem enters Rapid Validation carrying its decision entry, which the companion
+plugin's `val-rapid-validation` skill reads as the *exploration mandate* — owner,
+budget, horizon. Every Pillar 2 artifact carries that mandate in its header as a
+running ledger and states its own cost against it; the viability brief reconciles the
+work done and, on an explicit yes, records the Validation Decision back against the
+Exploration Decision so the next planning session sees what it funded. Pillar 2
+reports against the mandate and never gates on it — the owner holds the line, and the
+governed door enforces budget, horizon, and WIP limits server-side.
 
 ## Install
 
