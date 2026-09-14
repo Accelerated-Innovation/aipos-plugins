@@ -37,7 +37,7 @@ or a number.
 
 ## Evidence base
 <the evidence-base header from evidence-intake.md>
-**Mandate cost:** <the timebox below, against the spike budget and the horizon | none declared>
+**Mandate cost:** <plans: the timebox below, against the spike budget and the horizon — spend is recorded in the findings, once the spike has run | none declared>
 
 ## The question
 <One question with a yes / no / numeric answer.>

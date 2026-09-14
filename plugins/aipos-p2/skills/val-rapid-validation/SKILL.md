@@ -134,9 +134,10 @@ End every artifact the same way:
    them into the conversation.
 2. **Say what it retires and what it doesn't.** One or two lines: which of the three
    Validation Decision questions this moves, and what remains unevidenced.
-   Then one line against the mandate: what this artifact cost, what remains of the budget
-   and horizon, and — if either is now exhausted — that the viability brief is the next
-   artifact unless the PM chooses to exceed.
+   Then one line against the mandate: what this artifact plans to consume (or consumed,
+   for findings from work that has run), what has actually been used, what remains of the
+   budget and horizon, and — if either is now exhausted — that the viability brief is the
+   next artifact unless the PM chooses to exceed.
 3. **Prompt to save it to the record.** Every artifact, every time. Read
    `references/record-writeback.md` and follow it — it covers the three pieces (attachment,
    index comment, to-do), which artifacts warrant a to-do and which do not, the naming
@@ -171,7 +172,8 @@ the discipline behind it.
 - **Refuse to pad.** If three interview questions carry the risk, write three. Length is
   not rigour.
 - **Report against the mandate; never gate on it.** Every artifact states its cost in the
-  Exploration Decision's own units and updates the header's ledger. An artifact whose
+  Exploration Decision's own units — as a plan until the work has run, as spend once it
+  has — and the header's ledger moves only on spend. An artifact whose
   decision rule cannot be reached inside the remaining budget or horizon says so and names
   the cheaper route — then builds what the PM chose. The owner holds the line, not this
   skill.

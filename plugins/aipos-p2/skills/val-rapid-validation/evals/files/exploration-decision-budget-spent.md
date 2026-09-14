@@ -6,6 +6,7 @@
 Problem:        PRB-118 — Support agents spend a large share of each shift searching
                 closed tickets for similar cases, and mostly fail to find them [E]
 Decision:       explore
+Decided:        2026-09-08
 Owner:          Priya Natarajan (Support Product)
 Budget:         5 interviews + 1 feasibility spike (2 days)
 Horizon:        2026-10-15

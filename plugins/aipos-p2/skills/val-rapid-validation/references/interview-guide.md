@@ -47,7 +47,7 @@ One question at a time.
 
 ## Evidence base
 <the evidence-base header from evidence-intake.md>
-**Mandate cost:** <n sessions of the <budget> interviews budgeted · run by <date>, inside the horizon of <date> | none declared>
+**Mandate cost:** <plans n sessions of the <budget> interviews budgeted · run by <date>, inside the horizon of <date> · used so far <n> | none declared>
 
 ## Hypothesis
 We believe <specific, falsifiable claim about a behaviour or cost>. [E/I/A]

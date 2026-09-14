@@ -51,7 +51,7 @@ audience. Say this to the PM once; most already know, and the ones who don't nee
 
 ## Evidence base
 <the evidence-base header from evidence-intake.md>
-**Mandate cost:** <the instrument's duration against the horizon — a Weeks-class instrument inside a two-week horizon does not fit; say so and name the Days-class alternative | none declared>
+**Mandate cost:** <plans: the instrument's duration against the horizon — a Weeks-class instrument inside a two-week horizon does not fit; say so and name the Days-class alternative | none declared>
 
 ## Hypothesis
 If <audience> is offered <capability, in their language>, at least <rate> will <action>.

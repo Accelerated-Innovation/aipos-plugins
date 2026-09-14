@@ -103,15 +103,24 @@ Read it from whichever of these exists, in this order:
 3. **The PM's answer** — owner, budget and horizon in their words, marked `[A]` if nobody
    recorded them anywhere.
 
-Take from it: **owner**, **budget** with its units, **horizon** as a date, the **evidence
+Take from it: **owner**, **budget** with its units, the **decision date** (the log's
+`Decided` line, or the session date the PM names), **horizon** as a date, the **evidence
 cited** (so Path A or B can start from the same material Pillar 1 graded), and **where
-the decision is recorded**. If any part is missing, mark it `[A]`. Never invent a budget
-or a horizon — a mandate is a number someone agreed to, and a plausible-looking one that
-nobody agreed to is exactly the fabrication the provenance marks exist to prevent.
+the decision is recorded**. Planning often states the horizon as a duration — "two
+weeks". A duration is only a deadline once it is added to the decision date, so derive
+the date and carry that (`horizon 2026-10-15`). If the decision date is not known,
+carry the duration verbatim, mark the horizon `[A]`, and say on every Mandate cost line
+that horizon fit cannot be judged until the date is supplied — never pick a plausible
+start date to make the arithmetic work. If any other part is missing, mark it `[A]`.
+Never invent a budget or a horizon — a mandate is a number someone agreed to, and a
+plausible-looking one that nobody agreed to is exactly the fabrication the provenance
+marks exist to prevent.
 
-**No mandate is legitimate.** Most validation that starts from a hunch has none. Write
-`none declared [A]` in the header and carry on; do not lecture, and do not manufacture a
-budget to fill the line.
+**Having no mandate is legitimate.** Most validation that starts from a hunch has none.
+When the PM says there is none, write `none declared [A]` in the header and carry on; do
+not lecture, and do not manufacture a budget to fill the line. When there *is* one, in any
+of the three forms above, carry it — a supplied mandate is never replaced with
+`none declared`.
 
 **The mandate constrains the plan, never the work.** Pillar 2 is deliberately ungoverned.
 The skill never refuses an artifact for exceeding the budget or the horizon. It *reports*:
@@ -156,15 +165,25 @@ reader should see.
 **Source:** <Aha! OPP-5 (13 refs, read-only) | 6 interview transcripts | PM interview only>
 **What's backed:** <the problem statement, the persona set>
 **What isn't:** <the urgency claim, every number in the sizing>
-**Mandate:** <OPP-5 explore · owner J. Diaz · budget 5 interviews + 1 spike (2d) · horizon 2026-10-15 · used 2/5 interviews, 0/1 spike | none declared [A]>
+**Mandate:** <OPP-5 explore · owner J. Diaz · budget 5 interviews + 1 spike (2d) · decided 2026-09-30 · horizon 2026-10-15 · used 2/5 interviews, 0/1 spike · plans 3 interviews | none declared [A]>
 Claims below are marked [E] evidence-backed, [I] inferred, [A] assumption.
 ```
 
 The `Mandate` line is the running ledger. Declared form: the decision ref, the owner, the
-budget in its units, the horizon date, and what has been used so far including this
-artifact. Undeclared form: `none declared [A]`, nothing else. One line either way, so the
-header still fits on a screen. Each artifact's own cost against the mandate goes on the
-`Mandate cost` line directly beneath the header (each artifact reference shows where).
+budget in its units, the decision date, the horizon date, what has been **used** so far,
+and what this artifact **plans** to consume. Undeclared form: `none declared [A]`, nothing
+else. One line either way, so the header still fits on a screen.
+
+**Used means consumed by work that has actually run** — sessions held, test days elapsed,
+spike days spent. Most artifacts here are plans: an interview guide, a demand test, a
+prototype brief, a spike plan describe work that has not happened yet. **A plan reserves;
+it does not spend.** An interview guide with five sessions planned and none held reads
+`used 0/5 · plans 5`, and the ledger moves to `used 5/5` only when the sessions are run.
+Exhaustion — and the routing to the viability brief that follows it — is judged on `used`.
+A plan that would carry `used` past the budget is over-plan, not over-spent: it says so on
+its Mandate cost line, and the PM decides. Each artifact's own cost goes on the
+`Mandate cost` line directly beneath the header (each artifact reference shows where),
+phrased as a plan until the work has run and as spend once it has.
 
 Write it honestly, including when the honest version is unflattering. An artifact that
 admits it rests on assumption is useful. One that hides it is a liability that gets more

@@ -32,8 +32,8 @@ units; when the budget is spent or the horizon has passed, the default next step
 viability brief. The skill reports against the mandate and never gates on it: the owner holds
 the line. The viability brief reconciles the work done against the budget and, on an explicit
 yes, closes the loop by recording the Validation Decision against the Exploration Decision so
-the next planning session sees what it funded. No mandate is legitimate — most hunches have
-none — and the skill says `none declared` rather than inventing one.
+the next planning session sees what it funded. Having no mandate is legitimate — most
+hunches have none — and the skill says `none declared` rather than inventing one.
 
 What it does **not** do: it is Build-to-**Learn**, deliberately ungoverned relative to
 delivery. It emits no Gherkin, no NFRs, no evaluation schemas, no build-ready specifications —

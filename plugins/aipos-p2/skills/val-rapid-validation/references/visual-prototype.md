@@ -36,7 +36,7 @@ One question at a time, proposing rather than asking wherever evidence already a
 
 ## Evidence base
 <the evidence-base header from evidence-intake.md>
-**Mandate cost:** <build effort in the mandate's units · the sessions it consumes · tested by <date>, inside the horizon of <date> | none declared>
+**Mandate cost:** <plans: build effort in the mandate's units · the sessions it will consume · tested by <date>, inside the horizon of <date> | none declared>
 
 **Problem:** <one line, in the user's terms> [E/I/A]
 **Target persona:** <role> [E/I/A]
