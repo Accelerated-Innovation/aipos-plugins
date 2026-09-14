@@ -26,8 +26,11 @@ nothing has not done quarterly planning. Whenever you finish an artifact, point 
 the decisions it serves and say which candidates still lack one.
 
 **This pillar ends at the Exploration Decision. Pillar 2 (Rapid Validation) begins
-there** — the explored problem enters validation with its budget and horizon, and
-`val-rapid-validation` picks it up.
+there.** Hand each *explore* entry of the decision log to `val-rapid-validation` as
+shared material — its evidence-intake Path B. That skill takes in evidence; it has no
+intake for decisions and enforces no budget. So the budget and horizon travel with the
+entry as the owner's constraint on the validation work, and the owner, not Pillar 2,
+holds the line on them.
 
 ## What this skill reads, and how
 
@@ -53,7 +56,9 @@ Absent one, the gap analysis runs on the graph alone and says so.
 
 **Hard rules.** If no MCP server is connected, stop and say what is missing — never
 run planning from memory or training data. Every number, rank, and claim in every
-artifact must be traceable to a tool call made in this session. `get_evidence_text`
+artifact either traces to a tool call made in this session and is marked `[E]`, or
+carries an `[I]` or `[A]` mark that says it does not. An unmarked figure is a defect; a
+plausible-looking figure with no tool call behind it is a worse one. `get_evidence_text`
 is a person-adjacent disclosure on the reference server (each call is access-logged);
 fetch text only when a decision turns on exact words, and never paste fetched text
 into artifacts beyond the quoted fragment the decision needs.
@@ -132,7 +137,8 @@ Owner:          <accountable owner>
 Budget:         <e.g. five interviews>       (explore only)
 Horizon:        <e.g. two weeks>             (explore only)
 Evidence cited: <lineage/evidence refs from this session>
-Recorded via:   <the governed door>
+Status:         draft — not yet recorded
+Record via:     <the governed door a human must walk through>
 Rationale:      <one sentence>
 ```
 
@@ -140,17 +146,25 @@ Rationale:      <one sentence>
 record through its own governed doors — on the reference stack, an exploration
 approval goes through the research-intake lifecycle and the propose-opportunity
 approve operation, which enforce budget, horizon, and the WIP limit server-side.
-The log's `Recorded via` line names the door; a human walks through it.
+The log's `Record via` line names the door; a human walks through it, and only then
+does the entry stop being a draft. The `Status` line travels with the entry wherever it
+is quoted, so a log read outside this session never looks like a decision already in
+the system of record.
 
 ## Dry-run mode
 
-The skill's acceptance test is a rehearsal against live data. Run the five moves
-end to end, mark every artifact **DRY RUN** at the top, and finish with a
-calibration note instead of recorded decisions: which tool answered slowly or
+The skill's acceptance test is a rehearsal against live data. Run all five moves
+end to end — the decision log included — and mark every artifact **DRY RUN** at the
+top. In the log, every agenda item still gets its row: `Decision: rehearsal — not
+decided`, the owner who would decide, the evidence cited, and the governed door the
+decision would walk through. The move the session exists for is the one a rehearsal
+must exercise. Then finish with a calibration note: which tool answered slowly or
 strangely, which grade thresholds felt wrong against real evidence, which gap
 windows (N months) produced noise versus signal, and what the pack was missing that
-the room would ask for. The dry run passes when every claim in the pack is
-traceable and the calibration note is specific enough to change the next run.
+the room would ask for. The dry run passes when every claim in the pack carries a
+provenance mark and every `[E]` traces to a tool call, every agenda item has a log
+row naming its door, and the calibration note is specific enough to change the next
+run.
 
 ## Guardrails
 
@@ -170,7 +184,7 @@ Do not:
 
 Always:
 
-- Trace every claim to a tool call; mark `[E]`/`[I]`/`[A]` on everything
+- Mark `[E]`/`[I]`/`[A]` on everything, and trace every `[E]` to a tool call
 - Grade evidence separately from rank
 - Name the governed door every decision must walk through
 - State what was NOT examined (populations skipped, windows not computed), so the
