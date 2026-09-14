@@ -1,7 +1,7 @@
 {
   "name": "aipos-p1",
   "description": "AIPOS Pillar 1 (Continuous Discovery) skills: run evidence-governed planning over a Product Definition Graph — read the ranked opportunity list over MCP, grade the evidence behind each candidate, find the coverage and attention gaps, and record the Exploration Decisions (explore with budget and horizon, decline, or defer) that hand off to Pillar 2.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Accelerated Innovation"
   },

@@ -26,11 +26,15 @@ nothing has not done quarterly planning. Whenever you finish an artifact, point 
 the decisions it serves and say which candidates still lack one.
 
 **This pillar ends at the Exploration Decision. Pillar 2 (Rapid Validation) begins
-there.** Hand each *explore* entry of the decision log to `val-rapid-validation` as
-shared material — its evidence-intake Path B. That skill takes in evidence; it has no
-intake for decisions and enforces no budget. So the budget and horizon travel with the
-entry as the owner's constraint on the validation work, and the owner, not Pillar 2,
-holds the line on them.
+there.** Hand each *explore* entry of the decision log to `val-rapid-validation`, which
+reads it as the **exploration mandate** — owner, budget, horizon, and the record ref once
+one exists. That skill carries the mandate in every artifact's header as a running ledger,
+states each artifact's cost in the mandate's own units, defaults to the viability brief
+when the budget is spent or the horizon has passed, and reconciles the work done in the
+brief. It reports against the mandate and never gates on it: the owner holds the line,
+and the governed door enforces budget, horizon, and WIP server-side. The brief's last
+step offers to record the Validation Decision back against this Exploration Decision, so
+the next session's funnel signals see what was funded and what came of it.
 
 ## What this skill reads, and how
 
@@ -139,6 +143,7 @@ Horizon:        <e.g. two weeks>             (explore only)
 Evidence cited: <lineage/evidence refs from this session>
 Status:         draft — not yet recorded
 Record via:     <the governed door a human must walk through>
+Record ref:     <empty until recorded; then the id the door produced>
 Rationale:      <one sentence>
 ```
 
@@ -147,9 +152,11 @@ record through its own governed doors — on the reference stack, an exploration
 approval goes through the research-intake lifecycle and the propose-opportunity
 approve operation, which enforce budget, horizon, and the WIP limit server-side.
 The log's `Record via` line names the door; a human walks through it, and only then
-does the entry stop being a draft. The `Status` line travels with the entry wherever it
-is quoted, so a log read outside this session never looks like a decision already in
-the system of record.
+does the entry stop being a draft. When they do, the id the door produced goes on the
+`Record ref` line — that is what Pillar 2 cites and what the Validation Decision is
+recorded against. The `Status` line travels with the entry wherever it is quoted, so a
+log read outside this session never looks like a decision already in the system of
+record.
 
 ## Dry-run mode
 

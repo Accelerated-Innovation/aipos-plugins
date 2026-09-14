@@ -178,7 +178,7 @@ Plugin: [`aipos-p1`](./plugins/aipos-p1/README.md) · `/plugin install aipos-p1@
 
 Primary output: the **Validation Decision** — go, no-go, or revise.
 
-- **[val-rapid-validation](./plugins/aipos-p2/skills/val-rapid-validation/SKILL.md)**: Build the validation artifacts that feed the Validation Decision — interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the call. Organised by the three questions the decision must answer: is the problem real, will the solution solve it, is it feasible and economic. Every claim provenance-marked; every artifact carries a decision rule.
+- **[val-rapid-validation](./plugins/aipos-p2/skills/val-rapid-validation/SKILL.md)**: Build the validation artifacts that feed the Validation Decision — interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the call. Organised by the three questions the decision must answer: is the problem real, will the solution solve it, is it feasible and economic. Every claim provenance-marked; every artifact carries a decision rule. Picks up Pillar 1's Exploration Decision as the exploration mandate — budget and horizon carried in every artifact's header, each artifact's cost stated against them, reconciled in the viability brief, and the outcome recorded back against the decision. Reports, never gates.
 
 Plugin: [`aipos-p2`](./plugins/aipos-p2/README.md) · `/plugin install aipos-p2@aipos`
 
