@@ -137,9 +137,10 @@ The primary output. For each agenda item the session decides:
 ```
 Problem:        <id> — <statement> [E]
 Decision:       explore | decline | defer
+Decided:        <session date>
 Owner:          <accountable owner>
 Budget:         <e.g. five interviews>       (explore only)
-Horizon:        <e.g. two weeks>             (explore only)
+Horizon:        <a date, or e.g. two weeks from Decided>   (explore only)
 Evidence cited: <lineage/evidence refs from this session>
 Status:         draft — not yet recorded
 Record via:     <the governed door a human must walk through>
@@ -154,7 +155,8 @@ approve operation, which enforce budget, horizon, and the WIP limit server-side.
 The log's `Record via` line names the door; a human walks through it, and only then
 does the entry stop being a draft. When they do, the id the door produced goes on the
 `Record ref` line — that is what Pillar 2 cites and what the Validation Decision is
-recorded against. The `Status` line travels with the entry wherever it is quoted, so a
+recorded against. The `Decided` date is what turns a horizon like "two weeks" into a
+deadline Pillar 2 can check against; never omit it. The `Status` line travels with the entry wherever it is quoted, so a
 log read outside this session never looks like a decision already in the system of
 record.
 
