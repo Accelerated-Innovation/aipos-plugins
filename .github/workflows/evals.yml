@@ -1,0 +1,76 @@
+# Model-graded skill evals — MANUAL ONLY.
+#
+# Deliberately not a PR check. An LLM-judged gate is non-deterministic, and a
+# required check that fails occasionally for no reason trains people to re-run
+# until green; govkit-feature-refine's own guidance says why that is corrosive
+# ("false gates teach teams to ignore real ones"). A secrets-dependent job also
+# cannot run on fork PRs at all.
+#
+# The merge gate stays validate.yml: offline, key-free, deterministic.
+name: Skill evals (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      skill:
+        description: "Skill to evaluate (e.g. govkit-feature-create)"
+        required: true
+        type: string
+      model:
+        description: "Subject model"
+        required: false
+        default: "claude-opus-5"
+        type: string
+      judge_model:
+        description: "Judge model (must differ from the subject)"
+        required: false
+        default: "claude-sonnet-5"
+        type: string
+      reps:
+        description: "Repetitions per case"
+        required: false
+        default: "1"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    name: Run skill evals
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements-evals.txt
+
+      - name: Run evals
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY is not configured for this repository."
+            echo "Add it in Settings > Secrets, or run the evals locally."
+            exit 1
+          fi
+          python evals/run_evals.py \
+            --skill "${{ inputs.skill }}" \
+            --model "${{ inputs.model }}" \
+            --judge-model "${{ inputs.judge_model }}" \
+            --reps "${{ inputs.reps }}" \
+            --execute
+
+      - name: Upload results and traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results-${{ inputs.skill }}
+          path: .claude/hillclimb/
+          if-no-files-found: warn

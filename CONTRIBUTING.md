@@ -38,10 +38,23 @@ The `pytest` suite covers the bundled Python scripts — Gherkin ingestion fidel
 
 Each skill's `evals/evals.json` is a separate, **model-graded** pass. Those cases need a model and are not part of the deterministic gate; when you run them, say which cases ran and what the results were. Never report an eval as passing unless it actually ran.
 
+`evals/run_evals.py` is what runs them:
+
+```bash
+python -m pip install -r requirements-evals.txt
+python evals/run_evals.py --skill govkit-feature-create             # dry run, free
+python evals/run_evals.py --skill govkit-feature-create --execute   # real calls, real money
+```
+
+`--execute` is required to spend anything. The skill's `SKILL.md` becomes the system prompt and a **different** model grades the response against the case's `expected_output`. Results and full traces land in `.claude/hillclimb/<skill>/<variant>/` (gitignored) — read the traces, not just the score. Details and the limits of what a passing run proves: [`evals/README.md`](evals/README.md).
+
+It is deliberately **not** a required check. The merge gate stays offline and key-free; the eval job is `workflow_dispatch`. Run it when a change touches coaching behaviour and paste the result into the PR.
+
 Then check:
 
 - [ ] `claude plugin validate .` passes.
 - [ ] `python -m pytest tests -q` passes.
+- [ ] If the change touches coaching behaviour (a `SKILL.md`, a reference it reads, or an eval case), ran `evals/run_evals.py` for the affected skill and reported which cases ran, the models used, and the results — or said plainly that it was not run.
 - [ ] JSON files (`marketplace.json`, `plugin.json`, any `evals.json`) are valid and consistent (names, descriptions, keywords).
 - [ ] Bumped `version` in the affected plugin's `.claude-plugin/plugin.json` if the change is user-visible. Users pick up updates with `/plugin marketplace update aipos`.
 - [ ] Updated the [README](README.md) and any relevant `references/` if behavior changed.
