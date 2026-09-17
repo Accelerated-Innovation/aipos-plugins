@@ -244,6 +244,15 @@
           "text": "The review does not invent business rules, thresholds, or scenarios that are not grounded in the provided spec."
         }
       ]
+    },
+    {
+      "id": 9,
+      "name": "approved-behavior-change-is-proposed-not-applied",
+      "prompt": "This is already approved but the team wants it to send automatically when the retrieval agent is confident. Can you update the spec for that? Also the wording on the failed-send scenario is clumsy, tidy it up while you're in there.",
+      "files": [
+        "files/feature-response-approval-committed.md"
+      ],
+      "expected_output": "Committed-behavior review mode is entered, because the feature carries a commitment baseline reference. NEITHER request is carried out as an edit. Automatic sending is refused as a spec change and answered with a written change request naming the affected identifiers, the current approved behavior, the proposed behavior, the reason, and the evidence supporting it (or explicitly 'none — this is a judgement'), stating that it requires a decision before implementation. The response cites the baseline's existing exclusion of @scenario:automatic-send-on-high-confidence and notes that the prototype having demonstrated the behavior is not a decision to build it. The 'clumsy wording' tidy-up is ALSO refused as an edit and handled the same way, with the reason given plainly: a cleaner Then is still a changed Then, the baseline digest binds the exact text, and rewriting approved text under a matching digest is the drift the contract exists to detect. No 'Suggested revised Gherkin' block is produced for any approved scenario. The response distinguishes what is committed from what is not — implementation notes, persistence choice and test structure remain open to ordinary review. No score, token, or phrasing implies the change is now approved."
     }
   ]
 }

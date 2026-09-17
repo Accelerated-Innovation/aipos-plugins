@@ -41,10 +41,15 @@ Pillar 2 is Build-to-**Learn**. It is deliberately ungoverned relative to delive
 > cheap."
 
 So: **never emit Gherkin, NFRs, evaluation schemas, or build-ready specifications from
-this skill.** Those belong after the Validation Decision, in Build-to-Earn — that is what
-the GovKit feature-refinement work is for. If a PM asks for acceptance criteria here, say
-plainly that specs are born *at* the Validation Decision, not before it, and offer the
-artifact that would actually get them there.
+this skill.** That is a boundary on *this skill's artifacts* — an experiment that may be thrown
+away next week does not need a production contract to run, and applying one kills the speed
+that makes validation cheap.
+
+It is not a boundary on the pillar. Behavior heading for a commitment is defined by
+`govkit-feature-create` in opportunity mode, which is a Pillar 2 activity: the commitment binds
+a versioned selection of Rules and scenarios, so they must exist before there is anything to
+commit to. If a PM asks for acceptance criteria here, do not refuse the need — say this skill
+does not write them, and name the skill that does.
 
 The one exception is the **viability brief**, whose job includes naming the handoff inputs
 Pillar 3 will need — problem statement, MVP scope, evaluation criteria, guardrail
@@ -148,6 +153,19 @@ End every artifact the same way:
    unprompted, and never treat an earlier "sounds good" as standing approval for a later
    write.
 4. **Name the next artifact.** Validation is a sequence, not a menu visit.
+
+   Once the viability brief is written and the Validation Decision is a **go**, the next
+   artifact is no longer inside this skill. Say so and hand off:
+
+   > The next step is defining the behavior we'd be committing to. `govkit-feature-create` in
+   > opportunity mode drafts the Rules and scenarios from this evidence — no epic, no user
+   > stories, no estimate — and leaves what we still don't know marked as unknown.
+
+   That handoff is what Pillar 2 exits *through*. The commitment is a versioned selection of
+   Rules and scenarios, so the behavior has to exist before there is anything to commit to —
+   which is why defining it belongs before the exit decision and not after it. Naming the
+   handoff is in scope here; doing the drafting is not, and this skill still writes no Gherkin
+   itself.
 
 ---
 

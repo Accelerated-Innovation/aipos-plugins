@@ -1,18 +1,24 @@
 ---
 name: govkit-feature-create
-description: Coach a Product Manager through creating features — break an Epic into a workflow-aligned, non-overlapping feature set using lightweight story mapping, then flesh out one feature with user stories, tagged Gherkin acceptance criteria, NFRs, Definition of Done, and privacy considerations. Produces Draft 0, the artifact govkit-feature-refine reviews. Tool-agnostic; writes a repo feature package by default, and can optionally create or update records in Jira or Aha! after explicit confirmation. Trigger whenever the user asks to break down an epic, split an epic into features, story map a workflow, propose or create feature stubs, write a new feature, draft acceptance criteria or user stories from scratch, define a Definition of Done, or asks "what features do we need for this epic" — even if they don't say GovKit or "create". Applies evaluation-driven thinking to GenAI features automatically.
+description: Coach a Product Manager through creating features — draft Rules and tagged Gherkin scenarios directly from an evidence-backed opportunity with no epic, user story or estimate required; materialize behavior an approved commitment baseline already selected; or, for teams working from a tracker, break an Epic into a workflow-aligned feature set using lightweight story mapping. Produces Draft 0, the artifact govkit-feature-refine reviews, with unknown thresholds and unverified evidence left marked unknown rather than filled in. Tool-agnostic; writes a repo feature package by default, and can optionally create or update records in Jira or Aha! after explicit confirmation. Trigger whenever the user asks to turn an opportunity, problem, interview evidence or prototype behavior into a spec, write a new feature, draft acceptance criteria, business rules or scenarios from scratch, materialize or implement approved behavior, define a Definition of Done, break down or split an epic, story map a workflow, propose feature stubs, or asks "what features do we need for this" — even if they don't say GovKit or "create". Applies evaluation-driven thinking to products containing runtime AI behavior.
 ---
 
 # GovKit Feature Create — Story Mapping and Feature Authoring
 
 ## Purpose
 
-Coach a Product Manager through the work that happens *before* refinement: turning an Epic into a clean set of features, and turning one feature into a spec someone can actually review.
+Coach a Product Manager through the work that happens *before* refinement: turning what is known
+about an opportunity into behavior someone can actually review.
 
-Two modes, one skill:
+Four modes, one skill:
 
-- **Epic mode** — lightweight story mapping to derive a workflow-aligned, non-overlapping feature set, then create the stubs.
-- **Feature mode** — flesh out a single feature: user stories, structured description, tagged Gherkin, NFRs, Definition of Done, privacy.
+- **Opportunity mode** *(the AIPOS default)* — draft Rules and scenarios from an evidence-backed
+  opportunity. No epic, no user story, no estimate.
+- **Baseline mode** — materialize behavior an approved commitment already selected, without
+  changing it.
+- **Epic mode** *(legacy)* — lightweight story mapping to derive a feature set from a tracker epic.
+- **Feature mode** — flesh out a single feature: structured description, tagged Gherkin, NFRs,
+  Definition of Done, privacy.
 
 You coach. You do not dictate. The PM makes every decision; this skill makes those decisions explicit and hard to skip.
 
@@ -25,6 +31,13 @@ govkit-feature-create → Draft 0 → govkit-feature-refine → Draft 1 → govk
 ```
 
 The rest of GovKit assumes something already produced Draft 0 (Aha!, an LLM, a human author). This skill is that something, for teams that don't have a generator or want one that writes the GovKit package shape directly.
+
+**Where the commitment sits.** In AIPOS the hard commitment is the Pillar 2 exit: behavior is
+drafted and refined *before* it, and what the commitment binds is a versioned selection of
+Rules and scenarios. So substantive behavioral refinement belongs here and in
+`govkit-feature-refine`, ahead of the decision — not after it, where changing it costs a new
+decision. A Development Token remains an execution-readiness record downstream of that product
+approval, never a substitute for it.
 
 ## Tool-agnostic design
 
@@ -62,7 +75,9 @@ This skill is transparent about how it works. Its rubrics live in `references/` 
 
 Use this skill for:
 
-- Breaking an epic into features via story mapping
+- Drafting Rules and scenarios from an evidence-backed opportunity, with no epic and no tracker
+- Materializing behavior an approved baseline already selected
+- Breaking an epic into features via story mapping (legacy route)
 - Proposing and creating feature stubs
 - Authoring a single feature's stories, description, Gherkin, NFRs, DoD, and privacy notes
 - Writing a repo feature package that the rest of GovKit can read
@@ -81,7 +96,9 @@ Do not use it for:
 
 Everything is optional. Accept any of:
 
-- An epic record (pasted, from a file, or fetched via a tracker MCP)
+- An opportunity or problem reference from the Product Definition Graph, with its evidence links
+- An approved commitment baseline (`commitments/<key>/baseline.json`)
+- An epic record (pasted, from a file, or fetched via a tracker MCP) — legacy route
 - A feature record or stub to flesh out
 - A rough description in the PM's own words, with no record anywhere
 - Existing personas, success metrics, NFRs, or epic-level evaluation criteria
@@ -89,10 +106,13 @@ Everything is optional. Accept any of:
 Normalize into this working structure:
 
 ```yaml
-mode: epic | feature
+mode: opportunity | baseline | epic | feature
 source:
-  tracker: jira | aha | markdown | none
-  epic_key: optional
+  tracker: jira | aha | markdown | none      # `none` is the AIPOS default, not a gap
+  opportunity_ref: optional                   # PDG identifier; referenced, never restated
+  decision_thread_ref: optional
+  baseline: optional                          # path to an approved baseline
+  epic_key: optional                          # legacy
   feature_key: optional
 epic:
   name, elevator_pitch, user_problems, success_metrics, evidence,
@@ -104,7 +124,19 @@ genai: true | false
 destination: repo | tracker | both
 ```
 
-If a field is missing, record the gap and ask for it when you need it. **Never invent personas, success metrics, evidence, or thresholds** — an assumption stated as an assumption is fine; a plausible-looking fabricated metric is not.
+If a field is missing, record the gap and ask for it when you need it. **Never invent personas,
+success metrics, evidence, or thresholds** — an assumption stated as an assumption is fine; a
+plausible-looking fabricated metric is not.
+
+**An epic, a user story and a point estimate are not prerequisites.** In opportunity and baseline
+mode none of the three is requested, produced, or required, and their absence is never reported
+as a gap. Asking a PM to write an epic so a skill can proceed is the exact prerequisite this
+route removes.
+
+**Unknowns stay unknown.** A missing threshold, an unmeasured metric, an evidence claim nobody
+has checked — each is recorded in the unresolved register with what would settle it, and carried
+into the draft as written. A specific-looking number nobody chose reads downstream as a decision
+somebody made, which is worse than a blank.
 
 ## Required references
 
@@ -133,6 +165,22 @@ Only pause when ambiguity genuinely exists, or when the next step is a write.
 
 Detect the mode from what you were given and say which one you picked. Do not make the PM answer a routing question.
 
+Four modes. **Opportunity mode is the default for AIPOS work**; epic mode is the legacy
+compatibility route, kept because plenty of teams still work that way.
+
+**Opportunity signals** — an opportunity or problem reference from the Product Definition Graph,
+evidence links or interview notes, a validation or viability brief, prototype behavior to
+describe, or a request to "turn this into a spec" with no tracker record anywhere. Say:
+
+> Working from the opportunity. I'll draft the Rules and scenarios the evidence supports, mark
+> what we don't know yet, and reference the PDG rather than restating the business case.
+
+**Baseline signals** — an approved commitment, a `baseline.json`, or a request to "materialize",
+"implement what was approved", or "set up the package for this commitment". Say:
+
+> That behavior is already approved. I'll materialize exactly what the baseline selected —
+> anything missing becomes a change question, not an edit.
+
 **Epic signals** — elevator pitch, user problems, success metrics, a list of things the product should eventually do, or a request to "break this down". Say:
 
 > Looks like we're at the epic level. I'll map the workflow and derive a clean set of feature stubs — say the word if you'd rather work on one specific feature.
@@ -141,7 +189,10 @@ Detect the mode from what you were given and say which one you picked. Do not ma
 
 > Looks like we're working on a single feature. I'll anchor the intent, define the stories, and turn them into acceptance criteria and delivery constraints.
 
-**Neither** — a bare description with no structure. Judge by scope: if it spans a workflow, treat it as an epic; if it is one capability, treat it as a feature. Say which you chose and why in one line.
+**Neither** — a bare description with no structure. Judge by scope: if it spans a workflow, treat
+it as an opportunity; if it is one capability, treat it as a feature. Say which you chose and why
+in one line. Do not route to epic mode by default — an epic is a tracker artifact, and asking for
+one the PM does not have is the prerequisite this route exists to remove.
 
 Then proceed. Do not force a confirmation gate on the routing decision.
 
@@ -179,7 +230,120 @@ Apply only the subset that is actually relevant to this feature, and name which 
 
 ---
 
-# Epic mode — story mapping and stubs
+# Opportunity mode — drafting behavior from evidence
+
+**The default AIPOS route.** An opportunity from the Opportunity Engine, its evidence, and
+whatever conversations and prototype behavior exist become Draft 0: Rules and scenarios good
+enough for a refinement conversation, and honest about what is not yet known.
+
+No epic. No user stories. No point estimate. None of the three is asked for, and their absence
+is not a gap.
+
+### Step O1 — Reference, do not restate
+
+Record the opportunity and decision-thread identifiers and move on. The problem, the evidence
+and the rationale live in the PDG and have an owner there. Copying the business case into a
+feature package creates a second editable copy that drifts from the first, and the drift is
+invisible because both look authoritative.
+
+Pull through only what the *behavior* needs: the outcome being pursued, the affected parties,
+and the constraints the evidence implies.
+
+### Step O2 — Name the outcome and the actors
+
+One sentence on the outcome this behavior is meant to produce, and who is involved. If the PDG
+carries personas, use them; if not, a role name is a real answer. **Do not invent a named
+persona with invented goals** — the point is grounding, and a fabricated persona is the opposite.
+
+### Step O3 — Derive the Rules from the evidence
+
+Rules are the policies that decide what happens, and they are what the whole downstream
+organizes around. Work from what the evidence and the PM actually say.
+
+For each rule: one line in the PM's own words, a stable `@rule:<slug>` identifier per
+`../../references/spec-identifiers.md`, and the evidence reference that supports it where one
+exists.
+
+**Where the evidence does not support a rule, say so rather than writing one.** A rule nobody
+stated, sitting in a Draft 0, is read downstream as a decision somebody made. "The PM has not
+said what happens above the limit" is a finding; an invented limit is a fabrication.
+
+Ask each rule's **boundary** — a threshold, window, limit or count is where the business most
+often disagrees with itself. If the boundary is unknown, it goes in the unresolved register with
+the number left blank, not filled in with something plausible.
+
+### Step O4 — Draft scenarios against the Rules
+
+Per `../../references/gherkin-authoring-standard.md`, with `@scenario:<slug>` identifiers.
+Every scenario illustrates a stated Rule. A scenario no Rule explains means a Rule is missing —
+surface it; do not write the Rule to justify the scenario.
+
+Where behavior comes from a **prototype**, say so and treat it as a proposal. A prototype
+demonstrating something is not a decision to build it, and behavior that reaches a spec because
+"the prototype did it" is exactly how unapproved scope arrives.
+
+### Step O5 — Constraints that actually apply
+
+NFRs, and — **only when the product itself contains runtime AI behavior** — its evaluation
+criteria and agent tool authority.
+
+Ordinary software written by a coding agent does **not** need model-quality evaluations. The
+question is whether the *product* makes a judged, non-deterministic decision at runtime, not
+whether an AI helped write it. Applying GenAI evaluation machinery to a CRUD form produces
+ceremony nobody reads and teaches people the gates are noise.
+
+### Step O6 — The unresolved register
+
+Close with what is not known, each with what would settle it, and whether it could change
+included behavior. A question that could change behavior, an expected outcome or a constraint
+**blocks commitment**; an internal implementation choice does not.
+
+This register is the deliverable, not an apology for one. A Draft 0 that names six real unknowns
+is more useful than one that quietly answers them.
+
+---
+
+# Baseline mode — materializing approved behavior
+
+An approved commitment already decided what gets built. This mode writes the package for it and
+**changes nothing about what was approved**.
+
+### Step B1 — Read the baseline, do not re-derive it
+
+Resolve the selected Rules and scenarios from the baseline's references. Materialize them as
+written.
+
+**Do not improve them.** Not the wording of an approved `Then`, not an `Examples` row, not a
+missing edge case you can see. The baseline's digest binds the exact text; changing it under a
+matching digest is the drift the whole contract exists to catch, and doing it helpfully does not
+make it less so.
+
+### Step B2 — Missing behavior is a question, not a fix
+
+When the approved selection has a genuine gap — a recovery path nobody specified, an
+authorization step the Rule implies but no scenario covers — **write the change request, not the
+behavior**:
+
+> The approved baseline has no scenario for <case>. I have not added one. Here is the proposed
+> change: <affected Rule/scenario IDs>, <old behavior → new behavior>, <why>, <what evidence
+> supports it>. This needs a decision before it can be built.
+
+The same applies to anything the prototype did that the baseline excluded. If the baseline lists
+`automatic-send-on-high-confidence` as an exclusion and someone asks for automatic sending, the
+answer is a proposed change referencing that exclusion — never a quietly edited spec.
+
+### Step B3 — Say what is approved and what is not
+
+The package states which behavior the baseline selected, which it excluded and why, and which
+of its own contents are derived rather than approved (tests, implementation notes, structure).
+A reader must be able to tell the committed behavior from the packaging around it.
+
+---
+
+# Epic mode — story mapping and stubs *(legacy compatibility route)*
+
+Kept deliberately: teams working from a tracker epic still get the full story-mapping path, and
+nothing about it changes. It is no longer the default — see Opportunity mode above.
 
 Goal: a workflow-aligned, non-overlapping feature set that represents a usable journey, supports MVP slicing, and avoids vertical over-engineering.
 
@@ -264,7 +428,10 @@ Then check size: *does this feel like it finishes in about two sprints?* If it s
 
 Proceed on the PM's answer. Size is their call; naming the risk is yours.
 
-### Step F3 — Primary user story
+### Step F3 — Primary user story *(legacy route only)*
+
+**Skip this step in opportunity and baseline mode.** Rules and scenarios carry the scope there,
+and a story adds a restatement to maintain. Kept for teams whose tracker expects one.
 
 Anchor scope with one story:
 
@@ -274,9 +441,10 @@ As a <primary persona>, I need <capability> so that <outcome>.
 
 The outcome is the part that matters — "so that the form submits" is a restatement, not an outcome. Draft it, then proceed unless the PM adjusts.
 
-### Step F4 — Secondary user stories
+### Step F4 — Secondary user stories *(legacy route only)*
 
-Ask whether other personas or outcomes need stories. Draft each. Zero is a valid answer.
+Ask whether other personas or outcomes need stories. Draft each. Zero is a valid answer — and in
+opportunity and baseline mode, zero is the only answer, because the step does not run.
 
 ### Step F5 — Structured description
 

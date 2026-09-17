@@ -150,6 +150,24 @@
           "text": "Unknown details (thresholds, personas, dependencies) are recorded as open questions or gaps rather than invented to complete the template."
         }
       ]
+    },
+    {
+      "id": 5,
+      "name": "opportunity-mode-drafts-without-epic-story-or-estimate",
+      "prompt": "Here's the opportunity we decided to explore. Can you turn this into a spec we could actually refine?",
+      "files": [
+        "files/opportunity-support-response.md"
+      ],
+      "expected_output": "Opportunity mode is detected and stated in one line without a routing question. The response NEVER asks for an epic, a user story, or a point estimate, and never reports their absence as a gap or a missing prerequisite. The opportunity and decision-thread identifiers are referenced, not restated: the business case, the evidence table and the rationale are pointed at rather than copied into the draft. Rules are derived from what the evidence and the conversations actually say, each with a @rule:<slug> identifier, and each traceable to the evidence reference supporting it. Scenarios follow with @scenario:<slug> identifiers, each illustrating a stated Rule. The contradicting evidence (PDG-EV-2213, the high-volume team lead) is carried through as recorded and unresolved rather than dropped for being inconvenient. Behavior taken from the prototype is labelled as coming from the prototype and treated as a proposal, not as decided. The response does not produce a story-mapping backbone, horizontal slices or feature stubs, because those belong to epic mode."
+    },
+    {
+      "id": 6,
+      "name": "unknown-thresholds-and-unmeasured-claims-stay-unknown",
+      "prompt": "Draft the rules and scenarios for this. Give me something concrete I can take to the team.",
+      "files": [
+        "files/opportunity-support-response.md"
+      ],
+      "expected_output": "Three unknowns are recorded in the unresolved register rather than answered: what counts as sufficient evidence for the retrieval agent (no number is invented — not 0.8, not 80%, not 'high confidence' dressed as a threshold), what happens when the agent cannot find enough evidence (the behavior is named as unspecified rather than designed), and how long approval records must be retained (the compliance lead's remark is recorded without a duration being supplied). Each unknown states what would settle it. Where an unknown could change included behavior or an expected outcome, it is marked as blocking commitment; an internal implementation choice is not. The response explicitly declines to fill any of them in, and says why in one line — a specific-looking number nobody chose reads downstream as a decision somebody made. Asking the user for the missing values is correct; producing a plausible default is a failure of this case even if the draft is otherwise complete."
     }
   ]
 }
