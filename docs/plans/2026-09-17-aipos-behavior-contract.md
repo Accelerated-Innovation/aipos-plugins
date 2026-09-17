@@ -22,7 +22,7 @@ reproducible commitment package ready for a human decision.
 | 03 | **Done.** Opportunity mode (the AIPOS default) and baseline mode in `govkit-feature-create`; committed-behavior review in `govkit-feature-refine`; Pillar 2 handoff in `val-rapid-validation` | the three skills, their evals, `tests/test_eval_cases.py` |
 | 04 | **Done.** Scope selection separated from the optional complexity diagnostic; shippability check; tags as views; consequence rule aligned across both references | `govkit-feature-slice`, slicing rubric, story-mapping reference |
 | 05A | **Done.** `govkit-workflow-map` authoring skill + `coverage()` in the resolver | `plugins/govkit/skills/govkit-workflow-map/`, `workflow_resolve.py` |
-| 05B | L1 / L2 / L3 views beside the existing producer/consumer chain | `repo_ingest.py`, `render_map.py`, their references and tests |
+| 05B | **Done.** L1/L2/L3 journey views beside the producer/consumer chain, advisory status, uncovered panel | `render_map.py`, `references/rendering.md`, `tests/test_render_map.py` |
 | 06 | The Pillar 2 commitment package; the Gherkin prohibition replaced by progressive drafting | `val-rapid-validation`, `references/viability-brief.md` |
 | 14 | Readiness, maps and change-review consuming the real validators and decision reads | `govkit-feature-readiness`, `govkit-feature-refine`, `govkit-feature-map`, `govkit-metrics-emit` |
 | 15 | Plugin descriptions, README routes, installed dependency handling, evals, examples | all three plugins |
@@ -169,4 +169,16 @@ cross-plugin reach and a duplicated shared reference. One plugin owning format, 
 rendering is the cohesion that boundary decision protects. The skill's purpose is still Pillar 2
 and its description says so.
 
-Increment 05B, 06 and 14–15 remain unimplemented. No approval or release is authorized by this.
+**Increment 05B is implemented.** `render_map.py` takes `-w <resolved workflow>` and adds a
+journey section: L1 (outcome, ordered activities, actors, branch conditions — no Gherkin), L2
+(steps, actor kinds, handoffs) and L3 (the behavior governing each step, linked to its feature
+card). It consumes the resolver's output rather than resolving itself, so the renderer cannot
+disagree with the resolver about what a reference means.
+
+A Rule referenced from several steps renders once per reference with an "also referenced at"
+column, so reuse reads as reuse. Unresolved references — `design:` kinds and foreign-source
+ones — render as plain text with the reason rather than as links to cards that do not exist.
+Uncovered behavior gets its own panel. The page carries an advisory banner and no approval
+badge: it is generated from a working tree and cannot verify that any decision was recorded.
+
+Increments 06 and 14–15 remain unimplemented. No approval or release is authorized by this.

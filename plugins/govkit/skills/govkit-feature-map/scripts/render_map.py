@@ -558,6 +558,182 @@ def card(f, scores, sizing, central):
 {rules}</details>{nfrb}{evb}{oqb}{oosb}{dodb}</div></article>'''
 
 
+
+# ------------------------------------------------------------------ workflow views
+
+def _actor_map(view):
+    return {a.get("id"): a for a in view.get("actors") or []}
+
+
+def _actor_label(actors, aid):
+    a = actors.get(aid)
+    if not a:
+        return e(aid or "&#8212;")
+    kind = a.get("kind") or ""
+    mark = {"human": "&#9679;", "system": "&#9632;", "agent": "&#9670;"}.get(kind, "&#9675;")
+    return f'<span class="actor k-{e(kind)}"><i aria-hidden="true">{mark}</i>{e(a.get("name") or aid)}</span>'
+
+
+def wf_l1(views):
+    """L1 — the customer journey. No Gherkin: this is the view someone outside
+    the team reads, and a rule slug leaking into it is the failure mode."""
+    v = views.get("l1") or {}
+    actors = _actor_map(v)
+    rows = ""
+    for a in v.get("activities") or []:
+        nxt = a.get("next") or []
+        if nxt:
+            to = "".join(
+                f'<li><a href="#wfa-{e(x.get("to"))}">{e(x.get("to"))}</a>'
+                + (f' <em>when {e(x["condition"])}</em>' if x.get("condition") else
+                   ' <em class="warn">no stated condition</em>' if len(nxt) > 1 else "")
+                + "</li>" for x in nxt)
+            to = f"<ul class='nx'>{to}</ul>"
+        else:
+            to = '<em>ends the journey</em>'
+        rows += (f'<tr id="wfa-{e(a.get("id"))}"><td class="an">{e(a.get("name") or a.get("id"))}</td>'
+                 f'<td>{_actor_label(actors, a.get("actor"))}</td><td>{to}</td></tr>')
+    return (f'<p class="h2s">{e(v.get("outcome") or "")}</p>'
+            f'<table class="led wf"><tr><th>Activity</th><th>Actor</th><th>Then</th></tr>'
+            f'{rows}</table>')
+
+
+def wf_l2(views):
+    """L2 — who collaborates inside each activity, and where work changes
+    hands. Handoffs get their own column because that is where most real
+    defects live and adjacency hides them."""
+    v = views.get("l2") or {}
+    actors = _actor_map(v)
+    out = ""
+    for a in v.get("activities") or []:
+        steps = a.get("steps") or []
+        if not steps:
+            body = '<p class="h2s"><em>no steps recorded</em></p>'
+        else:
+            rows = ""
+            for st in steps:
+                h = st.get("handoff") or {}
+                hand = (f'{_actor_label(actors, h.get("from"))} &#8594; '
+                        f'{_actor_label(actors, h.get("to"))}') if h else "&#8212;"
+                rows += (f'<tr><td class="an">{e(st.get("name") or st.get("id"))}</td>'
+                         f'<td>{_actor_label(actors, st.get("actor"))}</td><td>{hand}</td></tr>')
+            body = (f'<table class="led wf"><tr><th>Step</th><th>Actor</th>'
+                    f'<th>Handoff</th></tr>{rows}</table>')
+        out += (f'<details class="wfact" open><summary>{e(a.get("name") or a.get("id"))}'
+                f'<span class="ls">{_actor_label(actors, a.get("actor"))}</span></summary>'
+                f'{body}</details>')
+    return out
+
+
+def wf_l3(views, coverage):
+    """L3 — the behavior governing each step, by reference.
+
+    A Rule referenced from several activities is authored once. `referencedBy`
+    is rendered next to it so the reuse reads as reuse rather than as three
+    copies of the same Rule.
+    """
+    v = views.get("l3") or {}
+    refby = v.get("referencedBy") or {}
+    out = ""
+    for a in v.get("activities") or []:
+        items = ""
+        for b in (a.get("behavior") or []) + (a.get("design") or []):
+            items += _wf_ref_row(b, refby)
+        for st in a.get("steps") or []:
+            for b in st.get("behavior") or []:
+                items += _wf_ref_row(b, refby, step=st.get("name") or st.get("id"))
+        if not items:
+            items = '<tr><td colspan="4"><em>no behavior referenced at this activity</em></td></tr>'
+        out += (f'<details class="wfact" open><summary>{e(a.get("name") or a.get("id"))}</summary>'
+                f'<table class="led wf"><tr><th>Behavior</th><th>Where</th><th>Identity</th>'
+                f'<th>Also referenced at</th></tr>{items}</table></details>')
+
+    unc = coverage.get("uncovered") or []
+    if unc:
+        rows = "".join(
+            f'<tr><td class="an">{e(u.get("name") or u.get("slug"))}</td>'
+            f'<td><code>{e(u.get("kind"))}:{e(u.get("slug"))}</code></td>'
+            f'<td>{e(u.get("featureKey"))}</td></tr>' for u in unc)
+        out += ('<details class="wfact"><summary>Not touched by this journey '
+                f'<span class="ls">{len(unc)}</span></summary>'
+                '<p class="h2s">Behavior in the corpus that no activity or step references. '
+                'Legitimate if it belongs to another journey &#8212; but unreferenced behavior '
+                'is behavior this map implies does not exist.</p>'
+                f'<table class="led wf"><tr><th>Behavior</th><th>Identity</th><th>Feature</th>'
+                f'</tr>{rows}</table></details>')
+    return out
+
+
+def _wf_ref_row(b, refby, step=None):
+    ref = b.get("ref") or ""
+    others = [x for x in refby.get(ref, []) if not step or not x.endswith(step)]
+    also = ", ".join(e(o) for o in others) if len(refby.get(ref, [])) > 1 else "&#8212;"
+
+    if not b.get("resolved"):
+        why = b.get("reason") or "unresolved"
+        label = ("declared outside the Gherkin corpus" if why == "non-gherkin-kind"
+                 else "in another repository &#8212; not resolvable here" if why == "foreign-source"
+                 else "unresolved")
+        name = f'<em>{e(ref)}</em>'
+        ident = f'<span class="warn">{e(label)}</span>'
+    else:
+        anchor = e(b.get("featureKey") or "")
+        name = f'<a href="#{anchor}">{e(b.get("name") or b.get("slug"))}</a>'
+        tags = " ".join(f'<span class="chip">{e(t)}</span>' for t in (b.get("tags") or [])
+                        if t.startswith("@mvp") or t.startswith("@v1") or t.startswith("@v2"))
+        derived = ('<span class="warn"> derived id</span>'
+                   if b.get("idSource") == "derived" else "")
+        ident = f'<code>{e(b.get("kind"))}:{e(b.get("slug"))}</code>{derived} {tags}'
+    where = e(step) if step else "<em>activity</em>"
+    return f'<tr><td class="an">{name}</td><td>{where}</td><td>{ident}</td><td>{also}</td></tr>'
+
+
+def workflow_section(resolved):
+    """The whole workflow block: three views, diagnostics, and an honest status.
+
+    Rendered from the resolver's output, so this function performs no
+    resolution of its own and cannot disagree with the resolver about what a
+    reference means.
+    """
+    if not resolved:
+        return ""
+    views = resolved.get("views") or {}
+    cov = resolved.get("coverage") or {}
+    diags = resolved.get("diagnostics") or []
+    errs = [d for d in diags if d.get("level") == "error"]
+    warns = [d for d in diags if d.get("level") != "error"]
+
+    def dlist(items):
+        return "".join(
+            f'<li><code>{e(d.get("code"))}</code> {e(d.get("message"))}'
+            + (f' <span class="ls">{e(d.get("activity") or d.get("element") or "")}</span>'
+               if d.get("activity") or d.get("element") else "")
+            + "</li>" for d in items)
+
+    diag_block = ""
+    if errs or warns:
+        diag_block = (
+            f'<details class="wfact"{" open" if errs else ""}>'
+            f'<summary>Diagnostics <span class="ls">{len(errs)} error, {len(warns)} warning'
+            f'</span></summary><ul class="wfd">{dlist(errs)}{dlist(warns)}</ul></details>')
+
+    return (
+        '<h2 id="workflow">The journey</h2>'
+        '<p class="h2s">One workflow source, three views. Behavior is referenced, never '
+        'restated &#8212; a Rule shown at several steps is authored once.</p>'
+        '<p class="advisory"><strong>Advisory view.</strong> Slice chips are a planning view '
+        'over behavior, not a commitment, and nothing here is an approval: this page is '
+        'generated from files in a working tree and cannot verify that any decision was '
+        'recorded.</p>'
+        '<details class="wfview" open><summary>L1 &#8212; customer journey</summary>'
+        f'{wf_l1(views)}</details>'
+        '<details class="wfview"><summary>L2 &#8212; who collaborates, and where work changes '
+        f'hands</summary>{wf_l2(views)}</details>'
+        '<details class="wfview"><summary>L3 &#8212; the behavior that governs each step'
+        f'</summary>{wf_l3(views, cov)}</details>'
+        f'{diag_block}')
+
+
 # ------------------------------------------------------------------ document
 
 CSS = """
@@ -790,7 +966,33 @@ fb.forEach(function(b){b.addEventListener('click',function(){
 """
 
 
-def render(feats, scores, sizing, cfg):
+WF_CSS = """
+.advisory{background:#fff8e6;border:1px solid #e8d9a8;border-radius:6px;padding:.6rem .8rem;
+ margin:.6rem 0 1rem;font-size:.86rem;line-height:1.45}
+details.wfview{border:1px solid #dcdfe4;border-radius:8px;margin:.5rem 0;background:#fff}
+details.wfview>summary{padding:.6rem .85rem;font-weight:600;cursor:pointer;list-style:revert}
+details.wfview[open]>summary{border-bottom:1px solid #eceef1}
+details.wfview>*:not(summary){padding:0 .85rem .7rem}
+details.wfact{margin:.4rem 0;border-left:3px solid #e3e6ea;padding-left:.7rem}
+details.wfact>summary{cursor:pointer;font-weight:600;padding:.25rem 0;list-style:revert}
+table.wf td,table.wf th{vertical-align:top}
+ul.nx{margin:0;padding-left:1.1rem}
+ul.wfd{margin:.3rem 0;padding-left:1.1rem;font-size:.86rem}
+ul.wfd code{background:#f3f4f6;padding:.05rem .3rem;border-radius:3px}
+.actor i{margin-right:.3rem;font-style:normal}
+.actor.k-human{color:#1f6f43}.actor.k-system{color:#31507d}.actor.k-agent{color:#7a3d8f}
+.warn{color:#8a5a00;font-style:italic}
+@media(max-width:640px){
+ table.wf,table.wf tbody,table.wf tr,table.wf td,table.wf th{display:block;width:auto}
+ table.wf tr{border-bottom:1px solid #eceef1;padding:.35rem 0}
+ table.wf th{display:none}
+ table.wf td{padding:.15rem 0}
+ details.wfview>*:not(summary){padding:0 .6rem .6rem}
+}
+"""
+
+
+def render(feats, scores, sizing, cfg, workflow=None):
     central = set(cfg.get("central") or [])
     lanes_cfg = cfg.get("lanes") or []
     if not lanes_cfg:
@@ -899,7 +1101,7 @@ def render(feats, scores, sizing, cfg):
     title = cfg.get("title", "Feature Map")
     return f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{e(title)}</title><style>{CSS}</style></head><body><div class="wrap">
+<title>{e(title)}</title><style>{CSS}{WF_CSS}</style></head><body><div class="wrap">
 <header class="top">
 {f'<p class="eyebrow">{e(cfg["eyebrow"])}</p>' if cfg.get('eyebrow') else ''}
 <h1>{e(title)}</h1>
@@ -917,6 +1119,7 @@ def render(feats, scores, sizing, cfg):
 <p class="h2s">Every producer-to-consumer link in the corpus. Each arrow is a named artifact one
 feature emits and the next reads.</p>
 <div class="spinebox">{build_chain(feats, scores, cfg)}</div>
+{workflow_section(workflow)}
 <div class="legend"><span><i></i>{e(cfg.get('centralLabel','Runs centrally'))}</span>
 <span><i></i>{e(cfg.get('deploymentLabel','Runs in the deployment'))}</span></div>
 {tkleg}
@@ -934,6 +1137,8 @@ def main():
     ap.add_argument("-s", "--scores")
     ap.add_argument("-z", "--sizing",
                     help="computed sizing (compute_size.py output), keyed by feature key")
+    ap.add_argument("-w", "--workflow",
+                    help="resolved workflow (workflow_resolve.py output) — adds the L1/L2/L3 views")
     ap.add_argument("-c", "--config")
     ap.add_argument("-o", "--out", default="feature-map.html")
     a = ap.parse_args()
@@ -960,9 +1165,19 @@ def main():
     if scores and missing:
         print(f"warning: {len(missing)} feature(s) unscored: {', '.join(missing)}")
 
-    doc = render(feats, scores, sizing, cfg)
+    workflow = json.load(open(a.workflow)) if a.workflow and os.path.isfile(a.workflow) else None
+    if a.workflow and workflow is None:
+        print(f"warning: workflow file not found: {a.workflow} -- rendering without the journey views")
+
+    doc = render(feats, scores, sizing, cfg, workflow)
     open(a.out, "w", encoding="utf-8").write(doc)
-    print(f"{len(feats)} features, {len(scores)} scored, {len(sizing)} sized -> "
+    wf_note = ""
+    if workflow:
+        cov = workflow.get("coverage") or {}
+        wf_note = (f", workflow '{workflow.get('workflow')}' "
+                   f"({len(cov.get('covered') or [])} covered, "
+                   f"{len(cov.get('uncovered') or [])} uncovered)")
+    print(f"{len(feats)} features, {len(scores)} scored, {len(sizing)} sized{wf_note} -> "
           f"{a.out} ({len(doc)} bytes)")
     return 0
 

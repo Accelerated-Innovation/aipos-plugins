@@ -107,3 +107,175 @@ def test_each_file_background_precedes_its_own_rules(render_map, repo_ingest, tm
     assert order == sorted(order), text
     assert "Feature background · a.feature" in text
     assert "Feature background · b.feature" in text
+
+
+# ------------------------------------------------------------------ workflow views (05B)
+
+import copy  # noqa: E402
+import importlib.util  # noqa: E402
+import json  # noqa: E402
+import pathlib  # noqa: E402
+import re  # noqa: E402
+import sys  # noqa: E402
+
+import pytest  # noqa: E402
+
+_SCRIPTS = (pathlib.Path(__file__).resolve().parents[1]
+            / "plugins" / "govkit" / "skills" / "govkit-feature-map" / "scripts")
+
+
+@pytest.fixture(scope="module")
+def _resolver():
+    spec = importlib.util.spec_from_file_location("wfres", _SCRIPTS / "workflow_resolve.py")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules["wfres"] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+@pytest.fixture(scope="module")
+def resolved_workflow(_resolver, repo_ingest, corpus, workflows):
+    feats = repo_ingest.walk(str(corpus), "dir", "")
+    wf = json.loads((workflows / "invoice-approval.workflow.json").read_text(encoding="utf-8"))
+    return _resolver.resolve(wf, feats), feats
+
+
+@pytest.fixture(scope="module")
+def page(render_map, resolved_workflow):
+    resolved, feats = resolved_workflow
+    return render_map.render(feats, {}, {}, {}, resolved)
+
+
+def _journey(page):
+    return page.split('id="workflow"', 1)[1]
+
+
+def test_all_three_views_render(page):
+    for label in ("L1 &#8212; customer journey",
+                  "L2 &#8212; who collaborates",
+                  "L3 &#8212; the behavior that governs each step"):
+        assert label in page
+
+
+def test_l1_contains_no_gherkin_identifiers(page):
+    """L1 is the view someone outside the team reads. A rule slug leaking into
+    it is the failure mode."""
+    l1 = _journey(page).split("L2 &#8212;")[0]
+
+    assert "rule:" not in l1
+    assert "scenario:" not in l1
+    assert "Submit the invoice" in l1
+
+
+def test_a_rule_at_several_steps_is_shown_as_reuse_not_duplication(page):
+    """Authored once, referenced three times. The map has to make that read as
+    reuse — otherwise it looks like three copies of the same Rule."""
+    journey = _journey(page)
+
+    assert "route, route.evaluate-threshold, approve" in journey
+
+
+def test_cross_feature_links_point_at_anchors_that_exist(page):
+    """A link into a feature card is only useful if the card is on the page."""
+    targets = set(re.findall(r'href="#(FEATURE-[A-Za-z0-9_-]+)"', page))
+
+    assert targets
+    for key in targets:
+        assert f'id="{key}"' in page, f"link to #{key} has no anchor"
+
+
+def test_uncovered_behavior_is_shown_with_its_reason(page):
+    journey = _journey(page)
+
+    assert "Not touched by this journey" in journey
+    assert "partner-manager-unavailable" in journey
+    assert "implies does not exist" in journey
+
+
+def test_the_page_claims_no_approval(page):
+    """A local preview cannot verify that any decision was recorded, so it must
+    not carry anything a reader could take for one."""
+    journey = _journey(page)
+
+    assert "Advisory view" in journey
+    assert "nothing here is an approval" in journey
+    assert not re.search(r'\b(approved|committed)\b', journey.split("Advisory view")[0])
+
+
+def test_slice_chips_are_labelled_a_planning_view(page):
+    assert "planning view over behavior, not a commitment" in page
+
+
+def test_interactive_elements_are_native_and_keyboard_operable(page):
+    """Every disclosure in the journey is a <details>/<summary>, which is
+    focusable and operable with Enter/Space without any script. A div wearing
+    role=button would not be."""
+    journey = _journey(page)
+
+    assert journey.count("<details") >= 3
+    assert 'role="button"' not in page
+    assert "tabindex=" not in page
+
+
+def test_the_journey_reflows_at_narrow_width(page):
+    """Tables are the one thing that cannot simply shrink."""
+    queries = [page[m.start():m.start() + 400] for m in re.finditer(r"@media", page)]
+
+    assert any("table.wf" in q for q in queries)
+    assert 'name="viewport"' in page
+
+
+def test_an_unresolved_reference_is_not_rendered_as_a_link(render_map, resolved_workflow):
+    """A foreign-source or non-Gherkin reference resolves to nothing here.
+    Linking it would send a reader to a card that does not exist and imply the
+    behavior was verified."""
+    resolved, feats = resolved_workflow
+    doc = render_map.render(feats, {}, {}, {}, resolved)
+    journey = _journey(doc)
+
+    assert "declared outside the Gherkin corpus" in journey
+    assert 'href="#acme/FEATURE-inv_full#design:approval-panel"' not in journey
+
+
+def test_a_branch_without_a_condition_is_called_out(render_map, resolved_workflow, _resolver):
+    """A fork nobody has explained is a question, and the view has to ask it
+    rather than drawing two arrows and moving on."""
+    resolved, feats = resolved_workflow
+    wf = copy.deepcopy(resolved)
+    route = next(a for a in wf["views"]["l1"]["activities"] if a["id"] == "route")
+    route["next"] = [{"to": "approve"}, {"to": "partner-approve"}]
+
+    journey = _journey(render_map.render(feats, {}, {}, {}, wf))
+
+    assert "no stated condition" in journey
+
+
+@pytest.mark.parametrize(
+    "bad", [None, {}, {"views": {}}, {"views": {"l1": {}}, "coverage": {}, "diagnostics": []}],
+    ids=["none", "empty", "no-views", "empty-views"],
+)
+def test_malformed_or_absent_workflow_does_not_break_the_page(render_map, resolved_workflow, bad):
+    """The map's existing job must survive a workflow that is missing or
+    malformed — the journey is an addition, not a dependency."""
+    _resolved, feats = resolved_workflow
+
+    doc = render_map.render(feats, {}, {}, {}, bad)
+
+    assert doc.startswith("<!DOCTYPE html>")
+    assert "Artifact ledger" in doc
+    if not bad:
+        assert 'id="workflow"' not in doc
+
+
+def test_diagnostics_surface_errors_before_warnings(render_map, resolved_workflow):
+    resolved, feats = resolved_workflow
+    wf = copy.deepcopy(resolved)
+    wf["diagnostics"] = [
+        {"level": "warning", "code": "uncovered-behavior", "message": "a warning"},
+        {"level": "error", "code": "dangling-ref", "message": "an error"},
+    ]
+
+    journey = _journey(render_map.render(feats, {}, {}, {}, wf))
+
+    assert journey.index("an error") < journey.index("a warning")
+    assert "1 error, 1 warning" in journey
