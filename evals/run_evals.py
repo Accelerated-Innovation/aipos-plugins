@@ -69,6 +69,18 @@ JUDGE_MAX_TOKENS = 16000
 
 # A hung request can emit keepalives indefinitely, so an inactivity timer never
 # fires. Only a ceiling on total case time reliably reclaims the slot.
+# These skills are designed to pause and ask. Graded on the first message
+# alone, a legitimate clarifying question reads as a missing deliverable —
+# which is what the first live run showed. Two turns models the interaction
+# the skills were built for; one turn models a transcript nobody has.
+DEFAULT_TURNS = 2
+
+# Deliberately the bare word the skills' own Proceed protocol documents:
+# "Treat 'proceed', 'continue', 'looks good' ... as confirmation of the most
+# recent summary." Anything longer would coach the answer it is meant to
+# elicit, and the grade would be measuring the nudge.
+PROCEED_NUDGE = "proceed"
+
 DEFAULT_CASE_TIMEOUT_S = 600.0
 DEFAULT_CONCURRENCY = 4
 MAX_ATTEMPTS = 4
@@ -230,6 +242,18 @@ def build_judge_request(case: dict, response_text: str) -> str:
     )
 
 
+def join_turns(turns: list[str]) -> str:
+    """What the judge grades: everything the skill said, in order.
+
+    The artifact may arrive in turn 2 while the reasoning justifying it was in
+    turn 1, so grading only the last message loses half the answer. A single
+    turn is passed through unchanged — harness scaffolding must not leak into
+    what the rubric is matched against.
+    """
+    kept = [t for t in turns if t and t.strip()]
+    return kept[0] if len(kept) == 1 else "\n\n".join(kept)
+
+
 def case_key(case: dict, rep: int) -> str:
     return f"{case['name']}_rep{rep}"
 
@@ -244,7 +268,8 @@ def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
     """
     system, user = build_subject_request(skill_dir, case)
     h = hashlib.sha256()
-    for part in (system, user, case["expected_output"], args.model, args.judge_model):
+    for part in (system, user, case["expected_output"], args.model, args.judge_model,
+                 f"turns={getattr(args, 'turns', DEFAULT_TURNS)}"):
         h.update(part.encode("utf-8"))
         h.update(b"\x00")
     return h.hexdigest()[:16]
@@ -378,27 +403,45 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
     async with sem:
         try:
             async with asyncio.timeout(args.timeout_s):
-                subject, subject_retries = await call_with_backoff(
-                    lambda: client.messages.create(
-                        model=args.model, max_tokens=SUBJECT_MAX_TOKENS,
-                        system=[{"type": "text", "text": system,
-                                 "cache_control": {"type": "ephemeral"}}],
-                        messages=[{"role": "user", "content": user}],
-                    ),
-                    what=f"subject({pid})",
-                )
+                messages = [{"role": "user", "content": user}]
+                answers: list[str] = []
+                subject_retries = 0
+                subject = None
 
-                if not served_model_matches(args.model, subject.model):
-                    return await fail(
-                        "served-model-mismatch",
-                        f"requested {args.model}, served {subject.model}",
-                        model=subject.model, usage=usage_of(subject),
+                for turn in range(args.turns):
+                    subject, retries = await call_with_backoff(
+                        lambda: client.messages.create(
+                            model=args.model, max_tokens=SUBJECT_MAX_TOKENS,
+                            system=[{"type": "text", "text": system,
+                                     "cache_control": {"type": "ephemeral"}}],
+                            messages=messages,
+                        ),
+                        what=f"subject({pid}) turn {turn + 1}",
                     )
-                if subject.stop_reason == "refusal":
-                    return await fail("refusal", "subject refused",
-                                      model=subject.model, usage=usage_of(subject))
+                    subject_retries += retries
 
-                answer = text_of(subject)
+                    if not served_model_matches(args.model, subject.model):
+                        return await fail(
+                            "served-model-mismatch",
+                            f"requested {args.model}, served {subject.model}",
+                            model=subject.model, usage=usage_of(subject),
+                        )
+                    if subject.stop_reason == "refusal":
+                        return await fail("refusal", "subject refused",
+                                          model=subject.model, usage=usage_of(subject))
+
+                    answers.append(text_of(subject))
+                    if turn + 1 >= args.turns:
+                        break
+                    # The PM says "proceed". Everything the skill produced so
+                    # far stays in context, so a second turn continues the
+                    # conversation rather than restarting it.
+                    messages = messages + [
+                        {"role": "assistant", "content": subject.content},
+                        {"role": "user", "content": PROCEED_NUDGE},
+                    ]
+
+                answer = join_turns(answers)
                 truncated = subject.stop_reason == "max_tokens"
 
                 judge, judge_retries = await call_with_backoff(
@@ -458,7 +501,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         json.dumps([
             {"role": "system", "content": f"[{skill_dir.name}/SKILL.md]\n\n{system}"},
             {"role": "user", "content": user},
-            {"role": "assistant", "content": answer},
+            *[t for i, a in enumerate(answers) for t in (
+                ({"role": "user", "content": PROCEED_NUDGE},) if i else ()
+            ) + ({"role": "assistant", "content": a},)],
             {"role": "system", "content": f"[judge rubric]\n\n{case['expected_output']}"},
             {"role": "assistant", "content": json.dumps(verdict, indent=2)},
         ], indent=2, ensure_ascii=False), encoding="utf-8")
@@ -474,6 +519,7 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "passed": bool(verdict["passed"]),
         "missed": verdict["missed"],
         "latency_s": round(time.monotonic() - started, 2),
+        "turns": len(answers),
         "model": subject.model, "usage": usage_of(subject),
         "judge_model": judge.model, "judge_usage": usage_of(judge),
         "retries": {"subject": subject_retries, "judge": judge_retries},
@@ -539,7 +585,7 @@ async def main_async(args) -> int:
     prefix_chars, case_chars, n = estimate(skill_dir, [c for c, _m in runnable])
     print(f"{args.skill}: {n} runnable case(s) x {args.reps} rep(s)"
           + (f", {len(skipped)} skipped" if skipped else ""))
-    print(f"  subject {args.model} | judge {args.judge_model}")
+    print(f"  subject {args.model} x{args.turns} turn(s) | judge {args.judge_model}")
     print(f"  ~{prefix_chars // 4:,} token skill package (cached after the first case)"
           f" + ~{case_chars // 4:,} tokens of case input across {n} case(s)")
     print(f"  output -> {out}")
@@ -625,6 +671,10 @@ def main() -> int:
                    help="judge model; keep it different from --model")
     p.add_argument("--variant", default="baseline", help="baseline | v1 | v2 ...")
     p.add_argument("--reps", type=int, default=1, help="repetitions per case")
+    p.add_argument("--turns", type=int, default=DEFAULT_TURNS,
+                   help=f"subject turns per case (default {DEFAULT_TURNS}); after the first, "
+                        f"the harness replies {PROCEED_NUDGE!r} as the skills' own Proceed "
+                        f"protocol expects")
     p.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
     p.add_argument("--timeout-s", type=float, default=DEFAULT_CASE_TIMEOUT_S)
     p.add_argument("--out", default=str(DEFAULT_OUT))
@@ -632,6 +682,8 @@ def main() -> int:
 
     if not args.list and not args.skill:
         p.error("--skill is required (or --list)")
+    if args.turns < 1:
+        p.error("--turns must be at least 1")
     if args.reps < 1:
         p.error("--reps must be at least 1; 0 would make an eval 'succeed' without a single call")
     if args.concurrency < 1:
