@@ -154,18 +154,26 @@ End every artifact the same way:
    write.
 4. **Name the next artifact.** Validation is a sequence, not a menu visit.
 
-   Once the viability brief is written and the Validation Decision is a **go**, the next
-   artifact is no longer inside this skill. Say so and hand off:
+   **When the evidence is strong enough that a commitment is in view — before the Validation
+   Decision, not after it — the next artifact is the behavior itself.** Say so and hand off:
 
-   > The next step is defining the behavior we'd be committing to. `govkit-feature-create` in
-   > opportunity mode drafts the Rules and scenarios from this evidence — no epic, no user
-   > stories, no estimate — and leaves what we still don't know marked as unknown.
+   > The evidence supports committing. Before that decision there has to be something to commit
+   > *to*: `govkit-feature-create` in opportunity mode drafts the Rules and scenarios from this
+   > evidence — no epic, no user stories, no estimate — and leaves what we still don't know
+   > marked as unknown. `govkit-feature-refine` then works them over. The decision commits that
+   > selection.
 
-   That handoff is what Pillar 2 exits *through*. The commitment is a versioned selection of
-   Rules and scenarios, so the behavior has to exist before there is anything to commit to —
-   which is why defining it belongs before the exit decision and not after it. Naming the
-   handoff is in scope here; doing the drafting is not, and this skill still writes no Gherkin
-   itself.
+   The ordering is the point and it is easy to get backwards. The Pillar 2 exit **is** the hard
+   commitment, and what it binds is a versioned selection of Rules and scenarios. Drafting them
+   after the decision would leave the decision binding nothing and the draft unreviewed — so
+   behavior is defined and refined *before* the exit, and the viability brief's go/no-go is made
+   against a known scope rather than an intention.
+
+   A **no-go** or **revise** needs none of this. There is nothing to commit, so there is nothing
+   to define; name the next validation artifact instead.
+
+   Naming the handoff is in scope here; doing the drafting is not, and this skill still writes no
+   Gherkin itself.
 
 ---
 

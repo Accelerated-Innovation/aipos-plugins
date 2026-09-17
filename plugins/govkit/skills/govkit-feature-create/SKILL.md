@@ -301,6 +301,21 @@ included behavior. A question that could change behavior, an expected outcome or
 This register is the deliverable, not an apology for one. A Draft 0 that names six real unknowns
 is more useful than one that quietly answers them.
 
+### Step O7 — Write the package
+
+Write the feature package per `references/feature-template.md`, then hand off to
+`govkit-feature-refine`. Draft 0 is not approved and this skill never implies otherwise.
+
+Which shared Feature-mode steps run:
+
+| Step | Opportunity mode |
+|---|---|
+| F5 Structured description, F8 NFRs, F9 DoD, F10 Privacy, F11 Overlap, F12 Write | Run |
+| F1 Personas | Runs only if the PDG carries them; a role name is a real answer |
+| F2 Intent and size | Runs as a sanity check, **without** a point estimate |
+| F3/F4 User stories | Do not run — Rules and scenarios carry the scope |
+| F6 Business rules, F7 Acceptance criteria | Replaced by O3 and O4 above |
+
 ---
 
 # Baseline mode — materializing approved behavior
@@ -337,6 +352,28 @@ answer is a proposed change referencing that exclusion — never a quietly edite
 The package states which behavior the baseline selected, which it excluded and why, and which
 of its own contents are derived rather than approved (tests, implementation notes, structure).
 A reader must be able to tell the committed behavior from the packaging around it.
+
+### Step B4 — Write the package, then stop
+
+Write the feature package per `references/feature-template.md`, then **end**. Baseline mode is
+complete here.
+
+**Feature mode does not run after this.** Not F6 and not F7 above all: "enumerate the business
+rules this feature enforces" and "write the acceptance criteria" would re-elicit behavior a
+commitment already decided, and re-eliciting approved behavior is how it gets reworded into
+something subtly different by a conversation nobody recorded as a change.
+
+Which shared steps run, and which never do:
+
+| Step | Baseline mode |
+|---|---|
+| F5 Structured description | Runs — describes the package, not the behavior |
+| F8 NFRs, F9 DoD, F10 Privacy | Run **only** for constraints the baseline did not select; approved ones are materialized as written |
+| F11 Overlap check | Runs |
+| F12 Summary and write | Runs |
+| F1 Personas, F2 Intent and size | Do not run — settled at commitment |
+| F3/F4 User stories | Do not run |
+| **F6 Business rules, F7 Acceptance criteria** | **Never run.** The baseline already decided them |
 
 ---
 
