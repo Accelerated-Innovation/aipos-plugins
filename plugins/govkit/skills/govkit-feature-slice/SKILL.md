@@ -1,18 +1,23 @@
 ---
 name: govkit-feature-slice
-description: Size and slice a feature's Gherkin scenarios for release planning — score every scenario on the Scenario Complexity Matrix (Data & State, Integration, UI/UX Steps), map scenarios to release slices with MoSCoW (@mvp, @v1, @v2 tags), recommend splits for oversized scenarios, and write the tagged spec back to the tracker after the PM confirms. Tool-agnostic; works with any tracker (Jira, Aha!, Azure DevOps, markdown). Trigger whenever the user asks to slice a feature, size scenarios or estimate how big a feature is, plan MVP versus V1 versus V2, tag scenarios for releases, apply MoSCoW, find the smallest shippable version, or asks which scenarios could wait for a later release — even if they don't say GovKit or "slice". Also provides a non-interactive batch sizing mode that emits one JSON verdict per feature; govkit-feature-map calls it to put size badges on a whole corpus.
+description: Select the behavior a release contains and check it is actually shippable — map a feature's Gherkin scenarios to release slices with MoSCoW (@mvp, @v1, @v2 tags) on outcome completeness and consequence, verify the selected journey completes end to end and carries the authorization, recovery and audit behavior it depends on, name cross-feature prerequisites, recommend splits for oversized scenarios, and write the tagged spec back to the tracker after the PM confirms. Optionally scores each scenario on the Scenario Complexity Matrix (Data & State, Integration, UI/UX Steps) as a complexity diagnostic — never a delivery forecast. Tool-agnostic; works with any tracker (Jira, Aha!, Azure DevOps, markdown). Trigger whenever the user asks to slice a feature, size scenarios or estimate how big a feature is, plan MVP versus V1 versus V2, tag scenarios for releases, apply MoSCoW, find the smallest shippable version, or asks which scenarios could wait for a later release — even if they don't say GovKit or "slice". Also provides a non-interactive batch sizing mode that emits one JSON verdict per feature; govkit-feature-map calls it to put size badges on a whole corpus.
 ---
 
 # GovKit Feature Slice — Scenario Sizing and Release Slicing
 
 ## Purpose
 
-Help a Product Manager answer two questions about one feature, scenario by scenario:
+Help a Product Manager answer one question about one feature, and optionally a second:
 
-1. **How big is each scenario?** — scored on the Scenario Complexity Matrix, three dimensions at 1–3 points each.
-2. **Which release does each scenario belong to?** — mapped with MoSCoW onto `@mvp` / `@v1` / `@v2` tags.
+1. **Which behavior does this release contain?** — a complete, usable journey, selected on
+   outcome and consequence, expressed as `@mvp` / `@v1` / `@v2` tags. This is the job.
+2. **How complex is each scenario?** *(optional)* — scored on the Scenario Complexity Matrix,
+   three dimensions at 1–3 points each.
 
-Size and slice are orthogonal judgments and this skill keeps them separate: a scenario's size never decides its slice, but the *combination* is the risk signal — a Large scenario on the MVP critical path is the first thing a release plan has to deal with, and this skill exists to surface it before coding starts.
+**Scope selection does not depend on sizing and never waits for it.** Run the skill with sizing
+off and it still does its primary job. Where sizing is run, its value is the risk signal — a
+Large scenario on the MVP critical path is the first thing a release plan has to deal with —
+not a number to plan against.
 
 This skill is not a quality review. If the Gherkin is too weak to judge — tautological scenarios, unclear intent, missing rules — slicing it is premature; say so and point to `govkit-feature-refine`. You cannot size what you cannot read.
 
@@ -25,13 +30,34 @@ Same abstract roles as `govkit-feature-refine`: the **generator** is whatever pr
 - **Size** — a scenario's points (3–9, sum of three dimension judgments) and band: Small (3–4), Medium (5–7), Large (8–9).
 - **Slice** — the release a scenario belongs to, expressed as a Gherkin tag: `@mvp`, `@v1`, or `@v2` (V2 or later).
 - **Split** — rewriting one oversized scenario into smaller scenarios, each independently sizeable and sliceable.
-- **Rollup** — the feature-level summary: band counts plus total points, rendered as e.g. `2L / 5M / 3S · 41 pts`, and points per slice.
+- **Rollup** — the feature-level summary: band counts, rendered as e.g. `2L / 5M / 3S`. Produced only when sizing was run.
+- **Selected behavior** — the scenarios a release actually commits to. Tags are a *view* of it; what binds a commitment is the explicit reference list in a behavioral baseline.
+
+## What a tag is, and what it is not
+
+`@mvp` / `@v1` / `@v2` are a **planning view** over the selected behavior. They make a release
+conversation legible; they do not constitute a commitment, and a tag by itself grants nothing.
+
+What binds a commitment is an explicit list of references — `<source>/<feature-key>#rule:<slug>`
+and `#scenario:<slug>` — in a behavioral baseline. That list is the authoritative scope; the tags
+are how people talk about it.
+
+Two consequences worth stating plainly:
+
+- **Retagging after approval is a scope change, not a bookkeeping edit.** Moving a scenario from
+  `@v1` to `@mvp` after a commitment changes what was committed. Propose it as a change with the
+  affected identifiers and what it adds; do not apply it and re-emit the spec as though the tags
+  were yours to move.
+- **`@v2` is not a queue position.** A scenario nobody has committed to is uncommitted, and
+  tagging it `@v2` is a note about where it would sit *if* it were ever chosen — not a promise
+  that it will be, and not a place in a line. Say so when a PM starts treating the V2 tag as a
+  backlog.
 
 ## Operating principle
 
 **The skill recommends slices. The PM decides.**
 
-Sizing is analysis and can be offered freely. Slice tags are release commitments in the making — they land in the spec only after the PM has confirmed or corrected each recommendation. Never present a recommended slice as a decision, and never write anything to a tracker without the explicit confirmation step in `references/tracker-writeback.md`.
+Sizing is an optional diagnostic and can be offered freely. Slice tags are release commitments in the making — they land in the spec only after the PM has confirmed or corrected each recommendation. Never present a recommended slice as a decision, and never write anything to a tracker without the explicit confirmation step in `references/tracker-writeback.md`.
 
 The same division of labor applies to arithmetic: **judge the dimensions, never total them by impression.** Dimension scores are judgments a model makes; sums, bands, and rollups are computed by `scripts/compute_size.py`. A reported total that does not match its own dimensions silently moves a scenario across a band, and the band is what release planning runs on.
 
@@ -51,7 +77,8 @@ Do not use it for:
 - Reviewing spec quality or issuing a Development Token recommendation (`govkit-feature-refine`)
 - Validating a repo package before coding (`govkit-feature-readiness`)
 - Mapping a whole epic (`govkit-feature-map`, which calls this skill per feature)
-- Story-point estimation or velocity forecasting — complexity points are not story points
+- Story-point estimation or velocity forecasting — complexity points are not story points, and no total here is a delivery estimate
+- Deciding what a release commits to on behalf of the PM, or treating a tag as an approval
 - Creating or deleting tracker records; write-back is update-in-place only
 
 ## Inputs
@@ -75,7 +102,11 @@ If scenarios already carry slice or size tags, read them — they are prior deci
 
 Normalize the input, list the scenarios, and confirm with the user which feature and which scenarios are in scope. If the Gherkin fails basic readability — you cannot tell what a scenario proves, or rules are missing wholesale — stop and recommend refinement first. Record any existing `@mvp`/`@v1`/`@v2`/size tags as prior decisions.
 
-### Step 2: Size every scenario
+### Step 2 *(optional)*: Size every scenario
+
+**Skip this step unless the PM wants the complexity diagnostic.** Scope selection is decided on
+outcome completeness and consequence, not on points, and Step 3 onward runs without it. Offer it
+once; do not make it a gate.
 
 For each scenario, judge the three dimensions per `references/slicing-rubric.md` — Data & State, Integration, UI/UX Steps, each an integer 1–3 — with a note per dimension grounded in the scenario's own text. Never invent context the spec does not contain; if a dimension is unknowable from the spec, score what the text supports and record the uncertainty in the note — an unknowable dimension is itself a spec gap worth reporting.
 
@@ -85,7 +116,13 @@ Write the judgments to a sizing JSON (Batch mode schema below) and run:
 python scripts/compute_size.py sizing.json -o sizing_computed.json
 ```
 
-The script computes points, bands, the feature rollup, per-slice points, and risk flags, and validates every judgment. Present numbers only from its output. If the script cannot be run in the current environment, do the arithmetic explicitly and show it — never total by eye.
+The script computes points, bands, the feature rollup and risk flags, and validates every judgment. Present numbers only from its output. If the script cannot be run in the current environment, do the arithmetic explicitly and show it — never total by eye.
+
+**Do not present any total as a forecast.** Complexity points measure how intricate a scenario is
+to specify and verify, not how long anything takes, and scenario counts measure only how many
+ways someone chose to write the behavior down. "The MVP is 12 points" reads as a delivery
+estimate to everyone who sees it and is not one. Report a total only if the PM asks, and say what
+it is not when you do.
 
 ### Step 3: Recommend a slice per scenario
 
@@ -93,7 +130,27 @@ Apply the MoSCoW mapping from the rubric. The MVP test is strict: *can the featu
 
 **Never defer risk-critical behavior on the strength of a tag category alone.** "Error pathway", "edge case" and "permission" are indicators of where a scenario usually lands, not a licence to postpone. A scenario that guards authorization, privacy, safety, regulatory compliance, financial correctness or data loss is judged on the consequence of shipping without it — and that consequence often puts an "edge case" squarely in the MVP. When a recommendation defers such a scenario, say what shipping without it risks and make the PM accept it explicitly rather than letting a category do the deferring silently.
 
-### Step 4: Flag risk and propose splits
+### Step 4: Check the selection is actually shippable
+
+A set of individually reasonable tags can still describe a release nobody can ship. Three checks,
+each of which produces a finding rather than a silent fix:
+
+**The journey completes.** Walk the selected scenarios end to end as a user would. If the
+selection stops partway — a request that can be submitted but not resolved, an approval that can
+be granted but not acted on — the slice is a layer, not a release. Name the missing step.
+
+**Selected behavior carries its obligations.** Including a scenario commits what it cannot safely
+run without: the authorization it assumes, the recovery path for the failure it can hit, the
+audit record its `Rule:` obligates. Check the Rule each selected scenario sits under — a Rule's
+obligation is not satisfied by selecting one scenario that illustrates it while deferring the one
+that proves the control.
+
+**Cross-feature prerequisites are named.** A scenario whose precondition is behavior owned by
+another feature is not shippable until that behavior is committed somewhere. Cite the qualified
+reference (`<source>/<feature-key>#scenario:<slug>`) and which slice it depends on. An unstated
+cross-feature prerequisite is the most common reason an "MVP" turns out not to be one.
+
+### Step 5: Flag risk and propose splits
 
 Two things must be surfaced before the PM decides:
 
@@ -116,17 +173,17 @@ Say explicitly, for each split, what moved where. A PM cannot confirm a split th
 
 **Retagging preserves meaning too.** Changing a delivery tag re-times work; it never changes what a scenario asserts, what rule it sits under, or its identifier.
 
-### Step 5: Pause for the PM's decisions
+### Step 6: Pause for the PM's decisions
 
 Present the sizing table, the rollup, the recommendations, and the proposed splits — then STOP. Ask the PM to confirm or correct each slice recommendation and each split. Do not emit tagged Gherkin or tracker updates until they have. If the PM overrides a recommendation, take the override without argument and record it; the PM owns release intent.
 
-### Step 6: Emit the tagged spec
+### Step 7: Emit the tagged spec
 
 After confirmation, produce the revised Gherkin with tags on the line above each scenario (slice tag first, then size tag), preserving all existing tags this skill does not own. Emit copy-ready tracker field updates in the same shape `govkit-feature-refine` uses.
 
-### Step 7: Offer write-back
+### Step 8: Offer write-back
 
-If a tracker MCP is connected, offer to update the record in place, following `references/tracker-writeback.md`: exact preview, named destination, one explicit yes, read-back verification. If no MCP is available, the copy-ready block from Step 6 is the deliverable.
+If a tracker MCP is connected, offer to update the record in place, following `references/tracker-writeback.md`: exact preview, named destination, one explicit yes, read-back verification. If no MCP is available, the copy-ready block from Step 7 is the deliverable.
 
 ## Output format (interactive)
 
@@ -153,7 +210,7 @@ Steps 2–4 present as:
 1. <numbered, one per slice recommendation or split the PM must confirm or correct>
 ````
 
-Step 6 adds the tagged Gherkin and the copy-ready tracker field updates; Step 7 follows the write-back protocol.
+Step 7 adds the tagged Gherkin and the copy-ready tracker field updates; Step 8 follows the write-back protocol.
 
 ## Batch mode (non-interactive corpus sizing)
 
@@ -191,6 +248,11 @@ Do not:
 
 - Apply slice tags or write to a tracker without the PM's explicit confirmation
 - Total dimension points by impression — `compute_size.py` owns the arithmetic
+- Present a point total or a scenario count as a cost, duration or delivery forecast
+- Require sizing before scope can be discussed — the diagnostic is optional, the selection is not
+- Defer a scenario's required authorization, recovery or audit behavior to a later slice than the scenario it serves
+- Retag a scenario that an approved baseline already selected — propose the change instead
+- Describe a `@v2` scenario as scheduled, queued, or committed
 - Present batch recommendations as decisions
 - Size a feature whose Gherkin is too weak to read — route to `govkit-feature-refine`
 - Invent scenarios, context, or integrations the spec does not contain

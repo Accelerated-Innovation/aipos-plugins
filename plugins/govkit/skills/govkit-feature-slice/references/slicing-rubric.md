@@ -73,16 +73,43 @@ Slicing guidance:
 
 - **Compliance can promote a scenario.** The table puts security and error handling in `@v1`, but a scenario backed by a compliance, privacy, or safety NFR may be unshippable-without — in some organizations a login feature cannot go live without lockout. When an NFR or a privacy note implies promotion, flag it and let the PM make the call. Release intent is theirs.
 - **A tag category never defers risk-critical behavior by itself.** The "Gherkin indicators" column says where a scenario *usually* lands, not what it is worth. Authorization, privacy, safety, regulatory compliance, financial correctness and data loss are judged on the consequence of shipping without them, and that routinely puts an "edge case" in `@mvp`. When a recommendation would defer such a scenario, name what shipping without it risks and make the PM accept it explicitly — never let the category do the deferring silently.
+- **A selected scenario brings its obligations with it.** Including a scenario commits the
+  behavior it cannot safely run without: the authorization it assumes, the recovery path for the
+  failure it can hit, the audit record its `Rule:` obligates. Those are not separate candidates
+  to be triaged independently — deferring one leaves the selected scenario unshippable while the
+  slice table looks complete. Check the Rule the scenario sits under: a Rule's obligation is not
+  satisfied by selecting one scenario that illustrates it and deferring the one that proves the
+  control.
+- **Dependencies across features count too.** A scenario whose precondition is behavior owned by
+  another feature is not in a shippable slice until that behavior is committed somewhere. Name
+  the qualified reference (`<source>/<feature-key>#scenario:<slug>`) and the slice it depends on;
+  an unstated cross-feature prerequisite is the most common reason an "MVP" cannot ship.
 - **`Scenario Outline` rows can split across slices.** If the happy row is critical path and the edge rows are not, recommend splitting the outline rather than dragging the whole table into `@mvp`.
 - **Untagged is a valid state.** A scenario the PM has not decided on stays untagged; do not default it into a slice to make the table look finished.
 
 ## Size × slice: the risk view
 
-The two judgments compose into the numbers a release conversation actually runs on:
+Sizing is a **complexity diagnostic, and it is optional**. Scope selection — which behavior a
+release contains — is decided on outcome completeness and consequence, never on points, and it
+runs perfectly well with sizing switched off.
 
-- **Per-slice points** — "the MVP is 12 points, V1 adds 18" is the roadmap sentence this rubric exists to produce.
-- **Large + `@mvp`** — the highest-risk combination: the smallest shippable version contains the riskiest work. Every such scenario gets either a split proposal or an explicit, recorded risk acceptance. Never let one pass silently.
-- **The feature rollup** — band counts plus total, e.g. `2L / 5M / 3S · 41 pts`. Counts, not an average: ten Medium scenarios and a feature hiding two Large ones can average the same, and the two Large ones are the finding.
+Where sizing *is* run, what it is for is finding risk, not forecasting cost:
+
+- **Large + `@mvp`** — the highest-risk combination: the smallest shippable version contains the
+  riskiest work. Every such scenario gets either a split proposal or an explicit, recorded risk
+  acceptance. Never let one pass silently. This is the finding sizing exists to produce.
+- **The feature rollup** — band counts, e.g. `2L / 5M / 3S`. Counts, not an average: ten Medium
+  scenarios and a feature hiding two Large ones can average the same, and the two Large ones are
+  the finding.
+
+**A point total is not a forecast, and per-slice totals are not a roadmap.** "The MVP is 12
+points, V1 adds 18" reads as a delivery estimate to everyone who sees it, and it is not one:
+complexity points measure how intricate a scenario is to specify and verify, not how long
+anything takes. Scenario counts are worse — they say only how many ways someone chose to write
+the behavior down. Neither belongs in a release commitment, and a team that plans against them
+has substituted a proxy nobody validated for an estimate nobody made.
+
+Report a total only when the PM asks for one, and say what it is not when you do.
 
 ## Splitting oversized scenarios
 
