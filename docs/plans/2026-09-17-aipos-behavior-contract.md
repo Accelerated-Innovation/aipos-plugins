@@ -19,7 +19,7 @@ reproducible commitment package ready for a human decision.
 | Increment | Deliverable | Main surfaces |
 |---|---|---|
 | 02 | **Done.** `references/workflow-source.md`, qualified refs + resolver behavior in `spec-identifiers.md`, `scripts/workflow_resolve.py`, L1/L2/L3 views, plugin-boundary enforcement | `plugins/govkit/references/`, `govkit-feature-map/scripts/`, `tests/` |
-| 03 | Opportunity-centred draft authoring; approved-baseline materialization as an explicit mode | `govkit-feature-create`, `govkit-feature-refine`, `val-rapid-validation` routing |
+| 03 | **Done.** Opportunity mode (the AIPOS default) and baseline mode in `govkit-feature-create`; committed-behavior review in `govkit-feature-refine`; Pillar 2 handoff in `val-rapid-validation` | the three skills, their evals, `tests/test_eval_cases.py` |
 | 04 | Scope selection separated from complexity diagnostics | `govkit-feature-slice`, slicing rubric, story-mapping reference |
 | 05A | A proposed `aipos-workflow-map` authoring skill | Pillar 2 plugin surface, plugin metadata |
 | 05B | L1 / L2 / L3 views beside the existing producer/consumer chain | `repo_ingest.py`, `render_map.py`, their references and tests |
@@ -124,4 +124,23 @@ A skill needing them lives in the same plugin or receives already-resolved data.
 shared reference into a second plugin is not the alternative — a copied reference is one nobody
 maintains — and the boundary test enforces both halves.
 
-Increments 03–06 and 14–15 remain unimplemented. No approval or release is authorized by this.
+**Increment 03 is implemented.**
+
+- `govkit-feature-create` gains **opportunity mode** (the AIPOS default: Rules and scenarios
+  from evidence, with no epic, user story or estimate asked for or reported as missing) and
+  **baseline mode** (materialize approved behavior without rewriting it). Epic mode is retained
+  and relabelled the legacy compatibility route; the story steps F3/F4 are marked legacy-only.
+- `govkit-feature-refine` gains **committed-behavior review**: no revised-Gherkin block is
+  produced for approved elements, findings become written change requests, and a gap is a
+  question rather than an improvement.
+- `val-rapid-validation` names the Pillar 2 handoff to opportunity mode. Its boundary is
+  clarified as a limit on *this skill's artifacts*, not on the pillar — the full replacement of
+  that text belongs to increment 06.
+- Three new eval cases and two new fixtures; `tests/test_eval_cases.py` checks the cases can run
+  at all (bundled fixtures resolve, ids and names unique, no orphaned fixture).
+
+Already correct and deliberately not rewritten: refine's rule that a feature built by an AI
+coding agent is not thereby a GenAI feature, and its routing of contradictory rules to Product
+as a decision rather than a wording fix. Increment 03's requirements on both were already met.
+
+Increments 04–06 and 14–15 remain unimplemented. No approval or release is authorized by this.

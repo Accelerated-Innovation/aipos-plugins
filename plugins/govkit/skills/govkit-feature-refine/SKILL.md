@@ -159,9 +159,15 @@ Select one mode from the user request or input:
 | QA evidence review | QA needs to inspect testability and evidence |
 | Gherkin rewrite | Team needs cleaner acceptance criteria |
 | Readiness review | Team needs a Development Token recommendation |
+| Committed-behavior review | The behavior under review is already approved by a commitment baseline (see "Committed behavior" below) |
 | Batch corpus scoring | A caller needs many features scored non-interactively as structured data (see "Batch mode" below) |
 
 If no mode is stated, use Refinement facilitation. This skill exists primarily for the 3 Amigos conversation; lead with shared understanding, not a score.
+
+Committed-behavior review is not chosen by phrasing either: enter it when the feature carries a
+commitment baseline reference, or when the user says the behavior is already approved. It
+changes what an edit *is*, so getting into it by accident would be worse than missing it — if
+in doubt, ask one question.
 
 Batch corpus scoring is the only mode that skips the Stage 1 pause. Do not infer it from a human's phrasing — enter it only when a caller explicitly asks for batch, non-interactive, or machine-readable scoring. Someone asking about one feature almost always wants the conversation, not the number.
 
@@ -386,6 +392,47 @@ This skill serves two audiences. Choose the mode from context, or ask.
 - **Real-work mode** (default for live refinement): use only real feature content. Never invent scenarios, data, rules, or thresholds. Mark gaps as questions.
 - **Learning mode** (for teams new to Gherkin, training, or dry runs): curated and illustrative examples are encouraged to teach the concepts. Label all invented content clearly as a teaching example so it never leaks into a real spec.
 
+## Committed behavior
+
+Some behavior under review has already been approved by a commitment decision. The baseline
+binds the exact text of the selected Rules and scenarios, and its digest is what a validator and
+a CI gate compare against. **Reviewing it is still useful; editing it is a different act.**
+
+In this mode:
+
+**Suggested revised Gherkin is not produced for approved elements.** The rewrite step is the
+skill's most valuable output and its most dangerous one here. A cleaner `Then` is still a
+changed `Then`, and changing approved text under a matching digest is precisely the drift the
+contract exists to detect. Review the approved behavior, say what you found, and stop short of
+rewriting it.
+
+**Findings become change requests.** Everything the review would normally fix is instead written
+as a proposal a human decides on:
+
+> **Proposed change** — `@rule:<slug>` / `@scenario:<slug>`
+> Current approved behavior: <as written>
+> Proposed behavior: <what you would change it to>
+> Why: <the defect or gap>
+> Evidence: <what supports it, or "none — this is a judgement">
+> Requires a decision before implementation.
+
+**A gap is a question, not an improvement.** A missing recovery path, an authorization step the
+Rule implies but no scenario covers, an obvious edge case — none of these get added. They get
+proposed. "It was obviously needed" is how unapproved behavior enters a committed scope, and it
+is indistinguishable afterwards from behavior someone actually chose.
+
+**An excluded item stays excluded.** When the baseline lists something as an exclusion and the
+review or the team wants it back, the answer references that exclusion and proposes a change.
+A prototype having demonstrated the behavior is not a decision to build it.
+
+**What is unchanged:** everything not approved. Tests, implementation notes, NFR wording that
+the baseline did not select, package structure — normal review applies. Say clearly which is
+which; a reader must be able to tell committed behavior from the packaging around it.
+
+**Scoring stays advisory and cannot authorize.** A high score on committed behavior is not
+approval of a change to it, and this skill never issues, implies, or recommends a product
+approval — that decision belongs to an authenticated authority elsewhere.
+
 ## Batch mode (non-interactive corpus scoring)
 
 Sometimes the caller is not a team in a room but another skill or a script that needs many features scored at once — to badge a feature map, populate a readiness dashboard, or track drift across a release. `govkit-feature-map` is the usual caller.
@@ -585,6 +632,9 @@ Do not:
 - Invent NFR thresholds
 - Add implementation design into Gherkin
 - Flatten or drop `Rule:` blocks during a rewrite, or write a `Rule:` for a policy nobody stated
+- Rewrite, tidy or "obviously improve" behavior an approved baseline selected — propose the change instead
+- Add behavior a committed baseline excluded, however clearly it seems needed
+- Resolve a contradiction between two stated rules by choosing one — that is a product decision
 - Change a `@rule:` / `@scenario:` identifier while renaming or retagging
 - Present a scenario carrying an unresolved placeholder as ready for execution
 - Require GenAI evaluation criteria for a feature whose only AI involvement was the coding agent that built it
@@ -600,7 +650,7 @@ Always:
 - Preserve product intent
 - Ask the agentic behavior question explicitly and record the answer as `multi_agent`
 - Surface uncertainty
-- Separate blockers from improvements
+- Separate blockers from improvements, and — for committed behavior — improvements from change requests
 - Keep refinement questions actionable
 - Make tracker field updates copy-ready
 - Link Gherkin, NFRs, and evaluation criteria

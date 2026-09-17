@@ -109,3 +109,41 @@ def test_shared_references_stay_canonical_in_the_plugin_that_owns_them():
         if p.name in owned and p.parent != PLUGINS / "govkit" / "references"
     ]
     assert not duplicates, f"shared reference copied instead of cited: {duplicates}"
+
+
+# ------------------------------------------------------------------ catalog consistency
+
+def test_marketplace_entries_agree_with_their_plugin_manifests():
+    """Two catalogs describe each plugin, and they drift silently.
+
+    `marketplace.json` is what a user browses; `plugin.json` is what the plugin
+    declares. Nothing reconciles them, so a keyword or description added to one
+    is simply absent from the other, and which discovery terms a consumer sees
+    depends on which file they happened to read. Cheap to check, invisible
+    otherwise.
+    """
+    import json
+
+    catalog = json.loads((ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+    mismatches = []
+
+    for entry in catalog.get("plugins", []):
+        manifest_path = PLUGINS / entry["name"] / ".claude-plugin" / "plugin.json"
+        if not manifest_path.is_file():
+            mismatches.append(f"{entry['name']}: listed in marketplace, no plugin.json")
+            continue
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for field in ("keywords", "description", "version"):
+            if field in entry and entry[field] != manifest.get(field):
+                mismatches.append(f"{entry['name']}.{field}: marketplace != plugin.json")
+
+    assert not mismatches, mismatches
+
+
+def test_every_plugin_appears_in_the_marketplace():
+    import json
+
+    catalog = json.loads((ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+    listed = {e["name"] for e in catalog.get("plugins", [])}
+
+    assert PLUGIN_NAMES <= listed, f"plugins missing from the marketplace: {PLUGIN_NAMES - listed}"

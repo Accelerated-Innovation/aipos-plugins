@@ -48,6 +48,16 @@ Stubs get the directory and a `feature_source.md` containing only the stub field
 
 ## Primary user story
 
+> **Legacy route only.** This section and the Secondary user stories below are written in epic
+> and feature mode. In **opportunity** and **baseline** mode they are omitted entirely — the
+> outcome statement and the Rules carry the scope, and a story would add a restatement to keep
+> in sync with them. Omitting them is not an incomplete package; requiring them would
+> reintroduce the prerequisite the opportunity route exists to remove.
+>
+> What replaces them: the one-sentence **outcome** from Step O2, the **Rules** from O3, and the
+> **opportunity reference** rather than a persona narrative.
+
+
 As a <primary persona>, I need <capability> so that <outcome>.
 
 ## Secondary user stories
