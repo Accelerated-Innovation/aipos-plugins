@@ -150,6 +150,8 @@ It recommends. The PM decides, and nothing is tagged or written back until they 
 
 [`govkit-feature-map`](./plugins/govkit/skills/govkit-feature-map/SKILL.md) ingests from Jira, Aha!, or a repo directory and renders one self-contained HTML page: a producer/consumer chain diagram, a card per feature with its full spec, readiness and size badges, and MVP/V1/V2 slice views. Run it on an epic and the weak link is usually visible in about four seconds.
 
+[`govkit-workflow-map`](./plugins/govkit/skills/govkit-workflow-map/SKILL.md) answers the question a feature list cannot: how does a customer actually get from start to finish, and who does what along the way. It authors `workflow.json` — the single source the L1/L2/L3 views are generated from — referencing the Gherkin that already exists rather than restating it, and reports the behavior in your corpus that no step in the journey touches.
+
 [`govkit-metrics-emit`](./plugins/govkit/skills/govkit-metrics-emit/SKILL.md) emits Tier 1 metric events as NDJSON from the repo's own exhaust — spec completeness, gate readiness, delivery inputs. And [`govkit-synthetic-data`](./plugins/govkit/skills/govkit-synthetic-data/SKILL.md) closes the loop with seeded, repeatable Faker generators derived from the feature's own Gherkin scenarios, so the tests an agent writes have data that matches the spec it was given.
 
 ### Summary
@@ -201,6 +203,7 @@ Primary output: the **Development Token**.
 **Sizing and planning**
 
 - **[govkit-feature-slice](./plugins/govkit/skills/govkit-feature-slice/SKILL.md)**: Scenario sizing on the Scenario Complexity Matrix and MoSCoW release slicing onto `@mvp` / `@v1` / `@v2` tags. Proposes splits for Large scenarios, flags Large scenarios on the MVP critical path, and can write the tagged spec back to Jira or Aha! after an explicit confirmation.
+- **[govkit-workflow-map](./plugins/govkit/skills/govkit-workflow-map/SKILL.md)**: Authors the `workflow.json` behind a customer journey — outcome, ordered and branching activities, actors, the handoffs where work changes hands, and qualified references into canonical Gherkin. L1 journey, L2 collaboration and L3 behavior are generated from that one file, so a Rule shown at four steps is authored once and nobody maintains a diagram. Reports behavior in the corpus that no step touches.
 - **[govkit-feature-map](./plugins/govkit/skills/govkit-feature-map/SKILL.md)**: The cross-cutting corpus view — a self-contained HTML page with a producer/consumer chain diagram, one card per feature with its full spec, readiness badges, and size badges with MVP/V1/V2 slice views. Ingests from Jira, Aha!, or a repo directory, and merges tracker records with repo-resident Gherkin.
 
 **Execution support**
