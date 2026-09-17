@@ -200,6 +200,16 @@ def test_the_verdict_schema_forbids_extra_keys_and_requires_every_field(runner):
     assert set(schema["required"]) == {"passed", "score", "met", "missed", "reasoning"}
 
 
+def test_the_schema_carries_no_numeric_bounds(runner):
+    """Structured outputs reject `minimum`/`maximum` on a number — a live 400
+    that no dry run surfaces. The range is enforced in check_verdict()
+    instead, so the schema must not reintroduce them."""
+    score = runner.VERDICT_SCHEMA["properties"]["score"]
+
+    assert "minimum" not in score and "maximum" not in score
+    assert runner.check_verdict({"passed": True, "score": 1.5, "missed": []}) is not None
+
+
 def test_subject_and_judge_default_to_different_models(runner):
     """A model grading its own output agrees with itself more than it should."""
     assert runner.DEFAULT_SUBJECT_MODEL != runner.DEFAULT_JUDGE_MODEL

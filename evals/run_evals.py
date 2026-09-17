@@ -61,7 +61,11 @@ DEFAULT_SUBJECT_MODEL = "claude-opus-5"
 DEFAULT_JUDGE_MODEL = "claude-sonnet-5"
 
 SUBJECT_MAX_TOKENS = 16000
-JUDGE_MAX_TOKENS = 4000
+# Generous deliberately. Current models think adaptively by default, and those
+# tokens come out of the same budget as the verdict — at 4000 the JSON was
+# truncated mid-string, or the whole budget went to thinking and no text block
+# came back at all. Both surfaced only on a live run.
+JUDGE_MAX_TOKENS = 16000
 
 # A hung request can emit keepalives indefinitely, so an inactivity timer never
 # fires. Only a ceiling on total case time reliably reclaims the slot.
@@ -79,7 +83,12 @@ VERDICT_SCHEMA = {
             "description": "True only when every claim the rubric makes is satisfied.",
         },
         "score": {
-            "type": "number", "minimum": 0.0, "maximum": 1.0,
+            # No `minimum`/`maximum`: structured outputs reject numeric bounds
+            # ("For 'number' type, properties maximum, minimum are not
+            # supported"), which a dry run cannot reveal. The range is enforced
+            # after parsing in check_verdict() instead — which is why the bound
+            # exists in two places and losing one costs nothing.
+            "type": "number",
             "description": "Fraction of the rubric's claims satisfied, 0.0 to 1.0.",
         },
         "met": {
@@ -409,7 +418,25 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                         f"judge: requested {args.judge_model}, served {judge.model}",
                         model=judge.model, usage=usage_of(judge),
                     )
-                verdict = json.loads(text_of(judge))
+                # Checked before parsing: a truncated verdict is a budget
+                # problem, and reporting it as "unparseable JSON" sends the
+                # next person to debug the judge's formatting instead.
+                if judge.stop_reason == "max_tokens":
+                    return await fail(
+                        "judge-truncated",
+                        f"judge hit max_tokens ({JUDGE_MAX_TOKENS}) before finishing its "
+                        f"verdict; raise JUDGE_MAX_TOKENS",
+                        model=judge.model, usage=usage_of(judge),
+                    )
+                judge_text = text_of(judge)
+                if not judge_text.strip():
+                    return await fail(
+                        "judge-empty",
+                        f"judge returned no text block (stop_reason={judge.stop_reason}, "
+                        f"blocks={[b.type for b in judge.content]})",
+                        model=judge.model, usage=usage_of(judge),
+                    )
+                verdict = json.loads(judge_text)
                 if (bad := check_verdict(verdict)) is not None:
                     return await fail("grader-error", f"inconsistent verdict: {bad}",
                                       model=judge.model, usage=usage_of(judge))

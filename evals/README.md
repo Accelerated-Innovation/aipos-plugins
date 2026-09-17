@@ -11,6 +11,10 @@ would pass while the tool silently broke."*
 
 ## Running one
 
+**Python 3.10+ is required** — the Anthropic SDK needs it, and pip's failure on an older
+interpreter is a wall of version numbers that never says so. The deterministic suite has no such
+floor.
+
 ```bash
 python -m pip install -r requirements-evals.txt
 
@@ -74,6 +78,15 @@ invalidated.
 
 Without that, editing a `SKILL.md` and re-running would skip every case and present the old
 grade as current — which would make the harness worse than useless for the one job it has.
+
+## What a real run cost
+
+Measured on `val-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:
+**$0.95**, 92–237 seconds per case, 2.2k–11.4k output tokens. The skill package cached at 24,780
+tokens per case after the first.
+
+Budget from output length, not case count: the longest case cost triple the shortest, because a
+skill that produces a full artifact writes far more than one that stops to ask a question.
 
 ## What a passing run does and does not prove
 
