@@ -1,0 +1,13 @@
+# Model-graded eval runner — SEPARATE from requirements-dev.txt on purpose.
+#
+# The deterministic gate (`python -m pytest tests -q`) must stay offline and
+# key-free: both CI jobs run with no API key and no network at test time, and
+# that is a property worth keeping. Installing the Anthropic SDK into that
+# environment would invite a test that quietly bills the account.
+#
+#   python -m pip install -r requirements-evals.txt
+#   python evals/run_evals.py --skill govkit-feature-create            # free
+#   python evals/run_evals.py --skill govkit-feature-create --execute  # costs money
+#
+# See evals/README.md.
+anthropic>=1.0
