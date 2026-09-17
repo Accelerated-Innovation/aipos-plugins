@@ -41,6 +41,7 @@ Where a document uses more than one, it says which.
 {
   "version": 1,
   "workflow_key": "invoice-approval",
+  "source_key": "acme",                  // which repository this workflow's local refs mean
   "outcome": "A submitted invoice reaches a decision the finance team can stand behind.",
 
   "actors": [
@@ -85,6 +86,10 @@ Where a document uses more than one, it says which.
 newer workflow is newer, not malformed, and reporting field errors against a shape you do not
 understand is confidently wrong.
 
+`source_key` names the repository this workflow's own references belong to. It is what lets a
+resolver tell a local reference from a cross-repository one; see *Cross-repository references*
+below.
+
 ## Order is not scope, and not a build dependency
 
 `next` is the order a **customer** moves through the journey. Three separate things are
@@ -118,9 +123,23 @@ The feature-key segment is not decoration. Two features may legitimately carry t
 slug — uniqueness is only required *within* a file — so an unqualified `#rule:invoice-approval-threshold`
 cannot say which one it means, and the resolver refuses it rather than guessing.
 
-`rule` and `scenario` references resolve against the Gherkin corpus. The other kinds live
-outside it and are carried through **marked unresolved**, because recording that something was
-declared is honest and inventing a target it cannot see is not.
+`rule` and `scenario` references resolve against the Gherkin corpus. The other kinds —
+`design`, `nfr`, `evaluation`, `agent-authority` — live outside it, so their feature need not
+appear in the corpus at all. They are carried through **marked unresolved**: recording that
+something was declared is honest, and inventing a target the resolver cannot see is not.
+
+### Cross-repository references
+
+Feature keys are unique *within a corpus*, not globally. Two repositories can both hold a
+`FEATURE-inv_full` describing entirely different products.
+
+So a reference whose `source-key` is not this workflow's `source_key` is **carried through
+unresolved**, with a `foreign-source` warning — never bound to a local feature that happens to
+share a key. Binding it would produce the worst outcome available: a confident `resolved: true`
+pointing at behavior from a different repository.
+
+It is a **warning**, not an error. Behavior spanning applications is legitimate; this corpus is
+simply not where that half of it resolves.
 
 ## Diagnostics
 
@@ -132,18 +151,25 @@ a reader cannot locate is a rumour.
 | `unsupported-version` | error | Newer than this build understands; short-circuits |
 | `malformed-ref` | error | Not a qualified reference |
 | `dangling-ref` | error | Names a feature or slug that does not exist |
-| `unparsed-feature` | error | The target feature's Gherkin does not parse |
+| `unparsed-feature` | error | The slug is absent **and** that feature has Gherkin that does not parse — it may be in the file that failed |
+| `foreign-source` | **warning** | Names another repository; carried through unresolved |
 | `ambiguous-ref` | error | The slug occurs more than once in that feature |
 | `duplicate-feature-key` | error | Two features claim one key |
 | `duplicate-slug` | error | Two elements in one feature share a slug |
 | `duplicate-activity-id` / `duplicate-step-id` | error | Ids must be unique; they are what others point at |
-| `unknown-actor` | error | An activity or step names an undeclared actor |
+| `unknown-actor` | error | An activity, step, or **handoff endpoint** names an undeclared actor |
 | `dangling-transition` | error | `next` points at no activity in this workflow |
 | `derived-identity` | **warning** | Resolves, but through a name-derived id — see below |
 
-**Broken Gherkin stays a parse error.** A feature whose file does not parse yields no elements.
-Reporting its references as "not found" would send someone to fix the references instead of the
-spec, and reporting nothing at all would let a broken spec pass as an empty one.
+**Broken Gherkin stays a parse error.** Reporting a reference into an unparsed spec as "not
+found" would send someone to fix the reference instead of the spec, and reporting nothing at
+all would let a broken spec pass as an empty one.
+
+The scope of that is deliberately narrow. `repo_ingest` merges every `.feature` in a directory
+into one record, so one unparseable sibling must **not** suppress rules that ingested perfectly
+well from another file — that reports N symptoms and hides the behavior the reader came for.
+A reference that resolves, resolves; the parse failure is reported on its own, and it still
+fails the run.
 
 **A derived identity warns rather than fails.** It resolves, so the map still renders — but a
 slug derived from an element's name changes when the name does, so it cannot bind an approval.

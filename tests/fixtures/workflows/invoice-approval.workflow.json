@@ -1,21 +1,47 @@
 {
   "version": 1,
   "workflow_key": "invoice-approval",
+  "source_key": "acme",
   "outcome": "A submitted invoice reaches a decision the finance team can stand behind.",
   "actors": [
-    { "id": "submitter", "name": "Invoice submitter", "kind": "human" },
-    { "id": "finance-manager", "name": "Finance manager", "kind": "human" },
-    { "id": "partner-manager", "name": "Partner manager", "kind": "human" },
-    { "id": "routing", "name": "Routing service", "kind": "system" }
+    {
+      "id": "submitter",
+      "name": "Invoice submitter",
+      "kind": "human"
+    },
+    {
+      "id": "finance-manager",
+      "name": "Finance manager",
+      "kind": "human"
+    },
+    {
+      "id": "partner-manager",
+      "name": "Partner manager",
+      "kind": "human"
+    },
+    {
+      "id": "routing",
+      "name": "Routing service",
+      "kind": "system"
+    }
   ],
   "activities": [
     {
       "id": "submit",
       "name": "Submit the invoice",
       "actor": "submitter",
-      "next": [{ "to": "route" }],
+      "next": [
+        {
+          "to": "route"
+        }
+      ],
       "steps": [
-        { "id": "capture", "name": "Capture invoice details", "actor": "submitter", "kind": "human" }
+        {
+          "id": "capture",
+          "name": "Capture invoice details",
+          "actor": "submitter",
+          "kind": "human"
+        }
       ]
     },
     {
@@ -23,8 +49,14 @@
       "name": "Route for approval",
       "actor": "routing",
       "next": [
-        { "to": "approve", "condition": "standard invoice" },
-        { "to": "partner-approve", "condition": "partner invoice" }
+        {
+          "to": "approve",
+          "condition": "standard invoice"
+        },
+        {
+          "to": "partner-approve",
+          "condition": "partner invoice"
+        }
       ],
       "behavior": [
         "acme/FEATURE-inv_full#rule:invoice-approval-threshold",
@@ -36,8 +68,13 @@
           "name": "Evaluate the approval threshold",
           "actor": "routing",
           "kind": "system",
-          "handoff": { "from": "submitter", "to": "routing" },
-          "behavior": ["acme/FEATURE-inv_full#rule:invoice-approval-threshold"]
+          "handoff": {
+            "from": "submitter",
+            "to": "routing"
+          },
+          "behavior": [
+            "acme/FEATURE-inv_full#rule:invoice-approval-threshold"
+          ]
         }
       ]
     },
@@ -50,7 +87,9 @@
         "acme/FEATURE-inv_full#rule:invoice-approval-threshold",
         "acme/FEATURE-inv_full#scenario:manager-rejects-with-reason"
       ],
-      "design": ["acme/FEATURE-inv_full#design:approval-panel"],
+      "design": [
+        "acme/FEATURE-inv_full#design:approval-panel"
+      ],
       "steps": []
     },
     {

@@ -115,17 +115,26 @@ def _record(bucket, slug, node, feat, kind, diagnostics):
 # ------------------------------------------------------------------ reference resolution
 
 def parse_ref(ref):
-    """Split a qualified reference, or return None when it is not one."""
-    m = REF_RE.match(ref or "")
+    """Split a qualified reference, or return None when it is not one.
+
+    Non-text values are *data* errors, not crashes: a number or an object in a
+    behavior array is a malformed reference, and a resolver that raises on one
+    takes the whole command down instead of reporting the one bad entry.
+    """
+    if not isinstance(ref, str):
+        return None
+    m = REF_RE.match(ref)
     return m.groupdict() if m else None
 
 
-def resolve_ref(ref, index, *, where):
+def resolve_ref(ref, index, *, where, source_key=None):
     """Resolve one qualified reference. Returns `(resolved_or_None, diagnostics)`.
 
-    `where` locates the reference for every diagnostic this produces, so a
-    dangling link reports the activity that carries it rather than only the
-    string that failed.
+    `source_key` is the identity of the corpus being resolved against. A
+    reference naming a *different* source is not resolvable here and is never
+    bound locally — see below. `where` locates the reference in every
+    diagnostic, so a dangling link reports the activity that carries it rather
+    than only the string that failed.
     """
     parts = parse_ref(ref)
     if parts is None:
@@ -137,7 +146,34 @@ def resolve_ref(ref, index, *, where):
             ref=ref, **where,
         )]
 
-    feature_key, kind, slug = parts["feature"], parts["kind"], parts["slug"]
+    source, feature_key = parts["source"], parts["feature"]
+    kind, slug = parts["kind"], parts["slug"]
+
+    if source_key is not None and source != source_key:
+        # Behavior spanning applications is legitimate, and this corpus is not
+        # the place it resolves. Binding it to a local feature that happens to
+        # share a key would be the worst outcome available: a confident
+        # `resolved: true` pointing at behavior from a different repository.
+        return {"ref": ref, "kind": kind, "slug": slug, "featureKey": feature_key,
+                "source": source, "resolved": False, "external": True,
+                "reason": "foreign-source"}, [_diag(
+            "warning", "foreign-source",
+            f"{ref!r} names source {source!r}; this corpus is {source_key!r}. Carried through "
+            f"unresolved — a cross-repository reference resolves where that source is "
+            f"available, and binding it to a local feature with the same key would point at "
+            f"different behavior entirely.",
+            ref=ref, element=feature_key, **where,
+        )]
+
+    if kind not in BEHAVIOR_KINDS:
+        # design / nfr / evaluation / agent-authority live outside the Gherkin
+        # corpus, so their feature need not appear in it. Checked before the
+        # corpus lookup: requiring a Gherkin feature for a Figma frame would
+        # reject every valid design reference.
+        return {"ref": ref, "kind": kind, "slug": slug, "featureKey": feature_key,
+                "source": source, "resolved": False, "external": True,
+                "reason": "non-gherkin-kind"}, []
+
     feat = index.get(feature_key)
     if feat is None:
         return None, [_diag(
@@ -146,30 +182,24 @@ def resolve_ref(ref, index, *, where):
             ref=ref, element=feature_key, **where,
         )]
 
-    if feat["parseErrors"]:
-        # A file that failed to parse yields no elements. Left alone, every
-        # reference into it would be reported as dangling — which is true but
-        # useless, because it buries the one cause under N symptoms and invites
-        # someone to "fix" the references instead of the spec.
-        first = feat["parseErrors"][0]
-        detail = first.get("message", first) if isinstance(first, dict) else first
-        return None, [_diag(
-            "error", "unparsed-feature",
-            f"{ref!r} points into feature {feature_key!r}, whose Gherkin does not parse: "
-            f"{detail}. Fix the spec; a reference into an unparsed file resolves to nothing, "
-            f"and an empty result is not a passing one.",
-            ref=ref, file=first.get("file") if isinstance(first, dict) else feat.get("sourcePath"),
-            element=feature_key, **where,
-        )]
-
-    if kind not in BEHAVIOR_KINDS:
-        # design/nfr/evaluation/agent-authority live outside the Gherkin corpus.
-        # They are carried through as declared rather than invented here.
-        return {"ref": ref, "kind": kind, "slug": slug, "featureKey": feature_key,
-                "resolved": False, "external": True}, []
-
     bucket = feat[kind]
+    node = bucket.get(slug)
+
     if slug not in bucket:
+        # A parse failure elsewhere in the same feature directory is the likely
+        # cause worth naming -- but only when the slug is actually missing.
+        # Rejecting every reference into the feature (which an earlier version
+        # did) hides behavior that ingested perfectly well from a sibling file.
+        if feat["parseErrors"]:
+            detail = _first_error(feat)
+            return None, [_diag(
+                "error", "unparsed-feature",
+                f"{ref!r} names {kind} {slug!r}, which feature {feature_key!r} does not "
+                f"declare — and that feature has Gherkin that does not parse ({detail}), so "
+                f"the element may be in the file that failed. Fix the spec before concluding "
+                f"the reference is wrong.",
+                ref=ref, file=feat.get("sourcePath"), element=slug, **where,
+            )]
         return None, [_diag(
             "error", "dangling-ref",
             f"{ref!r} names {kind} {slug!r}, which feature {feature_key!r} does not declare. "
@@ -178,7 +208,6 @@ def resolve_ref(ref, index, *, where):
             ref=ref, file=feat.get("sourcePath"), element=slug, **where,
         )]
 
-    node = bucket[slug]
     if node is None:
         return None, [_diag(
             "error", "ambiguous-ref",
@@ -198,12 +227,17 @@ def resolve_ref(ref, index, *, where):
         ))
 
     return {
-        "ref": ref, "kind": kind, "slug": slug, "featureKey": feature_key,
+        "ref": ref, "kind": kind, "slug": slug, "featureKey": feature_key, "source": source,
         "name": node.get("rule") if kind == "rule" else node.get("name"),
         "idSource": node.get("idSource"), "file": node.get("file"),
         "line": node.get("line"), "tags": node.get("tags") or [],
         "resolved": True, "external": False,
     }, diagnostics
+
+
+def _first_error(feat):
+    first = feat["parseErrors"][0]
+    return first.get("message", first) if isinstance(first, dict) else first
 
 
 # ------------------------------------------------------------------ workflow
@@ -253,13 +287,28 @@ def validate_workflow(workflow):
                     activity=aid, step=sid,
                 ))
             step_ids.add(sid)
-            for role in ("actor",):
-                if step.get(role) and step[role] not in actor_ids:
-                    diagnostics.append(_diag(
-                        "error", "unknown-actor",
-                        f"Step {sid!r} names actor {step[role]!r}, which is not declared.",
-                        activity=aid, step=sid,
-                    ))
+            if step.get("actor") and step["actor"] not in actor_ids:
+                diagnostics.append(_diag(
+                    "error", "unknown-actor",
+                    f"Step {sid!r} names actor {step['actor']!r}, which is not declared.",
+                    activity=aid, step=sid,
+                ))
+
+            # A handoff is where work changes hands, which is the thing L2
+            # exists to show. Its endpoints are actors like any other, and an
+            # unchecked one renders into the collaboration view looking exactly
+            # as authoritative as a real one.
+            handoff = step.get("handoff") or {}
+            if isinstance(handoff, dict):
+                for end in ("from", "to"):
+                    who = handoff.get(end)
+                    if who and who not in actor_ids:
+                        diagnostics.append(_diag(
+                            "error", "unknown-actor",
+                            f"Step {sid!r} hands off {end} {who!r}, which is not a declared "
+                            f"actor.",
+                            activity=aid, step=sid,
+                        ))
 
     for act in activities:
         for edge in act.get("next") or []:
@@ -275,14 +324,22 @@ def validate_workflow(workflow):
     return diagnostics
 
 
-def resolve(workflow, features):
+def resolve(workflow, features, source_key=None):
     """Resolve `workflow` against ingested `features`.
+
+    `source_key` identifies the corpus. It defaults to the workflow's own
+    `source_key`, so a workflow states which repository its local references
+    belong to and anything naming another source is carried through unresolved
+    rather than bound to a local feature that happens to share a key.
 
     Returns `{"workflow", "views": {"l1","l2","l3"}, "diagnostics", "ok"}`.
     `ok` is true only when no diagnostic is an error — warnings (a derived
     identifier, say) do not make a workflow unusable, they make it
     un-approvable, which is a different thing decided elsewhere.
     """
+    if source_key is None:
+        source_key = workflow.get("source_key")
+
     diagnostics = list(validate_workflow(workflow))
     if any(d["code"] == "unsupported-version" for d in diagnostics):
         return {"workflow": workflow.get("workflow_key"), "views": {}, "ok": False,
@@ -297,13 +354,13 @@ def resolve(workflow, features):
         behavior, design = [], []
 
         for ref in act.get("behavior") or []:
-            got, ds = resolve_ref(ref, index, where=where)
+            got, ds = resolve_ref(ref, index, where=where, source_key=source_key)
             diagnostics.extend(ds)
             if got:
                 behavior.append(got)
 
         for ref in act.get("design") or []:
-            got, ds = resolve_ref(ref, index, where=where)
+            got, ds = resolve_ref(ref, index, where=where, source_key=source_key)
             diagnostics.extend(ds)
             if got:
                 design.append(got)
@@ -313,7 +370,7 @@ def resolve(workflow, features):
             sw = {"activity": act.get("id"), "step": step.get("id")}
             step_behavior = []
             for ref in step.get("behavior") or []:
-                got, ds = resolve_ref(ref, index, where=sw)
+                got, ds = resolve_ref(ref, index, where=sw, source_key=source_key)
                 diagnostics.extend(ds)
                 if got:
                     step_behavior.append(got)
