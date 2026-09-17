@@ -118,3 +118,53 @@ const {chromium} = require('playwright');
 Send the HTML with `SendUserFile`. A feature map is something a team comes back to and re-reads, so when a desktop is connected also persist it with `create_artifact` so it survives outside the conversation; use `update_artifact` on later rebuilds rather than creating a second copy.
 
 Keep `features.json`, `scores.json` and `config.json` alongside the output. Re-running the map after a spec changes should mean re-ingesting and re-scoring, not rebuilding the inputs by hand.
+
+
+## The journey views (L1 / L2 / L3)
+
+Pass a **resolved** workflow — `workflow_resolve.py`'s output, not a raw `workflow.json` — and
+the page gains a journey section above the feature lanes:
+
+```bash
+python scripts/repo_ingest.py features/ -o features.json
+python scripts/workflow_resolve.py workflow.json features.json > resolved.json
+python scripts/render_map.py -f features.json -w resolved.json -o map.html
+```
+
+Taking the resolver's output rather than resolving here is deliberate: two implementations of
+"what does this reference mean" would eventually disagree, and the one in the renderer would be
+the wrong one.
+
+| View | Shows | Deliberately omits |
+|---|---|---|
+| **L1** | Outcome, activities in order, actor per activity, branches and their conditions | All Gherkin. A rule slug in the view someone outside the team reads is the failure mode |
+| **L2** | The steps inside each activity, actor kinds, and the handoffs where work changes hands | Behavior references |
+| **L3** | The Rules and scenarios governing each activity and step, linked to their feature cards | — |
+
+**Reuse must read as reuse.** A Rule referenced from several steps appears once per reference
+with an *"also referenced at"* column naming the others. Without it, three references to one
+authored Rule look like three Rules.
+
+**Unresolved references are not links.** A `design:` reference lives outside the Gherkin corpus
+and a `foreign-source` one belongs to another repository; both render as plain text with the
+reason, because linking them would send a reader to a card that does not exist and imply the
+behavior was verified.
+
+**Uncovered behavior gets its own panel** — corpus elements no activity or step references,
+with the caveat that this is legitimate when they belong to another journey. A
+`partial-coverage` diagnostic means the list is a floor: that feature had Gherkin that did not
+parse.
+
+### What the page must never claim
+
+A rendered map is generated from files in a working tree. It cannot verify that any decision was
+recorded anywhere, so it carries an **advisory banner** and no approval badge, and slice chips
+are labelled a planning view over behavior rather than a commitment. If a future version shows
+authorization status, it must come from a verifiable decision read at render time and say where
+it came from — never from a tag, a file, or the absence of an error.
+
+### Accessibility and width
+
+Every disclosure is a native `<details>` / `<summary>`: focusable, and operable with Enter or
+Space with no script. No element wears `role="button"` or a `tabindex`. The journey tables
+collapse to stacked rows below 640px, which is the one thing that cannot simply shrink.

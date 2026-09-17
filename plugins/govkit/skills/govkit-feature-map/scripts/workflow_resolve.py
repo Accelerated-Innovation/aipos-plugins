@@ -514,7 +514,11 @@ def view_l2(resolved):
                  for s in a["steps"]]
         out.append({"id": a.get("id"), "name": a.get("name"), "actor": a.get("actor"),
                     "next": a.get("next") or [], "steps": steps})
-    return {"outcome": resolved.get("outcome"), "activities": out}
+    # The actor catalog travels with L2: this is the "who collaborates" view,
+    # and without it a consumer can only render raw ids.
+    return {"outcome": resolved.get("outcome"),
+            "actors": resolved.get("actors") or [],
+            "activities": out}
 
 
 def view_l3(resolved):
