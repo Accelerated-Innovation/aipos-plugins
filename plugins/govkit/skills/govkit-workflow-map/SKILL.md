@@ -117,13 +117,28 @@ Three rules, all of which the resolver enforces:
 
 ### Step 6 — Resolve, and report what is uncovered
 
-Run the resolver:
+Resolving needs two inputs: the workflow you just wrote, and the corpus as `features.json`.
+
+**Produce the corpus first if it does not exist.** `features.json` is the ingested form of a
+feature directory, not something a user keeps lying around:
 
 ```bash
-python ../govkit-feature-map/scripts/workflow_resolve.py workflow.json features.json
+python <plugin>/skills/govkit-feature-map/scripts/repo_ingest.py features/ -o features.json
+python <plugin>/skills/govkit-feature-map/scripts/workflow_resolve.py \
+    workflow.json features.json
 ```
 
-Report both halves of what it returns:
+Run these from the **project** directory, with `<plugin>` the installed plugin root — the
+scripts ship inside the plugin, the inputs live in the project, and the two are not in the same
+place. Substitute the real path rather than copying a placeholder.
+
+**When there is no corpus at all** — a journey described only in conversation, with no feature
+package written yet — resolution and coverage do not apply. Say so plainly rather than
+manufacturing a `features.json`: the workflow's references are unverified until the behavior
+they name exists. That is a normal state for a first draft, not a failure, but it must be
+reported, because an unverified reference looks exactly like a verified one in the rendered view.
+
+Where the corpus does exist, report both halves of what the resolver returns:
 
 - **Diagnostics** — dangling and ambiguous references, unknown actors, transitions to nowhere,
   unparsed features. Errors are fixed before the map is worth reading.
@@ -134,6 +149,10 @@ Report both halves of what it returns:
 Uncovered behavior is a finding, **not an error**. A Rule may legitimately belong to a journey
 this workflow does not describe. Say which case you think it is and let the user decide — and do
 not silently attach an orphan scenario to the nearest plausible step to make the number go down.
+
+**A `partial-coverage` warning means the count is a floor.** That feature had Gherkin that did
+not parse, so what is listed as uncovered is only what was readable; there may be more. Report
+it as a floor rather than a total.
 
 ### Step 7 — Ask only what changes the journey
 

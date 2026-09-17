@@ -391,6 +391,13 @@ def resolve(workflow, features, source_key=None):
             f"— but unreferenced behavior is behavior this map implies does not exist.",
             file=entry.get("file"), element=entry["slug"],
         ))
+    for key in cover["partialFeatures"]:
+        diagnostics.append(_diag(
+            "warning", "partial-coverage",
+            f"Feature {key!r} has Gherkin that does not parse, so its coverage counts only what "
+            f"was readable. Treat the uncovered list for it as a floor, not the whole picture.",
+            element=key,
+        ))
 
     return {
         "workflow": workflow.get("workflow_key"),
@@ -409,9 +416,9 @@ def coverage(workflow, features, source_key=None):
     behavior in the corpus that no step in this journey touches".
 
     Uncovered behavior is a **finding, not an error**. A Rule may legitimately
-    belong to a journey this workflow does not describe. What is not legitimate
-    is nobody noticing: an unreferenced scenario is behavior the map silently
-    implies does not exist.
+    belong to a journey this workflow does not describe. What is not
+    legitimate is nobody noticing: an unreferenced scenario is behavior the
+    map silently implies does not exist.
     """
     referenced = set()
     for act in workflow.get("activities") or []:
@@ -424,14 +431,24 @@ def coverage(workflow, features, source_key=None):
                     referenced.add(ref)
 
     local = source_key if source_key is not None else workflow.get("source_key")
-    covered, uncovered = [], []
+
+    # When no source key is known, match on the part of a reference that does
+    # not depend on one. `resolve_ref` already resolves such references, so
+    # requiring a prefix here would let a workflow resolve cleanly while
+    # coverage called every element in the corpus uncovered.
+    suffixes = {r.partition("/")[2] for r in referenced if "/" in r}
+
+    covered, uncovered, partial = [], [], []
 
     for feat in features:
         key = feat.get("key") or ""
+        # A feature directory merges every .feature in it into one record, so
+        # parse errors in one file say nothing about what parsed from another.
+        # Dropping the whole record here would hide valid unreferenced
+        # behavior — the same defect `resolve_ref` was corrected for.
         if feat.get("parseErrors"):
-            # Its elements did not parse, so "uncovered" would be meaningless
-            # — the resolver reports the parse failure separately.
-            continue
+            partial.append(key)
+
         for rule in feat.get("rules") or []:
             for kind, node, name in (
                 ("rule", rule, rule.get("rule")),
@@ -440,17 +457,29 @@ def coverage(workflow, features, source_key=None):
                 slug = node.get("id")
                 if not slug:
                     continue
-                ref = f"{local}/{key}#{kind}:{slug}" if local else None
-                entry = {"ref": ref, "kind": kind, "slug": slug, "featureKey": key,
-                         "name": name, "idSource": node.get("idSource"),
-                         "file": node.get("file")}
-                (covered if ref in referenced else uncovered).append(entry)
+                suffix = f"{key}#{kind}:{slug}"
+                ref = f"{local}/{suffix}" if local else None
+                entry = {"ref": ref, "suffix": suffix, "kind": kind, "slug": slug,
+                         "featureKey": key, "name": name,
+                         "idSource": node.get("idSource"), "file": node.get("file"),
+                         "featureHasParseErrors": bool(feat.get("parseErrors"))}
+                hit = (ref in referenced) if local else (suffix in suffixes)
+                (covered if hit else uncovered).append(entry)
 
-    return {"covered": covered, "uncovered": uncovered,
-            "referencedNotInCorpus": sorted(
-                r for r in referenced
-                if (p := parse_ref(r)) and p["kind"] in BEHAVIOR_KINDS
-                and not any(c["ref"] == r for c in covered))}
+    matched = {c["suffix"] for c in covered}
+    return {
+        "covered": covered,
+        "uncovered": uncovered,
+        # Features whose corpus may be incomplete, so "uncovered" is a floor
+        # rather than the whole picture. The parse failure itself is reported
+        # by resolve_ref when something points into the file.
+        "partialFeatures": sorted(set(partial)),
+        "referencedNotInCorpus": sorted(
+            r for r in referenced
+            if (pr := parse_ref(r)) and pr["kind"] in BEHAVIOR_KINDS
+            and r.partition("/")[2] not in matched
+        ),
+    }
 
 
 # ------------------------------------------------------------------ views

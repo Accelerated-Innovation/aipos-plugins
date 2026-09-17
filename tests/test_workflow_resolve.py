@@ -437,12 +437,59 @@ def test_covered_and_uncovered_together_account_for_the_parsed_corpus(resolved, 
     assert len(cover["covered"]) + len(cover["uncovered"]) == total
 
 
-def test_an_unparsed_feature_is_left_out_of_coverage(resolved):
-    """Its elements did not parse, so "uncovered" would be meaningless — the
-    parse failure is reported on its own."""
-    every = resolved["coverage"]["covered"] + resolved["coverage"]["uncovered"]
+def test_a_broken_sibling_does_not_erase_behavior_that_parsed(workflow_resolve, features,
+                                                               workflow):
+    """repo_ingest merges every .feature in a directory into one record, so
+    parse errors in one file say nothing about what parsed from another.
+    Dropping the record would hide valid unreferenced behavior — the same
+    defect resolve_ref was corrected for, and it must not come back here."""
+    corpus = copy.deepcopy(features)
+    inv_full = next(f for f in corpus if f["key"] == "FEATURE-inv_full")
+    expected = sum(1 + len(r.get("scenarios") or []) for r in inv_full["rules"] if r.get("id"))
+    inv_full["parseErrors"] = [{"file": "zz_broken.feature", "message": "got 'Rulez'"}]
 
-    assert not [e for e in every if e["featureKey"] == "FEATURE-broken_syntax"]
+    result = workflow_resolve.resolve(workflow, corpus)
+    cover = result["coverage"]
+    present = [e for e in cover["covered"] + cover["uncovered"]
+               if e["featureKey"] == "FEATURE-inv_full"]
+
+    assert len(present) == expected
+    assert "FEATURE-inv_full" in cover["partialFeatures"]
+    assert any(d["code"] == "partial-coverage" for d in result["diagnostics"])
+
+
+def test_a_partial_feature_is_flagged_so_the_count_reads_as_a_floor(workflow_resolve, features,
+                                                                    workflow):
+    """Counting only what was readable is right; presenting it as the whole
+    picture is not."""
+    corpus = copy.deepcopy(features)
+    next(f for f in corpus if f["key"] == "FEATURE-inv_partner")["parseErrors"] = [
+        {"file": "other.feature", "message": "unparseable"}]
+
+    result = workflow_resolve.resolve(workflow, corpus)
+    partial = {d["element"] for d in result["diagnostics"] if d["code"] == "partial-coverage"}
+    diag = next(d for d in result["diagnostics"]
+                if d["code"] == "partial-coverage" and d["element"] == "FEATURE-inv_partner")
+
+    assert "floor" in diag["message"]
+    # broken_syntax genuinely has parse errors in the corpus, so it is flagged
+    # too — and that it now appears at all is the point of the fix above.
+    assert partial == {"FEATURE-inv_partner", "FEATURE-broken_syntax"}
+
+
+def test_coverage_works_when_the_workflow_declares_no_source_key(workflow_resolve, features,
+                                                                 workflow):
+    """resolve_ref resolves references when no source key is declared, so
+    coverage must too — otherwise the same workflow resolves cleanly while
+    every element in the corpus is reported uncovered."""
+    wf = copy.deepcopy(workflow)
+    del wf["source_key"]
+
+    result = workflow_resolve.resolve(wf, features)
+
+    assert result["coverage"]["covered"], "everything was marked uncovered"
+    assert any(c["slug"] == "invoice-approval-threshold"
+               for c in result["coverage"]["covered"])
 
 
 def test_coverage_distinguishes_a_reference_with_no_corpus_element(workflow_resolve, features,
