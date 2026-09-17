@@ -43,14 +43,24 @@ A slice cuts across the backbone. It answers: *what is the thinnest version of t
 | Slice | Contains | Test |
 |---|---|---|
 | **MVP** | The critical path across every backbone stage that the journey requires — happy path, primary persona, default settings. | Could a real user complete the journey end to end? If not, it's not an MVP. |
-| **V1** | Operational stability: common error paths, validation, permissions, the second-most-common variation. | Would you be comfortable leaving this running unattended? |
+| **V1** | Operational stability: common error paths, validation, the second-most-common variation. | Would you be comfortable leaving this running unattended? |
 | **V2** | Optimization, advanced UX, edge cases, secondary personas, heavy third-party integration. | Would the journey survive without this indefinitely? |
 
-Three rules that catch most mistakes:
+**Permissions are not listed above, deliberately.** They used to sit in V1, and a flat category
+default is exactly how a required control gets deferred by a table rather than by a decision.
+Authorization, privacy, safety, regulatory compliance, financial correctness and data loss are
+placed by **the consequence of shipping without them**, which routinely puts an "edge case" in
+MVP. A login feature that cannot legally go live without lockout has lockout in its MVP, whatever
+the category says. This is the same rule `govkit-feature-slice`'s rubric applies scenario by
+scenario — see *"A tag category never defers risk-critical behavior by itself"* — and the two
+must not drift apart.
+
+Four rules that catch most mistakes:
 
 1. **A slice spans stages.** If a proposed slice touches one backbone activity, it is a layer, not a slice. Rework it.
 2. **A slice delivers a usable outcome.** "The data model is complete" is not an outcome anybody outside the team can use.
 3. **A slice ties to a success metric.** If the epic states success metrics, name which one each slice moves. If a slice moves none of them, either the slice is wrong or the metrics are — surface it either way.
+4. **A slice carries the controls its own behavior requires.** Including a scenario pulls in what that behavior cannot safely ship without — the authorization it assumes, the recovery path for the failure it can hit, the audit record its Rule obligates. Deferring those to a later slice leaves the earlier one unshippable while looking complete on the map, which is the failure this check exists to catch.
 
 MVP discipline is the whole point. The strict test — *can the journey fundamentally function without this?* — puts most things outside MVP, and a thin MVP is the desired outcome, not a sign of under-scoping.
 

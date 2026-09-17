@@ -20,7 +20,7 @@ reproducible commitment package ready for a human decision.
 |---|---|---|
 | 02 | **Done.** `references/workflow-source.md`, qualified refs + resolver behavior in `spec-identifiers.md`, `scripts/workflow_resolve.py`, L1/L2/L3 views, plugin-boundary enforcement | `plugins/govkit/references/`, `govkit-feature-map/scripts/`, `tests/` |
 | 03 | **Done.** Opportunity mode (the AIPOS default) and baseline mode in `govkit-feature-create`; committed-behavior review in `govkit-feature-refine`; Pillar 2 handoff in `val-rapid-validation` | the three skills, their evals, `tests/test_eval_cases.py` |
-| 04 | Scope selection separated from complexity diagnostics | `govkit-feature-slice`, slicing rubric, story-mapping reference |
+| 04 | **Done.** Scope selection separated from the optional complexity diagnostic; shippability check; tags as views; consequence rule aligned across both references | `govkit-feature-slice`, slicing rubric, story-mapping reference |
 | 05A | A proposed `aipos-workflow-map` authoring skill | Pillar 2 plugin surface, plugin metadata |
 | 05B | L1 / L2 / L3 views beside the existing producer/consumer chain | `repo_ingest.py`, `render_map.py`, their references and tests |
 | 06 | The Pillar 2 commitment package; the Gherkin prohibition replaced by progressive drafting | `val-rapid-validation`, `references/viability-brief.md` |
@@ -143,4 +143,13 @@ Already correct and deliberately not rewritten: refine's rule that a feature bui
 coding agent is not thereby a GenAI feature, and its routing of contradictory rules to Product
 as a decision rather than a wording fix. Increment 03's requirements on both were already met.
 
-Increments 04–06 and 14–15 remain unimplemented. No approval or release is authorized by this.
+**Increment 04 is implemented.** Scope selection is the skill's job; sizing is an optional
+diagnostic it no longer waits for. A new shippability check asks whether the selected journey
+completes, whether selected behavior carries the authorization, recovery and audit it depends
+on, and whether any cross-feature prerequisite is uncommitted. `@mvp`/`@v1`/`@v2` are documented
+as a planning *view* — a baseline's reference list binds the commitment — so retagging after
+approval is a scope change and `@v2` is not a queue position. The story-mapping reference no
+longer defaults permissions to V1; both references now apply the same consequence-based rule.
+`test_compute_size.py` is untouched and green: sizing is preserved for users who choose it.
+
+Increments 05–06 and 14–15 remain unimplemented. No approval or release is authorized by this.
