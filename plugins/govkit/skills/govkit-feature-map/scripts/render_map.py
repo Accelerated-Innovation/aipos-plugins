@@ -579,16 +579,25 @@ def wf_l1(views):
     the team reads, and a rule slug leaking into it is the failure mode."""
     v = views.get("l1") or {}
     actors = _actor_map(v)
+    known = {a.get("id") for a in v.get("activities") or []}
     rows = ""
     for a in v.get("activities") or []:
         nxt = a.get("next") or []
         if nxt:
-            to = "".join(
-                f'<li><a href="#wfa-{e(x.get("to"))}">{e(x.get("to"))}</a>'
-                + (f' <em>when {e(x["condition"])}</em>' if x.get("condition") else
-                   ' <em class="warn">no stated condition</em>' if len(nxt) > 1 else "")
-                + "</li>" for x in nxt)
-            to = f"<ul class='nx'>{to}</ul>"
+            items = []
+            for x in nxt:
+                tgt = x.get("to")
+                # A transition the resolver flagged as dangling must not render
+                # as a link: a fragment with no destination looks navigable and
+                # silently does nothing.
+                label = (f'<a href="#wfa-{e(tgt)}">{e(tgt)}</a>' if tgt in known
+                         else f'{e(tgt)} <em class="warn">no such activity</em>')
+                if x.get("condition"):
+                    label += f' <em>when {e(x["condition"])}</em>'
+                elif len(nxt) > 1:
+                    label += ' <em class="warn">no stated condition</em>'
+                items.append(f"<li>{label}</li>")
+            to = f"<ul class='nx'>{''.join(items)}</ul>"
         else:
             to = '<em>ends the journey</em>'
         rows += (f'<tr id="wfa-{e(a.get("id"))}"><td class="an">{e(a.get("name") or a.get("id"))}</td>'
@@ -636,12 +645,14 @@ def wf_l3(views, coverage):
     refby = v.get("referencedBy") or {}
     out = ""
     for a in v.get("activities") or []:
+        aid = a.get("id")
         items = ""
         for b in (a.get("behavior") or []) + (a.get("design") or []):
-            items += _wf_ref_row(b, refby)
+            items += _wf_ref_row(b, refby, here=aid, where="<em>activity</em>")
         for st in a.get("steps") or []:
             for b in st.get("behavior") or []:
-                items += _wf_ref_row(b, refby, step=st.get("name") or st.get("id"))
+                items += _wf_ref_row(b, refby, here=f"{aid}.{st.get('id')}",
+                                     where=e(st.get("name") or st.get("id")))
         if not items:
             items = '<tr><td colspan="4"><em>no behavior referenced at this activity</em></td></tr>'
         out += (f'<details class="wfact" open><summary>{e(a.get("name") or a.get("id"))}</summary>'
@@ -664,10 +675,18 @@ def wf_l3(views, coverage):
     return out
 
 
-def _wf_ref_row(b, refby, step=None):
+def _wf_ref_row(b, refby, here=None, where="&#8212;"):
+    """One behavior row. `here` is this row's own location key, exactly as the
+    resolver writes it (`activity` or `activity.step`).
+
+    Matching on the location key rather than a display name matters: the column
+    is meant to show reuse *elsewhere*, and a row that lists its own location
+    turns one reference into apparent duplication — the opposite of what the
+    column exists to demonstrate.
+    """
     ref = b.get("ref") or ""
-    others = [x for x in refby.get(ref, []) if not step or not x.endswith(step)]
-    also = ", ".join(e(o) for o in others) if len(refby.get(ref, [])) > 1 else "&#8212;"
+    others = [x for x in refby.get(ref, []) if x != here]
+    also = ", ".join(e(o) for o in others) if others else "&#8212;"
 
     if not b.get("resolved"):
         why = b.get("reason") or "unresolved"
@@ -684,7 +703,6 @@ def _wf_ref_row(b, refby, step=None):
         derived = ('<span class="warn"> derived id</span>'
                    if b.get("idSource") == "derived" else "")
         ident = f'<code>{e(b.get("kind"))}:{e(b.get("slug"))}</code>{derived} {tags}'
-    where = e(step) if step else "<em>activity</em>"
     return f'<tr><td class="an">{name}</td><td>{where}</td><td>{ident}</td><td>{also}</td></tr>'
 
 

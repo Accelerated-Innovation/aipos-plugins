@@ -167,12 +167,57 @@ def test_l1_contains_no_gherkin_identifiers(page):
     assert "Submit the invoice" in l1
 
 
-def test_a_rule_at_several_steps_is_shown_as_reuse_not_duplication(page):
-    """Authored once, referenced three times. The map has to make that read as
-    reuse — otherwise it looks like three copies of the same Rule."""
+def test_a_rule_at_several_steps_is_shown_as_reuse_elsewhere(page):
+    """Authored once, referenced three times. Each row lists the OTHER
+    locations — a row that names its own location turns one reference into
+    apparent duplication, which is the opposite of what the column is for."""
     journey = _journey(page)
 
-    assert "route, route.evaluate-threshold, approve" in journey
+    # the `approve` activity row cites the other two locations, not itself
+    assert "route, route.evaluate-threshold" in journey
+    assert "route, route.evaluate-threshold, approve" not in journey
+
+
+def test_a_row_never_cites_its_own_location_as_reuse(_resolver, render_map, resolved_workflow):
+    """Matching on the resolver's location key, not a display name. The
+    earlier version compared a step's name against `activity.step` paths, so
+    every step row kept itself and every activity row kept everything."""
+    resolved, feats = resolved_workflow
+    ref = "acme/FEATURE-inv_full#rule:invoice-approval-threshold"
+    locations = resolved["views"]["l3"]["referencedBy"][ref]
+    assert set(locations) == {"route", "route.evaluate-threshold", "approve"}
+
+    journey = _journey(render_map.render(feats, {}, {}, {}, resolved))
+    cells = re.findall(r"<td>([^<]*)</td></tr>", journey)
+
+    for cell in cells:
+        cited = {c.strip() for c in cell.split(",") if c.strip() in locations}
+        assert len(cited) < len(locations), f"row cites every location incl. its own: {cell!r}"
+
+
+def test_l2_renders_actor_names_and_kinds_not_raw_ids(page):
+    """L2 is the "who collaborates" view. Raw ids make it unreadable, and the
+    actor catalog has to travel with the view for the renderer to have them."""
+    l2 = _journey(page).split("L2 &#8212;")[1].split("L3 &#8212;")[0]
+
+    assert "Invoice submitter" in l2
+    assert "Routing service" in l2
+    assert 'class="actor k-human"' in l2
+    assert 'class="actor k-system"' in l2
+
+
+def test_a_transition_to_no_such_activity_is_not_a_link(render_map, resolved_workflow):
+    """A fragment with no destination looks navigable and silently does
+    nothing; the resolver already calls this dangling."""
+    resolved, feats = resolved_workflow
+    wf = copy.deepcopy(resolved)
+    route = next(a for a in wf["views"]["l1"]["activities"] if a["id"] == "route")
+    route["next"] = [{"to": "nowhere", "condition": "never"}]
+
+    journey = _journey(render_map.render(feats, {}, {}, {}, wf))
+
+    assert "no such activity" in journey
+    assert 'href="#wfa-nowhere"' not in journey
 
 
 def test_cross_feature_links_point_at_anchors_that_exist(page):
