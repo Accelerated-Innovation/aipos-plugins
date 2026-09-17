@@ -260,6 +260,7 @@ Two references sit at the plugin level rather than inside one skill, because fiv
 
 - [`plugins/govkit/references/gherkin-authoring-standard.md`](./plugins/govkit/references/gherkin-authoring-standard.md) — the shared Gherkin authoring standard: BRIEF, explicit `Rule:` blocks, boundary coverage, scenario isolation, the confirmed/proposed/unresolved registers, what makes a spec automatable without turning it into implementation instructions, and the line between a deterministic behavior check and an aggregate GenAI evaluation.
 - [`plugins/govkit/references/spec-identifiers.md`](./plugins/govkit/references/spec-identifiers.md) — `@rule:` / `@scenario:` identifiers that survive rewording, connecting rules, scenarios, NFRs, evaluations and evidence. Optional and additive; existing packages keep working.
+- [`plugins/govkit/references/workflow-source.md`](./plugins/govkit/references/workflow-source.md) — the `workflow.json` format: a customer outcome, ordered and branching activities, actors and handoffs, and qualified references into canonical Gherkin. L1 journey / L2 collaboration / L3 behavior are views of one file, and the diagram is a generated projection — a Rule shown at four steps is authored once.
 
 ## Adding another skill
 

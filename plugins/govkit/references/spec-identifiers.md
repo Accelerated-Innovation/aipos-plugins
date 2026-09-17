@@ -3,7 +3,8 @@
 > **Shared reference.** Read by `govkit-feature-create`, `govkit-feature-refine`,
 > `govkit-feature-slice`, `govkit-feature-readiness` and `govkit-feature-map`.
 > From a skill folder: `../../references/spec-identifiers.md`.
-> Companion to [`gherkin-authoring-standard.md`](gherkin-authoring-standard.md).
+> Companion to [`gherkin-authoring-standard.md`](gherkin-authoring-standard.md)
+> and [`workflow-source.md`](workflow-source.md).
 
 ## The problem this solves
 
@@ -93,6 +94,60 @@ Slicing and retagging must not change identifiers. `govkit-feature-slice` may sp
 scenario for size reasons, and when it does, it applies the split rules above and says so
 in its output — a split that silently re-identifies its own outputs breaks every evaluation
 that pointed at them.
+
+## Referring to another feature's rule or scenario
+
+A slug is unique **within its feature file** and nowhere else. Two features may legitimately
+carry the same one — `@rule:invoice-approval-threshold` can mean the finance-manager threshold
+in one feature and the partner-manager rule in another, and both authors were right.
+
+So anything pointing *across* features qualifies the slug:
+
+```
+<source-key>/<feature-key>#<kind>:<slug>
+```
+
+```
+acme/FEATURE-inv_full#rule:invoice-approval-threshold
+acme/FEATURE-inv_partner#rule:invoice-approval-threshold     ← a different rule
+acme/FEATURE-inv_full#scenario:approval-routing-by-amount
+```
+
+| Segment | Is |
+|---|---|
+| `source-key` | The repository or package, so behavior spanning applications resolves |
+| `feature-key` | `features.json`'s `key` — the identity ingestion already guarantees unique |
+| `kind` | `rule` · `scenario` · `design` · `nfr` · `evaluation` · `agent-authority` |
+| `slug` | The authored tag slug, exactly as written above |
+
+**The tags themselves do not change.** Qualification is a prefix applied by whatever holds the
+reference — a workflow, a baseline, an evaluation. Nothing is added to the `.feature` file, and
+a package that never participates in a cross-feature reference never sees any of this.
+
+An unqualified slug in a cross-feature position is **refused, not guessed**. Resolving it to
+whichever feature happened to be ingested first would make the reference mean something nobody
+wrote.
+
+## What a tool does with each identity event
+
+The authoring rules above say what an author does. This is what a resolver does when it meets
+the result — `govkit-feature-map`'s workflow resolver implements exactly this table.
+
+| Situation | Resolver behavior |
+|---|---|
+| **Authored id** (`idSource: "tag"`) | Resolves. |
+| **Derived id** (`idSource: "derived"`) | Resolves, with a **warning**. The map still renders; the id cannot bind an approval, because a slug taken from a name changes when the name does. Readable is not approvable. |
+| **Duplicate** slug within one feature | **Error.** Neither entry resolves — picking one would be silently wrong about half the time. |
+| **Missing** slug | **Error**, naming the feature and the slug. |
+| **Retired** slug | Dangles, because a retired slug is never reused. |
+| **Split** | One child keeps the original slug and resolves. If neither child is recognisably the original, both are new and the old reference dangles. |
+| **Merged** | The survivor keeps one slug; references to the retired one dangle. |
+| **Unparsed** feature file | **Error** reporting the parse failure — not "not found", which would send someone to fix the reference instead of the spec. |
+
+**Dangling is the designed outcome for a retired, split or merged identifier, not a gap.**
+Auto-following an old slug to "whatever replaced it" would silently repoint an approved
+reference at behavior nobody approved. Where the behavior now lives is a decision a person
+makes; failing loudly is what forces that decision to happen instead of being assumed.
 
 ## Packages with no identifiers
 

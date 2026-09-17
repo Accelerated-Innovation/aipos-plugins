@@ -36,6 +36,17 @@ def render_map():
 
 
 @pytest.fixture(scope="session")
+def workflow_resolve():
+    return _load("workflow_resolve",
+                 SKILLS / "govkit-feature-map" / "scripts" / "workflow_resolve.py")
+
+
+@pytest.fixture(scope="session")
+def workflows():
+    return FIXTURES / "workflows"
+
+
+@pytest.fixture(scope="session")
 def corpus():
     return FIXTURES / "corpus"
 
@@ -45,3 +56,9 @@ def ingested(repo_ingest, corpus):
     """The whole fixture corpus, ingested once, keyed by directory name."""
     feats = repo_ingest.walk(str(corpus), "dir", "")
     return {pathlib.Path(f["sourcePath"]).name: f for f in feats}
+
+
+@pytest.fixture(scope="session")
+def features(repo_ingest, corpus):
+    """The corpus as the flat features.json list a resolver consumes."""
+    return repo_ingest.walk(str(corpus), "dir", "")
