@@ -29,8 +29,11 @@ Credentials resolve the usual way: `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN
 
 ## How a case is graded
 
-1. **Subject call** — the skill's `SKILL.md` becomes the system prompt, the case's `files` are
-   attached, the case's `prompt` is the user turn. What comes back is what the skill would say.
+1. **Subject call** — the **whole skill package** becomes the system prompt: `SKILL.md` plus
+   every reference its own text tells the subject to read. `govkit-feature-create` names six,
+   and says of one that it *"is what the gates judge your Gherkin against"* — sending only
+   `SKILL.md` would have the subject work from memory and the judge grade the memory. The
+   case's `files` and `prompt` follow in the user turn.
 2. **Judge call** — a second model reads the prompt, the response and the `expected_output`
    rubric, and returns a structured verdict: `passed`, `score`, `met`, `missed`, `reasoning`.
 
@@ -41,6 +44,36 @@ reasoning often enough to matter.
 `claude-opus-5`), and the runner refuses `--execute` when the two match. A model grading its own
 output agrees with itself more than it should. Override either with `--model` / `--judge-model`;
 the judge is a real cost/quality tradeoff and belongs to whoever is paying.
+
+The system block is identical for every case in a skill, so it is cached: the first case pays
+the write, the rest read it at a fraction of the price. That is why the dry run reports the
+skill package and the per-case input separately — adding them together would overstate a
+multi-case run several times over.
+
+## Cases this harness cannot run
+
+Some cases need inputs it cannot supply. All three `govkit-metrics-emit` cases point at a
+governed repository at `/tmp/testrepo` and expect tools to inspect it; this runner has neither.
+
+Those cases are **skipped with the reason printed**, not run and recorded as failures:
+
+```
+SKIP  gate-readiness-audit: needs /tmp/testrepo — no runtime target and no tools,
+      so its rubric cannot be exercised
+```
+
+A skip is not a pass and the summary says so. Grading them anyway would blame the skill for a
+gap in the harness.
+
+## Re-running after a change
+
+Resume is keyed on `(case, rep)` **and a fingerprint of everything that decides what the grade
+means** — the skill package, the case fixtures, the rubric, and both model ids. Change any of
+them and the recorded result is stale, so the case runs again and the run says how many were
+invalidated.
+
+Without that, editing a `SKILL.md` and re-running would skip every case and present the old
+grade as current — which would make the harness worse than useless for the one job it has.
 
 ## What a passing run does and does not prove
 

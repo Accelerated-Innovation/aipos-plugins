@@ -46,6 +46,7 @@ import hashlib
 import json
 import pathlib
 import random
+import re
 import sys
 import time
 
@@ -78,7 +79,7 @@ VERDICT_SCHEMA = {
             "description": "True only when every claim the rubric makes is satisfied.",
         },
         "score": {
-            "type": "number",
+            "type": "number", "minimum": 0.0, "maximum": 1.0,
             "description": "Fraction of the rubric's claims satisfied, 0.0 to 1.0.",
         },
         "met": {
@@ -140,29 +141,76 @@ def load_cases(skill_dir: pathlib.Path) -> list[dict]:
     return data.get("evals", [])
 
 
+REFERENCE_RE = re.compile(r"`((?:\.\./)*references/[A-Za-z0-9_.-]+\.md)`")
+
+
+def resolve_references(skill_dir: pathlib.Path) -> list[tuple[str, str]]:
+    """Every reference the skill's own text tells the subject to read.
+
+    A skill is a package, not one file. `govkit-feature-create` names six
+    references and says of one of them that it "is what the gates judge your
+    Gherkin against" — sending only SKILL.md would have the subject work from
+    memory and the judge grade the memory, which measures nothing about the
+    shipped skill.
+
+    Paths are resolved from the skill directory and refused if they leave the
+    owning plugin, for the same reason `tests/test_plugin_boundaries.py`
+    refuses them: a plugin installs on its own.
+    """
+    text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    plugin_root = skill_dir.parent.parent
+    seen, out = set(), []
+
+    for rel in sorted(set(REFERENCE_RE.findall(text))):
+        target = (skill_dir / rel).resolve()
+        try:
+            target.relative_to(plugin_root.resolve())
+        except ValueError:
+            continue  # outside the plugin; not ours to ship
+        if not target.is_file() or target in seen:
+            continue
+        seen.add(target)
+        out.append((str(target.relative_to(plugin_root)), target.read_text(encoding="utf-8")))
+    return out
+
+
+def unavailable_targets(skill_dir: pathlib.Path, case: dict) -> list[str]:
+    """Case inputs this harness cannot supply.
+
+    An absolute path is a runtime target the case expects to exist
+    (`govkit-metrics-emit` points at a governed repo at /tmp/testrepo). This
+    runner has no tools and no such repo, so those cases cannot perform the
+    behaviour their rubric grades. Running them anyway would record a
+    confident failure caused by the harness.
+    """
+    return [
+        rel for rel in case.get("files", [])
+        if pathlib.PurePosixPath(rel).is_absolute() or not (skill_dir / "evals" / rel).is_file()
+    ]
+
+
 def build_subject_request(skill_dir: pathlib.Path, case: dict) -> tuple[str, str]:
     """(system, user) for the subject call.
 
-    The skill's own SKILL.md is the system prompt — that is the artifact under
-    test. Attached files are inlined into the user turn the way a PM would
-    paste or attach them.
+    The system block is the whole skill package — SKILL.md plus the references
+    it requires — and is identical for every case in a skill, so it caches and
+    later cases read it at a fraction of the price. Per-case fixtures go in the
+    user turn, after the cache breakpoint.
     """
-    system = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    parts = [(skill_dir / "SKILL.md").read_text(encoding="utf-8")]
+    for rel, body in resolve_references(skill_dir):
+        parts.append(f'<skill-reference path="{rel}">\n{body}\n</skill-reference>')
+    system = "\n\n".join(parts)
 
-    parts: list[str] = []
+    user: list[str] = []
     for rel in case.get("files", []):
         path = skill_dir / "evals" / rel
-        if not path.is_file():
-            # An absolute path is a runtime target the case sets up for itself
-            # (govkit-metrics-emit points at /tmp/testrepo); it is not ours to
-            # fabricate, so it is named rather than inlined.
-            parts.append(f"<attached-file path=\"{rel}\" status=\"not-bundled\" />")
-            continue
-        parts.append(
-            f"<attached-file path=\"{rel}\">\n{path.read_text(encoding='utf-8')}\n</attached-file>"
-        )
-    parts.append(case["prompt"])
-    return system, "\n\n".join(parts)
+        if path.is_file():
+            user.append(
+                f'<attached-file path="{rel}">\n{path.read_text(encoding="utf-8")}\n</attached-file>'
+            )
+    user.append(case["prompt"])
+    return system, "\n\n".join(user)
 
 
 def build_judge_request(case: dict, response_text: str) -> str:
@@ -177,22 +225,55 @@ def case_key(case: dict, rep: int) -> str:
     return f"{case['name']}_rep{rep}"
 
 
+def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
+    """Fingerprint of everything that decides what a grade means.
+
+    Resume must skip work that is genuinely done, not work whose inputs have
+    since changed. Keyed on (case, rep) alone, editing a SKILL.md and re-running
+    would skip every case and present the old grade as current — which would
+    make this harness worse than useless for the one job it has.
+    """
+    system, user = build_subject_request(skill_dir, case)
+    h = hashlib.sha256()
+    for part in (system, user, case["expected_output"], args.model, args.judge_model):
+        h.update(part.encode("utf-8"))
+        h.update(b"\x00")
+    return h.hexdigest()[:16]
+
+
 # --------------------------------------------------------------------------- results
 
 
-def load_completed(results_path: pathlib.Path) -> set[str]:
-    """(case, rep) keys already written, so a resume skips exactly those."""
+def read_rows(results_path: pathlib.Path) -> list[dict]:
+    """Every complete row. A torn final line from a crash is dropped, so that
+    case is re-run rather than lost forever."""
     if not results_path.is_file():
-        return set()
-    done = set()
+        return []
+    rows = []
     for line in results_path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         try:
-            row = json.loads(line)
+            rows.append(json.loads(line))
         except json.JSONDecodeError:
-            continue  # a torn final line from a crash; it will be re-run
-        done.add(f"{row['prompt_id']}_rep{row.get('rep', 0)}")
+            continue
+    return rows
+
+
+def load_completed(results_path: pathlib.Path, digests: dict[str, str] | None = None) -> set[str]:
+    """(case, rep) keys whose recorded inputs still match the current ones.
+
+    A row whose `input_digest` differs from today's is stale — the skill, a
+    fixture, the rubric or a model changed since it was graded — so it does not
+    count as done and the case runs again.
+    """
+    done = set()
+    for row in read_rows(results_path):
+        key = f"{row['prompt_id']}_rep{row.get('rep', 0)}"
+        if digests is not None:
+            if row.get("input_digest") != digests.get(key):
+                continue
+        done.add(key)
     return done
 
 
@@ -202,6 +283,24 @@ def append_row(path: pathlib.Path, row: dict) -> None:
     with path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(row, ensure_ascii=False) + "\n")
         fh.flush()
+
+
+def check_verdict(verdict: dict) -> str | None:
+    """Reason the verdict is unusable, or None.
+
+    A schema keeps the shape; it cannot keep the verdict self-consistent. A
+    `passed: true` carrying a score of 0.4 and three missed claims is a
+    grader fault — recording it as a clean pass would launder a bad grade into
+    the results.
+    """
+    score = verdict.get("score")
+    if not isinstance(score, (int, float)) or not 0.0 <= float(score) <= 1.0:
+        return f"score {score!r} is outside 0.0-1.0"
+    if verdict.get("passed") and verdict.get("missed"):
+        return f"passed=true but {len(verdict['missed'])} claim(s) reported missed"
+    if not verdict.get("passed") and float(score) == 1.0 and not verdict.get("missed"):
+        return "passed=false but every claim met"
+    return None
 
 
 def served_model_matches(requested: str, served: str) -> bool:
@@ -304,7 +403,16 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                     ),
                     what=f"judge({pid})",
                 )
+                if not served_model_matches(args.judge_model, judge.model):
+                    return await fail(
+                        "served-model-mismatch",
+                        f"judge: requested {args.judge_model}, served {judge.model}",
+                        model=judge.model, usage=usage_of(judge),
+                    )
                 verdict = json.loads(text_of(judge))
+                if (bad := check_verdict(verdict)) is not None:
+                    return await fail("grader-error", f"inconsistent verdict: {bad}",
+                                      model=judge.model, usage=usage_of(judge))
 
         except asyncio.TimeoutError:
             return await fail("timeout", f"exceeded {args.timeout_s}s wall clock")
@@ -314,6 +422,20 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
             return await fail("grader-error", f"judge returned unparseable JSON: {exc}")
         except Exception as exc:  # noqa: BLE001 — a harness fault must not occupy a (case, rep) slot
             return await fail("harness-error", f"{type(exc).__name__}: {exc}")
+
+    # Written before the result row, which is what marks the case complete: a
+    # crash in between would otherwise leave a case recorded as done with no
+    # trace, and every later resume would skip it.
+    (paths["traces"]).mkdir(parents=True, exist_ok=True)
+    (paths["traces"] / f"{case_key(case, rep)}.json").write_text(
+        json.dumps([
+            {"role": "system", "content": f"[{skill_dir.name}/SKILL.md]\n\n{system}"},
+            {"role": "user", "content": user},
+            {"role": "assistant", "content": answer},
+            {"role": "system", "content": f"[judge rubric]\n\n{case['expected_output']}"},
+            {"role": "assistant", "content": json.dumps(verdict, indent=2)},
+        ], indent=2, ensure_ascii=False), encoding="utf-8")
+
 
     append_row(paths["results"], {
         "prompt_id": pid, "rep": rep, "variant": args.variant,
@@ -328,17 +450,8 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "model": subject.model, "usage": usage_of(subject),
         "judge_model": judge.model, "judge_usage": usage_of(judge),
         "retries": {"subject": subject_retries, "judge": judge_retries},
+        "input_digest": args._digests[case_key(case, rep)],
     })
-
-    (paths["traces"]).mkdir(parents=True, exist_ok=True)
-    (paths["traces"] / f"{case_key(case, rep)}.json").write_text(
-        json.dumps([
-            {"role": "system", "content": f"[{skill_dir.name}/SKILL.md]\n\n{system}"},
-            {"role": "user", "content": user},
-            {"role": "assistant", "content": answer},
-            {"role": "system", "content": f"[judge rubric]\n\n{case['expected_output']}"},
-            {"role": "assistant", "content": json.dumps(verdict, indent=2)},
-        ], indent=2, ensure_ascii=False), encoding="utf-8")
 
     mark = "PASS" if verdict["passed"] else f"FAIL ({verdict['score']:.2f})"
     print(f"  {mark:14} {pid}")
@@ -347,14 +460,19 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
 # --------------------------------------------------------------------------- cli
 
 
-def estimate(skill_dir: pathlib.Path, cases: list[dict]) -> tuple[int, int]:
-    """Rough (system+input chars, case count) so a cost estimate has a basis."""
-    system = len((skill_dir / "SKILL.md").read_text(encoding="utf-8"))
-    total = 0
-    for case in cases:
-        _s, user = build_subject_request(skill_dir, case)
-        total += system + len(user)
-    return total, len(cases)
+def estimate(skill_dir: pathlib.Path, cases: list[dict]) -> tuple[int, int, int]:
+    """(cached-prefix chars, per-case chars, case count) for a cost estimate.
+
+    Split because they are not billed alike: the system block is the whole
+    skill package and is identical across a skill's cases, so it is written to
+    cache once and read at a fraction of the price thereafter. Reporting one
+    combined number would overstate a multi-case run several times over.
+    """
+    if not cases:
+        return 0, 0, 0
+    system, _user = build_subject_request(skill_dir, cases[0])
+    per_case = sum(len(build_subject_request(skill_dir, c)[1]) for c in cases)
+    return len(system), per_case, len(cases)
 
 
 async def main_async(args) -> int:
@@ -380,16 +498,31 @@ async def main_async(args) -> int:
     paths = {"results": out / "results.jsonl", "errors": out / "errors.jsonl",
              "traces": out / "traces"}
 
-    chars, n = estimate(skill_dir, cases)
-    print(f"{args.skill}: {n} case(s) x {args.reps} rep(s)")
+    # F3: a case whose inputs this harness cannot supply is skipped with a
+    # reason, not run and recorded as a failure the skill caused.
+    runnable, skipped = [], []
+    for case in cases:
+        missing = unavailable_targets(skill_dir, case)
+        (skipped if missing else runnable).append((case, missing))
+
+    for case, missing in skipped:
+        print(f"  SKIP           {case['name']}: needs {', '.join(missing)} — "
+              f"no runtime target and no tools, so its rubric cannot be exercised")
+
+    prefix_chars, case_chars, n = estimate(skill_dir, [c for c, _m in runnable])
+    print(f"{args.skill}: {n} runnable case(s) x {args.reps} rep(s)"
+          + (f", {len(skipped)} skipped" if skipped else ""))
     print(f"  subject {args.model} | judge {args.judge_model}")
-    print(f"  ~{chars // 4:,} input tokens for subject calls (~{chars // 4 // max(n,1):,}/case)")
+    print(f"  ~{prefix_chars // 4:,} token skill package (cached after the first case)"
+          f" + ~{case_chars // 4:,} tokens of case input across {n} case(s)")
     print(f"  output -> {out}")
 
     if not args.execute:
         print("\nDRY RUN — nothing was called and nothing was spent.")
         print("Re-run with --execute to make real API calls.")
-        first = cases[0]
+        if not runnable:
+            return 2
+        first = runnable[0][0]
         system, user = build_subject_request(skill_dir, first)
         print(f"\n--- case {first['name']}: system {len(system):,} chars, "
               f"user {len(user):,} chars ---")
@@ -398,13 +531,26 @@ async def main_async(args) -> int:
 
     import anthropic
 
-    done = load_completed(paths["results"])
-    todo = [(c, r) for c in cases for r in range(args.reps)
+    args._digests = {
+        case_key(c, r): input_digest(skill_dir, c, args)
+        for c, _m in runnable for r in range(args.reps)
+    }
+    done = load_completed(paths["results"], args._digests)
+    todo = [(c, r) for c, _m in runnable for r in range(args.reps)
             if case_key(c, r) not in done]
-    if len(todo) < len(cases) * args.reps:
-        print(f"  resuming: {len(cases) * args.reps - len(todo)} already recorded")
+
+    planned = len(runnable) * args.reps
+    if done:
+        print(f"  resuming: {len(done)} already recorded with matching inputs")
+    stale = planned - len(done) - len(todo)
+    if stale:
+        print(f"  {stale} recorded result(s) are stale (skill, fixture, rubric or model "
+              f"changed) and will be re-run")
     if not todo:
-        print("nothing to do — every case already has a result")
+        if not runnable:
+            print("\nnothing runnable — every case needs inputs this harness cannot supply")
+            return 2
+        print("\nnothing to do — every case already has a result for the current inputs")
         return 0
 
     sem = asyncio.Semaphore(args.concurrency)
@@ -413,14 +559,31 @@ async def main_async(args) -> int:
             run_case(client, skill_dir, c, r, args, sem, paths) for c, r in todo
         ))
 
-    rows = [json.loads(l) for l in paths["results"].read_text(encoding="utf-8").splitlines() if l.strip()]
+    # F8: report on the cases this invocation was asked about, not every row
+    # ever written into the shared directory.
+    in_scope = {case_key(c, r) for c, _m in runnable for r in range(args.reps)}
+    rows = [r for r in read_rows(paths["results"])
+            if f"{r['prompt_id']}_rep{r.get('rep', 0)}" in in_scope
+            and r.get("input_digest") == args._digests.get(f"{r['prompt_id']}_rep{r.get('rep', 0)}")]
+
+    # F1: an error superseded by a later successful result is history, not a
+    # current failure — otherwise a recovered run reports failure while the
+    # next invocation reports success from the same state.
+    succeeded = {f"{r['prompt_id']}_rep{r.get('rep', 0)}" for r in rows}
+    unresolved = [
+        e for e in read_rows(paths["errors"])
+        if f"{e['prompt_id']}_rep{e.get('rep', 0)}" in in_scope
+        and f"{e['prompt_id']}_rep{e.get('rep', 0)}" not in succeeded
+    ]
+
     passed = sum(1 for r in rows if r.get("passed"))
-    errors = 0
-    if paths["errors"].is_file():
-        errors = len([l for l in paths["errors"].read_text(encoding="utf-8").splitlines() if l.strip()])
-    print(f"\n{passed}/{len(rows)} passed" + (f", {errors} error(s) — see errors.jsonl" if errors else ""))
+    print(f"\n{passed}/{len(rows)} passed"
+          + (f", {len(skipped)} skipped" if skipped else "")
+          + (f", {len(unresolved)} unresolved error(s) — see errors.jsonl" if unresolved else ""))
     print(f"traces: {paths['traces']}")
-    return 0 if passed == len(rows) and not errors else 1
+    if skipped:
+        print("Skipped cases were not graded. Do not read this as a pass for them.")
+    return 0 if rows and passed == len(rows) and not unresolved else 1
 
 
 def main() -> int:
@@ -442,6 +605,11 @@ def main() -> int:
 
     if not args.list and not args.skill:
         p.error("--skill is required (or --list)")
+    if args.reps < 1:
+        p.error("--reps must be at least 1; 0 would make an eval 'succeed' without a single call")
+    if args.concurrency < 1:
+        p.error("--concurrency must be at least 1; 0 blocks on the semaphore forever, and the "
+                "per-case timeout cannot reclaim a slot that was never acquired")
     if args.execute and args.model == args.judge_model:
         p.error("subject and judge are the same model; a model grading itself "
                 "agrees with itself more than it should. Pass a different --judge-model.")

@@ -48,15 +48,59 @@ def test_cases_load_from_every_discovered_skill(runner):
 
 # ------------------------------------------------------------------ request assembly
 
-def test_the_skill_itself_is_the_system_prompt(runner):
-    """The artifact under test is SKILL.md. If the runner paraphrased it, the
-    eval would measure the paraphrase."""
+def test_the_system_prompt_is_the_whole_skill_package(runner):
+    """A skill is SKILL.md *and* the references it tells the subject to read.
+
+    govkit-feature-create names six, and says of one that it "is what the
+    gates judge your Gherkin against". Sending only SKILL.md would have the
+    subject work from memory and the judge grade the memory — which measures
+    nothing about the shipped package.
+    """
     skill_dir = runner.discover_skills()["govkit-feature-create"]
     case = runner.load_cases(skill_dir)[0]
 
     system, _user = runner.build_subject_request(skill_dir, case)
 
-    assert system == (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    assert (skill_dir / "SKILL.md").read_text(encoding="utf-8") in system
+    for required in ("gherkin-authoring-standard.md", "spec-identifiers.md",
+                     "feature-template.md", "gherkin-tagging.md",
+                     "story-mapping.md", "tracker-adapters.md"):
+        assert f'path="' in system and required in system, f"{required} not attached"
+
+
+def test_references_outside_the_plugin_are_not_shipped(runner, tmp_path):
+    """Same boundary the plugin tests enforce: a plugin installs on its own,
+    so a path climbing into a sibling is not a resource this skill has."""
+    plugin = tmp_path / "plugins" / "fake"
+    skill = plugin / "skills" / "probe"
+    skill.mkdir(parents=True)
+    (plugin / "references").mkdir()
+    (plugin / "references" / "inside.md").write_text("INSIDE", encoding="utf-8")
+    (tmp_path / "plugins" / "outside.md").write_text("OUTSIDE", encoding="utf-8")
+    (skill / "SKILL.md").write_text(
+        "See `../../references/inside.md` and `../../../references/outside.md`.",
+        encoding="utf-8")
+
+    resolved = runner.resolve_references(skill)
+
+    assert [rel for rel, _ in resolved] == ["references/inside.md"]
+
+
+def test_a_case_needing_an_unavailable_runtime_target_is_detected(runner):
+    """govkit-metrics-emit points at a governed repo at /tmp/testrepo. This
+    runner has no such repo and no tools, so the case cannot perform the
+    behaviour its rubric grades — it must be skipped, not run and failed."""
+    skill_dir = runner.discover_skills()["govkit-metrics-emit"]
+    case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
+
+    assert runner.unavailable_targets(skill_dir, case) == ["/tmp/testrepo"]
+
+
+def test_a_fully_bundled_case_is_runnable(runner):
+    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
+
+    assert runner.unavailable_targets(skill_dir, case) == []
 
 
 def test_attached_files_are_inlined_with_the_prompt_last(runner):
@@ -68,17 +112,6 @@ def test_attached_files_are_inlined_with_the_prompt_last(runner):
     attached = (skill_dir / "evals" / case["files"][0]).read_text(encoding="utf-8")
     assert attached.strip() in user
     assert user.rstrip().endswith(case["prompt"].rstrip())
-
-
-def test_an_unbundled_runtime_target_is_named_not_fabricated(runner):
-    """`govkit-metrics-emit` points cases at a runtime `/tmp/testrepo` this
-    repo does not own. Inventing contents for it would grade the invention."""
-    skill_dir = runner.discover_skills()["govkit-metrics-emit"]
-    case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
-
-    _system, user = runner.build_subject_request(skill_dir, case)
-
-    assert 'status="not-bundled"' in user
 
 
 def test_the_judge_sees_request_rubric_and_response_separately(runner):
@@ -170,3 +203,76 @@ def test_the_verdict_schema_forbids_extra_keys_and_requires_every_field(runner):
 def test_subject_and_judge_default_to_different_models(runner):
     """A model grading its own output agrees with itself more than it should."""
     assert runner.DEFAULT_SUBJECT_MODEL != runner.DEFAULT_JUDGE_MODEL
+
+
+# ------------------------------------------------------------------ staleness
+
+class _Args:
+    def __init__(self, model="claude-opus-5", judge_model="claude-sonnet-5"):
+        self.model, self.judge_model = model, judge_model
+
+
+def test_changing_the_skill_invalidates_a_recorded_grade(runner, tmp_path, monkeypatch):
+    """The defect that would make this harness worse than useless: edit a
+    SKILL.md, re-run, and every case is skipped as already done while the old
+    grade is presented as current."""
+    skill_dir = runner.discover_skills()["govkit-feature-slice"]
+    case = runner.load_cases(skill_dir)[0]
+    before = runner.input_digest(skill_dir, case, _Args())
+
+    skill_md = skill_dir / "SKILL.md"
+    original = skill_md.read_text(encoding="utf-8")
+    try:
+        skill_md.write_text(original + "\n\nAn added coaching rule.\n", encoding="utf-8")
+        after = runner.input_digest(skill_dir, case, _Args())
+    finally:
+        skill_md.write_text(original, encoding="utf-8")
+
+    assert before != after
+
+
+@pytest.mark.parametrize(
+    "args",
+    [_Args(model="claude-sonnet-5"), _Args(judge_model="claude-haiku-4-5")],
+    ids=["subject-model", "judge-model"],
+)
+def test_changing_either_model_invalidates_a_recorded_grade(runner, args):
+    """A grade means 'this model, judged by that one'. Reusing it across a
+    model swap silently compares two different things."""
+    skill_dir = runner.discover_skills()["govkit-feature-slice"]
+    case = runner.load_cases(skill_dir)[0]
+
+    assert runner.input_digest(skill_dir, case, _Args()) != runner.input_digest(
+        skill_dir, case, args)
+
+
+def test_a_row_with_a_stale_digest_does_not_count_as_done(runner, tmp_path):
+    results = tmp_path / "results.jsonl"
+    runner.append_row(results, {"prompt_id": "c", "rep": 0, "input_digest": "OLD"})
+
+    assert runner.load_completed(results, {"c_rep0": "NEW"}) == set()
+    assert runner.load_completed(results, {"c_rep0": "OLD"}) == {"c_rep0"}
+
+
+# ------------------------------------------------------------------ verdict sanity
+
+@pytest.mark.parametrize(
+    ("verdict", "why"),
+    [
+        ({"passed": True, "score": 1.5, "missed": []}, "score above 1"),
+        ({"passed": True, "score": -0.2, "missed": []}, "negative score"),
+        ({"passed": True, "score": "high", "missed": []}, "non-numeric score"),
+        ({"passed": True, "score": 0.4, "missed": ["a claim"]}, "passed with a missed claim"),
+        ({"passed": False, "score": 1.0, "missed": []}, "failed with everything met"),
+    ],
+)
+def test_an_inconsistent_verdict_is_a_grader_error(runner, verdict, why):
+    """A schema keeps the shape; it cannot keep the verdict self-consistent.
+    Recording one of these would launder a bad grade into the results."""
+    assert runner.check_verdict(verdict) is not None, why
+
+
+def test_a_coherent_verdict_passes(runner):
+    assert runner.check_verdict(
+        {"passed": False, "score": 0.5, "missed": ["one claim"]}) is None
+    assert runner.check_verdict({"passed": True, "score": 1.0, "missed": []}) is None
