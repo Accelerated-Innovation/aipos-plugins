@@ -382,12 +382,75 @@ def resolve(workflow, features, source_key=None):
                            "steps": steps, "behavior": behavior, "design": design})
 
     resolved = {**workflow, "activities": activities}
+    cover = coverage(workflow, features, source_key)
+    for entry in cover["uncovered"]:
+        diagnostics.append(_diag(
+            "warning", "uncovered-behavior",
+            f"{entry['kind']} {entry['slug']!r} in feature {entry['featureKey']!r} is not "
+            f"referenced by any activity or step. Legitimate if it belongs to another journey "
+            f"— but unreferenced behavior is behavior this map implies does not exist.",
+            file=entry.get("file"), element=entry["slug"],
+        ))
+
     return {
         "workflow": workflow.get("workflow_key"),
         "views": {"l1": view_l1(resolved), "l2": view_l2(resolved), "l3": view_l3(resolved)},
+        "coverage": cover,
         "diagnostics": diagnostics,
         "ok": not any(d["level"] == "error" for d in diagnostics),
     }
+
+
+def coverage(workflow, features, source_key=None):
+    """Which canonical behavior the workflow reaches, and which it does not.
+
+    The resolver's other direction. Resolving asks "does every reference land
+    somewhere"; coverage asks the question a reviewer actually has — "is there
+    behavior in the corpus that no step in this journey touches".
+
+    Uncovered behavior is a **finding, not an error**. A Rule may legitimately
+    belong to a journey this workflow does not describe. What is not legitimate
+    is nobody noticing: an unreferenced scenario is behavior the map silently
+    implies does not exist.
+    """
+    referenced = set()
+    for act in workflow.get("activities") or []:
+        for ref in (act.get("behavior") or []) + (act.get("design") or []):
+            if isinstance(ref, str):
+                referenced.add(ref)
+        for step in act.get("steps") or []:
+            for ref in step.get("behavior") or []:
+                if isinstance(ref, str):
+                    referenced.add(ref)
+
+    local = source_key if source_key is not None else workflow.get("source_key")
+    covered, uncovered = [], []
+
+    for feat in features:
+        key = feat.get("key") or ""
+        if feat.get("parseErrors"):
+            # Its elements did not parse, so "uncovered" would be meaningless
+            # — the resolver reports the parse failure separately.
+            continue
+        for rule in feat.get("rules") or []:
+            for kind, node, name in (
+                ("rule", rule, rule.get("rule")),
+                *(("scenario", sc, sc.get("name")) for sc in rule.get("scenarios") or []),
+            ):
+                slug = node.get("id")
+                if not slug:
+                    continue
+                ref = f"{local}/{key}#{kind}:{slug}" if local else None
+                entry = {"ref": ref, "kind": kind, "slug": slug, "featureKey": key,
+                         "name": name, "idSource": node.get("idSource"),
+                         "file": node.get("file")}
+                (covered if ref in referenced else uncovered).append(entry)
+
+    return {"covered": covered, "uncovered": uncovered,
+            "referencedNotInCorpus": sorted(
+                r for r in referenced
+                if (p := parse_ref(r)) and p["kind"] in BEHAVIOR_KINDS
+                and not any(c["ref"] == r for c in covered))}
 
 
 # ------------------------------------------------------------------ views

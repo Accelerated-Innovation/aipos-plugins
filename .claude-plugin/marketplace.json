@@ -64,7 +64,9 @@
         "workflow",
         "workflow-map",
         "opportunity",
-        "behavioral-baseline"
+        "behavioral-baseline",
+        "workflow-authoring",
+        "journey-map"
       ],
       "category": "productivity"
     },

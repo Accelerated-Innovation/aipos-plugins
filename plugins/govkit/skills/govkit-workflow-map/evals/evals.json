@@ -1,0 +1,32 @@
+{
+  "skill_name": "govkit-workflow-map",
+  "evals": [
+    {
+      "id": 1,
+      "name": "journey-is-authored-from-the-existing-corpus-not-re-described",
+      "prompt": "Can you map out how this actually works end to end?",
+      "files": [
+        "files/support-response-journey.md"
+      ],
+      "expected_output": "A workflow.json is produced with a one-line customer outcome, declared actors carrying id/name/kind (the representative as human, the retrieval agent as agent, the mail service as system), ordered activities with stable ids, and a branch whose condition is stated where the journey forks on whether evidence was sufficient. Behavior is REFERENCED, never restated: activities carry qualified references of the form support-app/FEATURE-response-approval#rule:<slug> drawn from the corpus given in the file, and no Rule's text is copied into the workflow. Handoffs are named where work changes hands — at minimum representative to retrieval agent, and approval to the mail service. No @rule: or @scenario: identifier is invented: every reference used appears in the supplied corpus. The response does not produce a diagram, does not ask the user to maintain one, and states that the L1/L2/L3 views are generated from the single source file."
+    },
+    {
+      "id": 2,
+      "name": "uncovered-behavior-is-reported-not-quietly-attached",
+      "prompt": "Map the journey and tell me if we've missed anything.",
+      "files": [
+        "files/support-response-journey.md"
+      ],
+      "expected_output": "Coverage is reported explicitly. The two scenarios under @rule:responses-cite-their-evidence (response-shows-cited-evidence, evidence-citation-survives-edit) are identified as behavior the walkthrough never mentions — the journey as described never cites evidence back to the customer. They are reported as UNCOVERED and as a finding rather than an error, with a judgement offered as to whether they belong to this journey or another one, and the decision left to the user. Crucially they are NOT attached to the nearest plausible activity to make the coverage number look complete. @scenario:retrieval-agent-cannot-send may reasonably be reported as either covered by the retrieval step or uncovered, provided the response says which and why."
+    },
+    {
+      "id": 3,
+      "name": "only-consequential-gaps-are-asked-about",
+      "prompt": "Build the workflow source for this.",
+      "files": [
+        "files/support-response-journey.md"
+      ],
+      "expected_output": "The questions asked are limited to gaps that would change the journey. The undefined sufficiency threshold for evidence is raised, because the branch between the agent path and the manual path turns on it and nobody has stated it — and no number is invented for it. Uncovered behavior is raised. Cosmetic gaps are NOT asked about: activity display names that can be inferred from the walkthrough, obvious ordering, or a step's kind. The response does not interrogate the user with a long list; a handful of consequential questions is correct and asking nothing at all when the sufficiency threshold is plainly missing is a miss."
+    }
+  ]
+}

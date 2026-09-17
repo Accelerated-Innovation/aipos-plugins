@@ -21,7 +21,7 @@ reproducible commitment package ready for a human decision.
 | 02 | **Done.** `references/workflow-source.md`, qualified refs + resolver behavior in `spec-identifiers.md`, `scripts/workflow_resolve.py`, L1/L2/L3 views, plugin-boundary enforcement | `plugins/govkit/references/`, `govkit-feature-map/scripts/`, `tests/` |
 | 03 | **Done.** Opportunity mode (the AIPOS default) and baseline mode in `govkit-feature-create`; committed-behavior review in `govkit-feature-refine`; Pillar 2 handoff in `val-rapid-validation` | the three skills, their evals, `tests/test_eval_cases.py` |
 | 04 | **Done.** Scope selection separated from the optional complexity diagnostic; shippability check; tags as views; consequence rule aligned across both references | `govkit-feature-slice`, slicing rubric, story-mapping reference |
-| 05A | A proposed `aipos-workflow-map` authoring skill | Pillar 2 plugin surface, plugin metadata |
+| 05A | **Done.** `govkit-workflow-map` authoring skill + `coverage()` in the resolver | `plugins/govkit/skills/govkit-workflow-map/`, `workflow_resolve.py` |
 | 05B | L1 / L2 / L3 views beside the existing producer/consumer chain | `repo_ingest.py`, `render_map.py`, their references and tests |
 | 06 | The Pillar 2 commitment package; the Gherkin prohibition replaced by progressive drafting | `val-rapid-validation`, `references/viability-brief.md` |
 | 14 | Readiness, maps and change-review consuming the real validators and decision reads | `govkit-feature-readiness`, `govkit-feature-refine`, `govkit-feature-map`, `govkit-metrics-emit` |
@@ -152,4 +152,21 @@ approval is a scope change and `@v2` is not a queue position. The story-mapping 
 longer defaults permissions to V1; both references now apply the same consequence-based rule.
 `test_compute_size.py` is untouched and green: sizing is preserved for users who choose it.
 
-Increments 05–06 and 14–15 remain unimplemented. No approval or release is authorized by this.
+**Increment 05A is implemented.** `govkit-workflow-map` authors `workflow.json` from evidence,
+specs and conversation: outcome, actors, ordered and branching activities, handoffs, and
+qualified references into canonical Gherkin. It never writes behavior into the workflow and
+never asks anyone to maintain a diagram — L1/L2/L3 are generated projections of the one file.
+
+`workflow_resolve.py` gains `coverage()`, the resolver's other direction: which corpus behavior
+the journey reaches and which it does not. Uncovered behavior is a **warning**, because a Rule
+may legitimately belong to a journey this workflow does not describe — but an unreferenced
+scenario is behavior the map implies does not exist, and nobody notices unless it is named.
+
+**Placement note.** The plan proposed `aipos-workflow-map` on "the appropriate Pillar 2 plugin
+surface". It lives in the **`govkit` plugin** as `govkit-workflow-map`, because increment 02 put
+the workflow format and resolver there and `tests/test_plugin_boundaries.py` refuses both a
+cross-plugin reach and a duplicated shared reference. One plugin owning format, authoring and
+rendering is the cohesion that boundary decision protects. The skill's purpose is still Pillar 2
+and its description says so.
+
+Increment 05B, 06 and 14–15 remain unimplemented. No approval or release is authorized by this.
