@@ -44,10 +44,24 @@ are how people talk about it.
 
 Two consequences worth stating plainly:
 
-- **Retagging after approval is a scope change, not a bookkeeping edit.** Moving a scenario from
-  `@v1` to `@mvp` after a commitment changes what was committed. Propose it as a change with the
-  affected identifiers and what it adds; do not apply it and re-emit the spec as though the tags
-  were yours to move.
+- **Retagging after approval is a scope change when — and only when — it changes what is
+  included.** The distinction follows from the paragraph above and is easy to get wrong in both
+  directions.
+
+  Where a baseline selects behavior by **explicit reference**, a referenced scenario keeps its
+  `@scenario:<slug>` identity whatever its planning tag says, so moving it between `@v1` and
+  `@mvp` resolves to exactly the same committed behavior. That is a view change. Say so and make
+  it; blocking it would be treating the view as the commitment, which is the error this section
+  exists to prevent.
+
+  It *is* a scope change when the edit changes the selected set: adding a scenario the baseline
+  does not reference, removing one it does, or retagging in a package where **inclusion is
+  derived from tags** because no baseline exists yet. There the tag is doing the selecting, so
+  editing it edits scope. Propose it with the affected identifiers and what it adds or drops;
+  do not apply it and re-emit the spec.
+
+  When you cannot tell which case you are in — no baseline is in evidence — say that, and ask
+  before editing. A wrong guess either way is worse than the question.
 - **`@v2` is not a queue position.** A scenario nobody has committed to is uncommitted, and
   tagging it `@v2` is a note about where it would sit *if* it were ever chosen — not a promise
   that it will be, and not a place in a line. Say so when a PM starts treating the V2 tag as a
@@ -141,14 +155,37 @@ be granted but not acted on — the slice is a layer, not a release. Name the mi
 
 **Selected behavior carries its obligations.** Including a scenario commits what it cannot safely
 run without: the authorization it assumes, the recovery path for the failure it can hit, the
-audit record its `Rule:` obligates. Check the Rule each selected scenario sits under — a Rule's
-obligation is not satisfied by selecting one scenario that illustrates it while deferring the one
-that proves the control.
+audit record it must leave. Check two places, because an obligation lives in whichever the author
+used:
+
+- **The `Rule:` each selected scenario sits under.** A Rule's obligation is not satisfied by
+  selecting one scenario that illustrates it while deferring the one that proves the control.
+- **The NFRs, feature-level and linked.** A compliance, security, privacy or retention
+  requirement frequently exists *only* as an NFR row with no scenario of its own — "every
+  approval records approver identity, retained 7 years" obligates the selection just as a `Rule:`
+  does. If a selected scenario triggers such an NFR and nothing in the selection proves it, that
+  is a gap, and it is the one most easily missed: the Rule check passes and the control still is
+  not there.
+
+Report each as a finding naming the obligation and what would satisfy it. Do not add the missing
+scenario yourself — that is the PM's scope decision.
 
 **Cross-feature prerequisites are named.** A scenario whose precondition is behavior owned by
-another feature is not shippable until that behavior is committed somewhere. Cite the qualified
-reference (`<source>/<feature-key>#scenario:<slug>`) and which slice it depends on. An unstated
+another feature is not shippable until that behavior is committed somewhere. An unstated
 cross-feature prerequisite is the most common reason an "MVP" turns out not to be one.
+
+Cite the **most specific reference the input actually supports**, and no more:
+
+| What the input gives you | Cite |
+|---|---|
+| A qualified reference | `<source>/<feature-key>#scenario:<slug>` verbatim |
+| A feature key and a scenario slug | `<feature-key>#scenario:<slug>`, noting the source key is unknown |
+| Only a feature key or a prose mention ("owned by FIN-388") | The feature, the behavior in the author's words, and that no identifier was given |
+
+**Never construct an identifier that was not written down.** A plausible-looking
+`#scenario:<slug>` for a feature you cannot see is a dangling reference that resolves to nothing
+and looks authoritative doing it — `../../references/spec-identifiers.md` forbids exactly this.
+Naming the gap is the finding; inventing the reference destroys it.
 
 ### Step 5: Flag risk and propose splits
 
@@ -187,27 +224,39 @@ If a tracker MCP is connected, offer to update the record in place, following `r
 
 ## Output format (interactive)
 
-Steps 2–4 present as:
+Steps 2–5 present as below. **The sizing sections appear only when sizing was run** — a
+scope-only run emits the selection, the shippability findings and the decisions, and omits the
+rest. Do not synthesise a sizing table to fill the template; an output contract that forces the
+artifact back in would have made Step 2 optional in name only.
 
 ````markdown
-# Scenario Sizing and Slicing — <key or title>
+# Release Selection — <key or title>
 
-## Sizing table
-<!-- All numbers from scripts/compute_size.py output -->
-| # | Scenario | Data & State | Integration | UI/UX | Pts | Size | Recommended slice | Why |
-|---|---|---|---|---|---|---|---|---|
+## Selection
+| # | Scenario | Recommended slice | Why |
+|---|---|---|---|
 
-## Feature rollup
-<nL / nM / nS · N pts> — MVP <n> pts · V1 <n> pts · V2 <n> pts · untagged <n> pts
+## Shippability
+- **Journey** — <completes end to end, or the missing step>
+- **Obligations** — <selected behavior whose authorization / recovery / audit is not also selected, or None>
+- **Prerequisites** — <cross-feature behavior this selection depends on and where it is committed, or None>
+
+## Sizing table  <!-- only when sizing was run; all numbers from scripts/compute_size.py -->
+| # | Scenario | Data & State | Integration | UI/UX | Pts | Size |
+|---|---|---|---|---|---|---|
+
+## Feature rollup  <!-- only when sizing was run -->
+<nL / nM / nS> — band counts. A total appears only if the PM asked for one, with what it is not.
 
 ## Risk flags
-- <Large scenario on the critical path, or None>
+- <Large scenario on the critical path, or None — requires sizing>
+- <Risk-critical behavior recommended for deferral, with what shipping without it risks>
 
 ## Proposed splits
-### <original scenario> → <replacement scenarios, with draft Gherkin and re-sized points>
+### <original scenario> → <replacement scenarios, with draft Gherkin>
 
 ## Decisions needed
-1. <numbered, one per slice recommendation or split the PM must confirm or correct>
+1. <numbered, one per slice recommendation, deferral acceptance or split the PM must confirm or correct>
 ````
 
 Step 7 adds the tagged Gherkin and the copy-ready tracker field updates; Step 8 follows the write-back protocol.

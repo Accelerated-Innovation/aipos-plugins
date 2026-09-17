@@ -75,15 +75,22 @@ Slicing guidance:
 - **A tag category never defers risk-critical behavior by itself.** The "Gherkin indicators" column says where a scenario *usually* lands, not what it is worth. Authorization, privacy, safety, regulatory compliance, financial correctness and data loss are judged on the consequence of shipping without them, and that routinely puts an "edge case" in `@mvp`. When a recommendation would defer such a scenario, name what shipping without it risks and make the PM accept it explicitly — never let the category do the deferring silently.
 - **A selected scenario brings its obligations with it.** Including a scenario commits the
   behavior it cannot safely run without: the authorization it assumes, the recovery path for the
-  failure it can hit, the audit record its `Rule:` obligates. Those are not separate candidates
-  to be triaged independently — deferring one leaves the selected scenario unshippable while the
-  slice table looks complete. Check the Rule the scenario sits under: a Rule's obligation is not
-  satisfied by selecting one scenario that illustrates it and deferring the one that proves the
-  control.
+  failure it can hit, the audit record it must leave. Those are not separate candidates to be
+  triaged independently — deferring one leaves the selected scenario unshippable while the slice
+  table looks complete. Check **both** places an obligation lives: the `Rule:` the scenario sits
+  under (a Rule's obligation is not satisfied by selecting one scenario that illustrates it and
+  deferring the one that proves the control), **and the NFRs**, where a compliance, security,
+  privacy or retention requirement frequently exists with no scenario of its own. The NFR case is
+  the one most easily missed: the Rule check passes and the control still is not there.
 - **Dependencies across features count too.** A scenario whose precondition is behavior owned by
-  another feature is not in a shippable slice until that behavior is committed somewhere. Name
-  the qualified reference (`<source>/<feature-key>#scenario:<slug>`) and the slice it depends on;
-  an unstated cross-feature prerequisite is the most common reason an "MVP" cannot ship.
+  another feature is not in a shippable slice until that behavior is committed somewhere; an
+  unstated cross-feature prerequisite is the most common reason an "MVP" cannot ship. Cite the
+  most specific reference the input supports — a qualified
+  `<source>/<feature-key>#scenario:<slug>` where those identifiers exist, otherwise the feature
+  and the behavior in the author's own words, saying which identifiers were not given.
+  **Never construct one that was not written down:** a plausible `#scenario:<slug>` for a feature
+  you cannot see is a dangling reference that looks authoritative, and `spec-identifiers.md`
+  forbids exactly that. Naming the gap is the finding.
 - **`Scenario Outline` rows can split across slices.** If the happy row is critical path and the edge rows are not, recommend splitting the outline rather than dragging the whole table into `@mvp`.
 - **Untagged is a valid state.** A scenario the PM has not decided on stays untagged; do not default it into a slice to make the table look finished.
 
