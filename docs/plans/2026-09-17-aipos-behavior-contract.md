@@ -18,7 +18,7 @@ reproducible commitment package ready for a human decision.
 
 | Increment | Deliverable | Main surfaces |
 |---|---|---|
-| 02 | The `workflow.json` format, stable-identity rules, qualified cross-feature references | `plugins/govkit/references/spec-identifiers.md`, `gherkin-authoring-standard.md`, `govkit-feature-map` ingestion |
+| 02 | **Done.** `references/workflow-source.md`, qualified refs + resolver behavior in `spec-identifiers.md`, `scripts/workflow_resolve.py`, L1/L2/L3 views, plugin-boundary enforcement | `plugins/govkit/references/`, `govkit-feature-map/scripts/`, `tests/` |
 | 03 | Opportunity-centred draft authoring; approved-baseline materialization as an explicit mode | `govkit-feature-create`, `govkit-feature-refine`, `val-rapid-validation` routing |
 | 04 | Scope selection separated from complexity diagnostics | `govkit-feature-slice`, slicing rubric, story-mapping reference |
 | 05A | A proposed `aipos-workflow-map` authoring skill | Pillar 2 plugin surface, plugin metadata |
@@ -105,5 +105,23 @@ user-visible, and the README and affected `references/` are updated with it.
 
 ## Status
 
-Nothing in this file is implemented. No skill, reference, format or renderer has changed. No
-approval or release is authorized by writing it.
+**Increment 02 is implemented.** Workflow source format version **1**:
+
+- `plugins/govkit/references/workflow-source.md` — the `workflow.json` format, the L1/L2/L3
+  views, the diagnostic table, and the rule that workflow order is neither release scope nor an
+  implementation dependency.
+- `plugins/govkit/skills/govkit-feature-map/scripts/workflow_resolve.py` — resolves qualified
+  references against an ingested corpus and emits located diagnostics. Read-only.
+- `plugins/govkit/references/spec-identifiers.md` — extended with the qualified reference form
+  and a table of what a *resolver* does for each identity event (authored, derived, duplicate,
+  missing, retired, split, merged, unparsed).
+- `tests/test_workflow_resolve.py` (21) and `tests/test_plugin_boundaries.py` (81) — the latter
+  enforces that no plugin file reaches into a sibling plugin, which is the installation boundary
+  increment 00 left open.
+
+**Plugin boundary decided:** the workflow format and its resolver live in the `govkit` plugin.
+A skill needing them lives in the same plugin or receives already-resolved data. Copying a
+shared reference into a second plugin is not the alternative — a copied reference is one nobody
+maintains — and the boundary test enforces both halves.
+
+Increments 03–06 and 14–15 remain unimplemented. No approval or release is authorized by this.

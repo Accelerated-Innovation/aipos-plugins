@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "workflow_key": "invoice-approval",
+  "outcome": "A submitted invoice reaches a decision the finance team can stand behind.",
+  "actors": [
+    { "id": "submitter", "name": "Invoice submitter", "kind": "human" },
+    { "id": "finance-manager", "name": "Finance manager", "kind": "human" },
+    { "id": "partner-manager", "name": "Partner manager", "kind": "human" },
+    { "id": "routing", "name": "Routing service", "kind": "system" }
+  ],
+  "activities": [
+    {
+      "id": "submit",
+      "name": "Submit the invoice",
+      "actor": "submitter",
+      "next": [{ "to": "route" }],
+      "steps": [
+        { "id": "capture", "name": "Capture invoice details", "actor": "submitter", "kind": "human" }
+      ]
+    },
+    {
+      "id": "route",
+      "name": "Route for approval",
+      "actor": "routing",
+      "next": [
+        { "to": "approve", "condition": "standard invoice" },
+        { "to": "partner-approve", "condition": "partner invoice" }
+      ],
+      "behavior": [
+        "acme/FEATURE-inv_full#rule:invoice-approval-threshold",
+        "acme/FEATURE-inv_full#scenario:approval-routing-by-amount"
+      ],
+      "steps": [
+        {
+          "id": "evaluate-threshold",
+          "name": "Evaluate the approval threshold",
+          "actor": "routing",
+          "kind": "system",
+          "handoff": { "from": "submitter", "to": "routing" },
+          "behavior": ["acme/FEATURE-inv_full#rule:invoice-approval-threshold"]
+        }
+      ]
+    },
+    {
+      "id": "approve",
+      "name": "Finance manager decides",
+      "actor": "finance-manager",
+      "next": [],
+      "behavior": [
+        "acme/FEATURE-inv_full#rule:invoice-approval-threshold",
+        "acme/FEATURE-inv_full#scenario:manager-rejects-with-reason"
+      ],
+      "design": ["acme/FEATURE-inv_full#design:approval-panel"],
+      "steps": []
+    },
+    {
+      "id": "partner-approve",
+      "name": "Partner manager decides",
+      "actor": "partner-manager",
+      "next": [],
+      "behavior": [
+        "acme/FEATURE-inv_partner#rule:invoice-approval-threshold",
+        "acme/FEATURE-inv_partner#scenario:partner-approval-required"
+      ],
+      "steps": []
+    }
+  ]
+}
