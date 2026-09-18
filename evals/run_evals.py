@@ -269,7 +269,7 @@ def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
     system, user = build_subject_request(skill_dir, case)
     h = hashlib.sha256()
     for part in (system, user, case["expected_output"], args.model, args.judge_model,
-                 f"turns={getattr(args, 'turns', DEFAULT_TURNS)}"):
+                 f"turns={getattr(args, 'turns', DEFAULT_TURNS)}", PROCEED_NUDGE):
         h.update(part.encode("utf-8"))
         h.update(b"\x00")
     return h.hexdigest()[:16]
@@ -407,6 +407,13 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                 answers: list[str] = []
                 subject_retries = 0
                 subject = None
+                # Accumulated across turns. Keeping only the final response
+                # would hide a turn-1 truncation behind a clean turn-2 stop,
+                # and would drop every earlier call's tokens from the spend.
+                subject_usage = {"input_tokens": 0, "output_tokens": 0,
+                                 "cache_read_input_tokens": 0,
+                                 "cache_creation_input_tokens": 0}
+                stop_reasons: list[str] = []
 
                 for turn in range(args.turns):
                     subject, retries = await call_with_backoff(
@@ -430,6 +437,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                         return await fail("refusal", "subject refused",
                                           model=subject.model, usage=usage_of(subject))
 
+                    for k in subject_usage:
+                        subject_usage[k] += usage_of(subject)[k]
+                    stop_reasons.append(subject.stop_reason)
                     answers.append(text_of(subject))
                     if turn + 1 >= args.turns:
                         break
@@ -442,7 +452,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                     ]
 
                 answer = join_turns(answers)
-                truncated = subject.stop_reason == "max_tokens"
+                # Any truncated turn makes the graded transcript incomplete,
+                # whichever turn it was.
+                truncated = "max_tokens" in stop_reasons
 
                 judge, judge_retries = await call_with_backoff(
                     lambda: client.messages.create(
@@ -513,14 +525,15 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "prompt_id": pid, "rep": rep, "variant": args.variant,
         "prompt": case["prompt"], "tags": [skill_dir.name],
         "status": "truncated" if truncated else "ok",
-        "stop_reason": subject.stop_reason,
+        "stop_reason": stop_reasons[-1] if stop_reasons else None,
+        "stop_reasons": stop_reasons,
         "grade": {"rubric": 1.0 if verdict["passed"] else round(float(verdict["score"]), 3)},
         "explanation": {"rubric": verdict["reasoning"]},
         "passed": bool(verdict["passed"]),
         "missed": verdict["missed"],
         "latency_s": round(time.monotonic() - started, 2),
         "turns": len(answers),
-        "model": subject.model, "usage": usage_of(subject),
+        "model": subject.model, "usage": subject_usage,
         "judge_model": judge.model, "judge_usage": usage_of(judge),
         "retries": {"subject": subject_retries, "judge": judge_retries},
         "input_digest": args._digests[case_key(case, rep)],

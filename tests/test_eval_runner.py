@@ -328,3 +328,15 @@ def test_a_single_turn_is_joined_without_decoration(runner):
     """When the skill delivered immediately, what is graded must be exactly
     what it said — no harness scaffolding leaking into the rubric match."""
     assert runner.join_turns(["only answer"]).strip() == "only answer"
+
+
+def test_the_proceed_nudge_is_part_of_the_input_digest(runner, monkeypatch):
+    """The nudge is sent to the subject, so it shapes the interaction being
+    graded. Changing it and reusing an old grade compares two different runs."""
+    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    case = runner.load_cases(skill_dir)[0]
+    before = runner.input_digest(skill_dir, case, _Args())
+
+    monkeypatch.setattr(runner, "PROCEED_NUDGE", "carry on then")
+
+    assert runner.input_digest(skill_dir, case, _Args()) != before
