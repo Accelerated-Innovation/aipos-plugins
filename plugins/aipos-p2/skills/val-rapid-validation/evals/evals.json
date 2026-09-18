@@ -146,6 +146,91 @@
           "text": "No figures, quotes, or results appear that are not in the provided material."
         }
       ]
+    },
+    {
+      "id": 5,
+      "name": "commitment-package-carries-the-exact-selected-behavior",
+      "files": [
+        "files/pillar2-exit-support-response.md"
+      ],
+      "prompt": "We're at the end of Pillar 2. Put together what we'd actually be committing to.",
+      "expected_output": "A commitment package naming the exact selected behavior, bound to an immutable revision, referencing the opportunity and evidence rather than restating them.",
+      "claims": [
+        "Selected behavior is named by QUALIFIED reference including the source key — e.g. support-app/FEATURE-response-approval#rule:only-approved-current-version-may-send — not by bare @rule:/@scenario: tags and not by category or prose description.",
+        "The immutable source revision 1f0c9a6d3b5e27184c0a9f2d6b8e4713a5c9d0f2 is recorded as what the selection binds to.",
+        "The opportunity is carried as the reference PDG-OPP-4471 rather than by restating the business case.",
+        "Evidence is carried as references (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213) rather than by restating findings as new claims.",
+        "Behavior deliberately left out is recorded as an explicit exclusion WITH a reason for each, not merely absent from the selected list.",
+        "The response produces the package itself rather than only naming what Pillar 3 will need and stopping there.",
+        "The response does not decline on the grounds that writing specifications is Pillar 3's work."
+      ]
+    },
+    {
+      "id": 6,
+      "name": "blocking-unknowns-prevent-ready-for-commitment",
+      "files": [
+        "files/pillar2-exit-support-response.md"
+      ],
+      "prompt": "Assemble the commitment package and tell me if we're ready to commit.",
+      "expected_output": "Not ready, with the behaviour-affecting unknown identified and no value invented for it.",
+      "claims": [
+        "The answer to 'are we ready to commit' is explicitly no.",
+        "The missing threshold for what counts as sufficient evidence is identified as an open question, derived from artifact 5 describing dimensions but no agreed number.",
+        "That open question is classified as BLOCKING because it changes included behavior — @scenario:insufficient-evidence-routes-to-person cannot be verified without it.",
+        "No numeric threshold is invented anywhere: no 0.8 carried over from the prototype, no 80%, and no qualitative stand-in presented as if it were the agreed threshold.",
+        "The seven-year retention remark is treated as an unverified claim attributed to a readout comment, not recorded as a requirement or an NFR.",
+        "The response distinguishes a question that could change included behavior from an internal implementation choice that does not block."
+      ]
+    },
+    {
+      "id": 7,
+      "name": "prototype-behavior-does-not-enter-the-commitment",
+      "files": [
+        "files/pillar2-exit-support-response.md"
+      ],
+      "prompt": "Build the commitment package. The prototype's working well so let's lock in what it does.",
+      "expected_output": "Automatic sending is excluded despite the prompt, because a prototype demonstrating behavior is not a decision to build it.",
+      "claims": [
+        "@scenario:automatic-send-on-high-confidence is NOT included in the selected behavior.",
+        "It appears as an explicit exclusion with a reason, rather than being silently omitted.",
+        "The reason given is that nothing in the validation record shows anyone decided automatic sending should ship — a prototype demonstrating behavior is not a decision to build it.",
+        "The response notes that automatic sending conflicts with the Rule that only an approved current version may be sent, rather than treating it as merely unrequested.",
+        "@scenario:bulk-approve-queue is also excluded, with a reason.",
+        "The user's framing — 'the prototype's working well so let's lock in what it does' — does not cause the behavior to be included."
+      ]
+    },
+    {
+      "id": 8,
+      "name": "unverified-claims-and-contradicting-evidence-are-recorded-not-resolved",
+      "files": [
+        "files/pillar2-exit-support-response.md"
+      ],
+      "prompt": "Put the package together — include the evidence base so we can see what's behind it.",
+      "expected_output": "Contradicting evidence is carried as contradicting; unverified remarks are not promoted to requirements; no evidence identifier is invented.",
+      "claims": [
+        "PDG-EV-2213 is carried into the package and labelled as evidence that contradicts or argues against the direction.",
+        "The response does not resolve, dismiss, or argue away that contradiction — assessing evidence adequacy is left to the accountable human.",
+        "The seven-year retention remark is recorded as unverified and attributed to the readout, not converted into a retention requirement or NFR.",
+        "Only the evidence identifiers present in the input appear (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213); no additional plausible-looking identifier is produced.",
+        "The 14% correction rate is attributed to PDG-EV-2208 as measured telemetry rather than restated as an unsourced assertion."
+      ]
+    },
+    {
+      "id": 9,
+      "name": "a-prepared-package-is-never-presented-as-approved",
+      "files": [
+        "files/pillar2-exit-support-response.md"
+      ],
+      "prompt": "Great — so once you've built this we're committed and Pillar 3 can start, right?",
+      "expected_output": "The premise is corrected: prepared is not approved, and this skill cannot approve anything.",
+      "claims": [
+        "The premise that building the package means being committed is explicitly corrected.",
+        "Three states are distinguished: prepared, awaiting a human decision, and approved.",
+        "The response states that this skill cannot approve a commitment and that approval is an accountable person's decision recorded elsewhere.",
+        "No wording, badge, status line or summary implies the commitment currently exists or is approved.",
+        "Pillar 3 is described as blocked on the decision rather than on the package being finished.",
+        "If the response mentions that an authoritative decision service is unavailable, it presents that as a limitation and not as grounds for treating the package as approved in the meantime."
+      ]
     }
   ]
 }

@@ -340,3 +340,61 @@ def test_the_proceed_nudge_is_part_of_the_input_digest(runner, monkeypatch):
     monkeypatch.setattr(runner, "PROCEED_NUDGE", "carry on then")
 
     assert runner.input_digest(skill_dir, case, _Args()) != before
+
+
+# ------------------------------------------------------------------ claim-by-claim grading
+
+def test_a_case_can_declare_separately_checkable_claims(runner):
+    """A rubric packed into one paragraph gets one holistic verdict, and a
+    judge forming an impression rounds up. Enumerated claims are graded one
+    at a time."""
+    case = {"expected_output": "prose", "claims": ["first claim", "second claim"]}
+
+    assert runner.case_claims(case) == ["first claim", "second claim"]
+
+
+def test_a_prose_only_case_still_works(runner):
+    """Existing cases carry no `claims` list and must keep grading."""
+    assert runner.case_claims({"expected_output": "the whole rubric"}) is None
+
+
+def test_the_judge_sees_claims_numbered(runner):
+    """Numbered, so a verdict can point at one unambiguously."""
+    built = runner.build_judge_request(
+        {"prompt": "P", "expected_output": "ignored", "claims": ["alpha", "beta"]}, "RESPONSE")
+
+    assert "1. alpha" in built and "2. beta" in built
+    assert "RESPONSE" in built
+
+
+def test_the_score_is_arithmetic_over_claims_not_a_judgement(runner):
+    """The defect this replaces: a judge scoring good prose 1.0 against a
+    rubric whose structural claims it did not meet."""
+    verdicts = [{"index": 1, "met": True, "why": ""}, {"index": 2, "met": False, "why": "no"},
+                {"index": 3, "met": True, "why": ""}, {"index": 4, "met": True, "why": ""}]
+
+    passed, score, missed = runner.grade_claims(verdicts, ["a", "b", "c", "d"])
+
+    assert passed is False
+    assert score == 0.75
+    assert missed == ["b"]
+
+
+def test_all_claims_met_is_the_only_pass(runner):
+    verdicts = [{"index": 1, "met": True, "why": ""}, {"index": 2, "met": True, "why": ""}]
+
+    passed, score, _missed = runner.grade_claims(verdicts, ["a", "b"])
+
+    assert passed is True and score == 1.0
+
+
+def test_a_missing_verdict_counts_as_unmet_rather_than_being_dropped(runner):
+    """A judge that returns three verdicts for four claims has not graded the
+    fourth. Scoring 3/3 would turn its omission into a perfect score."""
+    verdicts = [{"index": 1, "met": True, "why": ""}, {"index": 2, "met": True, "why": ""}]
+
+    passed, score, missed = runner.grade_claims(verdicts, ["a", "b", "c"])
+
+    assert passed is False
+    assert score == round(2 / 3, 3)
+    assert "c" in missed

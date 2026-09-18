@@ -115,8 +115,14 @@ stub was run and the feature is model-based, say so — it is a material gap in 
 for itself. Say what changed and why.>
 
 ## Handoff to Build-to-Earn
-<Name what Pillar 3 will need. Name only — writing them out is Pillar 3's job, and
-producing them here applies production governance to work that hasn't earned it yet.>
+<When the decision is GO, this section is superseded by the **commitment package** (see the
+skill's "The commitment package"): the exact selected behavior by qualified reference, bound to
+an immutable revision, with exclusions and the unresolved register. Naming inputs was the right
+output when specs were born after the decision; the decision now binds a selection, so the
+selection has to exist for the decision to be about anything.
+
+For a REVISE, or where behavior has not been drafted yet, name the inputs as below — that is
+still the honest output when there is nothing yet to reference.>
 - **Problem statement:** <one line, ready to be specified>
 - **MVP scope:** as above
 - **Evaluation criteria to be derived from:** <the stub's dimensions and thresholds>
