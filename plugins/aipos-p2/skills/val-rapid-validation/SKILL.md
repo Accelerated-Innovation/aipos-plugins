@@ -30,9 +30,9 @@ organised — it is not an arbitrary list:
 2. **Will the proposed solution actually solve it?**
 3. **Is it technically and economically feasible within acceptable constraints?**
 
-## The boundary you must not cross
+## The boundary, and where it now ends
 
-Pillar 2 is Build-to-**Learn**. It is deliberately ungoverned relative to delivery:
+Pillar 2 is Build-to-**Learn**, and most of it is deliberately ungoverned relative to delivery:
 
 > "It does not need Gherkin acceptance criteria, non-functional requirements, or
 > evaluation schemas. It needs a clear hypothesis, a defined experiment, and a decision
@@ -40,20 +40,25 @@ Pillar 2 is Build-to-**Learn**. It is deliberately ungoverned relative to delive
 > production governance to disposable experiments kills the speed that makes validation
 > cheap."
 
-So: **never emit Gherkin, NFRs, evaluation schemas, or build-ready specifications from
-this skill.** That is a boundary on *this skill's artifacts* — an experiment that may be thrown
-away next week does not need a production contract to run, and applying one kills the speed
-that makes validation cheap.
+That holds for **experiments**. An interview guide, a fake-door test, a spike that may be thrown
+away next week needs no production contract to run, and imposing one destroys the speed that
+makes validation worth doing. So the artifacts in Step 1 stay light, and this skill still writes
+no Gherkin, NFRs or evaluation schemas *for them*.
 
-It is not a boundary on the pillar. Behavior heading for a commitment is defined by
-`govkit-feature-create` in opportunity mode, which is a Pillar 2 activity: the commitment binds
-a versioned selection of Rules and scenarios, so they must exist before there is anything to
-commit to. If a PM asks for acceptance criteria here, do not refuse the need — say this skill
-does not write them, and name the skill that does.
+**It does not hold at the exit.** The Pillar 2 exit is a hard, versioned commitment, and what it
+binds is an exact selection of Rules and scenarios. Drafting them afterwards would leave the
+decision binding nothing. So behavior is drafted progressively as validation narrows — by
+`govkit-feature-create` in opportunity mode, refined by `govkit-feature-refine` — and this skill
+assembles the result into the **commitment package** the decision is made against.
 
-The one exception is the **viability brief**, whose job includes naming the handoff inputs
-Pillar 3 will need — problem statement, MVP scope, evaluation criteria, guardrail
-requirements. Naming them is in scope. Writing them out as specifications is not.
+The old rule "specs are born *at* the Validation Decision, not before it" is retired. Specs are
+born *during* Pillar 2 and are what the decision is *about*. If a PM asks for acceptance
+criteria, do not refuse the need: say this skill does not author them, name the skill that does,
+and carry what exists into the package.
+
+**Progressive, not front-loaded.** Early on, a rough hypothesis is enough. As the evidence
+narrows toward a commitment, the behavior sharpens. Demanding a production-ready contract before
+the first interview is the failure this boundary was written to prevent, and it stays prevented.
 
 Corollary: every artifact this skill produces carries a **hypothesis, an experiment, and a
 decision rule**. If you cannot state what the PM will do differently depending on the
@@ -152,7 +157,9 @@ End every artifact the same way:
    **Prompt every time; write only on an explicit yes.** Never write to a system of record
    unprompted, and never treat an earlier "sounds good" as standing approval for a later
    write.
-4. **Name the next artifact.** Validation is a sequence, not a menu visit.
+4. **Name the next artifact.** Validation is a sequence, not a menu visit. When the viability
+   brief is written and the evidence supports committing, the next artifact is the **commitment
+   package** — see below — and after that a human decision this skill does not make.
 
    **When the evidence is strong enough that a commitment is in view — before the Validation
    Decision, not after it — the next artifact is the behavior itself.** Say so and hand off:
@@ -174,6 +181,74 @@ End every artifact the same way:
 
    Naming the handoff is in scope here; doing the drafting is not, and this skill still writes no
    Gherkin itself.
+
+---
+
+## The commitment package
+
+When the evidence supports committing, the last artifact of Pillar 2 is the package the decision
+is made **against**: the exact proposed commitment, assembled from what validation produced.
+
+Assemble it; do not re-derive it. The Rules and scenarios already exist — reference them.
+
+### What it carries
+
+**Selected behavior, by qualified reference.** Every selected Rule and scenario as
+`<source-key>/<feature-key>#rule:<slug>` or `#scenario:<slug>`. **Not bare `@rule:` tags** — a
+slug is unique only within its own file, so two features can carry the same one and an
+unqualified reference cannot say which is meant. Not a category, not prose: "the approval
+scenarios" is not a commitment, it is a description of one.
+
+**The immutable source revision** the selection resolves against — a commit SHA, never a branch
+name. A commitment bound to a moving pointer can change without anyone deciding to change it.
+
+**The opportunity and evidence, by reference.** `PDG-OPP-…`, the decision thread, the evidence
+ids. Reference them; do not restate the business case. A copied business case is a second
+editable copy that drifts from the first, invisibly, because both look authoritative.
+
+**Exclusions, each with a reason.** Behavior considered and not committed. An exclusion with a
+reason is what distinguishes "we decided against it" from "nobody thought of it" six months
+later. Silence is not an exclusion.
+
+**Contradicting evidence, carried as contradicting.** Do not drop it, argue it away, or resolve
+it. Whether the evidence is adequate is the accountable human's judgement, and a package that
+keeps only supporting evidence is a sales deck.
+
+**Unverified claims, marked unverified.** A remark in a readout is not a requirement. Attribute
+it and say it is unchecked; do not promote it to an NFR because it sounded official.
+
+### The unresolved register, and what blocks
+
+Every open question, each marked **blocking** or **not blocking**, with the reason:
+
+| | |
+|---|---|
+| **Blocking** | It could change included behavior, an expected outcome, or a constraint. An undecided threshold that a selected scenario depends on blocks — the scenario cannot be verified without it. |
+| **Not blocking** | It is an internal implementation choice inside declared discretion. Which store backs the audit record does not change what was committed. |
+
+Say which each is and why. "There are open questions" is not the finding; *which ones would
+change the commitment* is.
+
+**Never invent a value to clear the register.** Not a threshold, not a date, not a session count
+— and not a number lifted from a prototype, which was chosen to make a demo work, not to be the
+policy.
+
+### The three states, and which one this is
+
+| State | What it means | Who |
+|---|---|---|
+| **Prepared** | The package exists and is internally consistent | This skill |
+| **Awaiting decision** | It is in front of an accountable person | Them |
+| **Approved** | A decision was recorded through an authenticated interface, binding this exact package | Them, elsewhere |
+
+**This skill produces the first and never the third.** It cannot approve a commitment, and
+assembling a package is not committing to one. Say so plainly when asked — including when the
+question assumes otherwise, which is the moment it matters.
+
+Label the output **prepared**. No badge, status line or summary may read as approval. Where the
+authoritative decision service is unavailable, that is a limitation to report, never grounds for
+treating the package as approved in the meantime. Pillar 3 is blocked on the decision, not on
+the package being finished.
 
 ---
 

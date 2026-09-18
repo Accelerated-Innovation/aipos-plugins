@@ -111,8 +111,13 @@ effort**. That is evidence, not proof:
 
 - A model-graded verdict is a judgement, and a judge can be wrong in the same direction as the
   subject.
-- One run is one sample. `--reps 3` gives a sense of variance; a case that passes two runs in
-  three is telling you something.
+- **One run is one sample, and the noise is larger than you would guess.** One case scored
+  0.50 / 0.571 / 0.71 / 0.43 across four runs against an *unchanged* skill and an *unchanged*
+  rubric — a 0.28 spread from variance alone, wide enough to manufacture a regression that is
+  not there. It did: a single post-change run read 0.43 and looked like damage; `--reps 3`
+  returned 0.71 / 0.77 / 0.71, identical to before.
+  **Use `--reps 3` before concluding a change helped or hurt.** A single-run comparison is a
+  coin toss wearing a decimal point.
 - The rubric is only as good as its author. A case that passes a rubric which measures the wrong
   thing has measured the wrong thing.
 

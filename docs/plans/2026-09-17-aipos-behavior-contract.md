@@ -23,7 +23,7 @@ reproducible commitment package ready for a human decision.
 | 04 | **Done.** Scope selection separated from the optional complexity diagnostic; shippability check; tags as views; consequence rule aligned across both references | `govkit-feature-slice`, slicing rubric, story-mapping reference |
 | 05A | **Done.** `govkit-workflow-map` authoring skill + `coverage()` in the resolver | `plugins/govkit/skills/govkit-workflow-map/`, `workflow_resolve.py` |
 | 05B | **Done.** L1/L2/L3 journey views beside the producer/consumer chain, advisory status, uncovered panel | `render_map.py`, `references/rendering.md`, `tests/test_render_map.py` |
-| 06 | The Pillar 2 commitment package; the Gherkin prohibition replaced by progressive drafting | `val-rapid-validation`, `references/viability-brief.md` |
+| 06 | **Done.** Prohibition scoped to experiments and retired at the exit; commitment package with qualified references, blocking classification and the three states | `val-rapid-validation`, `references/viability-brief.md`, its evals |
 | 14 | Readiness, maps and change-review consuming the real validators and decision reads | `govkit-feature-readiness`, `govkit-feature-refine`, `govkit-feature-map`, `govkit-metrics-emit` |
 | 15 | Plugin descriptions, README routes, installed dependency handling, evals, examples | all three plugins |
 
@@ -181,4 +181,28 @@ ones — render as plain text with the reason rather than as links to cards that
 Uncovered behavior gets its own panel. The page carries an advisory banner and no approval
 badge: it is generated from a working tree and cannot verify that any decision was recorded.
 
-Increments 06 and 14–15 remain unimplemented. No approval or release is authorized by this.
+**Increment 06 is implemented, and measured.** The blanket prohibition is scoped to
+*experiments* — where it was always right — and retired at the exit, because the Pillar 2 exit
+binds an exact selection of Rules and scenarios and drafting them afterwards would leave the
+decision binding nothing. A commitment package section carries selected behavior by qualified
+reference, an immutable revision, opportunity and evidence by reference, exclusions with
+reasons, contradicting evidence as contradicting, an unresolved register that classifies
+blocking from non-blocking, and three states of which this skill can only produce the first.
+
+Written **tests-first**: five eval cases with 30 enumerated claims were authored and run red
+against the unchanged skill before any edit. The first attempt scored 5/5 at 1.0 and was
+discarded — prose rubrics and a fixture that telegraphed its own answers measured nothing. The
+rebuilt cases identified four concrete gaps, and the change targeted exactly those.
+
+| Case | before | after |
+|---|---|---|
+| commitment-package-carries-the-exact-selected-behavior | 0.86 | **1.00** |
+| blocking-unknowns-prevent-ready-for-commitment | 0.83 | **1.00** |
+| a-prepared-package-is-never-presented-as-approved | 0.67 | **0.83** |
+| prototype-behavior-does-not-enter-the-commitment | 1.00 | 1.00 / 0.83 / 0.83 (3 reps) |
+| unverified-claims-and-contradicting-evidence | 1.00 | **1.00** |
+
+Two behaviours already correct — excluding prototype behavior, and carrying contradicting
+evidence without resolving it — were deliberately not rewritten.
+
+Increments 14–15 remain unimplemented. No approval or release is authorized by this.
