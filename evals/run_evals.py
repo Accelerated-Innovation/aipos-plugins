@@ -305,6 +305,22 @@ def build_judge_request(case: dict, response_text: str) -> str:
     )
 
 
+def verdict_reasoning(verdicts: list[dict], claims: list[str]) -> str:
+    """Every claim's reasoning, met and unmet alike.
+
+    A trace exists so a pass can be audited. Keeping only the failures leaves
+    a reader with a number and no way to check whether the score was earned —
+    which is the situation reading traces was meant to replace.
+    """
+    lines = []
+    for v in verdicts:
+        if not isinstance(v, dict):
+            continue
+        mark = "PASS" if v.get("met") else "FAIL"
+        lines.append(f"[{v.get('index')} {mark}] {v.get('why', '')}".rstrip())
+    return "; ".join(lines) or "no verdicts returned"
+
+
 def grade_claims(verdicts: list[dict], claims: list[str]) -> tuple[bool, float, list[str]]:
     """`(passed, score, missed)` from per-claim verdicts.
 
@@ -312,7 +328,13 @@ def grade_claims(verdicts: list[dict], claims: list[str]) -> tuple[bool, float, 
     verdicts for four claims has not graded the fourth, and scoring 3/3 would
     turn its omission into a perfect score.
     """
-    met = {v.get("index") for v in verdicts if isinstance(v, dict) and v.get("met")}
+    # A judge returning both met and unmet for one claim has not decided it.
+    # Letting the met entry win would turn an unresolved grading into a pass.
+    by_index: dict[object, set[bool]] = {}
+    for v in verdicts:
+        if isinstance(v, dict):
+            by_index.setdefault(v.get("index"), set()).add(bool(v.get("met")))
+    met = {i for i, answers in by_index.items() if answers == {True}}
     missed = [c for i, c in enumerate(claims, start=1) if i not in met]
     hit = len(claims) - len(missed)
     return not missed, round(hit / len(claims), 3) if claims else 0.0, missed
@@ -344,8 +366,10 @@ def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
     """
     system, user = build_subject_request(skill_dir, case)
     h = hashlib.sha256()
+    judge_contract = (CLAIMS_JUDGE_SYSTEM + json.dumps(CLAIMS_VERDICT_SCHEMA, sort_keys=True)
+                      if case_claims(case) else JUDGE_SYSTEM)
     for part in (system, user, case["expected_output"], "|".join(case_claims(case) or []),
-                 args.model, args.judge_model,
+                 judge_contract, args.model, args.judge_model,
                  f"turns={getattr(args, 'turns', DEFAULT_TURNS)}", PROCEED_NUDGE):
         h.update(part.encode("utf-8"))
         h.update(b"\x00")
@@ -576,10 +600,8 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                     verdict = {
                         "passed": passed, "score": score, "missed": missed,
                         "met": [c for c in claims if c not in missed],
-                        "reasoning": "; ".join(
-                            f"[{v.get('index')}] {v.get('why', '')}"
-                            for v in (verdict.get("verdicts") or []) if not v.get("met")
-                        ) or "every claim met",
+                        "reasoning": verdict_reasoning(
+                            verdict.get("verdicts") or [], claims),
                     }
                 elif (bad := check_verdict(verdict)) is not None:
                     return await fail("grader-error", f"inconsistent verdict: {bad}",
@@ -605,7 +627,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
             *[t for i, a in enumerate(answers) for t in (
                 ({"role": "user", "content": PROCEED_NUDGE},) if i else ()
             ) + ({"role": "assistant", "content": a},)],
-            {"role": "system", "content": f"[judge rubric]\n\n{case['expected_output']}"},
+            {"role": "system", "content": "[judge rubric — exactly what was sent]\n\n"
+             + ("\n".join(f"{i + 1}. {c}" for i, c in enumerate(case_claims(case)))
+                if case_claims(case) else case["expected_output"])},
             {"role": "assistant", "content": json.dumps(verdict, indent=2)},
         ], indent=2, ensure_ascii=False), encoding="utf-8")
 

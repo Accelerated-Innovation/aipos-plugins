@@ -398,3 +398,53 @@ def test_a_missing_verdict_counts_as_unmet_rather_than_being_dropped(runner):
     assert passed is False
     assert score == round(2 / 3, 3)
     assert "c" in missed
+
+
+def test_contradictory_verdicts_for_one_claim_do_not_pass_it(runner):
+    """A judge returning both met and unmet for the same claim has not
+    decided. Letting the met entry win turns an unresolved grading into a
+    pass."""
+    verdicts = [{"index": 1, "met": True, "why": "yes"},
+                {"index": 1, "met": False, "why": "actually no"},
+                {"index": 2, "met": True, "why": "yes"}]
+
+    passed, score, missed = runner.grade_claims(verdicts, ["a", "b"])
+
+    assert passed is False
+    assert "a" in missed
+    assert score == 0.5
+
+
+def test_a_duplicate_agreeing_verdict_is_not_treated_as_a_conflict(runner):
+    """Two identical verdicts are redundant, not contradictory."""
+    verdicts = [{"index": 1, "met": True, "why": "yes"},
+                {"index": 1, "met": True, "why": "yes again"}]
+
+    passed, score, _missed = runner.grade_claims(verdicts, ["a"])
+
+    assert passed is True and score == 1.0
+
+
+def test_the_judge_contract_is_part_of_the_input_digest(runner, monkeypatch):
+    """Changing the judge's instructions or its output schema changes what a
+    grade means. Resume must not present a grade from the old contract as
+    current."""
+    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    case = next(c for c in runner.load_cases(skill_dir) if c.get("claims"))
+    before = runner.input_digest(skill_dir, case, _Args())
+
+    monkeypatch.setattr(runner, "CLAIMS_JUDGE_SYSTEM", runner.CLAIMS_JUDGE_SYSTEM + " Be lenient.")
+
+    assert runner.input_digest(skill_dir, case, _Args()) != before
+
+
+def test_the_reasoning_for_a_met_claim_is_kept(runner):
+    """A trace exists so a pass can be audited. Discarding why a claim passed
+    leaves only the number — which is what reading traces was meant to avoid."""
+    verdicts = [{"index": 1, "met": True, "why": "cites the qualified reference"},
+                {"index": 2, "met": False, "why": "no revision recorded"}]
+
+    kept = runner.verdict_reasoning(verdicts, ["a", "b"])
+
+    assert "cites the qualified reference" in kept
+    assert "no revision recorded" in kept
