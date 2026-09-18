@@ -98,8 +98,15 @@ grade as current — which would make the harness worse than useless for the one
 ## What a real run cost
 
 Measured on `val-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:
-**$1.07** at the default two turns ($0.95 at one), 92–237 seconds per case, 2.2k–11.4k output
-tokens per turn. The skill package cached at 24,780 tokens per case after the first.
+**$0.95 at one turn**, 92–237 seconds per case, 2.2k–11.4k output tokens per turn. The skill
+package cached at 24,780 tokens per case after the first.
+
+**There is no trustworthy two-turn figure here.** The $1.07 previously published for the default
+two turns was measured while the runner summed only the *final* turn's usage, so it omitted the
+first turn entirely. The accounting was fixed in #23; the number was never re-measured, and
+correcting it by arithmetic would be inventing a measurement. The real two-turn cost is higher
+than $1.07 by roughly the first turn's tokens — re-run with `--reps 1` on this case set if you
+need the figure, and replace this paragraph with what it reports.
 
 Budget from output length, not case count: the longest case cost triple the shortest, because a
 skill that produces a full artifact writes far more than one that stops to ask a question.
