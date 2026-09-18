@@ -11,6 +11,10 @@ would pass while the tool silently broke."*
 
 ## Running one
 
+**Python 3.10+ is required** — the Anthropic SDK needs it, and pip's failure on an older
+interpreter is a wall of version numbers that never says so. The deterministic suite has no such
+floor.
+
 ```bash
 python -m pip install -r requirements-evals.txt
 
@@ -26,6 +30,22 @@ skill.
 
 Credentials resolve the usual way: `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN`, or an
 `ant auth login` profile. You do not need to pass a key.
+
+## Turns
+
+**The default is two.** These skills are designed to pause and ask; graded on the first message
+alone, a legitimate clarifying question reads as a missing deliverable. After the first turn the
+harness replies `proceed` — the bare word the skills' own Proceed protocol documents as
+confirmation — and everything said so far stays in context, so the second turn continues the
+conversation rather than restarting it. All assistant turns are graded together.
+
+Measured on `val-rapid-validation`: moving from one turn to two took the four cases from
+0.29 / 0.20 / 0.86 / 0.88 to 0.50 / 0.86 / 0.87 / 1.00. **No case got worse** — one turn was
+measuring a transcript nobody has.
+
+`--turns 1` grades the first message only, which is the right setting for a skill that should
+deliver immediately. The turn count is part of the input fingerprint, so changing it re-runs
+rather than reusing a grade that meant something else.
 
 ## How a case is graded
 
@@ -74,6 +94,15 @@ invalidated.
 
 Without that, editing a `SKILL.md` and re-running would skip every case and present the old
 grade as current — which would make the harness worse than useless for the one job it has.
+
+## What a real run cost
+
+Measured on `val-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:
+**$1.07** at the default two turns ($0.95 at one), 92–237 seconds per case, 2.2k–11.4k output
+tokens per turn. The skill package cached at 24,780 tokens per case after the first.
+
+Budget from output length, not case count: the longest case cost triple the shortest, because a
+skill that produces a full artifact writes far more than one that stops to ask a question.
 
 ## What a passing run does and does not prove
 

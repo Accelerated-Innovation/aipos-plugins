@@ -61,10 +61,26 @@ DEFAULT_SUBJECT_MODEL = "claude-opus-5"
 DEFAULT_JUDGE_MODEL = "claude-sonnet-5"
 
 SUBJECT_MAX_TOKENS = 16000
-JUDGE_MAX_TOKENS = 4000
+# Generous deliberately. Current models think adaptively by default, and those
+# tokens come out of the same budget as the verdict — at 4000 the JSON was
+# truncated mid-string, or the whole budget went to thinking and no text block
+# came back at all. Both surfaced only on a live run.
+JUDGE_MAX_TOKENS = 16000
 
 # A hung request can emit keepalives indefinitely, so an inactivity timer never
 # fires. Only a ceiling on total case time reliably reclaims the slot.
+# These skills are designed to pause and ask. Graded on the first message
+# alone, a legitimate clarifying question reads as a missing deliverable —
+# which is what the first live run showed. Two turns models the interaction
+# the skills were built for; one turn models a transcript nobody has.
+DEFAULT_TURNS = 2
+
+# Deliberately the bare word the skills' own Proceed protocol documents:
+# "Treat 'proceed', 'continue', 'looks good' ... as confirmation of the most
+# recent summary." Anything longer would coach the answer it is meant to
+# elicit, and the grade would be measuring the nudge.
+PROCEED_NUDGE = "proceed"
+
 DEFAULT_CASE_TIMEOUT_S = 600.0
 DEFAULT_CONCURRENCY = 4
 MAX_ATTEMPTS = 4
@@ -79,7 +95,12 @@ VERDICT_SCHEMA = {
             "description": "True only when every claim the rubric makes is satisfied.",
         },
         "score": {
-            "type": "number", "minimum": 0.0, "maximum": 1.0,
+            # No `minimum`/`maximum`: structured outputs reject numeric bounds
+            # ("For 'number' type, properties maximum, minimum are not
+            # supported"), which a dry run cannot reveal. The range is enforced
+            # after parsing in check_verdict() instead — which is why the bound
+            # exists in two places and losing one costs nothing.
+            "type": "number",
             "description": "Fraction of the rubric's claims satisfied, 0.0 to 1.0.",
         },
         "met": {
@@ -221,6 +242,18 @@ def build_judge_request(case: dict, response_text: str) -> str:
     )
 
 
+def join_turns(turns: list[str]) -> str:
+    """What the judge grades: everything the skill said, in order.
+
+    The artifact may arrive in turn 2 while the reasoning justifying it was in
+    turn 1, so grading only the last message loses half the answer. A single
+    turn is passed through unchanged — harness scaffolding must not leak into
+    what the rubric is matched against.
+    """
+    kept = [t for t in turns if t and t.strip()]
+    return kept[0] if len(kept) == 1 else "\n\n".join(kept)
+
+
 def case_key(case: dict, rep: int) -> str:
     return f"{case['name']}_rep{rep}"
 
@@ -235,7 +268,8 @@ def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
     """
     system, user = build_subject_request(skill_dir, case)
     h = hashlib.sha256()
-    for part in (system, user, case["expected_output"], args.model, args.judge_model):
+    for part in (system, user, case["expected_output"], args.model, args.judge_model,
+                 f"turns={getattr(args, 'turns', DEFAULT_TURNS)}", PROCEED_NUDGE):
         h.update(part.encode("utf-8"))
         h.update(b"\x00")
     return h.hexdigest()[:16]
@@ -369,28 +403,58 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
     async with sem:
         try:
             async with asyncio.timeout(args.timeout_s):
-                subject, subject_retries = await call_with_backoff(
-                    lambda: client.messages.create(
-                        model=args.model, max_tokens=SUBJECT_MAX_TOKENS,
-                        system=[{"type": "text", "text": system,
-                                 "cache_control": {"type": "ephemeral"}}],
-                        messages=[{"role": "user", "content": user}],
-                    ),
-                    what=f"subject({pid})",
-                )
+                messages = [{"role": "user", "content": user}]
+                answers: list[str] = []
+                subject_retries = 0
+                subject = None
+                # Accumulated across turns. Keeping only the final response
+                # would hide a turn-1 truncation behind a clean turn-2 stop,
+                # and would drop every earlier call's tokens from the spend.
+                subject_usage = {"input_tokens": 0, "output_tokens": 0,
+                                 "cache_read_input_tokens": 0,
+                                 "cache_creation_input_tokens": 0}
+                stop_reasons: list[str] = []
 
-                if not served_model_matches(args.model, subject.model):
-                    return await fail(
-                        "served-model-mismatch",
-                        f"requested {args.model}, served {subject.model}",
-                        model=subject.model, usage=usage_of(subject),
+                for turn in range(args.turns):
+                    subject, retries = await call_with_backoff(
+                        lambda: client.messages.create(
+                            model=args.model, max_tokens=SUBJECT_MAX_TOKENS,
+                            system=[{"type": "text", "text": system,
+                                     "cache_control": {"type": "ephemeral"}}],
+                            messages=messages,
+                        ),
+                        what=f"subject({pid}) turn {turn + 1}",
                     )
-                if subject.stop_reason == "refusal":
-                    return await fail("refusal", "subject refused",
-                                      model=subject.model, usage=usage_of(subject))
+                    subject_retries += retries
 
-                answer = text_of(subject)
-                truncated = subject.stop_reason == "max_tokens"
+                    if not served_model_matches(args.model, subject.model):
+                        return await fail(
+                            "served-model-mismatch",
+                            f"requested {args.model}, served {subject.model}",
+                            model=subject.model, usage=usage_of(subject),
+                        )
+                    if subject.stop_reason == "refusal":
+                        return await fail("refusal", "subject refused",
+                                          model=subject.model, usage=usage_of(subject))
+
+                    for k in subject_usage:
+                        subject_usage[k] += usage_of(subject)[k]
+                    stop_reasons.append(subject.stop_reason)
+                    answers.append(text_of(subject))
+                    if turn + 1 >= args.turns:
+                        break
+                    # The PM says "proceed". Everything the skill produced so
+                    # far stays in context, so a second turn continues the
+                    # conversation rather than restarting it.
+                    messages = messages + [
+                        {"role": "assistant", "content": subject.content},
+                        {"role": "user", "content": PROCEED_NUDGE},
+                    ]
+
+                answer = join_turns(answers)
+                # Any truncated turn makes the graded transcript incomplete,
+                # whichever turn it was.
+                truncated = "max_tokens" in stop_reasons
 
                 judge, judge_retries = await call_with_backoff(
                     lambda: client.messages.create(
@@ -409,7 +473,25 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                         f"judge: requested {args.judge_model}, served {judge.model}",
                         model=judge.model, usage=usage_of(judge),
                     )
-                verdict = json.loads(text_of(judge))
+                # Checked before parsing: a truncated verdict is a budget
+                # problem, and reporting it as "unparseable JSON" sends the
+                # next person to debug the judge's formatting instead.
+                if judge.stop_reason == "max_tokens":
+                    return await fail(
+                        "judge-truncated",
+                        f"judge hit max_tokens ({JUDGE_MAX_TOKENS}) before finishing its "
+                        f"verdict; raise JUDGE_MAX_TOKENS",
+                        model=judge.model, usage=usage_of(judge),
+                    )
+                judge_text = text_of(judge)
+                if not judge_text.strip():
+                    return await fail(
+                        "judge-empty",
+                        f"judge returned no text block (stop_reason={judge.stop_reason}, "
+                        f"blocks={[b.type for b in judge.content]})",
+                        model=judge.model, usage=usage_of(judge),
+                    )
+                verdict = json.loads(judge_text)
                 if (bad := check_verdict(verdict)) is not None:
                     return await fail("grader-error", f"inconsistent verdict: {bad}",
                                       model=judge.model, usage=usage_of(judge))
@@ -431,7 +513,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         json.dumps([
             {"role": "system", "content": f"[{skill_dir.name}/SKILL.md]\n\n{system}"},
             {"role": "user", "content": user},
-            {"role": "assistant", "content": answer},
+            *[t for i, a in enumerate(answers) for t in (
+                ({"role": "user", "content": PROCEED_NUDGE},) if i else ()
+            ) + ({"role": "assistant", "content": a},)],
             {"role": "system", "content": f"[judge rubric]\n\n{case['expected_output']}"},
             {"role": "assistant", "content": json.dumps(verdict, indent=2)},
         ], indent=2, ensure_ascii=False), encoding="utf-8")
@@ -441,13 +525,15 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "prompt_id": pid, "rep": rep, "variant": args.variant,
         "prompt": case["prompt"], "tags": [skill_dir.name],
         "status": "truncated" if truncated else "ok",
-        "stop_reason": subject.stop_reason,
+        "stop_reason": stop_reasons[-1] if stop_reasons else None,
+        "stop_reasons": stop_reasons,
         "grade": {"rubric": 1.0 if verdict["passed"] else round(float(verdict["score"]), 3)},
         "explanation": {"rubric": verdict["reasoning"]},
         "passed": bool(verdict["passed"]),
         "missed": verdict["missed"],
         "latency_s": round(time.monotonic() - started, 2),
-        "model": subject.model, "usage": usage_of(subject),
+        "turns": len(answers),
+        "model": subject.model, "usage": subject_usage,
         "judge_model": judge.model, "judge_usage": usage_of(judge),
         "retries": {"subject": subject_retries, "judge": judge_retries},
         "input_digest": args._digests[case_key(case, rep)],
@@ -512,7 +598,7 @@ async def main_async(args) -> int:
     prefix_chars, case_chars, n = estimate(skill_dir, [c for c, _m in runnable])
     print(f"{args.skill}: {n} runnable case(s) x {args.reps} rep(s)"
           + (f", {len(skipped)} skipped" if skipped else ""))
-    print(f"  subject {args.model} | judge {args.judge_model}")
+    print(f"  subject {args.model} x{args.turns} turn(s) | judge {args.judge_model}")
     print(f"  ~{prefix_chars // 4:,} token skill package (cached after the first case)"
           f" + ~{case_chars // 4:,} tokens of case input across {n} case(s)")
     print(f"  output -> {out}")
@@ -598,6 +684,10 @@ def main() -> int:
                    help="judge model; keep it different from --model")
     p.add_argument("--variant", default="baseline", help="baseline | v1 | v2 ...")
     p.add_argument("--reps", type=int, default=1, help="repetitions per case")
+    p.add_argument("--turns", type=int, default=DEFAULT_TURNS,
+                   help=f"subject turns per case (default {DEFAULT_TURNS}); after the first, "
+                        f"the harness replies {PROCEED_NUDGE!r} as the skills' own Proceed "
+                        f"protocol expects")
     p.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
     p.add_argument("--timeout-s", type=float, default=DEFAULT_CASE_TIMEOUT_S)
     p.add_argument("--out", default=str(DEFAULT_OUT))
@@ -605,6 +695,8 @@ def main() -> int:
 
     if not args.list and not args.skill:
         p.error("--skill is required (or --list)")
+    if args.turns < 1:
+        p.error("--turns must be at least 1")
     if args.reps < 1:
         p.error("--reps must be at least 1; 0 would make an eval 'succeed' without a single call")
     if args.concurrency < 1:

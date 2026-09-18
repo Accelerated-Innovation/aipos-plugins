@@ -200,6 +200,16 @@ def test_the_verdict_schema_forbids_extra_keys_and_requires_every_field(runner):
     assert set(schema["required"]) == {"passed", "score", "met", "missed", "reasoning"}
 
 
+def test_the_schema_carries_no_numeric_bounds(runner):
+    """Structured outputs reject `minimum`/`maximum` on a number — a live 400
+    that no dry run surfaces. The range is enforced in check_verdict()
+    instead, so the schema must not reintroduce them."""
+    score = runner.VERDICT_SCHEMA["properties"]["score"]
+
+    assert "minimum" not in score and "maximum" not in score
+    assert runner.check_verdict({"passed": True, "score": 1.5, "missed": []}) is not None
+
+
 def test_subject_and_judge_default_to_different_models(runner):
     """A model grading its own output agrees with itself more than it should."""
     assert runner.DEFAULT_SUBJECT_MODEL != runner.DEFAULT_JUDGE_MODEL
@@ -208,8 +218,8 @@ def test_subject_and_judge_default_to_different_models(runner):
 # ------------------------------------------------------------------ staleness
 
 class _Args:
-    def __init__(self, model="claude-opus-5", judge_model="claude-sonnet-5"):
-        self.model, self.judge_model = model, judge_model
+    def __init__(self, model="claude-opus-5", judge_model="claude-sonnet-5", turns=2):
+        self.model, self.judge_model, self.turns = model, judge_model, turns
 
 
 def test_changing_the_skill_invalidates_a_recorded_grade(runner, tmp_path, monkeypatch):
@@ -276,3 +286,57 @@ def test_a_coherent_verdict_passes(runner):
     assert runner.check_verdict(
         {"passed": False, "score": 0.5, "missed": ["one claim"]}) is None
     assert runner.check_verdict({"passed": True, "score": 1.0, "missed": []}) is None
+
+
+# ------------------------------------------------------------------ multi-turn
+
+def test_a_proceed_nudge_exists_and_matches_the_skills_own_protocol(runner):
+    """Several skills document a Proceed protocol treating "proceed" as
+    confirmation of the most recent summary. The nudge has to be that word,
+    not an invented instruction that steers the answer."""
+    assert runner.PROCEED_NUDGE.strip().lower().startswith("proceed")
+    assert len(runner.PROCEED_NUDGE) < 200, "a nudge long enough to coach is not a nudge"
+
+
+def test_turns_defaults_to_two_so_an_interactive_skill_can_deliver(runner):
+    """These skills are designed to pause and ask. Graded on the first message
+    alone, a legitimate question reads as a missing deliverable."""
+    assert runner.DEFAULT_TURNS == 2
+
+
+def test_the_turn_count_changes_the_input_digest(runner):
+    """A grade means "this many turns". Reusing a one-turn result for a
+    two-turn run would compare two different things."""
+    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    case = runner.load_cases(skill_dir)[0]
+
+    one = runner.input_digest(skill_dir, case, _Args(turns=1))
+    two = runner.input_digest(skill_dir, case, _Args(turns=2))
+
+    assert one != two
+
+
+def test_every_assistant_turn_is_graded_not_just_the_last(runner):
+    """The artifact may arrive in turn 2 while the reasoning that justifies it
+    was in turn 1. Grading only the last message would lose half the answer."""
+    joined = runner.join_turns(["first part", "second part"])
+
+    assert "first part" in joined and "second part" in joined
+
+
+def test_a_single_turn_is_joined_without_decoration(runner):
+    """When the skill delivered immediately, what is graded must be exactly
+    what it said — no harness scaffolding leaking into the rubric match."""
+    assert runner.join_turns(["only answer"]).strip() == "only answer"
+
+
+def test_the_proceed_nudge_is_part_of_the_input_digest(runner, monkeypatch):
+    """The nudge is sent to the subject, so it shapes the interaction being
+    graded. Changing it and reusing an old grade compares two different runs."""
+    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    case = runner.load_cases(skill_dir)[0]
+    before = runner.input_digest(skill_dir, case, _Args())
+
+    monkeypatch.setattr(runner, "PROCEED_NUDGE", "carry on then")
+
+    assert runner.input_digest(skill_dir, case, _Args()) != before
