@@ -62,3 +62,9 @@ def ingested(repo_ingest, corpus):
 def features(repo_ingest, corpus):
     """The corpus as the flat features.json list a resolver consumes."""
     return repo_ingest.walk(str(corpus), "dir", "")
+
+
+@pytest.fixture(scope="session")
+def readiness_state():
+    return _load("readiness_state",
+                 SKILLS / "govkit-feature-readiness" / "scripts" / "readiness_state.py")
