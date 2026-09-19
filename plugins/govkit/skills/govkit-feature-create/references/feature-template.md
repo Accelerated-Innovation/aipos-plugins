@@ -207,7 +207,7 @@ If yes:
 **Residual risk:** <what remains, and who accepted it>
 ```
 
-Then add `@privacy` scenario coverage to the Gherkin. A privacy claim with no scenario proving it is a paragraph, not a control — and a missing privacy path is a named blocker at the readiness gate.
+Then add `@nfr-privacy` scenario coverage to the Gherkin. A privacy claim with no scenario proving it is a paragraph, not a control — and a missing privacy path is a named blocker at the readiness gate.
 
 Where a Data Protection Impact Assessment is required, say so and name it as a dependency. Do not attempt to write one here.
 

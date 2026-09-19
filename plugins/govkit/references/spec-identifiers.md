@@ -74,7 +74,7 @@ tags.
 not change its identifier. That is the entire point — the identifier is what survives the
 rewording.
 
-**Retagging preserves identity.** Changing `@v1` to `@mvp`, adding `@security`, or applying
+**Retagging preserves identity.** Changing `@v1` to `@mvp`, adding `@nfr-security`, or applying
 a size tag never touches the identifier tag.
 
 **Splitting creates identity, deliberately.** A split is a product event, not a rename, and
@@ -151,7 +151,16 @@ makes; failing loudly is what forces that decision to happen instead of being as
 
 ## Packages with no identifiers
 
-Identifiers are **optional and additive**. Every existing feature package keeps working.
+Identifiers are **additive**: every existing feature package keeps working, ingests,
+renders, scores and slices exactly as before.
+
+**They are not optional where a project commits to behavior.** A behavioral baseline binds
+the exact Rules and scenarios an approval covers and refuses `id_source: derived`, so an
+element with no authored tag cannot be part of a commitment — `govkit inspect-package`
+flags it rather than converting it. The resolver table above already says why: *readable is
+not approvable.* This section used to say "optional and additive" without that
+qualification, which was true when it was written and stopped being true when baselines
+landed.
 
 Where no identifier tag is present, tools derive one from the name — lowercase, non
 alphanumeric runs collapsed to `-`, trimmed — and record `idSource: "derived"` beside it.
