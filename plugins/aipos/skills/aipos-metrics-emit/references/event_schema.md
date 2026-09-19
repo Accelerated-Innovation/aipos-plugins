@@ -70,12 +70,13 @@ provenance (git blame lineage) is specified for the aggregator's v2 scan.
 
 ## refinement.token.issued (RESERVED — not emitted in v1)
 Reserved for reading the Development Token decision record that
-`aipos-feature-readiness` (govkit-plugins marketplace) writes at
+`aipos-feature-readiness` (the aipos plugin) writes at
 `.govkit/tokens/<feature-id>.json` when it issues a decision. (Attribution note:
 `aipos-feature-refine` produces a token *recommendation*; the token itself is
 issued by the readiness gate — the record and this event follow the issuer.)
-The record carries the decision — Approved / Approved with edits / Blocked —
-authorizing AI-assisted coding to start. Now that the record exists as exhaust,
+The record carries the local readiness decision — Approved / Approved with edits /
+Blocked — with any applicable product-approval and authority references. It does
+not grant product approval or prove implementation has passed verification. Now that the record exists as exhaust,
 emitting this event unlocks Tier 2 metrics (refinement lead time Draft 0→Token,
 blocked-token rate) without changing any v1 metric IDs.
 Fields (mirroring the record): `feature_id`, `decision`
@@ -84,8 +85,7 @@ Fields (mirroring the record): `feature_id`, `decision`
 **The record grew in increment 14A and this field list did not.** It now also
 carries `kind`, `authoritative`, `states[]` and `product_approval` — the token
 became a *derived execution-readiness record referencing a product approval*
-rather than the decision itself. Those fields are deliberately **not** read by
-this event: the six above are what the Tier 2 metrics need, and adding more
+rather than the decision itself. The reserved event schema deliberately **does not include** those fields: the six above are what the Tier 2 metrics need, and adding more
 would change what `refinement.token.issued` means without any metric asking
 for it. `tests/test_token_record_contract.py` asserts the six are still
 present in what the readiness gate writes, because a reference document and a

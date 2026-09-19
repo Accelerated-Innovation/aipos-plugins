@@ -628,7 +628,7 @@ Always:
 
 | Skill | Owns | Relationship |
 |---|---|---|
-| `aipos-rapid-validation` (aipos-p2) | Whether to build at all | Runs first. The Validation Decision's MVP scope is this skill's epic input; do not create features for an unvalidated epic without saying so |
+| `aipos-rapid-validation` | Experiments and commitment preparation | Supplies evidence for progressive behavior authoring during P2 and receives selected, reviewed behavior for the commitment package. An epic or prior go decision is not required to draft specifications |
 | `aipos-epic-create` | The epic itself | Runs immediately before. Its field names are this skill's `epic:` input contract, and its personas and evaluation criteria are what Epic mode inherits — read its `epics/<key>/epic.md` rather than asking the PM to restate it |
 | `aipos-feature-refine` | Spec quality and the 3 Amigos review | Consumes this skill's Draft 0. This skill creates; refine judges. Never self-review here |
 | `aipos-feature-slice` | Per-scenario sizing and re-slicing | Owns the `@mvp`/`@v1`/`@v2` vocabulary. This skill assigns the delivery tag from the feature's confirmed slice; slice re-decides it per scenario with the Complexity Matrix |

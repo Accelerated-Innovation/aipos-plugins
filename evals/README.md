@@ -72,10 +72,12 @@ multi-case run several times over.
 
 ## Cases this harness cannot run
 
-Some cases need inputs it cannot supply. All three `aipos-metrics-emit` cases point at a
+Some cases need inputs it cannot supply. The three original `aipos-metrics-emit` cases point at a
 governed repository at `/tmp/testrepo` and expect tools to inspect it; this runner has neither.
 
-Those cases are **skipped with the reason printed**, not run and recorded as failures:
+The newer completeness-versus-token coaching case has self-contained inputs and can run.
+
+Those runtime-dependent cases are **skipped with the reason printed**, not run and recorded as failures:
 
 ```
 SKIP  gate-readiness-audit: needs /tmp/testrepo — no runtime target and no tools,

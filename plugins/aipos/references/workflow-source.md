@@ -192,7 +192,7 @@ lives, made by a person. Failing loudly is what forces that decision to happen.
 
 ## Plugin boundaries
 
-This reference and the resolver that reads it live in the **`govkit` plugin**, and a skill in
+This reference and the resolver that reads it live in the **`aipos` plugin**, and a skill in
 another plugin must not reach across for them.
 
 Plugins install independently. A relative path that climbs out of one and into a sibling

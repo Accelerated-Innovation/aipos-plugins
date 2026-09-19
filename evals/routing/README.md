@@ -11,7 +11,7 @@ does not prove that the selected skill executes correctly.
 
 Descriptions come from actual `SKILL.md` frontmatter. Do not copy them here.
 Keep held-out paraphrases out of description tuning. Read the
-[ownership model](../../docs/plans/2026-09-19-aipos-plugin-consolidation.md#ownership-and-workflow)
+[ownership model](../../docs/workflow.md#ownership-and-handoffs)
 when adding cases; one requested action should have one owner, with explicit
 handoffs when the requested result needs more than one skill.
 

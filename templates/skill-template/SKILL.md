@@ -1,13 +1,19 @@
 ---
 name: aipos-skill-name
-description: One clear sentence on what this skill does AND when Claude should use it. Include the trigger words a user would actually type (e.g. "readiness score", "spec review"), because this description is the only thing Claude sees when deciding whether to load the skill.
+description: Describe the requested action, useful input context, concrete result, and the nearest competing boundary. Use words a user would say; a shared topic alone is not a trigger.
 ---
 
-# GovKit Skill Name
+# AIPOS Skill Name
 
 ## Purpose
 
 What this skill helps a team do, in one or two sentences.
+
+## Scope and handoffs
+
+State the one action this skill owns, its input and output artifacts, and the
+named skill that owns the nearest competing action. Pillars describe lifecycle
+use; they do not require another plugin or a duplicate skill.
 
 ## Instructions
 

@@ -44,15 +44,16 @@ indistinguishable from one built from thirteen customer calls.
 **Never invent evidence.** No plausible-looking figures, personas, metrics or quotes. A
 missing number is written as an assumption and handled by the sensitivity pass.
 
-**Build-to-Learn, not Build-to-Earn.** This skill emits no Gherkin, no NFRs, no evaluation
-schemas, and no build-ready specifications. Those are born *at* the Validation Decision,
-not before it.
+**Experiments and commitment preparation.** This skill owns evidence and experiments.
+It delegates canonical Gherkin, NFRs, and production evaluation schemas to
+`aipos-feature-create`, with review by `aipos-feature-refine`. Those specifications
+can develop during Pillar 2 and become part of the exact scope considered for
+approval. Preparing the package does not grant approval.
 
 **Write-back is prompted, never automatic.** Nothing is written to a system of record
 without an explicit yes. See `references/record-writeback.md`.
 
 ## Installing
 
-Copy the `aipos-rapid-validation/` directory into your Claude skills directory
-(`/mnt/skills/user/` in the sandboxed environment, or the equivalent path for your setup).
-No dependencies, no build step — the skill is plain markdown.
+Install the single `aipos@aipos` plugin; see the [installation guide](../../../../README.md#install).
+The skill itself is markdown with no runtime package dependencies.

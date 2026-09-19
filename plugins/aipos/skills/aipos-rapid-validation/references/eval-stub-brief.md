@@ -13,8 +13,9 @@ taste, and the team ships on whoever is most senior in the room.
 This is a **stub** — deliberately small, deliberately disposable. Its job is to produce
 enough of a shared definition of quality to inform the Validation Decision.
 
-It is **not** the production evaluation schema. Those are Build-to-Earn artifacts, born
-*at* the Validation Decision, not before it. If you find yourself writing schema
+Production evaluation schemas belong to `aipos-feature-create` and are reviewed
+with `aipos-feature-refine`; they may develop during Pillar 2 as commitment scope
+becomes concrete. This experimental stub remains smaller. If you find yourself writing schema
 definitions, scoring rubrics with weighted sub-criteria, or CI-ready assertions, you have
 crossed the line — stop and cut back. The stub's value is that it can be written in an
 afternoon and thrown away if the idea dies.

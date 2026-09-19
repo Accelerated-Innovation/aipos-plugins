@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-19
 
-**Status:** Implementation in progress on `codex/aipos-plugin-consolidation`.
+**Status:** Implementation in progress on `codex/aipos-plugin-consolidation`, following approval in this task. Changes are local; release acceptance remains open.
 
 **Direction:** One `aipos` plugin, eleven focused `aipos-*` skills, explicit AIPOS pillar workflows.
 
@@ -174,9 +174,9 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | 05 | Journey authoring, slicing, and visualization boundaries | 04 | [~] |
 | 06 | Metrics and synthetic-data boundaries | 05 | [~] |
 | 07 | Packaging tests independent of old directory names | 06 | [x] |
-| 08 | Rename all eleven skills to `aipos-*` | 07 | [x] |
+| 08 | Rename all eleven skills to `aipos-*` | 07 | [~] |
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [x] |
-| 10 | Pillar workflow and onboarding documentation | 09 | [ ] |
+| 10 | Pillar workflow and onboarding documentation | 09 | [x] |
 | 11 | Clean-install and old-plugin removal check | 10 | [ ] |
 | 12 | Combined routing and workflow acceptance | 11 | [ ] |
 | 13 | Release checkpoint and rollout handoff | 12 | [ ] |
@@ -434,3 +434,22 @@ For each increment, append a short record here or link its PR containing: comple
   **405 passed, 5 skipped**. Four parameterized file checks disappeared because
   two old README files and two old manifests were removed; no test was disabled.
 - Public onboarding prose is replaced in the next documentation slice.
+
+### Increment 10
+
+- Replaced the root and plugin READMEs with one installation path and the full
+  eleven-skill inventory. Added `docs/workflow.md` and the short rollout guide;
+  updated contributor and template guidance to use action-based descriptions.
+- Documented progressive P2 specifications, optional epics/mandates/decision
+  services, lifecycle-based assessment, external MCP prerequisites, and runtime
+  dependency files. Removed old package names from active skill handoffs.
+- Fixed remaining body/reference contradictions found during the documentation
+  walkthrough: “validation runs first” handoffs, the experimental-eval reference's
+  post-decision-only claim, and statements claiming the reserved token event is
+  already emitted. No metric code or event schema fields changed.
+- CI now validates the plugin manifest explicitly as well as the marketplace.
+- Forty local links resolve across nine updated guides; `git diff --check`
+  passed. Full offline suite: **405 passed, 5 skipped**.
+- Slices use focused local commits on the integration branch; PR/release activity
+  is deferred. Increment 08 remains partial because its live routing rerun is
+  pending along with increments 02–06.

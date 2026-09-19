@@ -113,7 +113,7 @@ def test_a_script_does_not_reach_into_another_skill(path):
     """Scripts stay self-contained within their own skill directory.
 
     **Not** because a sibling skill might be missing — the installable
-    unit is the plugin, so `/plugin install govkit@aipos` brings every
+    unit is the plugin, so `/plugin install aipos@aipos` brings every
     skill under it and a sibling is always present. I first wrote the
     opposite here, and it was wrong: that reasoning belongs to
     `test_plugin_boundaries.py`, where a user really can have one plugin

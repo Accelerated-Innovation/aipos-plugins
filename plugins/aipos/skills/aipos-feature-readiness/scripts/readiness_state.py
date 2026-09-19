@@ -225,10 +225,9 @@ def to_record(
 ) -> dict:
     """The `.govkit/tokens/<feature-key>.json` record.
 
-    The existing fields are kept exactly: `aipos-metrics-emit` reads
-    `decision`, and refinement lead time and blocked-token rate are computed
-    from it, so renaming it to make room for the new fields would silently
-    zero both.
+    The existing fields are kept exactly for the reserved
+    `refinement.token.issued` event and its planned downstream metrics.
+    The current metrics emitter does not yet emit that event.
 
     `product_approval` is explicit `null` rather than absent when there is
     none. Absent reads as "not recorded yet"; null says the question was

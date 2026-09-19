@@ -225,10 +225,10 @@ where the project has no decision service: absent would read as "not
 recorded yet", and null says the question was asked and there is no answer.
 
 `decision`, `blockers` and the other original fields are unchanged.
-`aipos-metrics-emit` reads `decision`, and refinement lead time and
-blocked-token rate are computed from it.
+They preserve the input contract for the reserved `refinement.token.issued` metric
+event; the current emitter does not yet emit that event.
 
-`decision` is `approved` | `approved_with_edits` | `blocked` — write it for **every** decision, including Blocked; a blocked token is exhaust too (it feeds the blocked-token rate). `blockers` carries the critical blocker list verbatim. This record is what `aipos-metrics-emit`'s reserved `refinement.token.issued` event reads — without it, refinement lead time (Draft 0 → Token) and blocked-token rate cannot be computed from the repo's exhaust.
+`decision` is `approved` | `approved_with_edits` | `blocked` — write it for **every** decision, including Blocked; a blocked token is exhaust too (it feeds the blocked-token rate). `blockers` carries the critical blocker list verbatim. This record supplies the planned input for `aipos-metrics-emit`'s reserved `refinement.token.issued` event. Emitting that event and computing its downstream metrics are separate future work.
 
 Writing this file is part of issuing the decision, not a separate confirmation — it is repo-local, versioned, and exactly as reversible as any other file in the working tree. If a record for this feature already exists, the new decision supersedes it; keep the old one only if the team's conventions version them.
 
