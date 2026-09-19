@@ -90,7 +90,7 @@ Exactly one per scenario. Never two. A scenario the PM has not decided on stays 
 | Authentication, authorization, security constraint | `@nfr-security` |
 | Latency, throughput, load validation | `@nfr-performance` |
 | Regulatory or statutory rule | `@nfr-compliance` |
-| Personal or sensitive data handling | `@nfr-pii` |
+| Personal or sensitive data handling | `@nfr-privacy` |
 | Model-generated behavior | `@genai` |
 | A measurable evaluation threshold | `@evaluation` |
 | Invocation of an external tool or function by a model | `@tool-use` |
@@ -106,14 +106,23 @@ satisfy a populated Security NFR — the check looked for `@nfr-security` and fo
 This reference previously taught the bare spellings, which meant a package authored exactly
 as instructed could fail its own validation.
 
-Note the fourth: the validator's category is **`pii`**, not `privacy`. `@nfr-pii` is
-narrower than the word "privacy" suggests — it is personal or sensitive *data handling*,
-which is what the NFR category covers.
+The categories `govkit validate` currently enforces are `performance`, `availability`,
+`security`, `compliance`, `scalability`, `observability`, `reliability`, `compatibility`,
+`freshness`, `quality`, `pii`, `lineage` and `cost`. A populated NFR section in one of
+those demands the matching `@nfr-<category>` tag.
 
-The categories the validator knows are `performance`, `availability`, `security`,
-`compliance`, `scalability`, `observability`, `reliability`, `compatibility`, `freshness`,
-`quality`, `pii`, `lineage` and `cost`. Any of them may appear here as `@nfr-<category>`
-when a scenario carries that constraint.
+**`privacy` is not in that list, and `@nfr-privacy` is still the right tag.** The NFR
+dimension this template walks is *Privacy*, so the tag has to carry the same word or the
+table and the Gherkin stop describing each other. An earlier draft of this change used
+`@nfr-pii` — matching the validator's nearest category — and that was the wrong trade: it
+made the tag agree with a checker at the cost of disagreeing with the document that tells
+authors what to write. The pair being coherent matters more than the pair being enforced.
+
+The consequence, stated plainly: a populated Privacy section is **not** cross-referenced
+against its tag today. Closing that is one entry in `known_categories` in
+`cli/validate.py`, and it would make validation stricter for every existing project with a
+Privacy section and no tag — a compatibility decision rather than a typo fix, which is why
+it is named here and not made.
 
 **One divergence is deliberate and unresolved.** GovKit's installed tag reference
 distinguishes `@edge-case` (boundary or unusual input) from `@error` (expected failure:
