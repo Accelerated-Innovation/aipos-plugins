@@ -1,14 +1,6 @@
 ---
 name: govkit-synthetic-data
-description: >
-  Generate synthetic test data for a GovKit feature package using Python Faker —
-  a seeded, repeatable generator script plus committed data files derived from the
-  feature's Gherkin scenarios. Use whenever the user asks to "generate test data",
-  "create synthetic data", "seed data", "fixtures", "fake data", "sample records",
-  or "load-test data" for a feature, work item, or acceptance.feature — even if
-  they don't say GovKit or Faker. Also use after a feature package passes readiness
-  and the team needs data to exercise the scenarios. Works for any target stack;
-  only the generator itself is Python.
+description: "Generate repeatable synthetic datasets and seeded Faker generators from feature scenarios or an explicit schema. Use for fixtures, boundary cases, sample records, and load data. State whether coverage is scenario-derived or schema-derived; production-data masking is outside scope."
 ---
 
 # GovKit Synthetic Data Skill

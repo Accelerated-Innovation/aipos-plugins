@@ -6,21 +6,33 @@
       "name": "gate-readiness-audit",
       "prompt": "I've got a GovKit-governed repo at /tmp/testrepo. Which features aren't gate-ready? Give me each feature's spec completeness score with what's missing, and save the metric events (NDJSON) plus a short audit report (markdown) to the output directory.",
       "expected_output": "events.ndjson with feature.package.snapshot events; audit report showing checkout_assistant=100 (gate-ready) and incomplete_feature=15 with named missing rubric components",
-      "files": ["/tmp/testrepo"]
+      "files": [
+        "/tmp/testrepo"
+      ]
     },
     {
       "id": 1,
       "name": "aggregator-export",
-      "prompt": "Generate the Tier 1 metric event stream for our aggregator from the GovKit repo at /tmp/testrepo — the CI runs export is at /tmp/testrepo/ci_runs.json and the merged-PR export at /tmp/testrepo/prs.json. Validate the events against the vocabulary and save events.ndjson plus a summary of event counts per type to the output directory.",
+      "prompt": "Generate the Tier 1 metric event stream for our aggregator from the GovKit repo at /tmp/testrepo \u2014 the CI runs export is at /tmp/testrepo/ci_runs.json and the merged-PR export at /tmp/testrepo/prs.json. Validate the events against the vocabulary and save events.ndjson plus a summary of event counts per type to the output directory.",
       "expected_output": "events.ndjson with 10 events (2 snapshots, 2 rework, 4 gate runs, 2 PRs), validation passing, count summary",
-      "files": ["/tmp/testrepo"]
+      "files": [
+        "/tmp/testrepo"
+      ]
     },
     {
       "id": 2,
       "name": "org-agnostic-verification",
       "prompt": "Before we ship metric events from /tmp/testrepo outside the team I need to confirm the output is org-agnostic. Emit the full event stream (CI runs at /tmp/testrepo/ci_runs.json, PRs at /tmp/testrepo/prs.json), verify no org-specific data appears in the events, and tell me which merged PRs were AI-assisted and how that was detected. Save the events and a verification note to the output directory.",
       "expected_output": "events.ndjson; verification note confirming org-agnostic output; PR 42 ai_assisted=true (Co-Authored-By Claude trailer), PR 43 false",
-      "files": ["/tmp/testrepo"]
+      "files": [
+        "/tmp/testrepo"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "completeness-is-not-an-execution-token",
+      "prompt": "A newly reviewed package has no critical execution blockers but its completeness score is below 100 because plan.md has not been produced yet. Does that score revoke its readiness? Explain only; no scripts or files.",
+      "expected_output": "Distinguishes completeness metric inputs from the execution-readiness token. Explains that plan.md is produced later and a score below 100 does not itself revoke readiness. Refers execution decisions to govkit-feature-readiness and does not claim authority was freshly verified or tests passed."
     }
   ]
 }

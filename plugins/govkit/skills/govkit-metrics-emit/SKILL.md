@@ -1,15 +1,6 @@
 ---
 name: govkit-metrics-emit
-description: >
-  Emit structured Tier 1 metric events (NDJSON) from a GovKit-governed repository's
-  exhaust — feature packages, .govkit/marker.json, eval_criteria.yaml, CI gate runs,
-  PR exports, and git history. Use this skill whenever the user wants to compute,
-  emit, export, or audit delivery/quality metrics from a GovKit repo: spec
-  completeness scores, gate-readiness audits, metric event streams for an
-  aggregator, velocity/quality pair inputs, or "which features aren't gate-ready."
-  Trigger on mentions of GovKit metrics, metric events, telemetry emission,
-  feature package audit, spec completeness, or AIPOS Tier 1 metrics — even if the
-  user doesn't name this skill.
+description: "Compute and export structured delivery and quality events from GovKit repository artifacts, CI exports, PR exports, and git history. Use for NDJSON telemetry and completeness reporting. Execution-readiness decisions belong to readiness; organization-level aggregation belongs downstream."
 ---
 
 # govkit-metrics-emit
@@ -66,8 +57,11 @@ asked, and point to the CI-side adapter as the emitter.
 ## Interpreting results for the user
 
 - **Spec completeness score** is the leading quality counterweight (Pair 4).
-  100 = gate-ready. When reporting it, always show the per-component breakdown
-  from `completeness.components` — the number alone hides *what's* missing.
+  100 means the existing completeness rubric is satisfied. It does not issue a
+  Development Token, verify product authority, or prove tests passed. Always show
+  `completeness.components`. A newly ready package may legitimately lack later
+  platform artifacts such as `plan.md`; explain the lifecycle stage rather than
+  treating every score below 100 as a pre-coding blocker.
 - A feature with `thresholds_met: false` or null FIRST/Virtue scores is not a
   parsing problem; it's an author who hasn't finished the Evaluation Compliance
   Summary in `plan.md`. Report it that way.
@@ -79,9 +73,14 @@ asked, and point to the CI-side adapter as the emitter.
 
 ## Common tasks
 
-**"Which features aren't gate-ready?"** — run the script, filter snapshots where
-`completeness.score < 100`, and present a table: feature, score, missing
-components (from the breakdown), plus the emitted events file path.
+**"Which packages have incomplete metric inputs?"** — run the script, filter
+snapshots where `completeness.score < 100`, and present the feature, score,
+missing components, and emitted events path. Label this a completeness audit.
+
+**"Which features are ready to code?"** — use `govkit-feature-readiness` for an
+execution decision, or `govkit-feature-map` for an advisory corpus view. If the
+user says only "gate-ready," use the known context or clarify whether they mean
+metric completeness or execution readiness. Do not substitute one for the other.
 
 **"Generate events for the aggregator"** — run with all available inputs and
 `--validate`, save NDJSON, report event counts per type and the validation

@@ -25,7 +25,11 @@ spec completeness) and **Pair 6** (eval coverage at gate).
 15 thresholds_met · 15 score_minima (first.average ≥ 4.0 AND virtues.average ≥ 4.0) ·
 15 eval_criteria (valid; mode llm requires ≥1 criterion) ·
 10 architecture_preflight (required iff marker level = 5; auto-award otherwise).
-Score 100 = gate-ready (starts the "gate-ready" clock for spec lead time).
+Score 100 satisfies this metric's completeness rubric (historically called
+"gate-ready" for the spec lead-time clock). This metric does not authorize
+execution, issue a Development Token, verify product approval, or establish
+passing implementation evidence. Later platform artifacts contribute to the
+score, so a newly execution-ready package may legitimately score below 100.
 
 ## pr.merged
 From a PR export (`--prs`). Feeds **Pair 2** (throughput ↔ rework) and **Pair 5**
