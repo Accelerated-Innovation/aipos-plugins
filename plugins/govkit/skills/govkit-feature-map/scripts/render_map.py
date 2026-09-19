@@ -325,6 +325,69 @@ def sizing_panel(f, sizing):
 
 # ------------------------------------------------------------------ cards
 
+#: How a commitment's current state reads on a card. `None` for
+#: authorizes_work is *could not determine* and is deliberately not styled
+#: like either answer — a map that renders an outage as a green chip is the
+#: cached-authority failure with a nicer font.
+CMTCLS = {True: "cmt-ok", False: "cmt-block", None: "cmt-unk"}
+CMTWORD = {True: "authorized", False: "blocked", None: "unverified"}
+
+
+def commitment(f, scores):
+    """The chip naming this feature's commitment and its state, or "".
+
+    Two things a reader cannot get from a Development Token: *which*
+    commitment governs this feature, and whether it still authorizes work.
+    A blocked commitment and a blocked token are different failures with
+    different fixes — the package is not ready, versus the approval is gone
+    and editing the package will not help — so the chip never rewrites one
+    verdict into the other.
+
+    The read time is shown because a map is a snapshot rendered at some past
+    moment. Without it a green chip is indistinguishable from a fresh check,
+    which is the stale-authority problem moved into a dashboard.
+    """
+    s = scores.get(f["key"]) or {}
+    c = s.get("commitment")
+    # Score files are agent-produced. A string where an object belongs took
+    # the whole page down through `c.get`, and one bad record meant nobody
+    # saw any of the map.
+    if not isinstance(c, dict):
+        return ""
+    ident = c.get("commitment_id")
+    if not isinstance(ident, str) or not ident.strip():
+        return ""
+
+    authorizes = c.get("authorizes_work")
+    if not isinstance(authorizes, bool):
+        # None is "could not determine" and so is anything else. A dict
+        # lookup is only total over hashable keys, which is easy to forget
+        # when the values are meant to be True/False/None — `CMTCLS.get(["yes"])`
+        # raises TypeError, not KeyError.
+        authorizes = None
+
+    when = c.get("checked_at")
+    when = when if isinstance(when, str) and when.strip() else None
+
+    # A reading whose freshness cannot be assessed is not a verified one.
+    # Rendering an untimed `True` as the confident green is precisely the
+    # thing the read time exists to prevent: a chip indistinguishable from
+    # a fresh check. 14A settled this for the token; the pixel agrees.
+    untimed = authorizes is True and when is None
+    state = None if untimed else authorizes
+
+    cls = CMTCLS.get(state, "cmt-unk")
+    word = CMTWORD.get(state, "unverified")
+    reason = c.get("reason")
+    detail = f' &#183; {e(str(reason))}' if reason and state is not True else ""
+    if untimed:
+        detail = " &#183; read time unknown"
+    read = f'<span class="cmtw">read {e(when)}</span>' if when else ""
+    return (f'<div class="cmt {cls}"><span class="cmtk">commitment</span>'
+            f'<span class="cmtid">{e(ident)}</span>'
+            f'<span class="cmts">{word}{detail}</span>{read}</div>')
+
+
 def readiness(f, scores):
     s = scores.get(f["key"])
     if not s:
@@ -535,6 +598,7 @@ def card(f, scores, sizing, central):
     env = "central" if f["key"] in central else "deployment"
     tok, panel = readiness(f, scores)
     sizb = sizing_panel(f, sizing)
+    cmtb = commitment(f, scores)
     szb = size_badge(f, sizing)
     url = f.get("url")
     keyhtml = (f'<a class="key" href="{e(url)}" target="_blank" rel="noopener">{e(f["key"])}</a>'
@@ -542,7 +606,7 @@ def card(f, scores, sizing, central):
     ntbd = len(f.get("nfrTbd") or [])
 
     return f'''<article class="card {env}" id="{e(f['key'])}" data-key="{e(f['key'])}">
-{tok}<header><div class="ktop">{keyhtml}
+{tok}{cmtb}<header><div class="ktop">{keyhtml}
 {f'<span class="status {cls}">{e(st)}</span>' if st else ''}{ph}
 {'<span class="cv">client-visible</span>' if f.get('clientVisible') else ''}</div>
 <h4>{e(f.get('title',''))}</h4>
@@ -742,7 +806,7 @@ def workflow_section(resolved):
         '<p class="advisory"><strong>Advisory view.</strong> Slice chips are a planning view '
         'over behavior, not a commitment, and nothing here is an approval: this page is '
         'generated from files in a working tree and cannot verify that any decision was '
-        'recorded.</p>'
+        'recorded. Where a card shows a commitment, that is a <strong>snapshot</strong> of what was read when this page was generated &#8212; it does not gate anything, and it can be out of date the moment it is written. The gate is in CI.</p>'
         '<details class="wfview" open><summary>L1 &#8212; customer journey</summary>'
         f'{wf_l1(views)}</details>'
         '<details class="wfview"><summary>L2 &#8212; who collaborates, and where work changes '
@@ -985,6 +1049,14 @@ fb.forEach(function(b){b.addEventListener('click',function(){
 
 
 WF_CSS = """
+.cmt{display:flex;gap:.4rem;align-items:center;font-size:.72rem;padding:.25rem .5rem;
+border-radius:5px;margin:0 0 .35rem}
+.cmt .cmtk{text-transform:uppercase;letter-spacing:.04em;opacity:.7}
+.cmt .cmtid{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.cmt .cmtw{margin-left:auto;opacity:.65}
+.cmt-ok{background:#eef6ee;border:1px solid #cfe3cf}
+.cmt-block{background:#fdecec;border:1px solid #f0c3c3;font-weight:600}
+.cmt-unk{background:#f4f1e6;border:1px solid #ddd6bd}
 .advisory{background:#fff8e6;border:1px solid #e8d9a8;border-radius:6px;padding:.6rem .8rem;
  margin:.6rem 0 1rem;font-size:.86rem;line-height:1.45}
 details.wfview{border:1px solid #dcdfe4;border-radius:8px;margin:.5rem 0;background:#fff}
@@ -1074,6 +1146,22 @@ def render(feats, scores, sizing, cfg, workflow=None):
             'source record &#8212; a starting point for refinement, not a substitute for Product, '
             f'QA and Engineering reviewing Draft 0 together. {tb} critical blockers stand across '
             f'{nb} features.</p>')
+        # Only where a commitment is actually shown. A page with no chips
+        # does not need a paragraph about them, and an unconditional note
+        # is one more thing readers learn to skip.
+        # Same shape as the chip's own guard, and the same reason: a score
+        # file is agent-produced, so `.get` on a non-dict aborts the page.
+        # The review found one instance of this; there were two.
+        if any(isinstance(v.get("commitment"), dict)
+               and v["commitment"].get("commitment_id") for v in vals):
+            govnote += (
+                '<p class="govnote"><b>Commitment chips.</b> Where a card names a commitment, '
+                'that is a <b>snapshot</b> of what was read when this page was generated. It '
+                'does not gate anything and it can be out of date the moment it is written '
+                '&#8212; the gate runs in CI, against a fresh read. A <em>blocked commitment</em> '
+                'and a <em>Blocked</em> token are different failures: the first means the '
+                'approval is gone and editing the package will not help, the second means the '
+                'package is not ready yet.</p>')
         tkleg = ('<div class="legend tkleg"><span>The pill on each node is that feature&#39;s '
                  'GovKit readiness score out of 10. Colour is the Development Token, not the '
                  'number &#8212; a high score with an open blocker still reads as Blocked. Open '

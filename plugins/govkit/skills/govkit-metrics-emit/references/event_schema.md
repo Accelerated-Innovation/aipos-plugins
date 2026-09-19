@@ -77,6 +77,41 @@ blocked-token rate) without changing any v1 metric IDs.
 Fields (mirroring the record): `feature_id`, `decision`
 (approved|approved_with_edits|blocked), `score`, `blockers[]`, `draft_version`, `ts`.
 
+**The record grew in increment 14A and this field list did not.** It now also
+carries `kind`, `authoritative`, `states[]` and `product_approval` — the token
+became a *derived execution-readiness record referencing a product approval*
+rather than the decision itself. Those fields are deliberately **not** read by
+this event: the six above are what the Tier 2 metrics need, and adding more
+would change what `refinement.token.issued` means without any metric asking
+for it. `tests/test_token_record_contract.py` asserts the six are still
+present in what the readiness gate writes, because a reference document and a
+script in another skill drift silently otherwise — the first version of that
+record dropped three of them.
+
+### Why no new events for commitment authority (increment 14C)
+
+The behavior-contract work produces four candidate events: commitment
+preparation, authorization checks, blocked changes, and replacement linkage.
+**None is emitted, and that is a decision rather than an omission.**
+
+No metric consumes them. The paired-metric law below means every event exists
+to serve a named velocity/quality pair, and inventing a pair to justify an
+event is how a metric set stops describing anything. The pilot has not run, so
+there is no evidence about which of these is worth counting — and a counter
+added now would be reported before anyone knows what a normal value looks
+like.
+
+The plan permits exactly this: *"If no telemetry event contract is needed for
+the pilot, defer new metrics and retain structured evidence reports."* The
+structured evidence already exists and is richer than a counter: the token
+record carries `states[]` and `product_approval`, `govkit verify-contract`
+reports per-commitment drift and authority, and a change package records what
+was proposed and that it was not submitted.
+
+**What must not happen** is inventing token-savings, time-savings or velocity
+numbers from this work. Nothing here measures effort, and a number with no
+measurement behind it survives longer than the caveat attached to it.
+
 ## Metric-pair mapping (paired-metric law)
 | Pair | Velocity | Quality | Events consumed |
 |---|---|---|---|

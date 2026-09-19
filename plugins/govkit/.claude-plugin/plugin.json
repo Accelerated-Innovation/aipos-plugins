@@ -1,7 +1,7 @@
 {
   "name": "govkit",
   "description": "GovKit skills for governed, AI-assisted delivery: draft Rules and Gherkin scenarios directly from an evidence-backed opportunity with no epic, user story or estimate required; materialize behavior an approved commitment baseline already selected; define a workflow's L1/L2/L3 views with references into canonical behavior; refine Draft 0 specs (Gherkin + NFRs + evaluation criteria); size and slice scenarios into MVP/V1/V2 releases; validate repo readiness before coding; map a spec corpus into a scored feature map; emit delivery metrics; and generate synthetic test data. Story mapping from a tracker epic remains available as a legacy route.",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "author": {
     "name": "Accelerated Innovation"
   },
