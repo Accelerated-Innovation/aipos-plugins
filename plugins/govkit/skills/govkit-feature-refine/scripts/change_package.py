@@ -36,6 +36,7 @@ WHAT IT DOES NOT DO
 
 from __future__ import annotations
 
+import os
 import re
 
 #: Anything that reads as a decision. Checked against supplied keys *and*
@@ -89,9 +90,17 @@ def build(
     extra: dict | None = None,
 ) -> dict:
     """Assemble the package, or refuse and say which part is missing."""
-    if extra:
-        _reject_decision_shaped(extra)
+    # Everything the caller supplied, checked in one place. `dependencies`
+    # was previously copied verbatim while `extra` and `changes` were
+    # guarded — and one guarded path beside one unguarded path is the same
+    # defect as none. Checking the whole input means a parameter added later
+    # is covered by default rather than by memory.
+    _reject_decision_shaped(
+        {"changes": changes, "dependencies": dependencies, "extra": extra},
+        where="input",
+    )
 
+    replaces_commitment = str(replaces_commitment or "").strip()
     if not replaces_commitment:
         raise Incomplete(
             "a reapproval request must name the commitment it would replace; "
@@ -108,10 +117,20 @@ def build(
     if not changes:
         raise Incomplete("a package with no changes asks for a decision about nothing")
 
+    if not isinstance(changes, list):
+        raise Incomplete("changes must be a list of proposals")
+
     prepared = []
     reinstated = []
     for index, change in enumerate(changes):
-        _reject_decision_shaped(change, f"changes[{index}]")
+        # A malformed proposals file is the most likely input this will ever
+        # see, and `change.get` on a scalar raised AttributeError — an
+        # uncaught traceback in a design whose whole point is a controlled
+        # refusal.
+        if not isinstance(change, dict):
+            raise Incomplete(
+                f"changes[{index}] is {type(change).__name__}, not a proposal object"
+            )
         missing = [field for field in REQUIRED
                    if not str(change.get(field) or "").strip()]
         if missing:
@@ -182,7 +201,17 @@ def main(argv: list | None = None) -> int:
         return 1
 
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    a.out.write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
+    # Written beside the target and renamed into place. `write_text`
+    # truncates before it writes, so an interrupted run would leave exactly
+    # the half-formed request the refusal path exists to prevent — and would
+    # destroy a good one to do it.
+    staging = a.out.with_name(a.out.name + ".partial")
+    try:
+        staging.write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
+        os.replace(staging, a.out)
+    finally:
+        if staging.exists():
+            staging.unlink()
     print(f"  {len(package['changes'])} proposed change(s) -> {a.out}")
     print(f"  not submitted. {HOW_TO_DECIDE}")
     return 0

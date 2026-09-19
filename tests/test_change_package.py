@@ -260,3 +260,163 @@ def test_a_refused_package_is_not_written(change_package, tmp_path):
 
     assert code != 0
     assert not out.exists()
+
+
+# --- the inputs I was not thinking about ------------------------------------
+
+
+@pytest.mark.parametrize("where", ["extra", "dependencies", "changes"])
+def test_every_caller_supplied_structure_is_checked_for_decisions(change_package, where):
+    """`extra` and `changes` were checked; `dependencies` was copied
+    verbatim, so `[{"approved": true}]` persisted the forbidden field into
+    the request. One guarded path and one unguarded path is the same defect
+    as none — and the fix is to check every input in one place rather than
+    to remember each one."""
+    kwargs = dict(
+        replaces_commitment="cmt-1234",
+        changes=[a_change()],
+        requested_baseline_digest="sha256:" + "8" * 64,
+    )
+    if where == "extra":
+        kwargs["extra"] = {"approved": True}
+    elif where == "dependencies":
+        kwargs["dependencies"] = [{"approved": True}]
+    else:
+        kwargs["changes"] = [a_change(), {"authorized_by": "someone"}]
+
+    with pytest.raises(change_package.NotAnApproval):
+        change_package.build(**kwargs)
+
+
+def test_a_dependency_that_is_merely_a_reference_is_fine(change_package):
+    """The check must not make ordinary dependencies unexpressible."""
+    package = change_package.build(
+        replaces_commitment="cmt-1234",
+        changes=[a_change()],
+        requested_baseline_digest="sha256:" + "9" * 64,
+        dependencies=["cmt-0001", {"ref": "support-app/other#rule:x"}],
+    )
+
+    assert package["dependencies"] == ["cmt-0001", {"ref": "support-app/other#rule:x"}]
+
+
+@pytest.mark.parametrize("commitment", ["", "   ", "\t\n"])
+def test_a_blank_commitment_link_is_refused(change_package, commitment):
+    """Truthiness let whitespace through, producing a request that *appears*
+    linked and names nothing."""
+    with pytest.raises(change_package.Incomplete):
+        change_package.build(
+            replaces_commitment=commitment,
+            changes=[a_change()],
+            requested_baseline_digest="sha256:" + "a" * 64,
+        )
+
+
+def test_the_commitment_link_is_stored_trimmed(change_package):
+    package = change_package.build(
+        replaces_commitment="  cmt-1234\n",
+        changes=[a_change()],
+        requested_baseline_digest="sha256:" + "b" * 64,
+    )
+
+    assert package["replaces_commitment"] == "cmt-1234"
+
+
+@pytest.mark.parametrize("bad", [None, "a string", 42, ["nested"]])
+def test_a_proposal_that_is_not_an_object_is_refused_not_a_crash(change_package, bad):
+    """`change.get` on a scalar raised `AttributeError` — an uncaught
+    traceback where the whole design is a controlled refusal. A malformed
+    proposals file is the most likely input this will ever see."""
+    with pytest.raises(change_package.Incomplete):
+        change_package.build(
+            replaces_commitment="cmt-1234",
+            changes=[a_change(), bad],
+            requested_baseline_digest="sha256:" + "c" * 64,
+        )
+
+
+def test_a_malformed_proposals_file_refuses_from_the_command_line(
+    change_package, tmp_path
+):
+    import json
+
+    source = tmp_path / "changes.json"
+    source.write_text(json.dumps([None]), encoding="utf-8")
+    out = tmp_path / "package.json"
+
+    code = change_package.main([
+        "--replaces", "cmt-1234", "--changes", str(source),
+        "--requested-digest", "sha256:" + "d" * 64, "--out", str(out),
+    ])
+
+    assert code == 1
+    assert not out.exists()
+
+
+def test_a_proposals_file_that_is_not_a_list_is_refused(change_package, tmp_path):
+    import json
+
+    source = tmp_path / "changes.json"
+    source.write_text(json.dumps({"ref": "a/b#scenario:c"}), encoding="utf-8")
+    out = tmp_path / "package.json"
+
+    code = change_package.main([
+        "--replaces", "cmt-1234", "--changes", str(source),
+        "--requested-digest", "sha256:" + "e" * 64, "--out", str(out),
+    ])
+
+    assert code != 0
+    assert not out.exists()
+
+
+# --- the write itself -------------------------------------------------------
+
+
+def test_an_existing_package_survives_a_failed_write(change_package, tmp_path):
+    """`write_text` truncates before it writes. An interrupted run would
+    leave exactly the half-formed request on disk that the refusal path
+    exists to prevent — and it would replace a good one to do it."""
+    import json
+
+    out = tmp_path / "package.json"
+    out.write_text(json.dumps({"kind": "reapproval_request", "changes": ["old"]}),
+                   encoding="utf-8")
+    source = tmp_path / "changes.json"
+    source.write_text(json.dumps([a_change()]), encoding="utf-8")
+
+    original = out.read_text(encoding="utf-8")
+
+    class Boom(OSError):
+        pass
+
+    real_replace = change_package.os.replace
+
+    def explode(src, dst):
+        raise Boom("disk full")
+
+    change_package.os.replace = explode
+    try:
+        with pytest.raises(OSError):
+            change_package.main([
+                "--replaces", "cmt-1234", "--changes", str(source),
+                "--requested-digest", "sha256:" + "f" * 64, "--out", str(out),
+            ])
+    finally:
+        change_package.os.replace = real_replace
+
+    assert out.read_text(encoding="utf-8") == original
+
+
+def test_no_temporary_file_is_left_beside_the_output(change_package, tmp_path):
+    import json
+
+    source = tmp_path / "changes.json"
+    source.write_text(json.dumps([a_change()]), encoding="utf-8")
+    out = tmp_path / "package.json"
+
+    change_package.main([
+        "--replaces", "cmt-1234", "--changes", str(source),
+        "--requested-digest", "sha256:" + "0" * 64, "--out", str(out),
+    ])
+
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["changes.json", "package.json"]
