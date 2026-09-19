@@ -55,10 +55,18 @@ def is_stdlib(name: str) -> bool:
         spec = importlib.util.find_spec(name)
     except (ImportError, ValueError):
         return False
-    if spec is None or not spec.origin or spec.origin == "built-in":
-        return spec is not None and spec.origin == "built-in"
-    origin = pathlib.Path(spec.origin).resolve()
-    return _STDLIB_DIR in origin.parents and "site-packages" not in origin.parts
+    if spec is None:
+        return False
+    origin = spec.origin
+    # `built-in` and `frozen` are markers, not paths. Resolving them as
+    # paths put them outside the stdlib directory and made `os` — frozen
+    # since 3.11 — look like a third-party import. This passed locally on
+    # 3.9, where `os` is an ordinary file, and failed the 3.11 CI job:
+    # a portability check verified on one interpreter.
+    if origin in (None, "built-in", "frozen"):
+        return True
+    resolved = pathlib.Path(origin).resolve()
+    return _STDLIB_DIR in resolved.parents and "site-packages" not in resolved.parts
 
 
 def scripts():
@@ -103,10 +111,22 @@ def test_a_script_imports_only_stdlib_or_a_declared_dependency(path):
 
 @pytest.mark.parametrize("path", scripts(), ids=lambda p: f"{p.parents[1].name}/{p.name}")
 def test_a_script_does_not_reach_into_another_skill(path):
-    """A user may install one skill and not its neighbour. The relative
-    path that resolves in this source tree is exactly the path that breaks
-    in the installed layout — the same rule the plugin boundary test makes
-    for plugins, applied one level down.
+    """Scripts stay self-contained within their own skill directory.
+
+    **Not** because a sibling skill might be missing — the installable
+    unit is the plugin, so `/plugin install govkit@aipos` brings every
+    skill under it and a sibling is always present. I first wrote the
+    opposite here, and it was wrong: that reasoning belongs to
+    `test_plugin_boundaries.py`, where a user really can have one plugin
+    without another.
+
+    The reason that survives is narrower. A script is invoked with
+    whatever working directory the caller has, so a hard-coded relative
+    path into a sibling is fragile in a way a documented invocation is
+    not — which is why two SKILL.md files legitimately call sibling
+    scripts (`govkit-workflow-map` runs `govkit-feature-map`'s ingester)
+    and no script hard-codes one. Instructions are the documented place
+    for that coupling; a module-level path is not.
 
     Matched on **path shapes and imports**, not on the name appearing
     anywhere. The first version flagged four files for mentioning a
