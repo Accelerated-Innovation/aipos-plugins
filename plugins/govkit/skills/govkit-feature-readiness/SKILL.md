@@ -138,8 +138,26 @@ not a ladder:
 them is the mistake this table exists to prevent: a clean package is ready to
 run, which says nothing about whether anyone approved the behavior.
 
-`scripts/readiness_state.py` derives all of this. Two refusals are built into
-it and must not be worked around in prose:
+`scripts/readiness_state.py` derives all of this, and **writing the token
+record is what running it does** — the safeguards below live in the script so
+that following this skill executes them rather than reimplementing them by
+hand:
+
+```bash
+python scripts/readiness_state.py \
+  --feature-id AI-124 --score 10.5 --package-complete \
+  --commitment cmt-42761531-… --binds-baseline \
+  --authority verified --checked-at 2026-08-24T15:03:41Z \
+  --out .govkit/tokens/AI-124.json
+```
+
+`--authority` is `verified`, `withdrawn` or `unknown`; `--no-contract` is a
+project with no decision service; `--batch` scores without deciding and
+writes nothing. Exit status is 0 for an approved token and non-zero
+otherwise — **a blocked token is still written**, because it feeds the
+blocked-token rate.
+
+Two refusals are built into it and must not be worked around in prose:
 
 - **A stale reading cannot produce an authoritative green.** A check from
   last week proves what was true last week, and an approval can be withdrawn

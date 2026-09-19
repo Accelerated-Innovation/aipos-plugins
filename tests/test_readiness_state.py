@@ -34,6 +34,7 @@ def facts(state_mod, **over):
     base = dict(
         package_complete=True,
         blockers=[],
+        score=10.5,
         commitment_id="cmt-1234",
         binds_this_baseline=True,
         authority=True,
@@ -270,3 +271,135 @@ def test_batch_mode_writes_no_record(readiness_state):
 
     with pytest.raises(readiness_state.NotADecision):
         readiness_state.to_record(result, feature_id="AI-124")
+
+
+# --- what the derivation was ignoring ---------------------------------------
+#
+# Five review findings, all the same species: the states were derived
+# carefully and the *decision* was derived from a subset of them.
+
+
+def test_authority_without_a_bound_commitment_does_not_approve(readiness_state):
+    """`AUTHORITY_VERIFIED` required `approved_for_scope`; the decision did
+    not. A fresh `authority=True` for a commitment that binds something else
+    therefore produced `approved` with a reason saying the approval covers
+    this scope — and `to_record` persisted it while omitting the very state
+    that would have contradicted it."""
+    result = readiness_state.assess(facts(readiness_state, binds_this_baseline=False))
+
+    assert result.decision != "approved"
+    assert result.authoritative is False
+
+
+def test_no_commitment_at_all_does_not_approve_under_a_contract(readiness_state):
+    result = readiness_state.assess(facts(readiness_state, commitment_id=None))
+
+    assert result.decision != "approved"
+
+
+def test_an_incomplete_package_is_never_a_green_token(readiness_state):
+    """Package completeness is step 1 of the readiness process, and it was
+    wired only to the `PREPARED` state — so an incomplete package with an
+    empty blocker list produced an approved, authoritative token."""
+    result = readiness_state.assess(facts(readiness_state, package_complete=False))
+
+    assert result.decision == "blocked"
+    assert result.authoritative is False
+    assert readiness_state.State.LOCALLY_EXECUTABLE not in result.states
+
+
+def test_the_score_bands_from_the_rubric_are_applied(readiness_state):
+    """The decision model is blockers *and* score. Deriving from blockers
+    alone let any blocker-free package through, including ones below 8.5
+    that the rubric requires to be blocked."""
+    strong = readiness_state.assess(facts(readiness_state, score=10.5))
+    edits = readiness_state.assess(facts(readiness_state, score=9.0))
+    weak = readiness_state.assess(facts(readiness_state, score=8.0))
+
+    assert strong.decision == "approved"
+    assert edits.decision == "approved_with_edits"
+    assert weak.decision == "blocked"
+
+
+def test_a_missing_score_does_not_silently_pass(readiness_state):
+    """`None` is "not scored", which is not the same as "scored well". The
+    gate says so rather than assuming the best."""
+    result = readiness_state.assess(facts(readiness_state, score=None))
+
+    assert result.decision == "approved_with_edits"
+    assert "score" in result.reason.lower()
+
+
+def test_the_record_keeps_score_draft_version_and_timestamp(readiness_state):
+    """The original record carried these and `govkit-metrics-emit` reserves
+    them for the token event. Dropping them while the documentation said
+    every original field was unchanged is the kind of claim that survives
+    review because nobody diffs a JSON example."""
+    record = readiness_state.to_record(
+        readiness_state.assess(facts(readiness_state, score=10.5)),
+        feature_id="AI-124", draft_version="draft-1", ts=NOW,
+    )
+
+    assert record["score"] == 10.5
+    assert record["draft_version"] == "draft-1"
+    assert record["ts"].startswith("2026-09-19")
+
+
+# --- it has to be runnable --------------------------------------------------
+
+
+def test_the_script_has_a_command_line_entry_point(readiness_state):
+    """A checker only the tests call is the dead-code failure: the skill
+    instructs an agent to derive the states and write the record, and
+    without an entry point following that instruction executes none of the
+    safeguards."""
+    assert callable(getattr(readiness_state, "main", None))
+
+
+def test_running_it_writes_the_token_record(readiness_state, tmp_path):
+    out = tmp_path / "AI-124.json"
+    code = readiness_state.main([
+        "--feature-id", "AI-124", "--score", "10.5",
+        "--commitment", "cmt-1234", "--binds-baseline",
+        "--authority", "verified", "--checked-at", NOW.isoformat(),
+        "--now", NOW.isoformat(), "--package-complete",
+        "--out", str(out),
+    ])
+
+    import json
+    written = json.loads(out.read_text(encoding="utf-8"))
+    assert code == 0
+    assert written["decision"] == "approved"
+    assert written["product_approval"]["commitment_id"] == "cmt-1234"
+
+
+def test_running_it_on_a_blocked_package_still_writes_and_exits_nonzero(
+    readiness_state, tmp_path
+):
+    """A blocked token is exhaust too — it feeds the blocked-token rate — so
+    the record is written either way. The exit code is what tells a caller
+    which happened."""
+    out = tmp_path / "AI-125.json"
+    code = readiness_state.main([
+        "--feature-id", "AI-125", "--score", "10.5", "--package-complete",
+        "--blocker", "no evidence path for scenario:x",
+        "--authority", "unknown", "--now", NOW.isoformat(),
+        "--out", str(out),
+    ])
+
+    import json
+    assert code != 0
+    assert json.loads(out.read_text(encoding="utf-8"))["decision"] == "blocked"
+
+
+def test_batch_mode_refuses_to_write_from_the_command_line(readiness_state, tmp_path):
+    out = tmp_path / "AI-126.json"
+    code = readiness_state.main([
+        "--feature-id", "AI-126", "--score", "10.5", "--package-complete",
+        "--authority", "verified", "--commitment", "cmt-1", "--binds-baseline",
+        "--checked-at", NOW.isoformat(), "--now", NOW.isoformat(),
+        "--batch", "--out", str(out),
+    ])
+
+    assert code != 0
+    assert not out.exists()
