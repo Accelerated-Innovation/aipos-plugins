@@ -175,7 +175,7 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | 06 | Metrics and synthetic-data boundaries | 05 | [~] |
 | 07 | Packaging tests independent of old directory names | 06 | [x] |
 | 08 | Rename all eleven skills to `aipos-*` | 07 | [x] |
-| 09 | Atomic consolidation into `plugins/aipos` | 08 | [ ] |
+| 09 | Atomic consolidation into `plugins/aipos` | 08 | [x] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [ ] |
 | 11 | Clean-install and old-plugin removal check | 10 | [ ] |
 | 12 | Combined routing and workflow acceptance | 11 | [ ] |
@@ -422,3 +422,15 @@ For each increment, append a short record here or link its PR containing: comple
   run resolves all eleven skills and 47 development cases.
 - Only public skill names/paths changed. `.govkit/`, scoring and event contracts
   retain their prior identities. Live before/after routing comparison is pending.
+
+### Increment 09
+
+- Consolidated the complete skill directories and canonical references under
+  `plugins/aipos/`; removed the three original packages/catalog entries. The
+  marketplace now contains exactly one `aipos` entry matching its 1.0.0 manifest.
+- Updated active source paths and strengthened the catalog check to require one
+  package, one entry, and the correct local source. Kept the repository identity.
+- Marketplace and plugin manifest validation both passed. Full offline suite:
+  **405 passed, 5 skipped**. Four parameterized file checks disappeared because
+  two old README files and two old manifests were removed; no test was disabled.
+- Public onboarding prose is replaced in the next documentation slice.

@@ -14,7 +14,7 @@ templates/skill-template/         # copy this to start a new skill
 tests/                            # deterministic checks for the bundled skill scripts
 ```
 
-Guidance that more than one skill depends on belongs in `plugins/<plugin>/references/`, not copied into each skill. A skill reaches it with a relative path — `../../references/<file>.md`. `plugins/govkit/references/gherkin-authoring-standard.md` is the worked example: one Gherkin authoring standard, cited by five skills, restated by none.
+Guidance that more than one skill depends on belongs in `plugins/<plugin>/references/`, not copied into each skill. A skill reaches it with a relative path — `../../references/<file>.md`. `plugins/aipos/references/gherkin-authoring-standard.md` is the worked example: one Gherkin authoring standard, cited by five skills, restated by none.
 
 ## Adding or changing a skill
 
