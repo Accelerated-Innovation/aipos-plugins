@@ -87,27 +87,69 @@ Exactly one per scenario. Never two. A scenario the PM has not decided on stays 
 |---|---|
 | User-visible business behavior | `@functional` |
 | Error handling, invalid input, failure paths | `@edge-case` |
-| Authentication, authorization, security constraint | `@security` |
-| Latency, throughput, load validation | `@performance` |
-| Regulatory or statutory rule | `@compliance` |
-| Personal or sensitive data handling | `@privacy` |
+| Authentication, authorization, security constraint | `@nfr-security` |
+| Latency, throughput, load validation | `@nfr-performance` |
+| Regulatory or statutory rule | `@nfr-compliance` |
+| Personal or sensitive data handling | `@nfr-pii` |
 | Model-generated behavior | `@genai` |
 | A measurable evaluation threshold | `@evaluation` |
 | Invocation of an external tool or function by a model | `@tool-use` |
 | Harm, abuse, or unsafe-output prevention | `@safety` |
 
-More than one is normal and expected: `@v1 @edge-case @security` is a well-tagged scenario.
+More than one is normal and expected: `@v1 @edge-case @nfr-security` is a well-tagged
+scenario.
+
+**Why four of these carry an `@nfr-` prefix.** They are the ones GovKit's own validator
+enforces. `govkit validate` cross-references the populated categories in `nfrs.md` against
+`@nfr-<category>` tags in the feature file, so a scenario tagged `@security` did **not**
+satisfy a populated Security NFR — the check looked for `@nfr-security` and found nothing.
+This reference previously taught the bare spellings, which meant a package authored exactly
+as instructed could fail its own validation.
+
+Note the fourth: the validator's category is **`pii`**, not `privacy`. `@nfr-pii` is
+narrower than the word "privacy" suggests — it is personal or sensitive *data handling*,
+which is what the NFR category covers.
+
+The categories the validator knows are `performance`, `availability`, `security`,
+`compliance`, `scalability`, `observability`, `reliability`, `compatibility`, `freshness`,
+`quality`, `pii`, `lineage` and `cost`. Any of them may appear here as `@nfr-<category>`
+when a scenario carries that constraint.
+
+**One divergence is deliberate and unresolved.** GovKit's installed tag reference
+distinguishes `@edge-case` (boundary or unusual input) from `@error` (expected failure:
+invalid input, permission denied, timeouts). This vocabulary folds both into `@edge-case`.
+Neither tag is enforced by a validator, so nothing breaks either way — but the two
+documents do not agree, and that is recorded here rather than quietly reconciled in one
+direction.
 
 Preserve any tag this skill does not own — `@wip`, `@smoke`, team conventions — exactly as found.
 
-### Identity — recommended
+### Identity — recommended, and **required under a behavior contract**
 
 | Tag | On | Meaning |
 |---|---|---|
 | `@rule:<slug>` | a `Rule:` | Stable identity for the business decision |
 | `@scenario:<slug>` | a scenario or outline | Stable identity for the behavior |
 
-Outside the delivery and classification vocabularies, so they never affect slicing, sizing or filtering. They exist so `rule_link` in `eval_criteria.yaml`, NFR rows, readiness evidence and test names survive rewording. Optional and additive: a package without them still ingests, renders, scores and slices identically — ingestion derives a slug from the name and marks it `derived`. See `../../../references/spec-identifiers.md`.
+Outside the delivery and classification vocabularies, so they never affect slicing, sizing
+or filtering. They exist so `rule_link` in `eval_criteria.yaml`, NFR rows, readiness
+evidence and test names survive rewording.
+
+**Where a project commits to behavior, these stop being optional.** A behavioral baseline
+binds the exact Rules and scenarios an approval covers, and it **refuses**
+`id_source: derived` — a slug taken from an element's name changes when the name does, so
+it cannot bind an approval. An element with no authored tag therefore cannot be part of a
+commitment at all: `govkit inspect-package` flags it rather than converting it, and no
+amount of later tooling recovers it.
+
+This section previously said identifiers were "optional and additive", on the grounds that
+a package without them "still ingests, renders, scores and slices identically". All four of
+those remain true. The sentence was written before baselines existed and was never revisited
+when they did, so it kept reassuring authors about the four things that still work while
+omitting the one that stopped working. **Readable is not approvable.**
+
+For a project with no decision service, nothing changes: add them because a derived id is
+stable only as long as a name is. See `../../../references/spec-identifiers.md`.
 
 ### Inheritance
 
@@ -134,7 +176,7 @@ When GenAI mode is active, the file must satisfy all of:
 - At least one scenario tagged `@genai` — the model-generated behavior itself.
 - At least one scenario tagged `@evaluation` with a **measurable, threshold-based** outcome.
 - Any scenario where the model invokes an external tool or function tagged `@tool-use`.
-- Hallucination, groundedness, or unsafe-output validation tagged `@compliance` or `@safety`.
+- Hallucination, groundedness, or unsafe-output validation tagged `@nfr-compliance` or `@safety`.
 
 Generate these without prompting the PM. They are the difference between a GenAI feature that can be gated and one that ships on vibes.
 
@@ -173,7 +215,7 @@ Run these before presenting Gherkin. Fix what fails — a missing tag is a defec
 3. Every scenario has **at least one** classification tag.
 4. No scenario is untagged by accident.
 5. No scenario carries two delivery-phase tags.
-6. GenAI mode: `@genai` present, `@evaluation` present, tool use tagged `@tool-use`, safety validation tagged `@compliance` or `@safety`.
+6. GenAI mode: `@genai` present, `@evaluation` present, tool use tagged `@tool-use`, safety validation tagged `@nfr-compliance` or `@safety`.
 7. Delivery tags are consistent with the feature's confirmed slice — an `@mvp` scenario in a V2 feature is either a mis-tag or a scoping error, and both are worth a line.
 8. Every `@evaluation` scenario asserts a threshold, or marks the threshold as an open gap.
 9. Every scenario has an observable outcome.

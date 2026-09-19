@@ -542,7 +542,7 @@ Generate the checklist from `references/feature-template.md`, including the cond
 
 Ask: *does this feature process personal or sensitive data?*
 
-If yes, draft the mitigation text and add `@privacy` coverage to the Gherkin. If a privacy scenario is missing, add it — this is one of `govkit-feature-readiness`'s named blockers.
+If yes, draft the mitigation text and add `@nfr-pii` coverage to the Gherkin. If a privacy scenario is missing, add it — this is one of `govkit-feature-readiness`'s named blockers.
 
 ### Step F11 — Overlap check
 
