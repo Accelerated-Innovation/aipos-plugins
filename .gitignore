@@ -42,3 +42,6 @@ __pycache__/
 *.tmp
 tmp/
 .cache/
+
+# Local test virtualenv (CONTRIBUTING.md: python -m pytest tests -q)
+.venv/

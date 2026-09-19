@@ -115,6 +115,44 @@ If a reference is unavailable, continue from the guidance in this file and say w
 7. **Identify critical blockers.** The blocker list is the gate (see rubric).
 8. **Score (advisory) and decide.** Produce the readiness report and Development Token decision.
 
+## Five states, kept apart
+
+A Development Token answers *may execution start*. Under a behavior contract
+that is half the question; the other half — **is this exact scope approved,
+and does that approval still hold** — lives in the decision service and
+cannot be read from the repository at all.
+
+So the token is a **derived execution-readiness record that references the
+product approval**, never a substitute for one. Five states, and they are
+not a ladder:
+
+| State | What it means | Where it comes from |
+|---|---|---|
+| **prepared** | a package exists; nobody has decided anything | the repo |
+| **approved for exact scope** | a commitment binds *this* baseline | the decision service |
+| **locally executable** | this gate finds no critical blockers | the repo |
+| **authority verified** | a *fresh* read says the approval still holds | the decision service |
+| **implementation verified** | the behavior was afterwards shown to work | test evidence, later |
+
+*Locally executable* and *authority verified* are independent, and collapsing
+them is the mistake this table exists to prevent: a clean package is ready to
+run, which says nothing about whether anyone approved the behavior.
+
+`scripts/readiness_state.py` derives all of this. Two refusals are built into
+it and must not be worked around in prose:
+
+- **A stale reading cannot produce an authoritative green.** A check from
+  last week proves what was true last week, and an approval can be withdrawn
+  in between. Past the freshness window the result is execution readiness
+  only, and it says so.
+- **Could-not-determine is neither approval nor rejection.** An unreachable
+  decision service does not block preparation, and it does not produce a
+  result a protected boundary would accept.
+
+**If the project has no decision service**, which is most projects using
+GovKit, nothing changes: the token is issued on local grounds exactly as
+before, and simply never claims to carry a product approval.
+
 ## Decision model
 
 The critical blocker list is the gate. The 12-dimension score is advisory context that shows where the package is weak; it does not by itself authorize coding.
@@ -142,9 +180,28 @@ The Development Token is a governance decision, and decisions that live only in 
   "score": 10.5,
   "blockers": [],
   "draft_version": "draft-1",
-  "ts": "2026-08-24T15:04:00Z"
+  "ts": "2026-08-24T15:04:00Z",
+
+  "kind": "execution_readiness",
+  "authoritative": true,
+  "states": ["approved_for_scope", "authority_verified", "locally_executable", "prepared"],
+  "product_approval": {
+    "commitment_id": "cmt-42761531-2198-4d8b-8776-6160f1c4dbcd",
+    "verified_at": "2026-08-24T15:03:41Z"
+  }
 }
 ```
+
+`kind` says what the record **is**, so it cannot be filed later as evidence
+that somebody approved the behavior. `product_approval` names the decision
+this token derives from and when that was read — a derived record that does
+not say what it derives from is just an assertion. It is explicit `null`
+where the project has no decision service: absent would read as "not
+recorded yet", and null says the question was asked and there is no answer.
+
+`decision`, `blockers` and the other original fields are unchanged.
+`govkit-metrics-emit` reads `decision`, and refinement lead time and
+blocked-token rate are computed from it.
 
 `decision` is `approved` | `approved_with_edits` | `blocked` — write it for **every** decision, including Blocked; a blocked token is exhaust too (it feeds the blocked-token rate). `blockers` carries the critical blocker list verbatim. This record is what `govkit-metrics-emit`'s reserved `refinement.token.issued` event reads — without it, refinement lead time (Draft 0 → Token) and blocked-token rate cannot be computed from the repo's exhaust.
 
