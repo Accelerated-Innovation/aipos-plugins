@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-19
 
-**Status:** Implementation in progress on `codex/aipos-plugin-consolidation`, following approval in this task. Changes are local; release acceptance remains open.
+**Status:** Local implementation and offline/install verification complete on `codex/aipos-plugin-consolidation`. Live model acceptance remains open; nothing published.
 
 **Direction:** One `aipos` plugin, eleven focused `aipos-*` skills, explicit AIPOS pillar workflows.
 
@@ -178,8 +178,8 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [x] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [x] |
 | 11 | Clean-install and old-plugin removal check | 10 | [x] |
-| 12 | Combined routing and workflow acceptance | 11 | [ ] |
-| 13 | Release checkpoint and rollout handoff | 12 | [ ] |
+| 12 | Combined routing and workflow acceptance | 11 | [~] |
+| 13 | Release checkpoint and rollout handoff | 12 | [~] |
 
 ### 01 — Turn the ownership model into observable examples
 
@@ -477,3 +477,24 @@ For each increment, append a short record here or link its PR containing: comple
 - Logs and outputs are local evidence at `.claude/install-check-results.json`,
   `.claude/install-inventory.json`, and the temporary project. No model calls
   were made; native skill selection remains an increment 12 check.
+
+### Increments 12–13 — offline evidence and handoff prepared; acceptance open
+
+- Verified all forty original cases remain, with 48 total cases across eleven
+  skills. Dry request assembly passed for every skill. Candidate routing assembly
+  resolves 53 cases (47 development, six held-out), with three repetitions
+  configured; no model was called and there is no measured routing pass rate.
+- Saved a renamed candidate snapshot at `.claude/routing/candidate/inputs.json`.
+  The unchanged baseline snapshot remains intact with its original names.
+- Rechecked upstream: `origin/main` remains
+  `9ec174d9a9d740fddb928f7367cf6e635d637499`; no integration conflict appeared.
+- Prepared `docs/release-check.md` with exact candidate/client versions, offline
+  and installation results, remaining live/native workflow checks, and limitations.
+  Candidate `ac867c9` includes the tested plugin content and completed install
+  record; the next commit changes verification documentation only.
+- Live baseline/candidate comparisons, coaching evaluations, and native model
+  selection are pending a spending limit. Consequently increments 02–06, 08,
+  12, and 13 remain partial. Installation inventory and executable checks are
+  complete but are not substitutes for those acceptance checks.
+- No push, PR, merge, tag, publication, tracker write, or real-user plugin change
+  was performed. `docs/rollout.md` is ready for the eventual release.
