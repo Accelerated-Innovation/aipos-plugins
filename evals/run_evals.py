@@ -388,6 +388,11 @@ def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
                  f"turns={getattr(args, 'turns', DEFAULT_TURNS)}", PROCEED_NUDGE):
         h.update(part.encode("utf-8"))
         h.update(b"\x00")
+    # Existing fingerprints used a fixed 16,000-token judge ceiling. Preserve
+    # those requests' identity, but never reuse a grade at a different ceiling.
+    judge_max_tokens = getattr(args, "judge_max_tokens", JUDGE_MAX_TOKENS)
+    if judge_max_tokens != 16000:
+        h.update(f"judge_max_tokens={judge_max_tokens}\x00".encode("utf-8"))
     return h.hexdigest()[:16]
 
 
@@ -533,11 +538,20 @@ async def call_with_backoff(fn, *, what: str):
     raise RuntimeError(f"{what} failed after {MAX_ATTEMPTS} attempts: {last}") from last
 
 
+async def judge_completion(client, **request):
+    """The SDK requires streaming for larger output ceilings."""
+    if request["max_tokens"] > 16000:
+        async with client.messages.stream(**request) as stream:
+            return await stream.get_final_message()
+    return await client.messages.create(**request)
+
+
 async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
     import anthropic
 
     system, user = build_subject_request(skill_dir, case)
     pid, started = case["name"], time.monotonic()
+    judge_max_tokens = getattr(args, "judge_max_tokens", JUDGE_MAX_TOKENS)
 
     async def fail(cls: str, detail: str, **extra) -> None:
         append_row(paths["errors"], {
@@ -612,8 +626,8 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
 
                 claims = case_claims(case)
                 judge, judge_retries = await call_with_backoff(
-                    lambda: client.messages.create(
-                        model=args.judge_model, max_tokens=JUDGE_MAX_TOKENS,
+                    lambda: judge_completion(client,
+                        model=args.judge_model, max_tokens=judge_max_tokens,
                         system=CLAIMS_JUDGE_SYSTEM if claims else JUDGE_SYSTEM,
                         messages=[{"role": "user",
                                    "content": build_judge_request(case, answer, user_input=user)}],
@@ -635,8 +649,8 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                 if judge.stop_reason == "max_tokens":
                     return await fail(
                         "judge-truncated",
-                        f"judge hit max_tokens ({JUDGE_MAX_TOKENS}) before finishing its "
-                        f"verdict; raise JUDGE_MAX_TOKENS",
+                        f"judge hit max_tokens ({judge_max_tokens}) before finishing its "
+                        f"verdict; raise --judge-max-tokens",
                         model=judge.model, usage=usage_of(judge),
                     )
                 judge_text = text_of(judge)
@@ -704,6 +718,7 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                             "input_digest": reused["input_digest"],
                             "original_usage": reused["usage"]} if reused else None),
         "judge_model": judge.model, "judge_usage": usage_of(judge),
+        "judge_max_tokens": judge_max_tokens,
         "retries": {"subject": subject_retries, "judge": judge_retries},
         "input_digest": args._digests[case_key(case, rep)],
     })
@@ -851,6 +866,8 @@ def main() -> int:
     p.add_argument("--model", default=DEFAULT_SUBJECT_MODEL, help="subject model")
     p.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL,
                    help="judge model; keep it different from --model")
+    p.add_argument("--judge-max-tokens", type=int, default=JUDGE_MAX_TOKENS,
+                   help="judge output ceiling; raise for recorded judge-truncated errors")
     p.add_argument("--variant", default="baseline", help="baseline | v1 | v2 ...")
     p.add_argument("--regrade-from", help="reuse matching subject traces from this variant; call only the judge")
     p.add_argument("--reps", type=int, default=1, help="repetitions per case")
@@ -869,6 +886,8 @@ def main() -> int:
         p.error("--regrade-from must differ from --variant to preserve source evidence")
     if args.turns < 1:
         p.error("--turns must be at least 1")
+    if args.judge_max_tokens < 1:
+        p.error("--judge-max-tokens must be at least 1")
     if args.reps < 1:
         p.error("--reps must be at least 1; 0 would make an eval 'succeed' without a single call")
     if args.concurrency < 1:

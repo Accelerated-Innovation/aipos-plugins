@@ -194,3 +194,10 @@ Earlier versions concatenated assistant turns without the user's intervening
 reply. This made legitimate multi-turn pauses look like uninterrupted responses.
 Do not compare those historical coaching pass rates to conversation-aware grades
 as if only the skill had changed.
+
+For a recorded `judge-truncated` error, use `--judge-max-tokens 32000` in a
+separate variant. The output ceiling is recorded and a changed ceiling
+invalidates the grade fingerprint. Use `--regrade-from` when a completed source
+conversation exists; an attempt that failed before saving its conversation
+needs a fresh subject. Keep the original error visible, and do not rerun a
+completed behavioral failure merely to obtain a passing answer.

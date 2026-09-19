@@ -343,6 +343,45 @@ def test_judge_input_contract_changes_invalidate_previous_grades(runner, monkeyp
     assert runner.input_digest(skill, case, _Args()) != before
 
 
+def test_judge_token_ceiling_invalidates_only_changed_requests(runner):
+    skill = runner.discover_skills()["aipos-feature-slice"]
+    case = runner.load_cases(skill)[0]
+    args = _Args()
+    before = runner.input_digest(skill, case, args)
+    args.judge_max_tokens = 16000
+    assert runner.input_digest(skill, case, args) == before
+    args.judge_max_tokens = 32000
+    assert runner.input_digest(skill, case, args) != before
+
+
+def test_large_judge_budget_uses_streaming_and_preserves_request(runner):
+    import asyncio
+    from types import SimpleNamespace
+
+    request = {"model": "judge", "max_tokens": 32000,
+               "messages": [{"role": "user", "content": "Grade this"}]}
+    response = object()
+    seen = []
+
+    class Stream:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def get_final_message(self):
+            return response
+
+    def stream(**kwargs):
+        seen.append(kwargs)
+        return Stream()
+
+    client = SimpleNamespace(messages=SimpleNamespace(stream=stream))
+    assert asyncio.run(runner.judge_completion(client, **request)) is response
+    assert seen == [request]
+
+
 def test_regrading_reuses_only_matching_actual_subject_inputs(runner, tmp_path):
     skill = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill)[0]
