@@ -62,9 +62,11 @@ Everything is optional. Accept any of:
 - A description of the process in the user's own words
 - Interview notes, a recorded walkthrough, a prototype
 
-If there is a feature corpus, read it first. The Rules and scenarios that already exist are the
-best available statement of what the journey does, and referencing them is cheaper and more
-accurate than asking someone to re-describe behavior they have already written down.
+If there is a feature corpus, read it first. It establishes which canonical behavior exists;
+the supplied walkthrough establishes which of that behavior this journey actually describes.
+Reference existing behavior rather than asking someone to re-describe it, but do not treat
+every scenario in the corpus as evidence of its placement in this journey. With only a corpus,
+label the inferred journey as a proposal for confirmation.
 
 ## Process
 
@@ -114,6 +116,10 @@ Three rules, all of which the resolver enforces:
   The L3 view shows it once with everywhere it is referenced.
 - **Never invent an identifier.** A slug you cannot see in the corpus is a dangling reference
   that looks authoritative. Name the behavior in the author's words and say no identifier exists.
+- **Ground each placement.** A described action, outcome, or confirmed user decision must
+  support the reference at that step. A broadly related activity name is not enough. If a
+  canonical obligation has no described step, report the gap as uncovered and ask whether
+  the journey needs extending; do not invent an action or handoff to claim complete coverage.
 
 ### Step 6 — Resolve, and report what is uncovered
 
