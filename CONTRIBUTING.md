@@ -23,6 +23,10 @@ Guidance that more than one skill depends on belongs in `plugins/<plugin>/refere
 3. Put any supporting material in the skill folder: `references/` for rubrics/checklists the skill reads at runtime, `evals/` for evaluation cases and sample inputs.
 4. Skills load automatically from a plugin's `skills/` directory — you don't need to register them anywhere.
 
+For selection changes, use the [skill ownership model](docs/plans/2026-09-19-aipos-plugin-consolidation.md#ownership-and-workflow)
+and add contrasting prompts to [the routing cases](evals/routing/README.md).
+Routing cases test which skill loads; per-skill cases test its behavior after loading.
+
 ## Before you open a PR
 
 Validate the marketplace and plugin manifests, and run the deterministic checks:
