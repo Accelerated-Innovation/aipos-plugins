@@ -10,8 +10,9 @@ import sys
 
 import pytest
 
+from skill_paths import skill_path
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SKILLS = ROOT / "plugins" / "govkit" / "skills"
 FIXTURES = pathlib.Path(__file__).resolve().parent / "fixtures"
 
 
@@ -26,19 +27,19 @@ def _load(name, path):
 @pytest.fixture(scope="session")
 def repo_ingest():
     return _load("repo_ingest",
-                 SKILLS / "govkit-feature-map" / "scripts" / "repo_ingest.py")
+                 skill_path("govkit-feature-map") / "scripts" / "repo_ingest.py")
 
 
 @pytest.fixture(scope="session")
 def render_map():
     return _load("render_map",
-                 SKILLS / "govkit-feature-map" / "scripts" / "render_map.py")
+                 skill_path("govkit-feature-map") / "scripts" / "render_map.py")
 
 
 @pytest.fixture(scope="session")
 def workflow_resolve():
     return _load("workflow_resolve",
-                 SKILLS / "govkit-feature-map" / "scripts" / "workflow_resolve.py")
+                 skill_path("govkit-feature-map") / "scripts" / "workflow_resolve.py")
 
 
 @pytest.fixture(scope="session")
@@ -67,10 +68,10 @@ def features(repo_ingest, corpus):
 @pytest.fixture(scope="session")
 def readiness_state():
     return _load("readiness_state",
-                 SKILLS / "govkit-feature-readiness" / "scripts" / "readiness_state.py")
+                 skill_path("govkit-feature-readiness") / "scripts" / "readiness_state.py")
 
 
 @pytest.fixture(scope="session")
 def change_package():
     return _load("change_package",
-                 SKILLS / "govkit-feature-refine" / "scripts" / "change_package.py")
+                 skill_path("govkit-feature-refine") / "scripts" / "change_package.py")

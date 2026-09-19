@@ -24,8 +24,10 @@ import re
 
 import pytest
 
+from skill_paths import skill_path
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCHEMA = (ROOT / "plugins" / "govkit" / "skills" / "govkit-metrics-emit"
+SCHEMA = (skill_path("govkit-metrics-emit")
           / "references" / "event_schema.md")
 
 NOW = datetime.datetime(2026, 9, 19, 12, 0, tzinfo=datetime.timezone.utc)

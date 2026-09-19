@@ -5,6 +5,7 @@ Every one of them fails against the line-scanning parser this replaced.
 """
 
 import json
+from skill_paths import skill_path
 import subprocess
 import sys
 
@@ -278,7 +279,7 @@ def test_cli_exits_nonzero_and_names_the_source_location(corpus, tmp_path):
     out = tmp_path / "features.json"
     proc = subprocess.run(
         [sys.executable,
-         "plugins/govkit/skills/govkit-feature-map/scripts/repo_ingest.py",
+         str(skill_path("govkit-feature-map") / "scripts/repo_ingest.py"),
          str(corpus / "broken_syntax"), "-o", str(out)],
         capture_output=True, text=True)
     assert proc.returncode == 3

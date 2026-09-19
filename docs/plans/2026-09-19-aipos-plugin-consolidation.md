@@ -169,11 +169,11 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 |---|---|---|---|
 | 01 | Ownership examples and routing cases | This plan | [x] |
 | 02 | Routing evaluator and baseline | 01 | [~] |
-| 03 | Discovery, validation, and epic boundaries | 02 | [ ] |
-| 04 | Create, refine, and readiness boundaries | 03 | [ ] |
-| 05 | Journey authoring, slicing, and visualization boundaries | 04 | [ ] |
-| 06 | Metrics and synthetic-data boundaries | 05 | [ ] |
-| 07 | Packaging tests independent of old directory names | 06 | [ ] |
+| 03 | Discovery, validation, and epic boundaries | 02 | [~] |
+| 04 | Create, refine, and readiness boundaries | 03 | [~] |
+| 05 | Journey authoring, slicing, and visualization boundaries | 04 | [~] |
+| 06 | Metrics and synthetic-data boundaries | 05 | [~] |
+| 07 | Packaging tests independent of old directory names | 06 | [x] |
 | 08 | Rename all eleven skills to `aipos-*` | 07 | [ ] |
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [ ] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [ ] |
@@ -386,3 +386,27 @@ For each increment, append a short record here or link its PR containing: comple
   no model was called. Live evaluation budget is pending user input. Description
   work can proceed against the frozen baseline, but this increment is not marked
   complete until its live comparison evidence exists.
+
+### Increments 03–06 — boundaries implemented; live evaluations pending
+
+- Updated all eleven descriptions and the conflicting body passages: optional
+  epics, progressive behavior definition, review state rather than storage location,
+  journey source versus rendering, and completeness versus execution authority.
+- Added eight behavior cases covering previously missing skills and the metrics
+  boundary. The inventory is now 48 cases across eleven skills; these are fixtures,
+  not reported model passes. The three runtime-dependent metrics cases remain
+  outside the text-only evaluation harness.
+- Preserved script behavior, scoring, `.govkit/` artifacts, and execution contracts.
+- Local commits: `31f0e90`, `97865cd`, `43d21a3`, `b6419c6`.
+- Request assembly and fixture checks passed. Live selection/coaching evidence
+  remains pending a model evaluation budget, so these slices remain partial.
+
+### Increment 07
+
+- Tests locate skills by their unique installed directory names instead of assuming
+  the original plugin layout. Missing and duplicate skills fail explicitly.
+- Added real YAML frontmatter validation, resource containment/resolution checks,
+  and a copied-plugin ingestion check launched from an unrelated project.
+- `.venv/bin/python -B -m pytest tests -q -p no:cacheprovider`:
+  **409 passed, 5 skipped**. Skips are fixture-directory checks for cases without
+  file fixtures, not hidden model results.
