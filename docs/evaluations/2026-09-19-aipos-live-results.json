@@ -1,0 +1,3647 @@
+{
+  "date": "2026-09-19",
+  "source_commit": "a1e25229bd0d7dee8f10995f6f0e3f498290d821",
+  "baseline_commit": "9ec174d9a9d740fddb928f7367cf6e635d637499",
+  "routing": {
+    "baseline": {
+      "summary": {
+        "planned": 159,
+        "completed": 159,
+        "passed": 147,
+        "missing": 0,
+        "pass_rate": 0.9245283018867925,
+        "critical_failures_or_missing": [
+          "render-existing:rep0",
+          "render-existing:rep1",
+          "render-existing:rep2",
+          "commitment-prepare:rep0",
+          "commitment-prepare:rep1",
+          "commitment-prepare:rep2",
+          "create-journey-render:rep0",
+          "create-journey-render:rep1",
+          "create-journey-render:rep2",
+          "reviewed-corpus:rep0",
+          "reviewed-corpus:rep1",
+          "reviewed-corpus:rep2"
+        ],
+        "accepted": false,
+        "model": "claude-sonnet-5",
+        "reps": 3,
+        "max_tokens": 4096,
+        "failures": [
+          {
+            "case": "commitment-prepare",
+            "rep": 0,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-feature-slice",
+              "handoffs": [],
+              "reason": "The request describes selecting exact scenarios/rules for a release, marking exclusions, and writing back a confirmed, evidence-backed package with source revision — matching govkit-feature-slice's role of mapping Gherkin to release slices, verifying shippable end-to-end behavior, and writing the tagged spec back to the tracker after PM confirmation."
+            }
+          },
+          {
+            "case": "commitment-prepare",
+            "rep": 1,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-feature-create",
+              "handoffs": [],
+              "reason": "The request to assemble selected Rules, scenarios, exclusions, evidence, and source revision into a prepared commitment package matches govkit-feature-create's mode of materializing behavior from an approved commitment baseline that has already selected the content, producing the Draft 0 feature package."
+            }
+          },
+          {
+            "case": "commitment-prepare",
+            "rep": 2,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-feature-slice",
+              "handoffs": [],
+              "reason": "The request to assemble selected Rules, scenarios, exclusions, evidence and source revision into a commitment package matches govkit-feature-slice's job of selecting which Gherkin scenarios a release contains via MoSCoW tagging, verifying end-to-end completeness with supporting evidence, and writing the confirmed, tagged spec back to the tracker as the shippable commitment."
+            }
+          },
+          {
+            "case": "create-journey-render",
+            "rep": 0,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-workflow-map",
+              "handoffs": [],
+              "reason": "The user wants to define a customer journey and view its diagram, which is exactly what govkit-workflow-map does — authoring the workflow.json and generating the L1/L2/L3 journey views from it in one pass."
+            }
+          },
+          {
+            "case": "create-journey-render",
+            "rep": 1,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-workflow-map",
+              "handoffs": [],
+              "reason": "The request to define a customer journey end to end and view its diagram matches govkit-workflow-map, which authors the workflow.json and generates the L1/L2/L3 journey diagrams from it."
+            }
+          },
+          {
+            "case": "create-journey-render",
+            "rep": 2,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-workflow-map",
+              "handoffs": [],
+              "reason": "The user wants to define a customer journey and see its diagram — govkit-workflow-map authors the workflow.json source and generates the L1/L2/L3 journey diagrams from it in one pass, so no separate handoff is needed."
+            }
+          },
+          {
+            "case": "render-existing",
+            "rep": 0,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-workflow-map",
+              "handoffs": [],
+              "reason": "The user wants to render an existing workflow.json (with its referenced feature Gherkin) into HTML diagram views, which is exactly what govkit-workflow-map does — generating L1 journey, L2 collaboration, and L3 behavior views from the workflow source file."
+            }
+          },
+          {
+            "case": "render-existing",
+            "rep": 1,
+            "route": {
+              "action": "skill",
+              "skill": "govkoit-workflow-map",
+              "handoffs": [],
+              "reason": "placeholder"
+            }
+          },
+          {
+            "case": "render-existing",
+            "rep": 2,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-workflow-map",
+              "handoffs": [],
+              "reason": "The request explicitly mentions rendering existing features and a workflow.json into a diagram, which matches govkit-workflow-map's function of generating L1 journey, L2 collaboration, and L3 behavior views from a workflow.json file, using qualified references into the feature Gherkin."
+            }
+          },
+          {
+            "case": "reviewed-corpus",
+            "rep": 0,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-feature-map",
+              "handoffs": [
+                "govkit-feature-refine"
+              ],
+              "reason": "The request asks for a visual HTML readiness map across multiple reviewed feature packages, which is exactly what govkit-feature-map produces (dashboard with per-feature Development Token readiness badges). Generating those readiness badges requires the internal batch scoring verdicts from govkit-feature-refine, which govkit-feature-map calls to badge the corpus."
+            }
+          },
+          {
+            "case": "reviewed-corpus",
+            "rep": 1,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-feature-map",
+              "handoffs": [
+                "govkit-feature-refine"
+              ],
+              "reason": "The request asks for a visual, badged readiness map across a set of reviewed feature packages in a repo — exactly what govkit-feature-map produces (chain diagram, Development Token readiness badges). Internally it delegates scoring to govkit-feature-refine's batch mode to compute those readiness badges, so that helper is a required handoff even though it's invoked internally."
+            }
+          },
+          {
+            "case": "reviewed-corpus",
+            "rep": 2,
+            "route": {
+              "action": "skill",
+              "skill": "govkit-feature-map",
+              "handoffs": [
+                "govkit-feature-refine"
+              ],
+              "reason": "The request asks for a visual, scored readiness map (HTML) across multiple reviewed feature packages in a repo — exactly what govkit-feature-map produces (readiness dashboard with Development Token badges). It internally relies on govkit-feature-refine's batch scoring mode to generate the per-feature verdicts used for badging, so that is included as a required handoff."
+            }
+          }
+        ]
+      },
+      "inputs_sha256": "ff0757c80c71d2b37d68886912e8b78b7702cdc0ab99a7a92f0c9a16cd10bd2d",
+      "results_sha256": "63f03a415bcb90ec699e1b34a61cd303673105786484fad397e0adfe36a3cad2",
+      "splits": {
+        "development": {
+          "passed": 129,
+          "total": 141
+        },
+        "heldout": {
+          "passed": 18,
+          "total": 18
+        }
+      }
+    },
+    "candidate": {
+      "summary": {
+        "planned": 159,
+        "completed": 159,
+        "passed": 159,
+        "missing": 0,
+        "pass_rate": 1.0,
+        "critical_failures_or_missing": [],
+        "accepted": true,
+        "model": "claude-sonnet-5",
+        "reps": 3,
+        "max_tokens": 4096,
+        "failures": []
+      },
+      "inputs_sha256": "d91f2671804cb3ae5618f1ae7861bf45b85d8a945159b370a51e73713bfbe42b",
+      "results_sha256": "8e65127bf52494ef192a21168b3989f721c84566ebf9133d746f9d968fca62d6",
+      "splits": {
+        "development": {
+          "passed": 141,
+          "total": 141
+        },
+        "heldout": {
+          "passed": 18,
+          "total": 18
+        }
+      }
+    }
+  },
+  "coaching": {
+    "subject_model": "claude-opus-5",
+    "judge_model": "claude-sonnet-5",
+    "repetitions": 3,
+    "assistant_turns": 2,
+    "followup": "proceed",
+    "subject_max_tokens": 16000,
+    "default_judge_max_tokens": 16000,
+    "default_variant": "live-acceptance",
+    "skills": [
+      {
+        "skill": "aipos-epic-create",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "reframes-solution-shaped-problem",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.857
+                },
+                "missed": [
+                  "The rubric specifies the response should note the 'users can't find documents' sentence has no sufferer, no measure, AND no evidence; the response covers the first two but never flags the missing evidentiary support for that specific clause"
+                ],
+                "input_digest": "ddfde28dca2eed1c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "83e3c02cc73246ef419646e6747b124fbb49dcb0fc068a8062a5adda85ef7ee6",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "conversation-judge-v2"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "ddfde28dca2eed1c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "85952fb8aa674ee1a2c0c3ecc085b27793667321b270fab6ea6f8cb19bc42461",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "conversation-judge-v2"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "ddfde28dca2eed1c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "9c3a7fd0abfa7a12e38e730948f44d133b3c69dd1daf0511f7cc7272c0a3ecd8",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "conversation-judge-v2"
+              }
+            ]
+          },
+          {
+            "id": "consumes-viability-brief-and-preserves-provenance",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.46
+                },
+                "missed": [
+                  "Questions asked go beyond the brief's stated unknowns (owner/category/target release/thresholds) — the assistant also asks the PM to pick a title and separately asks an open-ended customer-metric question not grounded in a brief gap",
+                  "The 34/40 fake-door demand test result with its date range is never carried into the epic content shown in this transcript",
+                  "The $0.01 per-search inference cost is never carried into the epic as an assumption in this transcript",
+                  "The unresolved retrieval-relevance threshold is never surfaced as TBD or placed in Open Questions in this transcript",
+                  "The zero cross-account-leakage guardrail is never translated into an evaluation criterion or NFR in this transcript",
+                  "Only one of the four 'what we still don't know' items (interrupted-colleague cost) appears, and not inside a dedicated Open Questions section; the other three (recoverability %, per-search cost, ranking-trust) are absent",
+                  "There is no handoff reference to aipos-feature-create anywhere in the transcript"
+                ],
+                "input_digest": "b22ba824f3b845f9",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "461414642a6e1575c16cf2d2b211f85fbc1faaaf0686c8a617608328367776e6",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.25
+                },
+                "missed": [
+                  "The response asks an extra question (title preference) that is not one of the sanctioned gaps (owner, category, target release, unresolved thresholds); owner/category were correctly pre-filled but the title question goes beyond what the rubric licenses",
+                  "The revised scope (retrieval in, summarization out) is only briefly gestured at as 'behind a separate gate' rather than carrying the brief's actual reason (unvalidated summarization-value assumption, 3/5 prototype pushback, budget rationale)",
+                  "No epic content is actually produced showing the 41-minute median or 34/40 demand test recorded as measured facts with dates, nor the 30%-recoverable and $0.01 figures explicitly marked as assumptions",
+                  "The un-agreed retrieval relevance threshold is not yet placed in an Open Questions section as TBD, and the zero cross-account leakage guardrail is not yet turned into an evaluation criterion/NFR",
+                  "The four 'what we still don't know' items are only promised for later ('become the epic's gaps list as-is') but not actually written into an Open Questions section in the transcript provided",
+                  "There is no mention or execution of handing off to aipos-feature-create anywhere in the transcript"
+                ],
+                "input_digest": "b22ba824f3b845f9",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "36dc6e56ee2e35e5ac39c600471a87d9d50b5b87312c435c39bc5e03efae3687",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.33
+                },
+                "missed": [
+                  "The revised scope (retrieval IN, summarization explicitly OUT, with the brief's stated reason) is never restated or carried into the epic body — it is only noted as a status line ('Initial scope / MVP: Decided, including out-of-scope') without being written into the epic.",
+                  "The 34/40 demand-test figure and the $0.01 per-search inference cost are never surfaced or carried forward with their provenance markers in the visible transcript, so the provenance-preservation claim is not fully demonstrated.",
+                  "The un-agreed retrieval relevance threshold is flagged in passing ('the brief explicitly says the team hasn't agreed one') but is never placed into an actual Open Questions section of the epic.",
+                  "The zero cross-account leakage guardrail from the brief is never translated into an evaluation criterion or NFR anywhere in the shown response.",
+                  "The four 'what we still don't know' items (interrupted-colleague cost, 30% recoverability, per-search inference cost, trust in ranking) are not collectively assembled into an Open Questions list — only two are partially discussed, and none are formally logged as Open Questions.",
+                  "There is no mention anywhere in the transcript of handing the epic off to aipos-feature-create."
+                ],
+                "input_digest": "b22ba824f3b845f9",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ca06b3f27be896ea54a7b806dcb050193e8b05f25d7184259b144b4b34e5d2cc",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          },
+          {
+            "id": "genai-thresholds-flagged-as-inherited-contract",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "705c1a1ca2cae281",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "7b92b78cd0a40d319b5543a590b30bb7b8070e0232fd774e62f4fa9b93711858",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.429
+                },
+                "missed": [
+                  "Success metrics are not actually pushed toward the three-part baseline/target/observation form for specific metrics; the conversation stays in general grounding-question mode without ever proposing or refining a metric with all three parts",
+                  "The response never walks through the relevant evaluation dimensions for drafted customer email (groundedness, correctness, tone, safety, privacy, latency, cost); it stops before evaluation criteria are discussed at all",
+                  "No question about golden test cases or evaluation cadence appears anywhere in the transcript",
+                  "No counter-metric (e.g. quality/tone degradation risk from faster drafting) is ever suggested"
+                ],
+                "input_digest": "705c1a1ca2cae281",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "997a3fe325228fa81e038b711f8a866d8b9459880547019fa332cbfdd51b6af2",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.571
+                },
+                "missed": [
+                  "The evaluation dimensions (groundedness, correctness, tone, safety, privacy, latency, cost) are only previewed as a flat list ('the likely candidates are groundedness, factual correctness..., tone, privacy..., escalation behaviour, latency and cost') rather than walked through individually; safety is not explicitly named, and the discussion is deferred rather than substantively worked.",
+                  "The response never asks about golden test cases or evaluation cadence at any point in the exchange.",
+                  "No counter-metric is suggested to guard against the epic's speed-up goal degrading response quality; the 'errors' and 'satisfaction' angles are framed as problem-diagnosis questions, not as counter-metrics for the evaluation criteria section."
+                ],
+                "input_digest": "705c1a1ca2cae281",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "fd9beb4da6f1c9e5a43d3d6ebacdcc198cade7c934a7acc8e1aa72b6e5cf1d45",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          },
+          {
+            "id": "no-tracker-markdown-path-and-write-discipline",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "65049df2106e9d95",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "4eceb308d98e211b359fae6dda13ee290cdfa61a09171004d99a79c837d07dfa",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "65049df2106e9d95",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "57ba7712634f67eba1548f39869513858e27d339313ce8593368b5a4267c2045",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "65049df2106e9d95",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "0ea3a10e9a0f3a81d7bfe3f1c6caf2e90229f68e39321a327c0c1fad67d65271",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          }
+        ],
+        "results_sha256": "5998e72493598197ff45800638c9b2d72f184f6b07f7714ea9a8a40682230662",
+        "errors": []
+      },
+      {
+        "skill": "aipos-feature-create",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "epic-mode-maps-before-splitting",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.857
+                },
+                "missed": [
+                  "The horizontal slices do not uniformly satisfy the stated criteria: V2 is shown spanning only backbone stage 2 (not multiple stages, as MVP and V1 do), and V1's stated metric includes 'audit responsiveness,' which is not one of the epic's three named success metrics, diluting the requirement that each slice names which of the three metrics it moves."
+                ],
+                "input_digest": "9e6303bc3c7d11e5",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "fd8aa3035f1136e280adcef500e6678192113ee250e33505c592f60301c3522c",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "9e6303bc3c7d11e5",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ad6404b8ddee31ae448440148bb17e3632e37242133f4acb76261521bce6b01e",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.86
+                },
+                "missed": [
+                  "Epic mode is not clearly stated as a one-line mode declaration up front; the opening turn talks about source/destination and then GenAI applicability, but never explicitly announces 'Epic mode' as such — the only literal 'Epic mode' label appears buried inside a metadata table in the story-map file written in the second turn, not as an upfront one-line statement in the initial response."
+                ],
+                "input_digest": "9e6303bc3c7d11e5",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "09ff136583076b853aeba5cc905df7943c10b6e2d408165ee3d60d0f154f2ad3",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          },
+          {
+            "id": "stub-creation-requires-explicit-confirmation",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b07cafb6b403f592",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "33e3d1a8c178d516dd0a7d0601904723b90d0b94f693d634625d2856b956e52a",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.714
+                },
+                "missed": [
+                  "Never asked a single explicit yes/no question covering the whole stub set; instead posed multiple separate asks (confirm features, resolve residency, supply project key) and later offered a multi-option menu ('Next, pick one')",
+                  "Did not name the destination fully precisely — parent epic (CLM-88), record type (Feature), and tracker (Jira, implied) were named, but the destination project itself was never named, only flagged as an unknown the user must supply"
+                ],
+                "input_digest": "b07cafb6b403f592",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "439c5551ac94257692b2e1e7337eec7121ecdfe4d227de14852f8e47730037a6",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.857
+                },
+                "missed": [
+                  "Did not ask a single explicit yes/no question covering the whole set of stubs; instead the first turn bundled several separate asks (confirm the map/backbone/overlaps, provide an MCP connection, and separately state an explicit yes naming the destination), which fragments the gate rather than presenting one clean binary confirmation"
+                ],
+                "input_digest": "b07cafb6b403f592",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "34e392a4c7f2bc7fd647ea8f22b94cf72a46936fe0cd3dd6d57ad33f0dd4f46f",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          },
+          {
+            "id": "genai-feature-inherits-and-flags-missing-thresholds",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "truncated",
+                "grade": {
+                  "rubric": 0.938
+                },
+                "missed": [
+                  "The four epic-level evaluation criteria were not all inherited with their exact thresholds unaltered: the response explicitly refuses to carry EPIC-E2 (PII leakage, 0 detections, blocking) into eval_criteria.yaml or into any @evaluation scenario, substituting a governance-gap discussion instead of inheriting it verbatim as instructed"
+                ],
+                "input_digest": "b2e02cb7b4dceda4",
+                "stop_reasons": [
+                  "max_tokens",
+                  "end_turn"
+                ],
+                "trace_sha256": "f416c4831c1610dee1e5f36d6b7607133bd6140ca46e321febd5de852aa5ad90",
+                "judge_passed": false,
+                "acceptance_issue": "Subject turn truncated",
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "truncated",
+                "grade": {
+                  "rubric": 0.95
+                },
+                "missed": [
+                  "The four epic-level evaluation criteria were not uniformly inherited unaltered: EPIC-E2 (0 PII detections) was shown but then deliberately dropped/re-scoped rather than carried over as-is, which the rubric explicitly forbids ('never altered or re-derived')."
+                ],
+                "input_digest": "b2e02cb7b4dceda4",
+                "stop_reasons": [
+                  "max_tokens",
+                  "end_turn"
+                ],
+                "trace_sha256": "306b0ba6d9bec4c6826cd167c22e1761c82af571fd26cd2401792cb3fe05601b",
+                "judge_passed": false,
+                "acceptance_issue": "Subject turn truncated",
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "truncated",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b2e02cb7b4dceda4",
+                "stop_reasons": [
+                  "max_tokens",
+                  "end_turn"
+                ],
+                "trace_sha256": "2f0e0dd9d9b2259a49f2dfb8a1da0f76840c4179fb896d520a8eb07f88c926ef",
+                "judge_passed": true,
+                "acceptance_issue": "Subject turn truncated",
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "no-tracker-markdown-path-is-complete",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.833
+                },
+                "missed": [
+                  "The response never actually produces the repo feature package (feature_source.md with stub header, primary user story, structured description with Out of Scope/DoD/privacy impact, acceptance.feature with tagged Rule-grouped Gherkin, and nfrs.md as an owner-carrying table) — the transcript ends with the assistant still gathering business-rule information, so none of the required file contents appear."
+                ],
+                "input_digest": "da9cd8dd1944fcfb",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "db688fba926e1f4bab350154296908fb81bb15e928ce05c4ef431e0572010689",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.833
+                },
+                "missed": [
+                  "The response never actually produces the repo feature package: no feature_source.md with a stub header block, Definition of Done, or privacy impact section; no acceptance.feature with tagged Rule-grouped Gherkin; and no nfrs.md owner-carrying table. Only partial prose (user story, summary, out-of-scope, dependencies) is drafted inline in chat, and the conversation ends still gathering business-rule decisions before any file could be finalized."
+                ],
+                "input_digest": "da9cd8dd1944fcfb",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ff3e5596fa0c04458e806a0ebde3202240c21fd2ae181d69152242a144048139",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.625
+                },
+                "missed": [
+                  "No feature_source.md was actually produced (no stub header block, no finalized Out of Scope/DoD/privacy-impact sections written to a file) within the given transcript",
+                  "No acceptance.feature with tagged, Rule-grouped Gherkin was produced",
+                  "No nfrs.md owner-carrying table was produced"
+                ],
+                "input_digest": "da9cd8dd1944fcfb",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a6559badb990e338b5e37235dfb3a44d0fa8a1295182c7493110b61a1f245e88",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "opportunity-mode-drafts-without-epic-story-or-estimate",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e0bdaf4a7b9b9ab6",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "65a0043382fba374e4e1f573fae284292a7b1e4c66267153e741da84e72f8f48",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.875
+                },
+                "missed": [
+                  "The opportunity's Outcome statement (part of the business case) is copied verbatim into feature_source.md, immediately followed by a claim that business case/rationale are 'referenced here, not copied' — this is an actual restatement of business-case content rather than a pointer to PDG-OPP-4471, even though the evidence table and broader rationale narrative were correctly left uncopied"
+                ],
+                "input_digest": "e0bdaf4a7b9b9ab6",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ae02715de76a64ecf87f7da470627aa20d41a37390333736b8ac1d0b5ba015e2",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.875
+                },
+                "missed": [
+                  "The opportunity's outcome statement is copied verbatim into the feature_source.md 'Outcome' section rather than merely being pointed at via the PDG-OPP-4471/PDG-THREAD-4471-a identifiers, and the Summary section restates the substance of the evidence table in prose instead of referencing it, which runs against the instruction to point at rather than copy the business case, evidence table, and rationale into the draft"
+                ],
+                "input_digest": "e0bdaf4a7b9b9ab6",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "c1480065d65276f9677e039d86ae05ec309e4fa00fea2d753d5cff70d7f6c6d2",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "unknown-thresholds-and-unmeasured-claims-stay-unknown",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "d08fa4fc38e9096a",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "3240bb3b28c7b2eec3c54bfd63619c0d436e6f6339851ddc19bc3bf4343c0fb5",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "d08fa4fc38e9096a",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "404aaa3c20d75cdcd02f1f9679f852cf2a65aa7cbad50a9e2c484e24d673b7dd",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "d08fa4fc38e9096a",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "029da1a930e722df44dfa39f04884309ab585512303186946aa89edde530e589",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "c47d3120408afb831cfab2fb8fd6facc710fb9e52ef47fbb4eb95f946fb7c741",
+        "errors": []
+      },
+      {
+        "skill": "aipos-feature-map",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "repo-draft-uses-refinement",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b7fd7740f0f757e0",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "b612a4252cc57e0b796858dac53afb8d3a3f7065db3768b6989889051e5d2b70",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b7fd7740f0f757e0",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "6da3bcc2aea1caa82cf06aa2c25b72e760efecceadab12dce5198cb0088ac1c7",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b7fd7740f0f757e0",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "1c22758c9108a47219c39fc1dd653d8d75e8d5e045bd2bb9dea4ff0b60d06f63",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              }
+            ]
+          },
+          {
+            "id": "reviewed-package-uses-readiness",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "57915146b9398bf7",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "97c599af0c484cd5b1747eb63cad69d8b4f06bb683266eecff09a8e6bdade54b",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "57915146b9398bf7",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "c8e8188c30f2a6cd633e88ee80f9d7c7da8086e883e22fad2d63380a41a0534f",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "57915146b9398bf7",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "548d849c2275a6d0194f2cd42159b3700851c3384243c153c3da328af34960a7",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              }
+            ]
+          }
+        ],
+        "results_sha256": "9c09cd7377e74f4674c8d15becdace542eeba78bec90f3b1cf84f7c0ca45cd4b",
+        "errors": []
+      },
+      {
+        "skill": "aipos-feature-readiness",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "draft-in-repo-is-not-reviewed",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "4001a8f8bc4bf349",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "9ad3e0d7696c92054aa23bc88ad1c0293d36f682d3b94eaaf7ae65e6c79df811",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "4001a8f8bc4bf349",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "2930300abb0f0622f3140de67a916ba33d758fd0518ef404c5da7a6bf7d5a628",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "4001a8f8bc4bf349",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "1d882a895400c92b062930c156ed158851f1357a144f61e1e0235af50f2fb9e2",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          },
+          {
+            "id": "local-readiness-is-not-product-approval",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "bf40fd9fa0ffccff",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "c1b4661cea17ed517e9c28b04ff0e40bc87490d8e601fa08ca0d1c016edbe551",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "bf40fd9fa0ffccff",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "772887457fca33774d491b6d3aea5126a9df7ae4b0c687df4c5651ea25f20879",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "bf40fd9fa0ffccff",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "7be72f719a0e066d04e6c5ece0a67ff45806d8c73880f83359c73f44fcd5f489",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          }
+        ],
+        "results_sha256": "40c9ce287c0185df13ccabacb3b6a08c34c50d216c9c92323d55c0df4a447af1",
+        "errors": []
+      },
+      {
+        "skill": "aipos-feature-refine",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "strong-spec-boundary-gap-surfaced",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.83
+                },
+                "missed": [
+                  "The rubric states the spec is genuinely strong with no critical blockers and that the verdict should land at 'Approved' or 'Approved with edits'. The response instead invents a 'Critical blockers' section (missing 'manager approves' scenario) and issues a 'Blocked' token recommendation, contradicting the expected verdict tier."
+                ],
+                "input_digest": "681b25011a10ab6b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "d454b061847bd06cf8cd10811569a0d63a670364fe93c36a5f91472d31143356",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.833
+                },
+                "missed": [
+                  "The rubric expects the review to find no critical blockers (given the spec's strength) and land on 'Approved' or 'Approved with edits'; instead the response manufactures a critical blocker (the absent 'manager approves' outcome scenario) and issues a 'Blocked' token recommendation, contradicting the expected verdict"
+                ],
+                "input_digest": "681b25011a10ab6b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "9210561a2cbdfd9b54958c3c92e7d993593d91f2cb2f8845665bc5c8f67c9849",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "681b25011a10ab6b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "78621415e51909f860bba37f4aed4359066864b706f8855767af5745e9810f55",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              }
+            ]
+          },
+          {
+            "id": "happy-path-only-blocked",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "8aadcf14c6d3b494",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "51774bc911c16722bc8eeeae8be3fb6857b04942b6bbd9825bd1b40b8a99f855",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "8aadcf14c6d3b494",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a5c8013db7ff8c925753b241addb20e439de880b1285a450a7d0eb156b01ffb3",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "8aadcf14c6d3b494",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "2013a3771f3ee4a465db54cb15d583dc9bc9b6eeaa9b3625c613b16513dcd4bf",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "ai-feature-missing-evals-blocked",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b2d3c23858c50558",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "57232c39c33fbd5246f95030705bb51bf7d111d83b640859fb42ee33c9d970f1",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b2d3c23858c50558",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "71c497d5c841cc704df03e319a452cbd2e6b473573b3aa2ee2a3aa7bdca6db4f",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b2d3c23858c50558",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "1d8d54ed8190d687542849e087d6954a566d0728acfcd475d6e40bed2d59060e",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "summary-checkpoint-pauses",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.89
+                },
+                "missed": [
+                  "The summary used a markdown heading ('## Feature summary — Invoice approval routing (WI-4821)'), violating the 'no headings' requirement for the Stage 1 prose summary"
+                ],
+                "input_digest": "b690c15667393cba",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "488ab78bb2c3103dfccf88953658b8defd56a7cd106548a399a921b8938d3a98",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.9
+                },
+                "missed": [
+                  "The summary begins with a markdown heading ('## Feature summary — Invoice approval routing (WI-4821)'), violating the rubric's explicit 'no headings' requirement for the Stage 1 summary"
+                ],
+                "input_digest": "b690c15667393cba",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "c96e178f56c467accb6b08b57acd3c3051382b93063aab0d6ea77a6c2c31ac0e",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b690c15667393cba",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "44ecdfabeae90189429bf9675ced784c99f0bc6e5271361cf972be4c3c3064d2",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "boundary-complete-spec-not-flagged-for-coverage",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.6
+                },
+                "missed": [
+                  "Decision should be Approved or Approved-with-edits with no critical blockers, but the response issued a 'Blocked' recommendation and listed two items under 'Critical blockers' (missing approval-outcome scenario and missing approval-permission rule)",
+                  "Must not manufacture problems to justify a lower verdict — the response manufactured/elevated two gaps (approval branch outcome, segregation-of-duties permission rule) to 'critical blocker' status and used them to override an otherwise 7.0/10 score into a Blocked recommendation, contrary to the rubric's expectation that this boundary-complete fixture should read as approvable"
+                ],
+                "input_digest": "560290027e9ace06",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ae73868bf37958c8d54080d11d4dc73d39ebf81d9b1cbffdb5ddf73539050bf7",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.4
+                },
+                "missed": [
+                  "Rubric requires the decision be Approved (or Approved with edits for minor points); the response instead issues a 'Blocked' token recommendation.",
+                  "Rubric requires no critical blockers; the response manufactures a 'Critical blocker' around approval authority/self-approval segregation of duties, a concern not implied by the fixture's acceptance criteria, and uses it to withhold approval.",
+                  "Rubric requires the review not manufacture problems to justify a lower verdict; beyond the blocker, the response also treats missing 'manager approves' and 'rejection without reason' scenarios as high-priority gating edits that prevent a clean Approved outcome, compounding the manufactured-blocker issue."
+                ],
+                "input_digest": "560290027e9ace06",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "b492686422cb95ff6e95b793d775ac650d0ccba2b7fec9ce66507f0d88de78b9",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.5
+                },
+                "missed": [
+                  "Rubric requires the overall decision be Approved (or Approved with edits for minor points) with no critical blockers; the response instead issued a 'Blocked' verdict twice, citing a critical blocker (missing approval-authority/self-approval rule)",
+                  "Rubric requires the review not manufacture problems to justify a lower verdict; the response elevated a plausible-but-speculative gap (who may approve, self-approval) into a hard blocker, and piled on multiple additional 'high-priority' and NFR gaps (post-approval status, rejection-without-reason, audit link, performance load condition) to sustain a Blocked status rather than an Approved-with-edits recommendation"
+                ],
+                "input_digest": "560290027e9ace06",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "6decd7647c5e395a460476ac4c652f4f8a7377dbd64e5268e37bd9aa7bc0536f",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "contradictory-rules-and-unresolved-threshold-blocked",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "295192699cc4d4a3",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "e1474466655a5e648927024cb361e1028f11394bd56aad56e9ca299d211b99c5",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "295192699cc4d4a3",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "cb645eaa2476faf7c2954c0f51190af0b77b59aca01687c12f318ffe85c58ee7",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "295192699cc4d4a3",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "fb906d73b0ea0cf1640097bddf56c0e5875621e6b7ffe41e9348509e0fca59b8",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "scenario-dependency-and-ambiguous-outcome-flagged",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "truncated",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "4404a7251f703301",
+                "stop_reasons": [
+                  "max_tokens",
+                  "end_turn"
+                ],
+                "trace_sha256": "1d0b135e69b65803f0000949332af1477f2e49b56a830e7d416e9ab088ea49c3",
+                "judge_passed": true,
+                "acceptance_issue": "Subject turn truncated",
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "4404a7251f703301",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "3f82d353651870eda8e44499232dde11ffefee8da2d6a70da9b7c2312f7f8f06",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "4404a7251f703301",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a15b86ead76ede65672c8dc6ea1c950b452e33745b6b5c5de005fbd6d368c6d1",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "agent-built-feature-is-not-a-genai-feature",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.75
+                },
+                "missed": [
+                  "The final recommendation is 'Blocked', not Approved or Approved-with-minor-edits as the rubric requires, even though the response's own readiness score (7.5/10) and closing praise suggest the spec is fundamentally sound",
+                  "The response elevates the threshold wording nuance (an 'above 100' rule paired with an at-100 boundary row) and the ledger-timing question into 'critical blockers' that gate the Development Token, rather than treating them as minor clarifications consistent with a spec that already covers the threshold on both sides adequately"
+                ],
+                "input_digest": "05df6deeb911407c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "d2bf87c843514a0ae9a98d92eadf6820dcd8b05c550aee1ba36a0b3c5f15d813",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.7
+                },
+                "missed": [
+                  "The overall recommendation was 'Blocked', not 'Approved' or 'Approved with edits for minor points' as the rubric requires.",
+                  "The response invented a 'critical blocker' out of the variance-threshold examples, characterizing the boundary row as contradicting the rule, whereas the rubric treats the spec's coverage of the threshold (both sides and exactly at it) as adequate and correct, not a defect requiring resolution before approval.",
+                  "The response added a second blocker (undefined ledger state during 'Awaiting approval') and several other required edits (overage handling, approval-resolution scope, NFR-to-scenario linkage) that go beyond 'genuinely minor points', pushing the recommendation away from Approved."
+                ],
+                "input_digest": "05df6deeb911407c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "d189460d3f317cc85f60522e7c29df079e73d1d28044b38da81a6a1fbe3d597f",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.8
+                },
+                "missed": [
+                  "Decision should be Approved (or Approved with edits for genuinely minor points); the response instead issues a 'Blocked' recommendation and maintains it through the follow-up turn, refusing to proceed until four product decisions are made",
+                  "The rubric states the spec covers the variance threshold correctly 'on both sides and exactly at it' (i.e., this coverage is adequate), but the response treats the exact-boundary row (400 units) as a critical contradiction/blocker rather than accepting it as sufficient coverage, which drives much of the wrongful Blocked verdict"
+                ],
+                "input_digest": "05df6deeb911407c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "2522200597cd4038f57bcf6e8fc29cae44f1a28306e3d366d584aad23b14cd30",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "approved-behavior-change-is-proposed-not-applied",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "03cf08f054f447d3",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "13228ab60ad754978a0f9e0c76860d4b2e3fd4aaf30e7c11ff87f2a15d41826f",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.875
+                },
+                "missed": [
+                  "The response does not explicitly distinguish that implementation notes, the persistence choice for the approval record, and the test structure remain open to ordinary review outside the commitment — these items from the baseline's 'Not part of the approved selection' section are never mentioned or reaffirmed as separately reviewable"
+                ],
+                "input_digest": "03cf08f054f447d3",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "62ad633f2a4811cd7cc80fb069ba4b0a0db6b1ed9ae240e056fdbd0f074fd6ed",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.875
+                },
+                "missed": [
+                  "The response never distinguishes that implementation notes, the persistence choice for the approval record, and the test structure are not part of the commitment and remain open to ordinary review — this point from the baseline is not addressed anywhere in either turn."
+                ],
+                "input_digest": "03cf08f054f447d3",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "bf478f1c9e3a3a6734ec8ce4bebd2a632e08e92cca2abaee7439318de9f229ef",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "c91ec97c30b576ea23a45c335121a08bf4255ca3a915813a27637476d64764c7",
+        "errors": []
+      },
+      {
+        "skill": "aipos-feature-slice",
+        "variant": "batch-contract-v2",
+        "cases": [
+          {
+            "id": "interactive-sizing-recommends-and-pauses",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.72
+                },
+                "missed": [
+                  "The sizing table covers only 6 scenario line items (treating the cutoff Scenario Outline as a single row) rather than the seven expected, so not all seven scenarios are individually sized",
+                  "The feature rollup gives only band counts and explicitly declines to give a total-points figure or a per-slice points breakdown, omitting two of the three required rollup components",
+                  "Error/validation/permission scenarios are not all recommended @v1: the double-booking (validation) and cross-patient-access (permission) scenarios are promoted to @mvp instead of @v1, contrary to the expected default placement",
+                  "The SMS reminder scenario, despite its external-SMS integration score, is recommended @v1 rather than @v2, so the 'external-SMS indicator is @v2 material' expectation is not met for that scenario"
+                ],
+                "input_digest": "eeed9c3b641788db",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "5a6f27e4d9e077db4907d2b66b8342bc59af6d9d61a3c5a0c5dc5349a08a27d7",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "judge-32k",
+                "judge_max_tokens": 32000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.692
+                },
+                "missed": [
+                  "Feature rollup omits total points and per-slice point breakdowns; the response explicitly refuses to sum points ('I have not totalled the points'), leaving only band counts.",
+                  "Error/validation/permission-type scenarios are not uniformly placed at @v1: the cutoff-window scenario (validation) is @v1 as expected, but the double-booking scenario (error) and cross-patient access scenario (permission) are both promoted to @mvp instead of @v1.",
+                  "No tagged Gherkin should exist until the PM confirms/corrects recommendations, but after only a bare 'proceed' from the user, the second turn produces a fully tagged Gherkin spec (@mvp/@v1/@v2 embedded) rather than continuing to hold slices as unconfirmed recommendations.",
+                  "Slices are converted into an 'Applied' decision table in the second turn based on a vague one-word follow-up, contradicting the requirement that slices remain recommendations rather than decisions until the PM explicitly confirms or corrects each one item-by-item."
+                ],
+                "input_digest": "eeed9c3b641788db",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "1bb11981d37c413af5b20c81881d020eeffa3c8a64374cf1437707f22170977b",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "judge-32k",
+                "judge_max_tokens": 32000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.82
+                },
+                "missed": [
+                  "Feature rollup omits a total point figure and per-slice point totals entirely, explicitly refusing to compute them ('I haven't summed points per slice... a per-slice total reads as a delivery estimate')",
+                  "Error/validation and permission scenarios are not consistently placed at @v1: the double-booking-prevention scenario (an error/validation case) and the cross-patient-access scenario (a permission case) are both recommended @mvp rather than @v1, diverging from the expected slicing pattern"
+                ],
+                "input_digest": "eeed9c3b641788db",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "d314811a0dca998eaecdc4edbcdbaaa56187cf24bd93d990eaf20c38512790ee",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "judge-32k",
+                "judge_max_tokens": 32000,
+                "source_variant": "batch-contract-v2"
+              }
+            ]
+          },
+          {
+            "id": "large-mvp-critical-path-flagged",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "fdd104636d8de51b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a87f4f51229b6b94d90cdd0927d6722dd40a493d6ee0659fbaeb6e700904402a",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "fdd104636d8de51b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "9d83efd87d7a6a41645d352001213722d50c7457807696f7ad66d9d95dc3b9f7",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "fdd104636d8de51b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "f1700a524decc754fa489d6846ce09645e8d99290279f6d67c77723e1765335c",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "batch-mode-raw-json",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "bc88c6a8f4535a38",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "141368db07ecaccebfcfee0da84ec03d6782f7f7463993718e6e85c6fe9d6745",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "bc88c6a8f4535a38",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "2aa72e2693b5884f3540f42772347e37ef404982cf1d62520b2c206d8a9d8966",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "bc88c6a8f4535a38",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ac6a296c40a57435be139fd65e2929b61830954b2466e6a93505a845dfe0c82e",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "first-slice-is-a-complete-journey-not-a-layer",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "84335dce79f451f1",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "0efbbcbc6d56b4aea437c5a427f7f44e312877b1112f444479e9427d0931a329",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "84335dce79f451f1",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "13d532adcf2df40e6775998cd0bae2755383da67d165a7b43ed1ffc5255b96fb",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.857
+                },
+                "missed": [
+                  "The CSV export scenario is deferred to @v2, but the stated reasoning frames it as a temporary manual workaround for 'one release' rather than as an enhancement the journey functions without indefinitely; this contradicts the rubric's required framing that export is unnecessary forever, not just postponed until a later release."
+                ],
+                "input_digest": "84335dce79f451f1",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "d8d4f8794972b609cab30a374825a403c13657416c09c4e2fec8005ab1462eac",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "required-authorization-cannot-be-deferred-as-an-exception-path",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "82b0563ffdd78ec2",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "bbb7131b818942a1ddedbb3a9e00138362129c8fc8c1700ea36d12d21b8b4404",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "82b0563ffdd78ec2",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "3e8477a6d806e9aec6212b28dbadcee6f154b215d8eb01fe0d2f801639e1a39e",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "82b0563ffdd78ec2",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "6c1fb92db840e8e899c0b8b392beac5834687f5ef02bd4bbd6b75f253fec8930",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "cross-feature-prerequisite-and-post-approval-retag-are-surfaced",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "303926259025dca6",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "f077933d4e0fdbfc0eb561baa17e797b0554c8c16ad0a16da611955a8cd8e072",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "303926259025dca6",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "979ca112572acd87b64f77550ccf9beb1dadea12f696775b0c31c988631f01a2",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "303926259025dca6",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "f6a3de27181a88e16581c3985eeeacc6d8160e148130b25d09e26d3d231373dd",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "batch-contract-v2",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "6315a21971671176dc765e9114e0e404da562524d47f196cfcb38bb908d0c8cc",
+        "errors": [
+          {
+            "prompt_id": "interactive-sizing-recommends-and-pauses",
+            "rep": 0,
+            "failure_class": "judge-truncated",
+            "detail": "judge hit max_tokens (16000) before finishing its verdict; raise JUDGE_MAX_TOKENS",
+            "variant": "batch-contract-v2",
+            "model": "claude-sonnet-5",
+            "usage": {
+              "input_tokens": 9114,
+              "output_tokens": 16000,
+              "cache_read_input_tokens": 0,
+              "cache_creation_input_tokens": 0
+            }
+          },
+          {
+            "prompt_id": "interactive-sizing-recommends-and-pauses",
+            "rep": 1,
+            "failure_class": "judge-truncated",
+            "detail": "judge hit max_tokens (16000) before finishing its verdict; raise JUDGE_MAX_TOKENS",
+            "variant": "batch-contract-v2",
+            "model": "claude-sonnet-5",
+            "usage": {
+              "input_tokens": 11466,
+              "output_tokens": 16000,
+              "cache_read_input_tokens": 0,
+              "cache_creation_input_tokens": 0
+            }
+          }
+        ]
+      },
+      {
+        "skill": "aipos-metrics-emit",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "gate-readiness-audit",
+            "skipped": true,
+            "unavailable_targets": [
+              "/tmp/testrepo"
+            ]
+          },
+          {
+            "id": "aggregator-export",
+            "skipped": true,
+            "unavailable_targets": [
+              "/tmp/testrepo"
+            ]
+          },
+          {
+            "id": "org-agnostic-verification",
+            "skipped": true,
+            "unavailable_targets": [
+              "/tmp/testrepo"
+            ]
+          },
+          {
+            "id": "completeness-is-not-an-execution-token",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "f830a5e543513a48",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "94112b692d7bfda719b1cf05dc29e407969813bb2213ec237041193367c6e190",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "f830a5e543513a48",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "18408050d6fa17b7993b3526b58a739eb1b432f7ab9c0100fcf10f10164a47cf",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "f830a5e543513a48",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "3c95fbc29f822677b889008b809de93fb6282d449ec5de85be3429516ced9c14",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": "consolidation-v2"
+              }
+            ]
+          }
+        ],
+        "results_sha256": "fcabd5d68f0f71a7294bbae7cee5a43b284c1d350188edb499ac4125d66a271f",
+        "errors": []
+      },
+      {
+        "skill": "aipos-quarterly-planning",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "no-live-graph-does-not-invent-planning",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "d921685335beffc4",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "272417d90342a7ce343635852e5665b21b0e47c09995bea33641d13b6080e09b",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "d921685335beffc4",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "bbe8ba404f1a78d5d2f7667f39fe26784ab784cd5652bf346f60f77952cbba7c",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "d921685335beffc4",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a61c93ef4e84bcf39adeadc80455dac7df27d75db776c1991d5b3a8b7b0a5c47",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "2f8d715faa7038bbcd7bf66670f592c9ff6f62518dcd2a38adfe4c89317ed310",
+        "errors": []
+      },
+      {
+        "skill": "aipos-rapid-validation",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "mandate-declared-carries-the-ledger",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.857
+                },
+                "missed": [
+                  "Shadowing observations from the notes are not systematically tagged [E] (lead-observed) vs [I] (lead's reading) throughout the guide's body; the response sets up this tagging convention in the header but applies it only sporadically (e.g. to E's title-search claim), while most per-agent claims (B's escalations, C's spreadsheet rationale, A's search frequency) are left untagged, relying instead on a looser 'what's backed / what isn't' summary rather than the requested inline [E]/[I] marking"
+                ],
+                "input_digest": "16501af44da52f30",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ccf378b683489f58ef7e9929a8ff9ad7262f20bc365a62d5b943fbe9bdfb10be",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.917
+                },
+                "missed": [
+                  "The response declares an [E]/[I]/[A] tagging convention in the Mandate line ('Claims below are marked [E] evidence-backed, [I] inferred, [A] assumption') but never actually applies an [E] tag anywhere in the artifact \the the the the the the the (only two [I] tags appear); the distinction between what the lead directly observed and what is the lead's reading is instead conveyed only through separate 'What's backed / What isn't' prose lists, not through the promised per-observation [E]/[I] marking the rubric specifies"
+                ],
+                "input_digest": "16501af44da52f30",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "dfab769664701e947580b00eaaab969808b408415abff238ce27b7f727358ea6",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "16501af44da52f30",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "0749c909ff9fb6921ef0225e403f0eaa300a639f6bab2cc4eef8c9a8dbf72147",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "budget-exhausted-routes-to-the-brief-but-builds-what-is-asked",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.93
+                },
+                "missed": [
+                  "The response does not recommend the two sanctioned paths the rubric specifies (run the budgeted spike, or take the viability brief forward with existing evidence). Instead it recommends the spike alongside a brand-new, unbudgeted 'internal fake door' instrument, and never offers 'go straight to the viability brief with what exists' as an immediate alternative to building more validation work."
+                ],
+                "input_digest": "451ffa7b5226102c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "4fe437ac66936d4f2623abe9e8c95554f4e8aa9c28afead1899bc4f012eb97a5",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "451ffa7b5226102c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "281b5d86260f572f1b6aaa1c6a9918ba12f45b8f819c5d0c80a10f8e69090ce9",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.857
+                },
+                "missed": [
+                  "The response does not recommend either running the budgeted spike or going to the viability brief with what already exists as the alternative to a concierge test; instead it offers a different alternative (an in-queue fake-door) and never surfaces the two specific options the rubric requires",
+                  "The closing's 'Next' section explicitly states the next artifact is NOT the viability brief ('the next artifact is not the viability brief — it's the behavior'), naming feature-create/feature-refine and an eval stub instead, rather than naming the viability brief as next"
+                ],
+                "input_digest": "451ffa7b5226102c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "05c6c5b8336b6a688c37b4ce8ce19294197a72a6593fda6d80e407c64012870f",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "no-mandate-is-legitimate-and-nothing-is-invented",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.286
+                },
+                "missed": [
+                  "The skill never explicitly interviews the PM (asks once) about whether evidence exists and once about whether this sits under an Exploration Decision — it simply infers 'no' to both from the user's opening statement without a distinct confirming question exchange.",
+                  "The skill does not interview the PM briefly for their own observations (what they noticed, why they suspect spam, which customers) and capture those as assumptions; the guide instead treats the entire hypothesis as an undifferentiated PM hunch without eliciting or logging specific observational detail.",
+                  "The Mandate line in the evidence-base header reads 'none declared [A] — this is not on a planning list, so there is no owner, budget or horizon,' which adds explanatory text beyond 'none declared [A]', violating the 'nothing else on that line' requirement.",
+                  "The Mandate cost line reads 'plans 6\\u20138 sessions of ~30 min plus recruiting; no budget declared to consume' instead of simply stating 'none declared,' and this also introduces an invented session-count range inconsistent with the guide's own Target n of 8.",
+                  "Target n ('Target n: 8') is stated flatly without an [A] marker or framing as the PM's choice, so it reads as a settled figure rather than a flagged assumption, and a session-count figure (6\\u20138) is separately invented on the mandate-cost line.",
+                  "The specific Path C note that artifacts 1 and 2 carry extra evidentiary weight in the absence of an Exploration Decision does not appear anywhere in the response, even in paraphrase."
+                ],
+                "input_digest": "12284240dcebd065",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a7da4ec39976d78e7f7d25cb567eb944ee79196663c669f81e4a59aa6eb09d43",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.43
+                },
+                "missed": [
+                  "The skill never directly interviews the PM for their own observations behind the spam hunch and captures those specific observations as assumptions — it instead asks a decision-rule question and proposes defaults, never eliciting 'what have you seen that makes you think this?'",
+                  "The Mandate cost line does not simply say 'none declared' — it reads 'plans 6 sessions · run by <date> · no budget or horizon to report against', mixing invented-sounding scheduling detail into what should be a plain 'none declared' line.",
+                  "Target n (6 sessions) is presented under the 'Mandate cost' heading, which frames it as mandate-related cost rather than clearly marking it as the PM's own confirmed choice or [A]-tagged assumption, blurring the 'never presented as a mandate' requirement.",
+                  "The Path C note about artifacts 1 and 2 carrying extra evidentiary weight in the absence of a mandate does not appear anywhere in the response."
+                ],
+                "input_digest": "12284240dcebd065",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "f4eca6e7923b1581aaa76fbf4baad75e68d94d8f8780872d7d7b29b29d7e0771",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.43
+                },
+                "missed": [
+                  "The skill never actually interviews the PM for their own first-hand observations (e.g., what specifically they've noticed, tickets, anecdotes) — it only reuses the framing already volunteered in the initial request and turns that directly into the hypothesis; there is no distinct elicitation step whose answers are then marked as assumptions.",
+                  "The Mandate cost line does not simply say 'none declared' as required — it reads 'plans 6 sessions · run by <date + 2 weeks> · no budget declared', mixing plan details into the line instead of the plain 'none declared' the rubric calls for.",
+                  "No instance of the Path C note that artifacts 1 and 2 together carry the evidentiary weight (in the no-mandate case) appears anywhere in the response.",
+                  "The closing covers what the guide retires and includes a prompted save ('Want me to draft the opportunity record?'), but it never names or points to a specific next artifact in the chain — it only lists generic next steps (ESP check, CSM ask, run sessions) rather than identifying the next artifact type (e.g., synthesis/decision record)."
+                ],
+                "input_digest": "12284240dcebd065",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "8b3a47ceed91527336584f7969d2f84877a38bb57181fdfdf81e5c816ca2270e",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "viability-brief-reconciles-the-mandate-and-closes-the-loop",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.889
+                },
+                "missed": [
+                  "The visual prototype is listed as 'not run' in the table and evidence-base summary, but it is not meaningfully treated as a finding with implications for any of the three questions or the risk log (e.g., no discussion of unresolved UX/adoption risk stemming from the missing prototype)"
+                ],
+                "input_digest": "d05237be700bc6bf",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "74ead08c7a29ffa90d2857d72c49a6ad780bae7b4f95c1680339ca0d5103ff42",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "judge-32k",
+                "judge_max_tokens": 32000,
+                "source_variant": "live-acceptance"
+              },
+              {
+                "rep": 1,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.93
+                },
+                "missed": [
+                  "The handoff section, given the GO, does not satisfy the requirement that a GO handoff be superseded by a commitment package: the response states the package 'cannot be prepared yet' and lists Pillar 3 inputs (problem statement, MVP scope, eval criteria, guardrails) plus a generic 'next artifact' pointer to aipos-feature-create/refine, but never states the package will carry 'selected behavior by qualified reference,' 'the immutable source revision,' or explicitly frames its exclusions-with-reasons and unresolved-register-with-blocking-markers as contents of that future commitment package"
+                ],
+                "input_digest": "d05237be700bc6bf",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "7b4c1b65e0ed3707f145b715bae549ed7f45ddea6037c93a26269966b9efe41f",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "judge-32k",
+                "judge_max_tokens": 32000,
+                "source_variant": "live-acceptance"
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.917
+                },
+                "missed": [
+                  "For a GO, the handoff must not rest on bare-naming Pillar 3 inputs alone; it must produce the commitment package or explicitly state it as the next artifact and enumerate its four required contents (selected behavior by qualified reference, immutable source revision, exclusions with reasons, unresolved register marked blocking/not). The response's Build-to-Earn section does list problem statement/MVP scope/eval criteria/guardrails as bare inputs, and while it adds context (behavior not yet drafted, decision to be bound to 'that exact selection... bound to a revision', and a blocking/non-blocking 'Next' field in the held decision record), it never names or describes a 'commitment package' with all four specified components together, so the requirement is only partially and diffusely addressed rather than plainly stated."
+                ],
+                "input_digest": "d05237be700bc6bf",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "6dca71543cf7ac41dd7a5c23e4c530187c4d958d4258f17cdd48e78cbbd6f297",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "judge-32k",
+                "judge_max_tokens": 32000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "commitment-package-carries-the-exact-selected-behavior",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "91b2f3f715c46d51",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "4275f989aad190315ca5ada12e9281d37befdb829221de39c9bfff7569bf2330",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "91b2f3f715c46d51",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "5e6702be13bb54c1b73f18890690223fd0d0fc422ae24f33f2231d99e708dd88",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "91b2f3f715c46d51",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "41a166a082401623106b716a18287a549a17421e66a387a7d2433fe8654fd132",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "blocking-unknowns-prevent-ready-for-commitment",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.833
+                },
+                "missed": [
+                  "That open question is classified as BLOCKING because it changes included behavior — @scenario:insufficient-evidence-routes-to-person cannot be verified without it."
+                ],
+                "input_digest": "e305eb2634bea65a",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "3bf600c79a751be7e01e85987edef33b8db39c621f3fa607c9e49eece94049c1",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e305eb2634bea65a",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "319480ac3b529f1dec494fcc42d8bb14b36d16e485011ab175bb43c254b9f0f0",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e305eb2634bea65a",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "f19a2a8c5dd6ffff698716e07edf8c999afc2ef9473ad3f4579e0f3d1dac3fcf",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "prototype-behavior-does-not-enter-the-commitment",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e22d9456ad419007",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "db51efee3a3eca924ea7133acf587a7d723af4fbb38ad1fd629c36e6f81b6f5b",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e22d9456ad419007",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "606037d68a5aa6616a6bf15c2ec5c4d62f2676986d889b51a90d2d96282dc426",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e22d9456ad419007",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "3593a1c4e537055cdefc14bc91ab424da7f505ee5df80fb84d21ae6fe2ea2469",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "unverified-claims-and-contradicting-evidence-are-recorded-not-resolved",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "30e6bc3b81c16861",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "4cedf041b7c139523ef1d105d45271164f247b004ced5d20b30499a05fcf67a1",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "30e6bc3b81c16861",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "27d01c77988a76383c011aa24f7f4ece86cbc861c63352a4a06aa588113b1fb9",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "30e6bc3b81c16861",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "bb188e22b58bb4317a23fa35554da85fbe98f66d5bbdacfb0214f261cc095208",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "a-prepared-package-is-never-presented-as-approved",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "030d3f46d7befa77",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "4ce5ab02a3399a73a0eadc3c7161dbc9ded70060d1b5336503b0f1ed82e7d138",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "030d3f46d7befa77",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "40769e7029d4ff6384a4bff751dc068a045467f73ed6d8f9ff27a5193bf05af3",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "030d3f46d7befa77",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ca15a0f052cbde058caa4b368d4e66fcf47c80f7df3a19704e05955f217b1799",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "417299a360fbd95e0491e9c0a4759ae6abfb5aa5c1291af5a40aad60f128c76c",
+        "errors": [
+          {
+            "prompt_id": "viability-brief-reconciles-the-mandate-and-closes-the-loop",
+            "rep": 2,
+            "failure_class": "judge-truncated",
+            "detail": "judge hit max_tokens (16000) before finishing its verdict; raise JUDGE_MAX_TOKENS",
+            "variant": "live-acceptance",
+            "model": "claude-sonnet-5",
+            "usage": {
+              "input_tokens": 10668,
+              "output_tokens": 16000,
+              "cache_read_input_tokens": 0,
+              "cache_creation_input_tokens": 0
+            }
+          }
+        ]
+      },
+      {
+        "skill": "aipos-synthetic-data",
+        "variant": "live-acceptance",
+        "cases": [
+          {
+            "id": "schema-only-is-supported",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "7cd691f12e48c49c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "e2c4a7500ddfc55c9971fd7dd55b8358bec7f996969b208a6db5439c0cfd3f98",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "7cd691f12e48c49c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "d32f517fc683927ec147596287126b6cbc6e6e9f647382286298298cc38857a9",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "7cd691f12e48c49c",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "c987990dae6a5a61aeb3cf522ca20b5543fe540d1d1d77ba0569af936959d317",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "production-masking-is-outside-scope",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e41459e423e43c7d",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "19e5faac3774b7d91012c1bc4081f5d33f9d56b09798e4bdd4d53ba07dd5bf95",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e41459e423e43c7d",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "270e48a8d809d5c707589653856fc86d737707d5163666bc9e3269ecc0ad23d6",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "e41459e423e43c7d",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "ee37cd258e45cb7eb8b640356a0a309840fa89fbb366db9926b9d355529a10dd",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "live-acceptance",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "c11406eb7eb984676a2ccedb7339ffb0d71772955bace5ba20cea07cc039523b",
+        "errors": []
+      },
+      {
+        "skill": "aipos-workflow-map",
+        "variant": "coverage-evidence-v3",
+        "cases": [
+          {
+            "id": "journey-is-authored-from-the-existing-corpus-not-re-described",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "a0571f165b3f4b6b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "01ac34733bfb7a0a9612c1aa7f2493e48028c0ee9d673792869aad461ab41f2c",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "a0571f165b3f4b6b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "6889042dd1c953ccc0290acdf15f71a0893e97f1ad9c5d5376d794703f001183",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.909
+                },
+                "missed": [
+                  "Does not explicitly name a handoff from the support representative to the retrieval agent; the only cross-actor handoff recorded around evidence gathering runs in the reverse direction (retrieval-agent \requric requiring 'at minimum representative to retrieval agent') is left untagged."
+                ],
+                "input_digest": "a0571f165b3f4b6b",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "47418365c064c60d84d6e5d4ef466c070266f6e959e4f9bbf382ccd3347323a2",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "uncovered-behavior-is-reported-not-quietly-attached",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "41cd35bf048faf7f",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "27dce3ac5f8e3c554dd1def432919b89bd7ab8e2c126d95589a8676f25505071",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "41cd35bf048faf7f",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "677fa6da61fbd6b72074cb7be20e20da5a68e692bf0439f4272e2615a43444f5",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": false,
+                "status": "ok",
+                "grade": {
+                  "rubric": 0.833
+                },
+                "missed": [
+                  "The rubric calls for a judgement on whether the citation scenarios belong to this journey or to a different journey, with the decision left to the user. The response instead treats the citation gap as definitively belonging to this journey ('Real gap... this journey sends responses that cite nothing') and only offers within-journey placement uncertainty ('Proposed at send-response, unconfirmed'), never raising the possibility that this behavior belongs to a separate journey — unlike its treatment of the other two uncovered scenarios, which explicitly used hedged 'Likely this journey' language."
+                ],
+                "input_digest": "41cd35bf048faf7f",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "accc85023c116de89b5ff9be838dfb25ce5666d8a7663a781cdd07c983b42320",
+                "judge_passed": false,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          },
+          {
+            "id": "only-consequential-gaps-are-asked-about",
+            "skipped": false,
+            "records": [
+              {
+                "rep": 0,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b3bed8775d92b654",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "9cada936f700f34eb6df62945101a6b4761a77ad930a1b277bc602a0bed2eb52",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 1,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b3bed8775d92b654",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "a490a07dab3890d87d07dcd87186bc804b19e1c8192b00f4916ada03b8dbe8f9",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              },
+              {
+                "rep": 2,
+                "passed": true,
+                "status": "ok",
+                "grade": {
+                  "rubric": 1.0
+                },
+                "missed": [],
+                "input_digest": "b3bed8775d92b654",
+                "stop_reasons": [
+                  "end_turn",
+                  "end_turn"
+                ],
+                "trace_sha256": "64b45b4ca84451655dd866609e2d828c1bb1a8449cf76cfcd0befd0e6d23b9e8",
+                "judge_passed": true,
+                "acceptance_issue": null,
+                "variant": "coverage-evidence-v3",
+                "judge_max_tokens": 16000,
+                "source_variant": null
+              }
+            ]
+          }
+        ],
+        "results_sha256": "2e29fba59f77bf7a1b7d905f4f8c6461c244b7f3c4be32515d838be792db973c",
+        "errors": []
+      }
+    ],
+    "subject_truncated_trials": 4,
+    "acceptance_rule": "Judge pass AND no truncated subject turns",
+    "planned": 135,
+    "completed": 135,
+    "passed": 87,
+    "failed": 48,
+    "missing": 0,
+    "pass_rate": 0.6444444444444445,
+    "skipped_cases": 3
+  },
+  "native_selection": {
+    "model": "claude-sonnet-5",
+    "client": "2.1.274",
+    "tools": [
+      "Read",
+      "Skill"
+    ],
+    "mcp_servers": [],
+    "catalog": [
+      "deep-research",
+      "aipos:aipos-epic-create",
+      "aipos:aipos-feature-create",
+      "aipos:aipos-feature-map",
+      "aipos:aipos-feature-readiness",
+      "aipos:aipos-feature-refine",
+      "aipos:aipos-feature-slice",
+      "aipos:aipos-metrics-emit",
+      "aipos:aipos-quarterly-planning",
+      "aipos:aipos-rapid-validation",
+      "aipos:aipos-synthetic-data",
+      "aipos:aipos-workflow-map",
+      "design",
+      "design-sync",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator"
+    ],
+    "cases": [
+      {
+        "case": "review",
+        "expected": "aipos:aipos-feature-refine",
+        "skill_calls": [
+          "aipos:aipos-feature-refine"
+        ],
+        "passed": true,
+        "trace_sha256": "649fcb41d6da1b950e67b67993d13a1ba65e11e6122f2deb3dc27f0c9de6aa53"
+      },
+      {
+        "case": "create",
+        "expected": "aipos:aipos-feature-create",
+        "skill_calls": [
+          "aipos:aipos-feature-create"
+        ],
+        "passed": true,
+        "trace_sha256": "79c15ed266f585615737ee4b96d8300f5a946bf30aeef809dcb13c516e2aa510"
+      },
+      {
+        "case": "readiness",
+        "expected": "aipos:aipos-feature-readiness",
+        "skill_calls": [
+          "aipos:aipos-feature-readiness"
+        ],
+        "passed": true,
+        "trace_sha256": "79fed145ddd5b3342e61d2a1cd7be4c56318c6bb2669eb4ca32dabb44360fa6d"
+      },
+      {
+        "case": "render",
+        "expected": "aipos:aipos-feature-map",
+        "skill_calls": [
+          "aipos:aipos-feature-map"
+        ],
+        "passed": true,
+        "trace_sha256": "ce892cda1e3dd53da735bd763a544505259ffeca65e4fc57aa0649d245c0adf9"
+      },
+      {
+        "case": "validation",
+        "expected": "aipos:aipos-rapid-validation",
+        "skill_calls": [
+          "aipos:aipos-rapid-validation"
+        ],
+        "passed": true,
+        "trace_sha256": "0263a3c9863dab836d823e13530e5de98d8b0a973c2610cb9b61277df7ade0dd"
+      },
+      {
+        "case": "outside",
+        "expected": null,
+        "skill_calls": [],
+        "passed": true,
+        "trace_sha256": "bea291622e64588f6d16f31061a9a1ec0247f8a5faa45073bd365ca1971ea08e"
+      }
+    ],
+    "passed": 6,
+    "total": 6
+  },
+  "native_workflows": {
+    "model": "claude-sonnet-5",
+    "client": "2.1.274",
+    "cases": [
+      {
+        "case": "commitment",
+        "skill_calls": [
+          "aipos:aipos-rapid-validation"
+        ],
+        "source_files_unchanged": true,
+        "new_files": {
+          "readiness-for-commitment-note.md": "460aadc0e6af803e35afa0200e47fa3ea330709d2048f998ea42c96485005e71",
+          "commitment-package-PDG-OPP-4471.md": "6c7fb0da755b3e7d2f6ad3a7bd20840be7cf24c825fd9a8d0a6a61b8a852f24f"
+        },
+        "trace_sha256": "98b71e517a01c9d3ced343f21d56158316376e609dbd04fb3f73dbaf4884ab71"
+      },
+      {
+        "case": "readiness",
+        "skill_calls": [
+          "aipos:aipos-feature-readiness"
+        ],
+        "source_files_unchanged": true,
+        "new_files": {
+          "features/inv_full/readiness_report.md": "587e005a7edd29ec51766c57ed3a6fd1d59a84748d253dd8b15d0628ea001b51",
+          ".govkit/tokens/inv_full.json": "480571daa7624b25436f4068e54cedda098043a879c92c9ce7a66d66aaec99b8"
+        },
+        "trace_sha256": "621e6292a0451d5f79f60702e966958e689a6b096a0c0b34bee76a9d5231c970"
+      },
+      {
+        "case": "render",
+        "skill_calls": [
+          "aipos:aipos-feature-map"
+        ],
+        "source_files_unchanged": true,
+        "new_files": {
+          "features.json": "5f65f4162a6f555f1d2bb9b2d4b2844059192fa6cd3c62ea8cebb6540483eaa7",
+          "resolved.json": "79cf2acd9e1d2f1d52380ea51482ff4b8bf7074e833fddc2a0aba4df3bedcba3",
+          "config.json": "0c4c30775aaf00c0ec3e245ce8ec259b3a0674ebabe476bc7896091a1afbb8cf",
+          "feature-map.html": "7c8ad7a59ae64737a15c45b7f9b90d8b80d33f8f167ae45593a900209a6194be"
+        },
+        "trace_sha256": "3147983a0ce0566023d2bae4eafa80bf96753406dd55db2280d0731793fd5194"
+      },
+      {
+        "case": "change",
+        "skill_calls": [
+          "aipos:aipos-feature-refine"
+        ],
+        "source_files_unchanged": true,
+        "new_files": {
+          "change-package/change-request-fixture-commitment-4471.json": "2a8da616aafa9d0bb4ba6d30c3657ab9b0b6af36dd1d2863db555da09bb94f10",
+          "change-package/proposals.json": "63bc170b53225cf1f92b519645976d457b814b7171c42d04d4e7fd9f6de11ce6",
+          "change-package/README.md": "f40579d843638b0d603b600915424ac00b9c9a6d61a42e6e312d32755718b312",
+          "change-package/proposed-scope.feature": "8b99baa8c1c69a0b9bd56647d7405429d44153d9a02651ba586dbc1539700ac7"
+        },
+        "trace_sha256": "a569b7426d5c96c089892f6c33803554f50f56f98b556ff2885e3afb40a42ab3"
+      }
+    ],
+    "artifact_checks_passed": 4,
+    "limitations": [
+      "Readiness covers a deliberately blocked package, not a positive authority-service integration.",
+      "Rendered HTML was inspected as source; browser visual QA was unavailable.",
+      "Change digest is over the proposed file bytes, not verified against the external baseline service canonicalizer."
+    ]
+  }
+}

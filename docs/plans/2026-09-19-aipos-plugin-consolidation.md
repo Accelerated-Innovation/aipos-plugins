@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-19
 
-**Status:** Local implementation and offline/install verification complete on `codex/aipos-plugin-consolidation`. Live model acceptance remains open; nothing published.
+**Status:** Implemented and pushed in draft PR #31. Live routing and native artifact checks pass; coaching findings and remaining integration evidence keep release acceptance open. Nothing merged or published.
 
 **Direction:** One `aipos` plugin, eleven focused `aipos-*` skills, explicit AIPOS pillar workflows.
 
@@ -168,13 +168,13 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | ID | Slice | Depends on | Status |
 |---|---|---|---|
 | 01 | Ownership examples and routing cases | This plan | [x] |
-| 02 | Routing evaluator and baseline | 01 | [~] |
+| 02 | Routing evaluator and baseline | 01 | [x] |
 | 03 | Discovery, validation, and epic boundaries | 02 | [~] |
 | 04 | Create, refine, and readiness boundaries | 03 | [~] |
 | 05 | Journey authoring, slicing, and visualization boundaries | 04 | [~] |
 | 06 | Metrics and synthetic-data boundaries | 05 | [~] |
 | 07 | Packaging tests independent of old directory names | 06 | [x] |
-| 08 | Rename all eleven skills to `aipos-*` | 07 | [~] |
+| 08 | Rename all eleven skills to `aipos-*` | 07 | [x] |
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [x] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [x] |
 | 11 | Clean-install and old-plugin removal check | 10 | [x] |
@@ -358,6 +358,10 @@ For each increment, append a short record here or link its PR containing: comple
 
 ## Implementation evidence
 
+Entries below are chronological. Earlier budget/PR statements describe the initial offline phase; the live-verification record at the end supersedes them.
+
+Entries below are chronological. Earlier budget/PR statements describe the initial offline phase; the live-verification record at the end supersedes them.
+
 ### Increment 01
 
 - Added 53 routing cases, including six held-out paraphrases, two or more positive
@@ -498,3 +502,51 @@ For each increment, append a short record here or link its PR containing: comple
   complete but are not substitutes for those acceptance checks.
 - No push, PR, merge, tag, publication, tracker write, or real-user plugin change
   was performed. `docs/rollout.md` is ready for the eventual release.
+
+
+## Live verification and PR handoff
+
+The user authorized push, PR creation, and paid model evaluations without a spend cap. Implementation is in [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). The tested source is `a1e2522`; this final evidence update does not change the plugin.
+
+- Catalog comparison: **147/159 baseline**, **159/159 candidate** under the same Sonnet 5 evaluator, three repetitions, all 53 cases. All 102 critical candidate trials pass. The descriptions in the evaluated snapshot match the final source.
+- Native selection: **6/6**, with eleven AIPOS skills and seventeen observed built-in competitors. Four isolated native workflow artifact checks also pass; no supplied source file was changed.
+- Coaching: **87/135 passed**, **48 failed**, across all 45 runnable cases with three repetitions. Four subject-truncated trials count as failures, including two favorable judge verdicts; no new model calls were used for that deterministic correction. Three original metrics fixture cases remain unrun. The [full report](../evaluations/2026-09-19-aipos-live-evaluation.md) preserves case-level results, errors, limits, and fixture conflicts.
+
+- Addressed demonstrated metrics/token and map-assessment ambiguities, persistent batch mode, and unsupported journey placements; the report records every retest outcome. Corrected the judge's missing fixture/turn context, deterministic invalid-route handling, and recorded larger streaming judge budgets for truncation recovery.
+- Offline suite: **415 passed, 5 skipped**. Hosted manifest and pytest checks pass at the tested source. `origin/main` remains the recorded baseline. No merge, publication, tracker mutation, or real-user plugin replacement occurred.
+
+Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
+
+### Follow-up implementation slices
+
+| Slice | Scope | Completion evidence |
+|---|---|---|
+| E1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
+| E2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
+| E3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
+| E4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
+| E5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
+
+
+## Live verification and PR handoff
+
+The user authorized push, PR creation, and paid model evaluations without a spend cap. Implementation is in [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). The tested source is `a1e2522`; this final evidence update does not change the plugin.
+
+- Catalog comparison: **147/159 baseline**, **159/159 candidate** under the same Sonnet 5 evaluator, three repetitions, all 53 cases. All 102 critical candidate trials pass. The descriptions in the evaluated snapshot match the final source.
+- Native selection: **6/6**, with eleven AIPOS skills and seventeen observed built-in competitors. Four isolated native workflow artifact checks also pass; no supplied source file was changed.
+- Coaching: **87/135 passed**, **48 failed**, across all 45 runnable cases with three repetitions. Four subject-truncated trials count as failures, including two favorable judge verdicts; no new model calls were used for that deterministic correction. Three original metrics fixture cases remain unrun. The [full report](../evaluations/2026-09-19-aipos-live-evaluation.md) preserves case-level results, errors, limits, and fixture conflicts.
+
+- Addressed demonstrated metrics/token and map-assessment ambiguities, persistent batch mode, and unsupported journey placements; the report records every retest outcome. Corrected the judge's missing fixture/turn context, deterministic invalid-route handling, and recorded larger streaming judge budgets for truncation recovery.
+- Offline suite: **415 passed, 5 skipped**. Hosted manifest and pytest checks pass at the tested source. `origin/main` remains the recorded baseline. No merge, publication, tracker mutation, or real-user plugin replacement occurred.
+
+Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
+
+### Follow-up implementation slices
+
+| Slice | Scope | Completion evidence |
+|---|---|---|
+| E1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
+| E2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
+| E3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
+| E4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
+| E5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
