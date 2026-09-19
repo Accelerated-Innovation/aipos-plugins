@@ -349,17 +349,42 @@ def commitment(f, scores):
     """
     s = scores.get(f["key"]) or {}
     c = s.get("commitment")
-    if not c or not c.get("commitment_id"):
+    # Score files are agent-produced. A string where an object belongs took
+    # the whole page down through `c.get`, and one bad record meant nobody
+    # saw any of the map.
+    if not isinstance(c, dict):
         return ""
+    ident = c.get("commitment_id")
+    if not isinstance(ident, str) or not ident.strip():
+        return ""
+
     authorizes = c.get("authorizes_work")
-    cls = CMTCLS.get(authorizes, "cmt-unk")
-    word = CMTWORD.get(authorizes, "unverified")
-    reason = c.get("reason")
-    detail = f' &#183; {e(str(reason))}' if reason and authorizes is not True else ""
+    if not isinstance(authorizes, bool):
+        # None is "could not determine" and so is anything else. A dict
+        # lookup is only total over hashable keys, which is easy to forget
+        # when the values are meant to be True/False/None — `CMTCLS.get(["yes"])`
+        # raises TypeError, not KeyError.
+        authorizes = None
+
     when = c.get("checked_at")
-    read = f'<span class="cmtw">read {e(str(when))}</span>' if when else ""
+    when = when if isinstance(when, str) and when.strip() else None
+
+    # A reading whose freshness cannot be assessed is not a verified one.
+    # Rendering an untimed `True` as the confident green is precisely the
+    # thing the read time exists to prevent: a chip indistinguishable from
+    # a fresh check. 14A settled this for the token; the pixel agrees.
+    untimed = authorizes is True and when is None
+    state = None if untimed else authorizes
+
+    cls = CMTCLS.get(state, "cmt-unk")
+    word = CMTWORD.get(state, "unverified")
+    reason = c.get("reason")
+    detail = f' &#183; {e(str(reason))}' if reason and state is not True else ""
+    if untimed:
+        detail = " &#183; read time unknown"
+    read = f'<span class="cmtw">read {e(when)}</span>' if when else ""
     return (f'<div class="cmt {cls}"><span class="cmtk">commitment</span>'
-            f'<span class="cmtid">{e(str(c["commitment_id"]))}</span>'
+            f'<span class="cmtid">{e(ident)}</span>'
             f'<span class="cmts">{word}{detail}</span>{read}</div>')
 
 
@@ -1124,7 +1149,11 @@ def render(feats, scores, sizing, cfg, workflow=None):
         # Only where a commitment is actually shown. A page with no chips
         # does not need a paragraph about them, and an unconditional note
         # is one more thing readers learn to skip.
-        if any((v.get("commitment") or {}).get("commitment_id") for v in vals):
+        # Same shape as the chip's own guard, and the same reason: a score
+        # file is agent-produced, so `.get` on a non-dict aborts the page.
+        # The review found one instance of this; there were two.
+        if any(isinstance(v.get("commitment"), dict)
+               and v["commitment"].get("commitment_id") for v in vals):
             govnote += (
                 '<p class="govnote"><b>Commitment chips.</b> Where a card names a commitment, '
                 'that is a <b>snapshot</b> of what was read when this page was generated. It '

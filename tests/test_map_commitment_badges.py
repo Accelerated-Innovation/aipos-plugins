@@ -17,6 +17,8 @@ ingestion preserved is the same defect with an extra step.
 
 import re
 
+import pytest
+
 
 def strip_tags(s):
     return re.sub(r"<[^>]+>", " ", s)
@@ -87,8 +89,11 @@ def test_a_current_commitment_is_shown_without_alarm(render_map, ingested):
     """A healthy commitment is the common case. Rendering it as a warning
     trains people to ignore the colour that matters."""
     feature = ingested["inv_full"]
+    # A read time is part of a healthy record now: an untimed `True` is
+    # deliberately not the confident green (see the untimed test below).
     out = render(render_map, [feature], {feature["key"]: scored(
         commitment_id="cmt-1", authorizes_work=True, reason=None,
+        checked_at="2026-09-19T12:00:00Z",
     )})
 
     assert "cmt-1" in strip_tags(out)
@@ -155,3 +160,69 @@ def test_the_map_says_its_authority_view_is_a_snapshot(render_map, ingested):
     text = strip_tags(out).lower()
     assert "snapshot" in text
     assert "not a gate" in text or "does not gate" in text
+
+
+# --- what the first version got wrong ---------------------------------------
+
+
+def test_authority_with_no_read_time_is_not_shown_as_authorized(render_map, ingested):
+    """The chip argued that a green badge without a timestamp is
+    indistinguishable from a fresh check — and then rendered exactly that
+    when `checked_at` was absent.
+
+    A reading whose freshness cannot be assessed is not a verified one.
+    14A settled this for the token: past the window it is execution
+    readiness only. The pixel has to agree.
+    """
+    feature = ingested["inv_full"]
+    out = render(render_map, [feature], {feature["key"]: scored(
+        commitment_id="cmt-5", authorizes_work=True,
+    )})
+
+    assert 'class="cmt cmt-ok"' not in out
+    assert "cmt-5" in strip_tags(out)
+    assert "read time unknown" in strip_tags(out).lower()
+
+
+def test_authority_with_a_read_time_still_reads_as_authorized(render_map, ingested):
+    """The fix must not make the healthy case unrepresentable."""
+    feature = ingested["inv_full"]
+    out = render(render_map, [feature], {feature["key"]: scored(
+        commitment_id="cmt-6", authorizes_work=True, checked_at="2026-09-19T12:00:00Z",
+    )})
+
+    assert 'class="cmt cmt-ok"' in out
+
+
+@pytest.mark.parametrize(
+    "commitment",
+    ["a string", 42, ["a", "list"], None],
+)
+def test_a_malformed_commitment_block_does_not_abort_the_render(
+    render_map, ingested, commitment
+):
+    """Score files are agent-produced. `c.get` on a string raises
+    AttributeError and takes the whole page with it — one bad record and
+    nobody sees any of the map."""
+    feature = ingested["inv_full"]
+    record = scored()
+    record["commitment"] = commitment
+
+    out = render(render_map, [feature], {feature["key"]: record})
+
+    assert "<html" in out.lower()
+    assert 'class="cmt' not in out
+
+
+def test_an_unhashable_authority_value_does_not_abort_the_render(render_map, ingested):
+    """`CMTCLS.get(["yes"])` raises TypeError, not a KeyError — a dict
+    lookup is only total over hashable keys, which is easy to forget when
+    the values are supposed to be True/False/None."""
+    feature = ingested["inv_full"]
+    out = render(render_map, [feature], {feature["key"]: scored(
+        commitment_id="cmt-7", authorizes_work=["yes"],
+    )})
+
+    assert "<html" in out.lower()
+    text = strip_tags(out).lower()
+    assert "unverified" in text

@@ -87,3 +87,18 @@ def test_the_decision_vocabulary_matches_what_the_event_declares(decision):
     section = SCHEMA.read_text(encoding="utf-8").split("## refinement.token.issued")[1]
 
     assert decision in section.split("\n## ")[0]
+
+
+def test_the_contract_still_declares_all_six_fields():
+    """The guard above only checked that *something* parsed, so deleting a
+    field from the reference document shrank the expected set and every
+    other test kept passing against the shorter one.
+
+    This is the one place the six are written down twice on purpose: the
+    other tests derive their expectation from the document, and this pins
+    the document itself. A contract test whose expectation moves with the
+    thing it tests is not a contract test.
+    """
+    assert reserved_fields() == {
+        "feature_id", "decision", "score", "blockers", "draft_version", "ts",
+    }
