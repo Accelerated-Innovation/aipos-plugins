@@ -121,6 +121,14 @@ Three rules, all of which the resolver enforces:
   canonical obligation has no described step, report the gap as uncovered and ask whether
   the journey needs extending; do not invent an action or handoff to claim complete coverage.
 
+Before adding a scenario reference, identify the walkthrough statement that supports its
+specific outcome. If none exists, leave that scenario out of the workflow's reference arrays.
+Put any suggested placement in the accompanying questions as a proposal instead. An inferred
+placement with a caveat is still unconfirmed: it cannot appear in the source as a reference or
+count as covered. Referencing a governing Rule does not automatically cover every scenario
+under it. Before reporting coverage, remove unconfirmed scenario links and count again;
+“uncovered, proposed for step X” is the correct result until the user confirms the placement.
+
 ### Step 6 — Resolve, and report what is uncovered
 
 Resolving needs two inputs: the workflow you just wrote, and the corpus as `features.json`.
