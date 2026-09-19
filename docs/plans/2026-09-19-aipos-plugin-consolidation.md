@@ -177,7 +177,7 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | 08 | Rename all eleven skills to `aipos-*` | 07 | [~] |
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [x] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [x] |
-| 11 | Clean-install and old-plugin removal check | 10 | [ ] |
+| 11 | Clean-install and old-plugin removal check | 10 | [x] |
 | 12 | Combined routing and workflow acceptance | 11 | [ ] |
 | 13 | Release checkpoint and rollout handoff | 12 | [ ] |
 
@@ -453,3 +453,27 @@ For each increment, append a short record here or link its PR containing: comple
 - Slices use focused local commits on the integration branch; PR/release activity
   is deferred. Increment 08 remains partial because its live routing rerun is
   pending along with increments 02–06.
+
+### Increment 11
+
+- Verified with Claude Code **2.1.274**, using two isolated `CLAUDE_CONFIG_DIR`
+  profiles and a separate project under `/private/tmp/aipos-install-eq2hgh0f`.
+  Real user plugin settings and installations were not changed.
+- Fresh installation: added the local candidate marketplace, installed
+  `aipos@aipos`, and checked `plugin list --json` plus `plugin details`.
+- Replacement: installed all three original versions from the baseline Git
+  archive, uninstalled each at user scope, replaced the disposable marketplace
+  source, ran `marketplace update aipos`, and installed `aipos@aipos`.
+- Both profiles contain exactly one enabled plugin, version **1.0.0**, with
+  eleven `aipos-*` skills and no other enabled plugin. Installed runtime files
+  match the candidate byte for byte and all skill resource references resolve.
+- From the unrelated project, seven CLI checks passed across six installed
+  scripts: Gherkin ingestion, workflow rendering, local readiness, batch refusal
+  to write a token, change proposal preparation, validated metric emission, and
+  sizing arithmetic. The proposal remains unsubmitted with `decision: null`.
+- A syntax-tree comparison of all nine bundled Python scripts against the
+  baseline found no executable changes after normalizing the intended public
+  skill namespace and removing docstrings.
+- Logs and outputs are local evidence at `.claude/install-check-results.json`,
+  `.claude/install-inventory.json`, and the temporary project. No model calls
+  were made; native skill selection remains an increment 12 check.
