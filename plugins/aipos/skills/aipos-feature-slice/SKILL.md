@@ -265,6 +265,13 @@ Step 7 adds the tagged Gherkin and the copy-ready tracker field updates; Step 8 
 
 `aipos-feature-map` (or a script) calls this when a corpus needs size badges. Same rules as refine's batch mode: skip every pause, emit a single raw JSON object and nothing else, one feature per invocation — batching degrades every verdict. Batch mode **never writes to a tracker** and never applies tags; it sizes and recommends, and the caller renders recommendations as recommendations.
 
+Batch mode persists until the caller explicitly changes the task. A bare
+“proceed” or “continue” does not switch to interactive slicing, authorize tag
+changes, or invite a tracker write-back. Every reply remains one raw JSON object:
+no introduction, Markdown fence, decision questions, or write-back offer. The
+fenced schema below documents the shape; its fence is not part of the output.
+If there is no new input, return the existing batch verdict without adding work.
+
 Emit dimension judgments only — no points, no bands, no totals. The caller runs `scripts/compute_size.py`, which owns all arithmetic. This is deliberate: a schema with no total field cannot carry a wrong total.
 
 ### Batch output schema
