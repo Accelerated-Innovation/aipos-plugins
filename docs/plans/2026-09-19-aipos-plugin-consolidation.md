@@ -168,7 +168,7 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | ID | Slice | Depends on | Status |
 |---|---|---|---|
 | 01 | Ownership examples and routing cases | This plan | [x] |
-| 02 | Routing evaluator and baseline | 01 | [ ] |
+| 02 | Routing evaluator and baseline | 01 | [~] |
 | 03 | Discovery, validation, and epic boundaries | 02 | [ ] |
 | 04 | Create, refine, and readiness boundaries | 03 | [ ] |
 | 05 | Journey authoring, slicing, and visualization boundaries | 04 | [ ] |
@@ -371,3 +371,18 @@ For each increment, append a short record here or link its PR containing: comple
   is disabled locally because an unrelated globally installed rerun plugin tries
   to open a socket disallowed by the sandbox.
 - No model calls in this increment. Next: the routing runner and measured baseline.
+
+### Increment 02 — runner complete; live baseline pending
+
+- Added a description-only routing evaluator with explicit model/call caps,
+  exact outcome grading, stale-result protection, snapshots, raw traces, and
+  missing/critical-case accounting. Held-out cases are excluded by default.
+- Captured the unchanged catalog and all cases at
+  `.claude/routing/baseline/inputs.json` before changing descriptions. This local
+  snapshot allows a later live baseline without reconstructing old inputs.
+- `.venv/bin/python -B -m pytest tests/test_routing_cases.py
+  tests/test_routing_runner.py -q -p no:cacheprovider`: **16 passed**.
+- Dry-run request assembly: **11 skills, 47 development cases, 3 repetitions**;
+  no model was called. Live evaluation budget is pending user input. Description
+  work can proceed against the frozen baseline, but this increment is not marked
+  complete until its live comparison evidence exists.
