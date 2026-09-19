@@ -1,6 +1,6 @@
 ---
 name: govkit-feature-create
-description: Coach a Product Manager through creating features — draft Rules and tagged Gherkin scenarios directly from an evidence-backed opportunity with no epic, user story or estimate required; materialize behavior an approved commitment baseline already selected; or, for teams working from a tracker, break an Epic into a workflow-aligned feature set using lightweight story mapping. Produces Draft 0, the artifact govkit-feature-refine reviews, with unknown thresholds and unverified evidence left marked unknown rather than filled in. Tool-agnostic; writes a repo feature package by default, and can optionally create or update records in Jira or Aha! after explicit confirmation. Trigger whenever the user asks to turn an opportunity, problem, interview evidence or prototype behavior into a spec, write a new feature, draft acceptance criteria, business rules or scenarios from scratch, materialize or implement approved behavior, define a Definition of Done, break down or split an epic, story map a workflow, propose feature stubs, or asks "what features do we need for this" — even if they don't say GovKit or "create". Applies evaluation-driven thinking to products containing runtime AI behavior.
+description: "Author new Rules, Gherkin scenarios, and feature packages from opportunities or feature briefs; decompose an epic; or materialize an approved baseline unchanged. Use for creating specifications. Existing-spec review belongs to refine; application implementation is outside this skill."
 ---
 
 # GovKit Feature Create — Story Mapping and Feature Authoring
@@ -176,10 +176,14 @@ describe, or a request to "turn this into a spec" with no tracker record anywher
 > what we don't know yet, and reference the PDG rather than restating the business case.
 
 **Baseline signals** — an approved commitment, a `baseline.json`, or a request to "materialize",
-"implement what was approved", or "set up the package for this commitment". Say:
+"materialize the approved specification", or "set up the package for this commitment". Say:
 
 > That behavior is already approved. I'll materialize exactly what the baseline selected —
 > anything missing becomes a change question, not an edit.
+
+A request to implement application code belongs to the coding workflow. This
+mode only prepares the approved specification package; do not substitute it for
+the implementation the user requested.
 
 **Epic signals** — elevator pitch, user problems, success metrics, a list of things the product should eventually do, or a request to "break this down". Say:
 

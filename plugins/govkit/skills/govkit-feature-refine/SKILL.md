@@ -1,6 +1,6 @@
 ---
 name: govkit-feature-refine
-description: Review generated feature specs (Gherkin, NFRs, evaluation criteria) before GovKit execution. Use for refinement conversations where Product, QA, and Engineering improve a draft together before AI-assisted coding starts. Tool-agnostic; works with any generator (e.g. Aha!) and any tracker (e.g. Azure DevOps, Jira). Trigger whenever the user mentions Gherkin, acceptance criteria, feature refinement, 3 Amigos, Draft 0, Development Token, spec review, PM pre-review, QA evidence review, or asks to review, score, or rewrite a feature spec before coding begins — even if they don't name GovKit explicitly. Also provides a non-interactive batch scoring mode that emits one JSON verdict per feature; govkit-feature-map calls it to badge a whole corpus.
+description: "Review and improve an existing feature specification with Product, QA, and Engineering. Use for 3 Amigos, ambiguity, missing behavior, evidence gaps, and draft rewrites. For committed behavior, propose changes for reapproval. Repo execution-readiness and token decisions belong to readiness."
 ---
 
 # GovKit Feature Refine — Gherkin Collaboration Skill
@@ -72,7 +72,11 @@ Do not use it for:
 - Replacing Product, QA, or Engineering review
 - Sizing scenarios or slicing a feature into MVP/V1/V2 releases
 
-For repo validation, use the GovKit spec-readiness skill. For scenario sizing, MoSCoW release slicing, and `@mvp`/`@v1`/`@v2` tagging, use `govkit-feature-slice` — refinement judges whether a spec is understood; slicing judges how big it is and when to ship it.
+For repo execution-readiness and token decisions, use `govkit-feature-readiness`.
+New Rules or acceptance criteria belong to `govkit-feature-create`; mentioning
+Gherkin alone is not a review request. For release selection and optional scenario
+complexity, use `govkit-feature-slice`. Refinement judges an existing specification;
+slicing selects a complete, shippable outcome.
 
 ## Inputs
 

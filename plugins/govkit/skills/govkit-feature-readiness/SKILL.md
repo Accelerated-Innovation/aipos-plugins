@@ -1,6 +1,6 @@
 ---
 name: govkit-feature-readiness
-description: Validate whether an approved feature package (Gherkin, NFRs, evaluation criteria) is complete, consistent, repo-aware, and safe for AI-assisted coding. The repo-side readiness gate that runs after the feature refinement. Tool-agnostic;
+description: "Check whether a reviewed repository feature package is ready for AI-assisted implementation and produce its Development Token record. Use for pre-coding checks, repo fit, verification paths, and token requests. Verify applicable existing product approval; this skill does not grant that approval."
 ---
 
 # GovKit Feature-Readiness Skill
@@ -50,6 +50,13 @@ AI-assisted coding starts only after the feature package passes this readiness g
 ## Scope
 
 Use this skill for repo-side readiness validation after collaboration review is complete.
+
+Confirm the review state from available evidence. A package being stored in a
+repository does not mean it has completed refinement. If it is an unreviewed
+Draft 0, route its quality review to `govkit-feature-refine` before issuing a
+token. A batch assessment can expose readiness gaps but cannot invent the missing
+review or write a token. Where the requested decision is unclear, distinguish
+spec review, repo readiness, and metric completeness before choosing the gate.
 
 Use it for:
 
