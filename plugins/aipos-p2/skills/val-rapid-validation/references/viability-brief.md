@@ -1,11 +1,13 @@
 # 7 — Viability brief
 
-**Produces:** the **Validation Decision** — go, no-go, or revise.
+**Produces:** the viability brief supporting a **Validation Decision** — go,
+no-go, or revise — and, where a commitment is proposed, a prepared package.
 
 This is not the seventh item on a list. It is Pillar 2's primary output and the hard gate
-between Build-to-Learn and Build-to-Earn — in the AIPOS's words, *"the single most
-consequential gate"* and *"the moment specifications are born."* Everything else in this
-skill exists to feed it.
+between Build-to-Learn and Build-to-Earn. Behavior is drafted and refined during
+validation, so the decision can bind an exact selected scope. This skill prepares
+the evidence and package; the accountable person records approval through the
+authoritative interface. Everything else in this skill feeds that decision.
 
 Treat it accordingly. The brief is decision-grade, not ceremonial: someone reads it and
 commits or declines production engineering capacity.

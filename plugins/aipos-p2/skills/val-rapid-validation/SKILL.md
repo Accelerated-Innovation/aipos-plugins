@@ -1,6 +1,6 @@
 ---
 name: val-rapid-validation
-description: "Build the validation artifacts of AIPOS Pillar 2 (Rapid Validation) — interview guide, problem sizing, visual prototype brief, demand test, feasibility spike, eval stub and brief, and the viability brief that carries the Validation Decision. Use this whenever a PM wants to test an assumption before committing engineering capacity — talking to users, sizing a problem, prototyping to learn, running a fake-door or demand test, checking technical or data feasibility, defining success criteria for a GenAI feature, or making a go / no-go / revise call. Trigger it even when the user doesn't name an artifact; phrases like 'is this worth building', 'how do we know people want this', 'size this opportunity', 'can we actually build this', 'what would prove this works', 'should we kill this', 'prep for user interviews', or 'we need to validate before we commit' all belong here. Works with or without an Aha! record — evidence is optional input, never a prerequisite."
+description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create."
 ---
 
 # Rapid Validation
@@ -22,6 +22,11 @@ Pillar 2's primary output is the **Validation Decision**. Every artifact in this
 evidence feeding that decision. A PM who collects six beautiful artifacts and never makes
 the call has not completed Pillar 2. Whenever you finish an artifact, point at the
 decision it serves and say what is still unevidenced.
+
+An explicit request for an epic or program brief belongs to `govkit-epic-create`;
+new production Rules and acceptance criteria belong to `govkit-feature-create`.
+Use this skill for the experiment and evidence decision, even when the user calls
+its experimental pass/fail criteria "acceptance criteria." Distinguish by purpose.
 
 The Validation Decision must answer three questions. That is also how the menu is
 organised — it is not an arbitrary list:

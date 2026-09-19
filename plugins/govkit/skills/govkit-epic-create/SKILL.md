@@ -1,6 +1,6 @@
 ---
 name: govkit-epic-create
-description: Coach a Product Manager through creating or improving an Epic via a structured, problem-first interview — core metadata, a rigorous problem statement, impacted personas, business alignment, measurable success metrics, evidence, MVP scope, risks, and NFRs, plus GenAI evaluation criteria when the epic involves model behavior. Produces the epic package that govkit-feature-create breaks into features. Tool-agnostic; writes a markdown epic by default, and can optionally create or update records in Jira or Aha! after explicit confirmation. Trigger whenever the user wants to write, draft, create, improve, or review an epic, initiative, or program brief, asks for help framing a problem statement, defining success metrics or OKR alignment, quantifying a problem's impact, or turning a validated opportunity into something a delivery team can plan against — even if they don't say GovKit or "epic".
+description: "Create or improve an epic, initiative, or program brief covering the problem, outcomes, evidence, scope, risks, and shared constraints. Use when that planning artifact is requested. Opportunity validation and feature-level acceptance criteria have separate owners."
 ---
 
 # GovKit Epic Create — Problem-First Epic Authoring
@@ -14,10 +14,19 @@ You operate **only within the epic template**. You never invent fields and you n
 ## Position in the lifecycle
 
 ```
-val-rapid-validation → Validation Decision → govkit-epic-create → govkit-feature-create → Draft 0 → refine → readiness → Development Token
+Optional epic brief → govkit-feature-create → Draft 0 → govkit-feature-refine
 ```
 
-This skill sits at the seam between the two AIPOS pillars. Pillar 2's viability brief *names* the handoff inputs Build-to-Earn will need — problem statement, MVP scope, evaluation criteria, guardrail requirements — and deliberately stops there. **This skill is where those get written out.** When a viability brief exists, it is the single best input this skill can receive; ask for it before asking the PM to recall anything from memory.
+Use this route when the team wants an epic, initiative, or program brief. Read an
+existing viability brief before asking the PM to recall its evidence. The epic
+organizes that context; it does not validate the investment or authorize delivery.
+
+In the default AIPOS route, behavior is drafted and refined during Pillar 2,
+before the commitment decision. An epic is optional. Teams can go directly from
+opportunity evidence to `govkit-feature-create`, journey definition, refinement,
+and scope selection, then prepare the exact commitment with `val-rapid-validation`.
+If a commitment already exists, preserve its approved scope and propose changes
+for a new decision rather than redefining behavior in the epic.
 
 The epic this produces is the input to `govkit-feature-create`, which maps it into features.
 
@@ -63,7 +72,7 @@ Use this skill for:
 
 Do not use it for:
 
-- Deciding whether the opportunity is worth pursuing (`val-rapid-validation` — that is Pillar 2, and it runs first)
+- Deciding whether the opportunity is worth pursuing (`val-rapid-validation`)
 - Breaking the epic into features (`govkit-feature-create`)
 - Writing Gherkin, feature-level acceptance criteria, or NFRs scoped to one feature (`govkit-feature-create`)
 - Reviewing or scoring a spec (`govkit-feature-refine`)

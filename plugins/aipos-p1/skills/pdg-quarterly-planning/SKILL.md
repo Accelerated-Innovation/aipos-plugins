@@ -1,6 +1,6 @@
 ---
 name: pdg-quarterly-planning
-description: "Run an evidence-governed quarterly planning session over a Product Definition Graph — read the ranked opportunity list, grade the evidence behind each candidate, find the coverage gaps (products, personas, and regions with no recent research; high-ranked problems nobody is exploring; proposals about to expire), build the session agenda, and record the Exploration Decisions with budget and horizon. Use this when a team plans a quarter against graph evidence: phrases like 'quarterly planning', 'what should we explore next quarter', 'planning session prep', 'gap analysis over the graph', 'which problems deserve research', or 'build the planning agenda' all belong here. Reads the graph over MCP tools; never writes to it. Also runs a dry-run rehearsal against live data."
+description: "Prepare quarterly exploration planning from a live Product Definition Graph. Use for evidence-backed opportunity review, research gaps, and exploration decisions with owners, budgets, and horizons. Requires graph reads and drafts the decision log; delivery release planning belongs elsewhere."
 ---
 
 # PDG Quarterly Planning
