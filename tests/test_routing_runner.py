@@ -78,8 +78,12 @@ def test_no_skill_and_clarification_are_real_outcomes(routing, catalog, case, ac
     route = {"action": action, "skill": None, "handoffs": []}
     case["allowed"] = [route]
     assert routing.grade(route, case, catalog)
-    with pytest.raises(ValueError):
-        routing.grade({**route, "skill": "author"}, case, catalog)
+    assert not routing.grade({**route, "skill": "author"}, case, catalog)
+
+
+def test_unknown_model_selections_fail_without_aborting_the_case(routing, catalog, case):
+    assert not routing.grade({"action": "skill", "skill": "invented-skill", "handoffs": []}, case, catalog)
+    assert not routing.grade({"action": "skill", "skill": ["author"], "handoffs": []}, case, catalog)
 
 
 def test_catalog_case_model_and_configuration_changes_invalidate_results(routing, catalog, case):

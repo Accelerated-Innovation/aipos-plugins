@@ -16,6 +16,7 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
+GRADE_CONTRACT = "v2-invalid-route-is-incorrect-selection"
 SYSTEM = """Choose the most appropriate AIPOS skill for the user's request using
 only the supplied catalog and user context. Return one primary skill, followed
 by any ordered handoffs explicitly needed for the requested result. Handoffs
@@ -125,14 +126,20 @@ def build_request(catalog, case):
 
 
 def grade(route, case, catalog):
-    validate_route(route, {s["name"] for s in catalog})
+    try:
+        validate_route(route, {s["name"] for s in catalog})
+    except (ValueError, TypeError):
+        # An unknown skill or impossible handoff is a wrong model selection,
+        # not an infrastructure error eligible for rerolling until it is valid.
+        return False
     selected = {k: route[k] for k in ("action", "skill", "handoffs")}
     return selected in case["allowed"]
 
 
 def fingerprint(catalog, case, model, max_tokens, reps):
     payload = {"catalog": catalog, "case": case, "model": model,
-               "max_tokens": max_tokens, "reps": reps, "system": SYSTEM, "schema": SCHEMA}
+               "max_tokens": max_tokens, "reps": reps, "system": SYSTEM, "schema": SCHEMA,
+               "grading": GRADE_CONTRACT}
     return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
