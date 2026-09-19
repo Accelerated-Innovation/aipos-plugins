@@ -153,6 +153,13 @@ model failure.
 Rows are appended and flushed as each case finishes, and a resume is keyed on `(case, rep)` — a
 crash mid-run costs only the cases still in flight.
 
+A truncated subject turn makes the conversation incomplete even if the judge
+approves the combined answer. Such rows are not passing results. New rows keep
+the judge's raw verdict in `judge_passed`; summaries also exclude historical
+`status: truncated` rows whose older `passed` field recorded only that verdict.
+Resuming an entirely cached run still reports its failures and returns a failing
+exit code when appropriate; it does not call a model again.
+
 ## Reporting a run
 
 Per CONTRIBUTING: **never report an eval as passing unless it actually ran.** When you run one,

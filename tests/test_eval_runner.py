@@ -382,6 +382,26 @@ def test_large_judge_budget_uses_streaming_and_preserves_request(runner):
     assert seen == [request]
 
 
+@pytest.mark.parametrize("status,passed,expected", [
+    ("ok", True, 0), ("truncated", True, 1), ("ok", False, 1),
+])
+def test_cached_results_still_report_failure_without_model_calls(runner, tmp_path, status, passed, expected):
+    import asyncio
+    from types import SimpleNamespace
+
+    name = "aipos-quarterly-planning"
+    skill = runner.discover_skills()[name]
+    case = runner.load_cases(skill)[0]
+    args = SimpleNamespace(list=False, skill=name, case=case["name"],
+                           out=str(tmp_path), variant="cached", model="subject",
+                           judge_model="judge", turns=2, reps=1, execute=True)
+    runner.append_row(tmp_path / name / "cached" / "results.jsonl", {
+        "prompt_id": case["name"], "rep": 0, "status": status, "passed": passed,
+        "input_digest": runner.input_digest(skill, case, args),
+    })
+    assert asyncio.run(runner.main_async(args)) == expected
+
+
 def test_regrading_reuses_only_matching_actual_subject_inputs(runner, tmp_path):
     skill = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill)[0]

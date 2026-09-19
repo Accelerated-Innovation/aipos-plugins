@@ -538,6 +538,11 @@ async def call_with_backoff(fn, *, what: str):
     raise RuntimeError(f"{what} failed after {MAX_ATTEMPTS} attempts: {last}") from last
 
 
+def result_passed(row):
+    """A judge's favorable verdict cannot complete a truncated conversation."""
+    return bool(row.get("passed")) and row.get("status") == "ok"
+
+
 async def judge_completion(client, **request):
     """The SDK requires streaming for larger output ceilings."""
     if request["max_tokens"] > 16000:
@@ -709,7 +714,8 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "stop_reasons": stop_reasons,
         "grade": {"rubric": round(float(verdict["score"]), 3)},
         "explanation": {"rubric": verdict["reasoning"]},
-        "passed": bool(verdict["passed"]),
+        "passed": bool(verdict["passed"]) and not truncated,
+        "judge_passed": bool(verdict["passed"]),
         "missed": verdict["missed"],
         "latency_s": round(time.monotonic() - started, 2),
         "turns": len(answers),
@@ -723,7 +729,7 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "input_digest": args._digests[case_key(case, rep)],
     })
 
-    mark = "PASS" if verdict["passed"] else f"FAIL ({verdict['score']:.2f})"
+    mark = "TRUNCATED" if truncated else ("PASS" if verdict["passed"] else f"FAIL ({verdict['score']:.2f})")
     print(f"  {mark:14} {pid}")
 
 
@@ -799,8 +805,6 @@ async def main_async(args) -> int:
         print(user[:600] + ("..." if len(user) > 600 else ""))
         return 0
 
-    import anthropic
-
     args._digests = {
         case_key(c, r): input_digest(skill_dir, c, args)
         for c, _m in runnable for r in range(args.reps)
@@ -821,13 +825,14 @@ async def main_async(args) -> int:
             print("\nnothing runnable — every case needs inputs this harness cannot supply")
             return 2
         print("\nnothing to do — every case already has a result for the current inputs")
-        return 0
+    else:
+        import anthropic
 
-    sem = asyncio.Semaphore(args.concurrency)
-    async with anthropic.AsyncAnthropic() as client:
-        await asyncio.gather(*(
-            run_case(client, skill_dir, c, r, args, sem, paths) for c, r in todo
-        ))
+        sem = asyncio.Semaphore(args.concurrency)
+        async with anthropic.AsyncAnthropic() as client:
+            await asyncio.gather(*(
+                run_case(client, skill_dir, c, r, args, sem, paths) for c, r in todo
+            ))
 
     # F8: report on the cases this invocation was asked about, not every row
     # ever written into the shared directory.
@@ -846,7 +851,7 @@ async def main_async(args) -> int:
         and f"{e['prompt_id']}_rep{e.get('rep', 0)}" not in succeeded
     ]
 
-    passed = sum(1 for r in rows if r.get("passed"))
+    passed = sum(1 for r in rows if result_passed(r))
     print(f"\n{passed}/{len(rows)} passed"
           + (f", {len(skipped)} skipped" if skipped else "")
           + (f", {len(unresolved)} unresolved error(s) — see errors.jsonl" if unresolved else ""))
