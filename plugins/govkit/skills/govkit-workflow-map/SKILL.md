@@ -1,6 +1,6 @@
 ---
 name: govkit-workflow-map
-description: Author the workflow source behind a customer journey — turn evidence, specs and conversations into a workflow.json naming the outcome, the ordered and branching activities, the actors, the handoffs where work changes hands, and qualified references into the canonical Gherkin that governs each step. Generates L1 journey, L2 collaboration and L3 behavior views from that one file, so a Rule shown at four steps is authored once and no second diagram is maintained by hand. Reports behavior in the corpus that no step touches, and asks only about gaps that would change the journey. Trigger whenever the user asks to map a workflow or customer journey, show how a process flows end to end, work out who does what and where handoffs happen, see which rules apply at which step, check whether a journey covers the behavior that exists, or asks "what does this process actually look like" — even if they don't say GovKit or "workflow".
+description: "Author or update workflow.json describing a customer journey, actors, branches, and handoffs, with references to canonical behavior. Use for journey structure and coverage gaps. Delegate rendering of existing workflow source to feature-map."
 ---
 
 # GovKit Workflow Map — Authoring the Workflow Source

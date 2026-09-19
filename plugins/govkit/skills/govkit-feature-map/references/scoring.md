@@ -8,12 +8,17 @@ Do not restate the rubric here or in a subagent prompt. Point agents at the rubr
 
 GovKit gates twice. Pick by where the corpus sits, not by convenience:
 
-- **Tracker corpus (Draft 0, not yet in the repo)** — `govkit-feature-refine` batch mode, 10 dimensions, Approved at >= 8/10. This is what the rest of this file documents.
-- **Repo corpus (approved packages: `acceptance.feature`, `nfrs.md`, `eval_criteria.yaml`)** — `govkit-feature-readiness`, 12 dimensions, Approved at ~10/12 and Blocked below 8.5. It additionally judges package completeness, source traceability, repo fit and AI coding agent safety, which a tracker record cannot answer.
+- **Unreviewed drafts, in any storage location** — `govkit-feature-refine` batch mode, 10 dimensions, Approved at >= 8/10. This is what the rest of this file documents.
+- **Reviewed repo packages being assessed for execution** — `govkit-feature-readiness` batch mode, 12 dimensions, Approved at ~10/12 and Blocked below 8.5. It additionally judges package completeness, source traceability, repo fit and AI coding agent safety.
+
+Use the review state and the requested assessment, not tracker versus repository
+location. Feature-create writes unreviewed drafts into repositories. If review
+state is unknown, expose that gap and clarify the assessment; do not treat a file
+path as evidence of approval. A corpus view cannot complete the missing review.
 
 Record which rubric produced the badges in the map's lede. A 7.5 does not mean the same thing on the two scales, and a reader who assumes the wrong one will misjudge the release.
 
-Both scales have a verified path: `verify_scores.py` defaults to the 10-dimension refine scale, and `--scale readiness` validates 12-dimension readiness verdicts (rubric order, 1.0/0.5/0.0 bands, sums, and the 10 / 8.5 decision bands). For a repo corpus, fan out exactly as below but point agents at `govkit-feature-readiness`'s SKILL.md (Batch mode section and schema) and its `references/govkit-readiness-rubric.md` instead, then verify with `--scale readiness`. Batch readiness verdicts are advisory badges — they never issue tokens and never write the token record.
+Both scales have a verified path: `verify_scores.py` defaults to the 10-dimension refine scale, and `--scale readiness` validates 12-dimension readiness verdicts (rubric order, 1.0/0.5/0.0 bands, sums, and the 10 / 8.5 decision bands). For an execution-readiness assessment of reviewed repo packages, fan out exactly as below but point agents at `govkit-feature-readiness`'s SKILL.md (Batch mode section and schema) and its `references/govkit-readiness-rubric.md` instead, then verify with `--scale readiness`. Batch readiness verdicts are advisory badges — they never issue tokens and never write the token record.
 
 ## Contents
 

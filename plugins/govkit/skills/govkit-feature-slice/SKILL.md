@@ -1,6 +1,6 @@
 ---
 name: govkit-feature-slice
-description: Select the behavior a release contains and check it is actually shippable — map a feature's Gherkin scenarios to release slices with MoSCoW (@mvp, @v1, @v2 tags) on outcome completeness and consequence, verify the selected journey completes end to end and carries the authorization, recovery and audit behavior it depends on, name cross-feature prerequisites, recommend splits for oversized scenarios, and write the tagged spec back to the tracker after the PM confirms. Optionally scores each scenario on the Scenario Complexity Matrix (Data & State, Integration, UI/UX Steps) as a complexity diagnostic — never a delivery forecast. Tool-agnostic; works with any tracker (Jira, Aha!, Azure DevOps, markdown). Trigger whenever the user asks to slice a feature, size scenarios or estimate how big a feature is, plan MVP versus V1 versus V2, tag scenarios for releases, apply MoSCoW, find the smallest shippable version, or asks which scenarios could wait for a later release — even if they don't say GovKit or "slice". Also provides a non-interactive batch sizing mode that emits one JSON verdict per feature; govkit-feature-map calls it to put size badges on a whole corpus.
+description: "Select a complete release from existing scenarios, check prerequisites, and recommend MVP/V1/V2 scope. Use for the smallest shippable outcome, release tags, and scenario splitting. Optionally assess scenario complexity; those scores do not forecast delivery time."
 ---
 
 # GovKit Feature Slice — Scenario Sizing and Release Slicing

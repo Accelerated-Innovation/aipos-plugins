@@ -1,6 +1,6 @@
 ---
 name: govkit-feature-map
-description: Build a visual, scored feature map of a whole epic, release or spec corpus — a chain diagram of how artifacts flow between features, one card per feature with its Gherkin, NFRs and evaluation criteria, a GovKit Development Token badge on every feature showing whether it is ready for AI-assisted coding, and optionally a size badge per feature (scenario complexity distribution) with MVP/V1/V2 slice views from Gherkin tags. Ingests from Jira, Aha!, or a repo directory of feature specs, and merges a tracker record with repo-resident Gherkin. Trigger whenever the user asks to map, visualise, chart, or diagram an epic or set of features, wants a readiness dashboard or portfolio view, asks to score, size, or badge many features at once, wants to see how features connect or what produces and consumes what, asks where a release is weakest or what is blocking delivery, or wants to see how big features are or what the MVP slice costs across a corpus — even if they don't say "feature map" or name GovKit.
+description: "Render an existing feature corpus and optional workflow source into an HTML view of dependencies, specifications, and advisory readiness or complexity assessments. Use for release dashboards and cross-feature comparisons. Delegate assessments to their owning skills; this view does not authorize execution."
 ---
 
 # GovKit Feature Map
@@ -68,12 +68,21 @@ Scoring is delegated to another skill, which owns the rubric. Do not reimplement
 
 | Corpus | Skill | Rubric |
 |---|---|---|
-| Draft 0 from a tracker — Jira, Aha!, not yet in the repo | `govkit-feature-refine` batch mode | 10 dimensions; Approved ≥ 8/10 |
-| Approved packages in the repo — `acceptance.feature`, `nfrs.md`, `eval_criteria.yaml` | `govkit-feature-readiness` | 12 dimensions; Approved ≈ 10/12, Blocked < 8.5 |
+| Unreviewed drafts, whether in a tracker or a repository | `govkit-feature-refine` batch mode | 10 dimensions; Approved ≥ 8/10 |
+| Reviewed repo packages being assessed for execution readiness | `govkit-feature-readiness` batch mode | 12 dimensions; Approved ≈ 10/12, Blocked < 8.5 |
 
 The refine rubric asks whether a team understands the feature well enough to build it. The readiness rubric asks whether a coding agent can execute the package without guessing — it adds package completeness, source traceability, repo fit, and AI coding agent safety, none of which a tracker record can answer.
 
-Badging a repo-resident package with the refine rubric flatters it: it scores well on shared understanding while never being asked whether it fits the architecture. Default to the source — tracker-sourced features get refine, repo-sourced packages get readiness — and state which rubric produced the badge in the map's lede. Never mix rubrics in one map without labelling each badge; 7.5 does not mean the same thing on the two scales.
+Choose from the known review state and requested assessment. `govkit-feature-create`
+writes Draft 0 directly into repositories, so repository storage alone says nothing
+about completed refinement. A draft needs the refinement rubric; a reviewed package
+being considered for execution needs the readiness rubric and repo context. If the
+state is unknown, ask which assessment is wanted and expose the missing review
+evidence. Do not infer approval from a path, tracker status, or score.
+
+State the rubric in the map's lede and label each badge in a mixed corpus. A 7.5
+does not mean the same thing on the two scales. Batch readiness remains advisory;
+it never writes a token or supplies missing human review.
 
 For a mixed corpus, ask which gate the user is trying to see before rendering. The answer is usually "the one we have not passed yet".
 
@@ -190,7 +199,7 @@ This skill is for the **corpus**. The other GovKit skills act on one feature at 
 
 | Skill | Owns | Use instead of this one when |
 |---|---|---|
-| `govkit-feature-refine` | The 10-dimension collaboration rubric and the 3 Amigos conversation | Working on *one* feature — improving its Gherkin, running refinement, discussing a Development Token |
+| `govkit-feature-refine` | The 10-dimension collaboration rubric and the 3 Amigos conversation | Reviewing or improving *one existing draft* with the team |
 | `govkit-feature-readiness` | The 12-dimension repo-side gate | Validating *one* approved feature package before coding starts |
 | `govkit-feature-slice` | The Scenario Complexity Matrix, MoSCoW slicing, and the `@mvp`/`@v1`/`@v2` tag vocabulary | Sizing and slicing *one* feature with a PM — the conversation where slice tags actually get decided |
 
