@@ -433,6 +433,37 @@ which; a reader must be able to tell committed behavior from the packaging aroun
 approval of a change to it, and this skill never issues, implies, or recommends a product
 approval — that decision belongs to an authenticated authority elsewhere.
 
+### Turning proposals into a decidable package
+
+When the proposals above are ready to go to whoever decides, build them into a structured
+reapproval request rather than handing over prose:
+
+```bash
+python scripts/change_package.py \
+  --replaces cmt-42761531-… \
+  --changes proposals.json \
+  --requested-digest sha256:<the proposed replacement baseline's digest> \
+  --out .govkit/change-packages/AI-124.json
+```
+
+`proposals.json` is an array of `{ref, current, proposed, why, evidence}`, plus
+`reinstates_exclusion` where a proposal brings back something the baseline excluded.
+
+The script refuses rather than produces when the request would not be decidable — a change
+with only the new text, a proposal identical to what it replaces, missing evidence, a
+malformed replacement digest, an empty package. **Nothing is written on a refusal**: a
+half-formed request on disk is worse than none, because somebody finds it and submits it.
+
+**It cannot express an approval.** Any field that reads as a decision — `approved`,
+`authorized`, `decision`, `signoff`, a recorded `user_said` — is rejected wherever it appears,
+including nested. The package records `submitted: false` and `decision: null`, because this
+script reaches nothing and those are the only honest values. Do not edit them afterwards; that
+is the act the whole arrangement exists to prevent.
+
+**It does not compute the replacement digest.** You supply it. Computing it here would make
+this script decide what is being approved as well as describe it, and the canonicalisation has
+exactly one implementation, which is not this one.
+
 ## Batch mode (non-interactive corpus scoring)
 
 Sometimes the caller is not a team in a room but another skill or a script that needs many features scored at once — to badge a feature map, populate a readiness dashboard, or track drift across a release. `govkit-feature-map` is the usual caller.

@@ -68,3 +68,9 @@ def features(repo_ingest, corpus):
 def readiness_state():
     return _load("readiness_state",
                  SKILLS / "govkit-feature-readiness" / "scripts" / "readiness_state.py")
+
+
+@pytest.fixture(scope="session")
+def change_package():
+    return _load("change_package",
+                 SKILLS / "govkit-feature-refine" / "scripts" / "change_package.py")
