@@ -12,7 +12,7 @@ import sys
 
 from skill_paths import skill_path
 
-SCRIPT = skill_path("govkit-feature-slice") / "scripts" / "compute_size.py"
+SCRIPT = skill_path("aipos-feature-slice") / "scripts" / "compute_size.py"
 
 
 def sizing_for(feat):

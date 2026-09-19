@@ -7,7 +7,7 @@ reason, or defer to a named session.
 
 ## What it does
 
-The `pdg-quarterly-planning` skill runs a quarterly planning session against a live
+The `aipos-quarterly-planning` skill runs a quarterly planning session against a live
 **Product Definition Graph**, read over MCP. It answers Pillar 1's core question —
 *what problems do customers actually have, ranked by evidence, and which of them
 deserve exploration next quarter?* — in five moves:
@@ -44,7 +44,7 @@ the skill stops and says what is missing rather than planning from memory.
 
 **Pillar 1 ends at the Exploration Decision. Pillar 2 begins there.** An explored
 problem enters Rapid Validation carrying its decision entry, which the companion
-plugin's `val-rapid-validation` skill reads as the *exploration mandate* — owner,
+plugin's `aipos-rapid-validation` skill reads as the *exploration mandate* — owner,
 budget, horizon. Every Pillar 2 artifact carries that mandate in its header as a
 running ledger and states its own cost against it; the viability brief reconciles the
 work done and, on an explicit yes, records the Validation Decision back against the
@@ -60,7 +60,7 @@ governed door enforces budget, horizon, and WIP limits server-side.
 
 ## Skills
 
-- **[pdg-quarterly-planning](./skills/pdg-quarterly-planning/SKILL.md)** — the
+- **[aipos-quarterly-planning](./skills/aipos-quarterly-planning/SKILL.md)** — the
   quarterly session pack: portfolio read, evidence grading, gap analysis, agenda,
   and the Exploration Decision log, plus a dry-run rehearsal mode whose pass
   condition is that every claim traces and the calibration note is specific enough

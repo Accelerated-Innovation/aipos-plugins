@@ -2,7 +2,7 @@
 #
 # Deliberately not a PR check. An LLM-judged gate is non-deterministic, and a
 # required check that fails occasionally for no reason trains people to re-run
-# until green; govkit-feature-refine's own guidance says why that is corrosive
+# until green; aipos-feature-refine's own guidance says why that is corrosive
 # ("false gates teach teams to ignore real ones"). A secrets-dependent job also
 # cannot run on fork PRs at all.
 #
@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       skill:
-        description: "Skill to evaluate (e.g. govkit-feature-create)"
+        description: "Skill to evaluate (e.g. aipos-feature-create)"
         required: true
         type: string
       model:

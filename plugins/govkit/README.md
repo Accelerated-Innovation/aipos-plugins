@@ -12,37 +12,37 @@ whole team understands, NFRs with thresholds, evaluation criteria with gates, an
 go/no-go — the **Development Token** — before any coding agent starts. The skills cover that
 lifecycle in order:
 
-1. **`govkit-epic-create`** — the problem-first interview. Turns a validated opportunity (or a
+1. **`aipos-epic-create`** — the problem-first interview. Turns a validated opportunity (or a
    rough idea) into a complete epic: a problem statement with no solution smuggled into it,
    named personas, quantified impact, OKR alignment, three-to-five measurable success metrics,
    dated evidence, MVP scope with a real out-of-scope list, risks, and NFRs — plus GenAI
    evaluation criteria that every feature under the epic inherits. Where a Pillar 2 viability
    brief exists, this is the skill that writes out the handoff inputs it named.
-2. **`govkit-feature-create`** — the generator. Breaks an epic into a workflow-aligned,
+2. **`aipos-feature-create`** — the generator. Breaks an epic into a workflow-aligned,
    non-overlapping feature set via lightweight story mapping (backbone → horizontal slices →
    feature candidates with scope boundaries), then authors one feature into Draft 0: user
    stories, structured description, auto-tagged Gherkin, NFRs, Definition of Done, and privacy
    impact. Writes the repo feature package by default; optionally creates or updates Jira or
    Aha! records after an explicit, destination-named confirmation. Applies evaluation-driven
    thinking to GenAI features automatically.
-3. **`govkit-feature-refine`** — the 3 Amigos review of a generated Draft 0 (from
-   `govkit-feature-create`, Aha!, an LLM, or a human). Scores against a 10-dimension quality
+3. **`aipos-feature-refine`** — the 3 Amigos review of a generated Draft 0 (from
+   `aipos-feature-create`, Aha!, an LLM, or a human). Scores against a 10-dimension quality
    rubric, finds blockers and evidence gaps, suggests rewritten Gherkin, and produces a
    Development Token *recommendation*. Also exposes a non-interactive batch mode that other
    callers use to score many features at once.
-4. **`govkit-feature-slice`** — scenario sizing on the Scenario Complexity Matrix (Data &
+4. **`aipos-feature-slice`** — scenario sizing on the Scenario Complexity Matrix (Data &
    State, Integration, UI/UX at 1–3 points each) and MoSCoW release slicing onto `@mvp` /
    `@v1` / `@v2` Gherkin tags. Recommends; the PM decides. Proposes splits for Large (8–9
    point) scenarios and flags Large scenarios on the MVP critical path. Can write the tagged
    spec back to Jira or Aha! after an explicit confirmation.
-5. **`govkit-feature-readiness`** — the repo-side 12-dimension gate that actually issues the
+5. **`aipos-feature-readiness`** — the repo-side 12-dimension gate that actually issues the
    Development Token once the package (`acceptance.feature`, `nfrs.md`, `eval_criteria.yaml`)
    is in the repository. No token, no coding.
-6. **`govkit-synthetic-data`** — a seeded, repeatable Python Faker generator derived from the
+6. **`aipos-synthetic-data`** — a seeded, repeatable Python Faker generator derived from the
    feature's Gherkin scenarios, plus committed data files.
-7. **`govkit-metrics-emit`** — structured Tier 1 metric events (NDJSON) from a governed repo's
+7. **`aipos-metrics-emit`** — structured Tier 1 metric events (NDJSON) from a governed repo's
    exhaust: spec completeness, gate readiness, velocity/quality inputs.
-8. **`govkit-feature-map`** — the cross-cutting corpus view: a self-contained HTML page with a
+8. **`aipos-feature-map`** — the cross-cutting corpus view: a self-contained HTML page with a
    producer/consumer chain diagram, one card per feature with its full spec, readiness badges
    from the refine or readiness rubric, and size badges with MVP/V1/V2 slice views. Ingests
    from Jira, Aha!, or a repo directory, and merges tracker records with repo-resident Gherkin.
@@ -51,7 +51,7 @@ What it does **not** do: write implementation code, create step definitions, rep
 QA / Engineering judgment, or write to a tracker without a previewed, explicitly confirmed
 update. Batch scores are advisory — the blocker list is the gate, never the number.
 
-`govkit-epic-create` and `govkit-feature-create` are the only skills that can bring new
+`aipos-epic-create` and `aipos-feature-create` are the only skills that can bring new
 records into existence; every other skill is update-in-place or read-only. Both preview the
 full content before creating anything, and a bare "proceed" never authorizes a write.
 
@@ -127,7 +127,7 @@ issues it; slice recommends tags, the PM confirms them.
   intent and size, stories, description (including a populated Out of Scope), auto-tagged
   Gherkin with a tag coverage line, NFRs with thresholds, DoD, and privacy. Un-agreed
   thresholds appear as marked gaps, never as invented numbers. Output is labelled Draft 0
-  and hands off to `govkit-feature-refine`.
+  and hands off to `aipos-feature-refine`.
 - **Safe to auto-run:** no
 - **Inputs:** none required; writes `features/<key>/` to the working directory.
 
@@ -178,12 +178,12 @@ issues it; slice recommends tags, the PM confirms them.
   still be Blocked. Badges and dashboards built from these scores carry that caveat on their
   face.
 - **Epic evaluation criteria are a contract, not an aspiration.** A threshold set in
-  `govkit-epic-create` is inherited by every feature and becomes a release gate at the
+  `aipos-epic-create` is inherited by every feature and becomes a release gate at the
   readiness check. Set them deliberately.
-- **Draft 0 is unreviewed by definition.** `govkit-feature-create` writes specs; it never
+- **Draft 0 is unreviewed by definition.** `aipos-feature-create` writes specs; it never
   reviews its own output, scores it, or implies a token. A generated feature that skips
   refinement is a generated feature nobody has read.
-- **Record creation is one-way here.** `govkit-epic-create` and `govkit-feature-create` can
+- **Record creation is one-way here.** `aipos-epic-create` and `aipos-feature-create` can
   create tracker records after an explicit confirmation, but no skill in this plugin deletes
   or re-parents one. Check the preview before saying yes.
 - **Two rubric scales exist** — refine's 10 dimensions for tracker drafts, readiness's 12
@@ -201,14 +201,14 @@ issues it; slice recommends tags, the PM confirms them.
 
 | Kind | Name | What it does |
 |---|---|---|
-| Skill | `govkit-epic-create` | Problem-first epic interview; epic package; inherited GenAI evaluation criteria |
-| Skill | `govkit-feature-create` | Story mapping, feature stubs, and Draft 0 authoring; optional record creation |
-| Skill | `govkit-feature-refine` | 3 Amigos review of Draft 0; token recommendation; batch scoring mode |
-| Skill | `govkit-feature-slice` | Scenario sizing, MoSCoW slicing, `@mvp`/`@v1`/`@v2` tags, tracker write-back |
-| Skill | `govkit-feature-readiness` | Repo-side 12-dimension gate; issues the Development Token |
-| Skill | `govkit-feature-map` | Corpus map: chain, cards, readiness + size badges, slice filter |
-| Skill | `govkit-synthetic-data` | Seeded Faker generator + data files from Gherkin scenarios |
-| Skill | `govkit-metrics-emit` | Tier 1 NDJSON metric events from repo exhaust |
+| Skill | `aipos-epic-create` | Problem-first epic interview; epic package; inherited GenAI evaluation criteria |
+| Skill | `aipos-feature-create` | Story mapping, feature stubs, and Draft 0 authoring; optional record creation |
+| Skill | `aipos-feature-refine` | 3 Amigos review of Draft 0; token recommendation; batch scoring mode |
+| Skill | `aipos-feature-slice` | Scenario sizing, MoSCoW slicing, `@mvp`/`@v1`/`@v2` tags, tracker write-back |
+| Skill | `aipos-feature-readiness` | Repo-side 12-dimension gate; issues the Development Token |
+| Skill | `aipos-feature-map` | Corpus map: chain, cards, readiness + size badges, slice filter |
+| Skill | `aipos-synthetic-data` | Seeded Faker generator + data files from Gherkin scenarios |
+| Skill | `aipos-metrics-emit` | Tier 1 NDJSON metric events from repo exhaust |
 | Script | `compute_size.py` (slice) | All sizing arithmetic: points, bands, rollups, risk flags |
 | Script | `repo_ingest.py`, `verify_scores.py`, `render_map.py` (map) | Ingest, score verification gate, HTML renderer |
 | Reference | `references/gherkin-authoring-standard.md` (plugin-wide) | The shared Gherkin authoring standard every feature skill judges against |
@@ -220,8 +220,8 @@ issues it; slice recommends tags, the PM confirms them.
 |---|---|
 | 0.8.0 | One shared Gherkin authoring standard (`references/gherkin-authoring-standard.md`) that create, refine, readiness, slice and map all load instead of each carrying its own rules — BRIEF, explicit `Rule:` blocks as the GovKit convention, boundary coverage, scenario isolation, the confirmed / proposed / unresolved registers, and the line between a deterministic behavior check and an aggregate GenAI evaluation. Refine no longer flattens `Rule:` blocks it was meant to preserve. Ingestion moved from line-scanning to the official Cucumber parser (`gherkin-official`, MIT), so backgrounds, outlines, Examples, step tables, doc strings, tag inheritance and source locations survive into `features.json` and reach the map's cards; invalid Gherkin now produces `file:line:column` diagnostics instead of a partial feature. Optional `@rule:` / `@scenario:` identifiers survive rewording. Readiness gained a per-scenario verification plan and separates "ready to implement" from "automated" and "verified passing". Slicing gained a behavior-preservation checklist for splits. New: pinned script dependencies and a deterministic offline `pytest` suite in CI. |
 | 0.7.0 | Shift-left contract alignment: authoring now walks the gates' ten NFR areas with owners, captures eval-criteria data/evidence/owner fields and the explicit `multi_agent` answer, elicits business rules and emits `Rule:`-grouped Gherkin, and writes structured `Produces`/`Consumes` sections that `repo_ingest.py` now parses into the feature map's chain. Readiness gained a batch mode, a `--scale readiness` verifier path, and a machine-readable token record (`.govkit/tokens/<key>.json`) that unlocks Tier 2 metrics. Write protocols consolidated to one canonical reference; GenAI detection lists unified with epic-level inheritance. |
-| 0.6.0 | Added `govkit-epic-create`: problem-first epic authoring, the solution-in-problem test, three-part success metrics, and epic-level GenAI evaluation criteria that features inherit. Closes the handoff from Pillar 2's viability brief. |
-| 0.5.0 | Added `govkit-feature-create`: epic story mapping, feature stubs, and Draft 0 authoring with automatic Gherkin tagging and GenAI evaluation criteria. First skill that can create tracker records, behind a whole-set preview and explicit confirmation. |
-| 0.4.0 | Added `govkit-feature-slice`; size badges, sizing panel, and MVP/V1/V2 slice filter in the feature map; scenario tags preserved through ingestion. |
-| 0.3.0 | Added `govkit-feature-map` with batch scoring; clarified that refine recommends and readiness issues the Development Token. |
+| 0.6.0 | Added `aipos-epic-create`: problem-first epic authoring, the solution-in-problem test, three-part success metrics, and epic-level GenAI evaluation criteria that features inherit. Closes the handoff from Pillar 2's viability brief. |
+| 0.5.0 | Added `aipos-feature-create`: epic story mapping, feature stubs, and Draft 0 authoring with automatic Gherkin tagging and GenAI evaluation criteria. First skill that can create tracker records, behind a whole-set preview and explicit confirmation. |
+| 0.4.0 | Added `aipos-feature-slice`; size badges, sizing panel, and MVP/V1/V2 slice filter in the feature map; scenario tags preserved through ingestion. |
+| 0.3.0 | Added `aipos-feature-map` with batch scoring; clarified that refine recommends and readiness issues the Development Token. |
 | 0.1–0.2 | Initial skills: refine (with quality rubric and checklists), readiness, metrics-emit, synthetic-data. |

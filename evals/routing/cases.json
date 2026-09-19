@@ -10,7 +10,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "pdg-quarterly-planning",
+          "skill": "aipos-quarterly-planning",
           "handoffs": []
         }
       ]
@@ -24,7 +24,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "pdg-quarterly-planning",
+          "skill": "aipos-quarterly-planning",
           "handoffs": []
         }
       ]
@@ -38,7 +38,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]
@@ -52,7 +52,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]
@@ -66,7 +66,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-epic-create",
+          "skill": "aipos-epic-create",
           "handoffs": []
         }
       ]
@@ -80,7 +80,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-epic-create",
+          "skill": "aipos-epic-create",
           "handoffs": []
         }
       ]
@@ -94,7 +94,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-create",
+          "skill": "aipos-feature-create",
           "handoffs": []
         }
       ]
@@ -108,7 +108,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-create",
+          "skill": "aipos-feature-create",
           "handoffs": []
         }
       ]
@@ -122,7 +122,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-refine",
+          "skill": "aipos-feature-refine",
           "handoffs": []
         }
       ]
@@ -136,7 +136,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-refine",
+          "skill": "aipos-feature-refine",
           "handoffs": []
         }
       ]
@@ -150,7 +150,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-workflow-map",
+          "skill": "aipos-workflow-map",
           "handoffs": []
         }
       ]
@@ -164,7 +164,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-workflow-map",
+          "skill": "aipos-workflow-map",
           "handoffs": []
         }
       ]
@@ -178,7 +178,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-slice",
+          "skill": "aipos-feature-slice",
           "handoffs": []
         }
       ]
@@ -192,7 +192,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-slice",
+          "skill": "aipos-feature-slice",
           "handoffs": []
         }
       ]
@@ -206,7 +206,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-map",
+          "skill": "aipos-feature-map",
           "handoffs": []
         }
       ]
@@ -220,7 +220,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-map",
+          "skill": "aipos-feature-map",
           "handoffs": []
         }
       ]
@@ -234,7 +234,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-readiness",
+          "skill": "aipos-feature-readiness",
           "handoffs": []
         }
       ]
@@ -248,7 +248,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-readiness",
+          "skill": "aipos-feature-readiness",
           "handoffs": []
         }
       ]
@@ -262,7 +262,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-synthetic-data",
+          "skill": "aipos-synthetic-data",
           "handoffs": []
         }
       ]
@@ -276,7 +276,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-synthetic-data",
+          "skill": "aipos-synthetic-data",
           "handoffs": []
         }
       ]
@@ -290,7 +290,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-metrics-emit",
+          "skill": "aipos-metrics-emit",
           "handoffs": []
         }
       ]
@@ -304,7 +304,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-metrics-emit",
+          "skill": "aipos-metrics-emit",
           "handoffs": []
         }
       ]
@@ -318,7 +318,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-create",
+          "skill": "aipos-feature-create",
           "handoffs": []
         }
       ]
@@ -332,7 +332,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]
@@ -346,7 +346,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]
@@ -360,7 +360,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-refine",
+          "skill": "aipos-feature-refine",
           "handoffs": []
         }
       ]
@@ -374,7 +374,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]
@@ -388,7 +388,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-create",
+          "skill": "aipos-feature-create",
           "handoffs": []
         }
       ]
@@ -402,7 +402,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-refine",
+          "skill": "aipos-feature-refine",
           "handoffs": []
         }
       ]
@@ -416,7 +416,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-readiness",
+          "skill": "aipos-feature-readiness",
           "handoffs": []
         }
       ]
@@ -430,7 +430,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-create",
+          "skill": "aipos-feature-create",
           "handoffs": []
         }
       ]
@@ -444,9 +444,9 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-workflow-map",
+          "skill": "aipos-workflow-map",
           "handoffs": [
-            "govkit-feature-map"
+            "aipos-feature-map"
           ]
         }
       ]
@@ -460,7 +460,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-map",
+          "skill": "aipos-feature-map",
           "handoffs": []
         }
       ]
@@ -474,7 +474,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-slice",
+          "skill": "aipos-feature-slice",
           "handoffs": []
         }
       ]
@@ -488,9 +488,9 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-map",
+          "skill": "aipos-feature-map",
           "handoffs": [
-            "govkit-feature-refine"
+            "aipos-feature-refine"
           ]
         }
       ]
@@ -504,9 +504,9 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-map",
+          "skill": "aipos-feature-map",
           "handoffs": [
-            "govkit-feature-readiness"
+            "aipos-feature-readiness"
           ]
         }
       ]
@@ -520,7 +520,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]
@@ -534,7 +534,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "pdg-quarterly-planning",
+          "skill": "aipos-quarterly-planning",
           "handoffs": []
         }
       ]
@@ -548,7 +548,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-synthetic-data",
+          "skill": "aipos-synthetic-data",
           "handoffs": []
         }
       ]
@@ -674,7 +674,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-create",
+          "skill": "aipos-feature-create",
           "handoffs": []
         }
       ]
@@ -688,7 +688,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-refine",
+          "skill": "aipos-feature-refine",
           "handoffs": []
         }
       ]
@@ -702,7 +702,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-feature-readiness",
+          "skill": "aipos-feature-readiness",
           "handoffs": []
         }
       ]
@@ -716,7 +716,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-workflow-map",
+          "skill": "aipos-workflow-map",
           "handoffs": []
         }
       ]
@@ -730,7 +730,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "govkit-metrics-emit",
+          "skill": "aipos-metrics-emit",
           "handoffs": []
         }
       ]
@@ -744,7 +744,7 @@
       "allowed": [
         {
           "action": "skill",
-          "skill": "val-rapid-validation",
+          "skill": "aipos-rapid-validation",
           "handoffs": []
         }
       ]

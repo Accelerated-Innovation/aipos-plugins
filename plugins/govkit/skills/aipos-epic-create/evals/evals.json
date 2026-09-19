@@ -1,0 +1,141 @@
+{
+  "skill_name": "aipos-epic-create",
+  "evals": [
+    {
+      "id": 1,
+      "name": "reframes-solution-shaped-problem",
+      "prompt": "Can you help me improve this epic? I think the problem statement needs work.",
+      "files": [
+        "files/epic-draft-solution-shaped.md"
+      ],
+      "expected_output": "Update intent is detected and only the problem statement is worked on, since that is what the PM asked for — other weak sections (the five-way OKR alignment, the unmeasurable success metrics, the 'monitor closely' mitigation, the 'fast and secure' NFRs) may be noted in at most one line at the end but are NOT rewritten uninvited. The response identifies that the stated problem is solution-shaped: 'We don't have a document management system' is the absence of a solution, not a problem, and 'users can't find documents' has no sufferer, no measure, and no evidence. It applies the reframing script — asking who is struggling and what is slow or difficult — rather than rejecting the PM's framing or silently rewriting it. It notes that the storage contract renewal is a real constraint that belongs in Initial Scope as a decision, not in the problem statement. It asks one primary question at a time.",
+      "assertions": [
+        {
+          "name": "solution-in-problem-detected",
+          "text": "The response identifies that 'We don't have a document management system' states the absence of a solution rather than a problem, and that 'users can't find documents' lacks a named sufferer and any measure."
+        },
+        {
+          "name": "reframes-rather-than-rejects",
+          "text": "The response asks who is struggling and what is difficult or slow for them, rather than declaring the epic wrong or silently substituting its own problem statement."
+        },
+        {
+          "name": "scope-of-update-respected",
+          "text": "Only the problem statement is worked on; the success metrics, OKR alignment, risks, and NFRs are not rewritten, though they may be flagged briefly."
+        },
+        {
+          "name": "constraint-relocated-not-discarded",
+          "text": "The storage contract renewal deadline is recognized as a real constraint belonging in Initial Scope or Risks, not deleted and not left in the problem statement."
+        },
+        {
+          "name": "one-question-at-a-time",
+          "text": "The response asks a single primary question rather than presenting a list or questionnaire."
+        },
+        {
+          "name": "no-invented-content",
+          "text": "No personas, baselines, targets, or evidence are invented to fill the epic's gaps."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "consumes-viability-brief-and-preserves-provenance",
+      "prompt": "We got a go on this from validation. Here's the viability brief — turn it into an epic.",
+      "files": [
+        "files/viability-brief-ticket-search.md"
+      ],
+      "expected_output": "The brief is read before any questions are asked, and the questions that follow are only about what the brief does not answer (owner, category, target release, and the unresolved thresholds). GenAI mode activates automatically (semantic retrieval / embeddings). The epic's Validation Decision line records GO (revise scope). The revised scope is honored: retrieval is in MVP scope and summarization is explicitly OUT, carried across with the brief's reason. Provenance survives translation — the measured 41-minute median and the 34/40 demand test are recorded as measured with their dates, while the 30%-recoverable figure and the $0.01 per-search cost are carried as assumptions, not promoted to fact. The un-agreed retrieval relevance threshold stays TBD and appears in Open Questions; the zero cross-account leakage guardrail becomes an evaluation criterion or NFR since the brief states it absolutely. The four 'what we still don't know' items appear in Open Questions. The epic hands off to aipos-feature-create.",
+      "assertions": [
+        {
+          "name": "brief-read-before-questioning",
+          "text": "The response demonstrably uses the brief's content and asks only for what the brief does not supply (such as owner, category, or target release), rather than re-asking questions the brief already answers."
+        },
+        {
+          "name": "revised-scope-honored",
+          "text": "Summarization is placed explicitly out of scope with the brief's reasoning, and retrieval is in MVP scope; the response does not quietly include summarization."
+        },
+        {
+          "name": "provenance-preserved",
+          "text": "Measured findings (41-minute median, 34 of 40 demand test, 1.4M ticket corpus) are recorded as measured with dates, while the 30% recoverable assumption and the $0.01 per-search cost remain marked as assumptions rather than stated as fact."
+        },
+        {
+          "name": "threshold-not-invented",
+          "text": "No retrieval relevance threshold is invented; it is recorded as TBD and listed as an open question, since the brief states the team has not agreed one."
+        },
+        {
+          "name": "guardrail-carried-as-absolute",
+          "text": "The zero cross-account leakage requirement appears as an evaluation criterion or NFR with an absolute threshold, reflecting the legal review in the brief."
+        },
+        {
+          "name": "genai-mode-active",
+          "text": "GenAI mode is activated automatically from the semantic retrieval and embeddings content, and evaluation criteria are included."
+        },
+        {
+          "name": "unknowns-carried-forward",
+          "text": "The brief's 'what we still don't know' items appear in the epic's Open Questions and gaps section rather than being dropped."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "genai-thresholds-flagged-as-inherited-contract",
+      "prompt": "This epic is for an AI assistant that drafts responses to customer emails. Let's do the success metrics and evaluation criteria section.",
+      "files": [],
+      "expected_output": "GenAI mode activates and is announced once. Success metrics are pushed toward the three-part form — baseline, target, observation method — with at most one push per metric and an explicit offer that an estimate is acceptable. When setting evaluation criteria, the response states plainly that these thresholds are inherited by every feature under the epic and become release gates two skills downstream, so they should be set deliberately. It walks the relevant evaluation dimensions for drafted customer email (groundedness, correctness, tone, safety, privacy, latency, cost) rather than listing all of them mechanically. Since the prompt supplies no numbers, no threshold is invented anywhere — each is asked for, and unanswered ones would be marked TBD. It asks about golden test cases and evaluation cadence. At least one counter-metric is suggested, since an epic that speeds up email drafting could degrade response quality.",
+      "assertions": [
+        {
+          "name": "inheritance-stated-explicitly",
+          "text": "The response explicitly tells the PM that epic-level evaluation thresholds are inherited by every feature under the epic and become release gates downstream."
+        },
+        {
+          "name": "no-thresholds-invented",
+          "text": "No specific numeric threshold (such as 0.95 groundedness or a latency figure) is supplied by the skill; thresholds are asked for, with TBD as the stated fallback."
+        },
+        {
+          "name": "three-part-metrics",
+          "text": "Success metrics are pushed toward having a baseline, a target, and an observation method, with an offer that an estimate is acceptable when the baseline is unknown."
+        },
+        {
+          "name": "dimensions-are-relevant",
+          "text": "The evaluation dimensions discussed fit drafted customer email (such as groundedness, correctness, tone, safety, privacy) rather than being an undifferentiated list of every possible dimension."
+        },
+        {
+          "name": "counter-metric-suggested",
+          "text": "At least one counter-metric or quality guard is proposed, recognizing that faster drafting could degrade response quality or customer satisfaction."
+        },
+        {
+          "name": "cadence-and-golden-cases-asked",
+          "text": "The response asks about golden test cases or past failures and about evaluation cadence."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "no-tracker-markdown-path-and-write-discipline",
+      "prompt": "We don't use Jira or Aha. I just want to talk through a new epic and end up with a markdown file. It's about reducing onboarding time for new warehouse staff.",
+      "files": [],
+      "expected_output": "The skill proceeds without asking which tracker to use and without describing markdown as a fallback or limitation. New-epic intent is detected and the interview opens at Step 1 with core metadata, one question at a time, starting with an outcome-focused title. GenAI mode stays off — nothing in the request involves model behavior. The response does not dump the whole template or ask for every field at once, and it does not write any file before reaching final assembly and receiving explicit approval. Gaps are recorded honestly rather than filled in.",
+      "assertions": [
+        {
+          "name": "no-tracker-no-friction",
+          "text": "The skill does not ask which tracker to use and does not describe the markdown output as a fallback, workaround, or degraded path."
+        },
+        {
+          "name": "interview-not-questionnaire",
+          "text": "The response asks one primary question rather than presenting the full epic template or a list of questions to answer at once."
+        },
+        {
+          "name": "genai-mode-off",
+          "text": "GenAI mode is not activated and no evaluation criteria section is introduced, since nothing in the request involves model-generated behavior."
+        },
+        {
+          "name": "no-premature-write",
+          "text": "No file is written and no write is performed at this stage; writing is reserved for final assembly after explicit approval."
+        },
+        {
+          "name": "package-path-correct",
+          "text": "If an output location is named, it is epics/<key-or-slug>/epic.md."
+        }
+      ]
+    }
+  ]
+}

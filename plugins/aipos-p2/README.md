@@ -6,7 +6,7 @@ the **Validation Decision**: go, no-go, or revise.
 
 ## What it does
 
-The `val-rapid-validation` skill helps a Product Manager build the evidence that answers
+The `aipos-rapid-validation` skill helps a Product Manager build the evidence that answers
 Pillar 2's core question — *can this solution create useful, safe, measurable value before we
 invest in full production buildout?* — at the cheapest point in the lifecycle, where testing
 an assumption costs days instead of sprints.
@@ -133,7 +133,7 @@ artifact — validation is a sequence, not a menu visit.
 
 | Kind | Name | What it does |
 |---|---|---|
-| Skill | `val-rapid-validation` | The menu, routing, behaviour rules, and the four-step loop (pick → intake → build → close) |
+| Skill | `aipos-rapid-validation` | The menu, routing, behaviour rules, and the four-step loop (pick → intake → build → close) |
 | Reference | `evidence-intake.md` | Three intake paths (Aha! record, pasted material, nothing), the exploration mandate read alongside them, the evidence-base header with its mandate ledger, and provenance marking |
 | Reference | `record-writeback.md` | The prompted, explicit-yes save-to-record protocol, including the decision record as the viability brief's second destination |
 | Evals | `evals/evals.json` | Four model-graded cases: mandate declared, budget exhausted, no mandate, viability brief reconciles and closes the loop |

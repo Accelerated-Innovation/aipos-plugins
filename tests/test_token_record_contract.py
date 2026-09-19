@@ -1,7 +1,7 @@
 """The token record and the event that reads it must not drift — 14C.
 
-`govkit-feature-readiness` writes `.govkit/tokens/<feature-id>.json`.
-`govkit-metrics-emit` reserves `refinement.token.issued` to read it, and
+`aipos-feature-readiness` writes `.govkit/tokens/<feature-id>.json`.
+`aipos-metrics-emit` reserves `refinement.token.issued` to read it, and
 names the fields it will take. Those are two skills, two files and two
 authors-in-time, with nothing between them but a sentence in a reference
 document.
@@ -27,7 +27,7 @@ import pytest
 from skill_paths import skill_path
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCHEMA = (skill_path("govkit-metrics-emit")
+SCHEMA = (skill_path("aipos-metrics-emit")
           / "references" / "event_schema.md")
 
 NOW = datetime.datetime(2026, 9, 19, 12, 0, tzinfo=datetime.timezone.utc)

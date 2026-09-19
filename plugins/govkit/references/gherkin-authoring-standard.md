@@ -1,13 +1,13 @@
 # GovKit Gherkin Authoring Standard
 
-> **Shared reference.** One copy, read by `govkit-feature-create`, `govkit-feature-refine`,
-> `govkit-feature-readiness`, `govkit-feature-slice` and `govkit-feature-map`. From a skill
+> **Shared reference.** One copy, read by `aipos-feature-create`, `aipos-feature-refine`,
+> `aipos-feature-readiness`, `aipos-feature-slice` and `aipos-feature-map`. From a skill
 > folder the path is `../../references/gherkin-authoring-standard.md`; under an installed
 > plugin it is also `${CLAUDE_PLUGIN_ROOT}/references/gherkin-authoring-standard.md`.
 > Skill-local references govern their own subjects — tags in
-> `govkit-feature-create/references/gherkin-tagging.md`, scoring in
-> `govkit-feature-refine/references/gherkin-quality-rubric.md`, the repo gate in
-> `govkit-feature-readiness/references/govkit-readiness-rubric.md`. They cite this file;
+> `aipos-feature-create/references/gherkin-tagging.md`, scoring in
+> `aipos-feature-refine/references/gherkin-quality-rubric.md`, the repo gate in
+> `aipos-feature-readiness/references/govkit-readiness-rubric.md`. They cite this file;
 > they do not restate it. Where they disagree with it, this file is the authoring rule and
 > the rubric is the scoring rule.
 

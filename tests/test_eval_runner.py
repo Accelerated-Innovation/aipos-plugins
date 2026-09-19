@@ -34,8 +34,8 @@ def runner():
 def test_every_skill_with_cases_is_discovered(runner):
     skills = runner.discover_skills()
 
-    assert "govkit-feature-create" in skills
-    assert "val-rapid-validation" in skills, "plugins other than govkit must be reachable"
+    assert "aipos-feature-create" in skills
+    assert "aipos-rapid-validation" in skills, "plugins other than govkit must be reachable"
     assert all((d / "SKILL.md").is_file() for d in skills.values())
 
 
@@ -51,12 +51,12 @@ def test_cases_load_from_every_discovered_skill(runner):
 def test_the_system_prompt_is_the_whole_skill_package(runner):
     """A skill is SKILL.md *and* the references it tells the subject to read.
 
-    govkit-feature-create names six, and says of one that it "is what the
+    aipos-feature-create names six, and says of one that it "is what the
     gates judge your Gherkin against". Sending only SKILL.md would have the
     subject work from memory and the judge grade the memory — which measures
     nothing about the shipped package.
     """
-    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    skill_dir = runner.discover_skills()["aipos-feature-create"]
     case = runner.load_cases(skill_dir)[0]
 
     system, _user = runner.build_subject_request(skill_dir, case)
@@ -87,24 +87,24 @@ def test_references_outside_the_plugin_are_not_shipped(runner, tmp_path):
 
 
 def test_a_case_needing_an_unavailable_runtime_target_is_detected(runner):
-    """govkit-metrics-emit points at a governed repo at /tmp/testrepo. This
+    """aipos-metrics-emit points at a governed repo at /tmp/testrepo. This
     runner has no such repo and no tools, so the case cannot perform the
     behaviour its rubric grades — it must be skipped, not run and failed."""
-    skill_dir = runner.discover_skills()["govkit-metrics-emit"]
+    skill_dir = runner.discover_skills()["aipos-metrics-emit"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
 
     assert runner.unavailable_targets(skill_dir, case) == ["/tmp/testrepo"]
 
 
 def test_a_fully_bundled_case_is_runnable(runner):
-    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    skill_dir = runner.discover_skills()["aipos-feature-create"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
 
     assert runner.unavailable_targets(skill_dir, case) == []
 
 
 def test_attached_files_are_inlined_with_the_prompt_last(runner):
-    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    skill_dir = runner.discover_skills()["aipos-feature-create"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
 
     _system, user = runner.build_subject_request(skill_dir, case)
@@ -226,7 +226,7 @@ def test_changing_the_skill_invalidates_a_recorded_grade(runner, tmp_path, monke
     """The defect that would make this harness worse than useless: edit a
     SKILL.md, re-run, and every case is skipped as already done while the old
     grade is presented as current."""
-    skill_dir = runner.discover_skills()["govkit-feature-slice"]
+    skill_dir = runner.discover_skills()["aipos-feature-slice"]
     case = runner.load_cases(skill_dir)[0]
     before = runner.input_digest(skill_dir, case, _Args())
 
@@ -249,7 +249,7 @@ def test_changing_the_skill_invalidates_a_recorded_grade(runner, tmp_path, monke
 def test_changing_either_model_invalidates_a_recorded_grade(runner, args):
     """A grade means 'this model, judged by that one'. Reusing it across a
     model swap silently compares two different things."""
-    skill_dir = runner.discover_skills()["govkit-feature-slice"]
+    skill_dir = runner.discover_skills()["aipos-feature-slice"]
     case = runner.load_cases(skill_dir)[0]
 
     assert runner.input_digest(skill_dir, case, _Args()) != runner.input_digest(
@@ -307,7 +307,7 @@ def test_turns_defaults_to_two_so_an_interactive_skill_can_deliver(runner):
 def test_the_turn_count_changes_the_input_digest(runner):
     """A grade means "this many turns". Reusing a one-turn result for a
     two-turn run would compare two different things."""
-    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill_dir)[0]
 
     one = runner.input_digest(skill_dir, case, _Args(turns=1))
@@ -333,7 +333,7 @@ def test_a_single_turn_is_joined_without_decoration(runner):
 def test_the_proceed_nudge_is_part_of_the_input_digest(runner, monkeypatch):
     """The nudge is sent to the subject, so it shapes the interaction being
     graded. Changing it and reusing an old grade compares two different runs."""
-    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill_dir)[0]
     before = runner.input_digest(skill_dir, case, _Args())
 
@@ -429,7 +429,7 @@ def test_the_judge_contract_is_part_of_the_input_digest(runner, monkeypatch):
     """Changing the judge's instructions or its output schema changes what a
     grade means. Resume must not present a grade from the old contract as
     current."""
-    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("claims"))
     before = runner.input_digest(skill_dir, case, _Args())
 

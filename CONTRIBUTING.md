@@ -46,8 +46,8 @@ Each skill's `evals/evals.json` is a separate, **model-graded** pass. Those case
 
 ```bash
 python -m pip install -r requirements-evals.txt
-python evals/run_evals.py --skill govkit-feature-create             # dry run, free
-python evals/run_evals.py --skill govkit-feature-create --execute   # real calls, real money
+python evals/run_evals.py --skill aipos-feature-create             # dry run, free
+python evals/run_evals.py --skill aipos-feature-create --execute   # real calls, real money
 ```
 
 `--execute` is required to spend anything. The skill's `SKILL.md` becomes the system prompt and a **different** model grades the response against the case's `expected_output`. Results and full traces land in `.claude/hillclimb/<skill>/<variant>/` (gitignored) — read the traces, not just the score. Details and the limits of what a passing run proves: [`evals/README.md`](evals/README.md).

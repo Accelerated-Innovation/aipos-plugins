@@ -228,7 +228,7 @@ def test_the_record_names_the_approval_it_derives_from(readiness_state):
 
 
 def test_the_record_keeps_the_existing_fields_metrics_read(readiness_state):
-    """`govkit-metrics-emit` reads `decision`, and refinement lead time and
+    """`aipos-metrics-emit` reads `decision`, and refinement lead time and
     blocked-token rate are computed from it. Renaming or dropping it to make
     room for the new fields would silently zero both."""
     record = readiness_state.to_record(readiness_state.assess(facts(readiness_state)),
@@ -331,7 +331,7 @@ def test_a_missing_score_does_not_silently_pass(readiness_state):
 
 
 def test_the_record_keeps_score_draft_version_and_timestamp(readiness_state):
-    """The original record carried these and `govkit-metrics-emit` reserves
+    """The original record carried these and `aipos-metrics-emit` reserves
     them for the token event. Dropping them while the documentation said
     every original field was unchanged is the kind of claim that survives
     review because nobody diffs a JSON example."""

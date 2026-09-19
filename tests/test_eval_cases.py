@@ -64,7 +64,7 @@ def test_every_bundled_fixture_exists(path):
     eval silently instead of failing it.
 
     Only *relative* entries are bundled fixtures. An absolute path is a runtime
-    target the eval sets up for itself — `govkit-metrics-emit` points its cases
+    target the eval sets up for itself — `aipos-metrics-emit` points its cases
     at a governed repo at `/tmp/testrepo` — and asserting that exists in a
     checkout would be asserting something this repository does not own.
     """

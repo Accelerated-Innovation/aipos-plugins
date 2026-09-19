@@ -28,7 +28,7 @@ def scored(decision="Approved", **commitment):
     """One feature's score record, optionally carrying commitment state.
 
     Note the vocabulary: map score records use `"Approved"`, while the
-    token record written by `govkit-feature-readiness` uses `"approved"`.
+    token record written by `aipos-feature-readiness` uses `"approved"`.
     Two spellings of one decision is its own small hazard, recorded here
     rather than silently normalised by a test.
     """

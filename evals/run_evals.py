@@ -33,9 +33,9 @@ direction as the subject. Read the traces.
 
 Usage:
     python evals/run_evals.py --list
-    python evals/run_evals.py --skill govkit-feature-create             # dry run
-    python evals/run_evals.py --skill govkit-feature-create --execute
-    python evals/run_evals.py --skill govkit-feature-refine --case 9 --execute
+    python evals/run_evals.py --skill aipos-feature-create             # dry run
+    python evals/run_evals.py --skill aipos-feature-create --execute
+    python evals/run_evals.py --skill aipos-feature-refine --case 9 --execute
 """
 
 from __future__ import annotations
@@ -213,7 +213,7 @@ REFERENCE_RE = re.compile(r"`((?:\.\./)*references/[A-Za-z0-9_.-]+\.md)`")
 def resolve_references(skill_dir: pathlib.Path) -> list[tuple[str, str]]:
     """Every reference the skill's own text tells the subject to read.
 
-    A skill is a package, not one file. `govkit-feature-create` names six
+    A skill is a package, not one file. `aipos-feature-create` names six
     references and says of one of them that it "is what the gates judge your
     Gherkin against" — sending only SKILL.md would have the subject work from
     memory and the judge grade the memory, which measures nothing about the
@@ -244,7 +244,7 @@ def unavailable_targets(skill_dir: pathlib.Path, case: dict) -> list[str]:
     """Case inputs this harness cannot supply.
 
     An absolute path is a runtime target the case expects to exist
-    (`govkit-metrics-emit` points at a governed repo at /tmp/testrepo). This
+    (`aipos-metrics-emit` points at a governed repo at /tmp/testrepo). This
     runner has no tools and no such repo, so those cases cannot perform the
     behaviour their rubric grades. Running them anyway would record a
     confident failure caused by the harness.

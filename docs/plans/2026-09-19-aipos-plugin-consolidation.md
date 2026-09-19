@@ -174,7 +174,7 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 | 05 | Journey authoring, slicing, and visualization boundaries | 04 | [~] |
 | 06 | Metrics and synthetic-data boundaries | 05 | [~] |
 | 07 | Packaging tests independent of old directory names | 06 | [x] |
-| 08 | Rename all eleven skills to `aipos-*` | 07 | [ ] |
+| 08 | Rename all eleven skills to `aipos-*` | 07 | [x] |
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [ ] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [ ] |
 | 11 | Clean-install and old-plugin removal check | 10 | [ ] |
@@ -410,3 +410,15 @@ For each increment, append a short record here or link its PR containing: comple
 - `.venv/bin/python -B -m pytest tests -q -p no:cacheprovider`:
   **409 passed, 5 skipped**. Skips are fixture-directory checks for cases without
   file fixtures, not hidden model results.
+
+### Increment 08
+
+- Renamed all eleven skill directories and frontmatter names to `aipos-*`;
+  updated active handoffs, script usage examples, tests, evaluation expectations,
+  CI references, requirements, and the skill template. No aliases were added.
+- Historical plans and the frozen pre-change routing snapshot retain original IDs.
+- Full offline suite: **409 passed, 5 skipped**. Marketplace validation passed;
+  behavior inventory resolves 48 cases across eleven renamed skills. Routing dry
+  run resolves all eleven skills and 47 development cases.
+- Only public skill names/paths changed. `.govkit/`, scoring and event contracts
+  retain their prior identities. Live before/after routing comparison is pending.

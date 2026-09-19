@@ -1,7 +1,7 @@
 # Stable Rule and Scenario Identifiers
 
-> **Shared reference.** Read by `govkit-feature-create`, `govkit-feature-refine`,
-> `govkit-feature-slice`, `govkit-feature-readiness` and `govkit-feature-map`.
+> **Shared reference.** Read by `aipos-feature-create`, `aipos-feature-refine`,
+> `aipos-feature-slice`, `aipos-feature-readiness` and `aipos-feature-map`.
 > From a skill folder: `../../references/spec-identifiers.md`.
 > Companion to [`gherkin-authoring-standard.md`](gherkin-authoring-standard.md)
 > and [`workflow-source.md`](workflow-source.md).
@@ -90,7 +90,7 @@ it has to be recorded:
   reused for a different decision.
 - *Two scenarios merged.* The surviving scenario keeps one slug; the other is retired.
 
-Slicing and retagging must not change identifiers. `govkit-feature-slice` may split a
+Slicing and retagging must not change identifiers. `aipos-feature-slice` may split a
 scenario for size reasons, and when it does, it applies the split rules above and says so
 in its output — a split that silently re-identifies its own outputs breaks every evaluation
 that pointed at them.
@@ -131,7 +131,7 @@ wrote.
 ## What a tool does with each identity event
 
 The authoring rules above say what an author does. This is what a resolver does when it meets
-the result — `govkit-feature-map`'s workflow resolver implements exactly this table.
+the result — `aipos-feature-map`'s workflow resolver implements exactly this table.
 
 | Situation | Resolver behavior |
 |---|---|

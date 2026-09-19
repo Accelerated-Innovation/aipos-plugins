@@ -1,5 +1,5 @@
 ---
-name: govkit-skill-name
+name: aipos-skill-name
 description: One clear sentence on what this skill does AND when Claude should use it. Include the trigger words a user would actually type (e.g. "readiness score", "spec review"), because this description is the only thing Claude sees when deciding whether to load the skill.
 ---
 
