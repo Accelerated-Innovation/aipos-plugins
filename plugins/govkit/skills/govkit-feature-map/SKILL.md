@@ -133,6 +133,37 @@ The Development Token is a governance signal, and the fastest way to discredit t
 
 **These are batch scores, not a refinement.** Carry the caveat into the page itself, not just the chat message that delivered it. The map is a starting point for the 3 Amigos conversation and it should say so where a reader will see it.
 
+## Commitment chips (only where a score record carries one)
+
+A score record may carry a `commitment` block:
+
+```json
+{ "commitment": { "commitment_id": "cmt-4276…", "authorizes_work": false,
+                  "reason": "COMMITMENT_INVALIDATED", "checked_at": "2026-09-19T12:00:00Z" } }
+```
+
+The card then names that commitment and its state. Three things it is for, and
+they follow the same logic as the section above:
+
+**Which commitment is blocked, not merely that something is.** "Blocked" with
+no identifier sends a reader to go and guess, which is how people end up
+reading CI logs to find out where delivery stands.
+
+**A blocked commitment is not a Blocked token.** Different failures, different
+fixes: the approval is gone and editing the package will not help, versus the
+package is not ready yet. The chip never rewrites one verdict into the other,
+and a card can legitimately show an Approved token beside a blocked
+commitment.
+
+**`authorizes_work: null` renders as *unverified*.** Could-not-determine is
+neither answer. A map that shows an outage as a green chip is the
+cached-authority failure with a nicer font.
+
+The chip is a **snapshot** of what was read when the page was generated. It
+gates nothing and can be stale the moment it is written — the gate runs in CI
+against a fresh read — and the page says so beside the badges wherever a chip
+appears.
+
 ## Reading the result
 
 When presenting the map, resist listing eleven verdicts. Cluster the blockers instead — in practice they collapse into a handful of shapes across the whole corpus, and that is the actionable finding. Typical clusters: evaluation criteria carrying `TBD` thresholds on release gates; unresolved product decisions that scenarios actually branch on; missing actor or permission paths; NFRs with no measurable threshold.
