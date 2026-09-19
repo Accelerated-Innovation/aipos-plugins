@@ -1,0 +1,8 @@
+# Runtime dependency for generator_template.py.
+#
+#   python -m pip install -r requirements.txt
+#
+# Faker generates the synthetic values. The file is a template a team copies and
+# adapts, so this is the dependency of the copy as much as of the original; it
+# was undeclared until increment 15.
+Faker>=25,<40

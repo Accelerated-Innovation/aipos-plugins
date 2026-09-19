@@ -1,0 +1,9 @@
+# Runtime dependency for emit_metrics.py.
+#
+#   python -m pip install -r requirements.txt
+#
+# PyYAML is required, not optional: the script exits with an install hint when it
+# is missing. It was undeclared until increment 15 — which worked in this
+# repository, where the test environment installs it, and left an adopter to
+# discover the requirement from an error message.
+PyYAML>=6,<7

@@ -217,6 +217,32 @@ Plugin: [`govkit`](./plugins/govkit/README.md) · `/plugin install govkit@aipos`
 
 No skills ship for the remaining AIPOS pillars yet. New skills are added as folders under an existing plugin's `skills/` directory, or as a new plugin under [`plugins/`](./plugins/).
 
+## Under a behavior contract
+
+Some teams approve behavior as a **versioned commitment** before implementation
+starts — a baseline binding exact Rules and scenarios to an immutable revision,
+adjudicated by a decision service rather than by a document. These skills work
+the same as ever without one. Where a project has one, three things change, and
+each is a bundled script so that following the skill executes the rule rather
+than restating it:
+
+| Script | What it settles |
+|---|---|
+| `govkit-feature-readiness/scripts/readiness_state.py` | A Development Token becomes a **derived execution-readiness record referencing the product approval**, not a substitute for one. Five states stay apart — prepared, approved for exact scope, locally executable, authority verified, implementation verified — and a stale reading cannot produce an authoritative green. |
+| `govkit-feature-refine/scripts/change_package.py` | Proposals against approved behavior become a **reapproval request that cannot approve anything**: no field can express a decision, nothing claims to have been submitted, and a request that would not be decidable is refused rather than written. |
+| `govkit-feature-map/scripts/render_map.py` | Cards **name the blocked commitment**, keeping a blocked commitment distinct from a Blocked token — different failures with different fixes. The chip is a snapshot; the gate runs in CI. |
+
+All three run on a bare interpreter: adopting this adds no installation step.
+
+**Nothing here is an approval, and none of these skills can issue one.** A
+product decision is recorded through an authenticated decision service by
+someone with the authority to make it; a statement in a conversation is not one.
+
+**Routes are unchanged.** New work still starts from an evidence-backed
+opportunity and goes straight to Rules and scenarios — no epic, user story or
+estimate required — and story mapping from a tracker epic remains available as
+an explicit legacy route.
+
 ## What these skills won't do
 
 Worth knowing before you install:
