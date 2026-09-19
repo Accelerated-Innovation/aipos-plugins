@@ -37,7 +37,9 @@ Credentials resolve the usual way: `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN
 alone, a legitimate clarifying question reads as a missing deliverable. After the first turn the
 harness replies `proceed` — the bare word the skills' own Proceed protocol documents as
 confirmation — and everything said so far stays in context, so the second turn continues the
-conversation rather than restarting it. All assistant turns are graded together.
+conversation rather than restarting it. All assistant turns are graded together, with their role boundaries and the intervening
+user follow-up preserved. The judge also receives the supplied fixture content,
+so it can distinguish provided facts from invented ones.
 
 Measured on `aipos-rapid-validation`: moving from one turn to two took the four cases from
 0.29 / 0.20 / 0.86 / 0.88 to 0.50 / 0.86 / 0.87 / 1.00. **No case got worse** — one turn was
@@ -169,3 +171,26 @@ run on fork PRs at all.
 
 So the eval job is `workflow_dispatch` — run it deliberately, and paste the result into the PR
 when a change touches coaching behaviour.
+
+## Regrade an existing conversation
+
+When judge instructions change, reuse the actual subject conversation without
+paying to generate a replacement answer:
+
+```bash
+python evals/run_evals.py --skill aipos-feature-create \
+  --regrade-from consolidation --variant conversation-judge-v2 \
+  --model claude-opus-5 --judge-model claude-sonnet-5 --reps 3 --execute
+```
+
+This calls only the judge. The source and destination variants must differ.
+The source skill package, input fixtures, subject model, turn count, and user
+follow-ups must still match; otherwise the runner refuses reuse and a fresh
+subject run is required. Original results and traces remain intact. New rows
+record subject provenance and zero new subject usage, with the original usage
+retained separately. A judge-input contract change invalidates cached grades.
+
+Earlier versions concatenated assistant turns without the user's intervening
+reply. This made legitimate multi-turn pauses look like uninterrupted responses.
+Do not compare those historical coaching pass rates to conversation-aware grades
+as if only the skill had changed.

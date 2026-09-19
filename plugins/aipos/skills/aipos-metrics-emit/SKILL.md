@@ -56,6 +56,15 @@ asked, and point to the CI-side adapter as the emitter.
 
 ## Interpreting results for the user
 
+For any question about permission to implement, name `aipos-feature-readiness`
+as the owning skill. Refer to an existing token and applicable approval/authority
+evidence when supplied; do not infer an Approved token, current authority, or
+actual component scores from a completeness total or the absence of blockers.
+Keep hypothetical reporting examples explicitly hypothetical.
+
+If the user requests explanation only, preserve that scope across follow-ups.
+A bare "proceed" does not request a script run, files, or an invented audit.
+
 - **Spec completeness score** is the leading quality counterweight (Pair 4).
   100 means the existing completeness rubric is satisfied. It does not issue a
   Development Token, verify product authority, or prove tests passed. Always show

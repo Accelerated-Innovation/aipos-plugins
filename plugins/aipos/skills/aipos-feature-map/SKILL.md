@@ -1,6 +1,6 @@
 ---
 name: aipos-feature-map
-description: "Render an existing feature corpus and optional workflow source into an HTML view of dependencies, specifications, and advisory readiness or complexity assessments. Use for release dashboards and cross-feature comparisons. Delegate assessments to their owning skills; this view does not authorize execution."
+description: "Render an existing feature corpus and optional workflow source into an HTML view of dependencies and advisory assessments. Use for release dashboards and cross-feature comparisons. Delegate draft-quality scoring to feature-refine, reviewed-repo readiness to feature-readiness, and requested complexity scoring to feature-slice. This view does not issue tokens."
 ---
 
 # GovKit Feature Map
@@ -18,6 +18,11 @@ The map has three registers, and each answers a question the others cannot.
 **The ledger** lists every artifact with its producers and consumers. Terminal artifacts — produced but never consumed — are usually either genuine outputs or a modelling error worth catching.
 
 The deliverable is one HTML file with no external dependencies, because it gets emailed, dropped in a wiki, and opened six months later.
+
+Every displayed assessment is advisory, including draft-quality badges from
+feature-refine and readiness badges from feature-readiness. State that the chosen
+badges do not issue a Development Token or authorize implementation. A batch
+refinement score also does not establish that a human review has taken place.
 
 ## Workflow
 

@@ -18,7 +18,9 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 SYSTEM = """Choose the most appropriate AIPOS skill for the user's request using
 only the supplied catalog and user context. Return one primary skill, followed
-by any ordered handoffs explicitly needed for the requested result. Do not load
+by any ordered handoffs explicitly needed for the requested result. Handoffs
+include internal delegated assessments: list a required helper even when the
+primary skill calls it internally. Exclude optional or unrelated helpers. Do not load
 or execute a skill. Return action=none for work outside these capabilities, or
 action=clarify when missing context prevents a useful choice. For none/clarify,
 skill must be null and handoffs empty. A topic word alone does not establish the

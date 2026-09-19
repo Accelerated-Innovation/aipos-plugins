@@ -322,6 +322,61 @@ def test_every_assistant_turn_is_graded_not_just_the_last(runner):
     joined = runner.join_turns(["first part", "second part"])
 
     assert "first part" in joined and "second part" in joined
+    assert json.loads(joined) == [
+        {"role": "assistant", "content": "first part"},
+        {"role": "user", "content": runner.PROCEED_NUDGE},
+        {"role": "assistant", "content": "second part"},
+    ]
+
+
+def test_judge_sees_supplied_evidence_not_just_the_prompt(runner):
+    case = {"prompt": "Review it", "expected_output": "Use actual evidence"}
+    built = runner.build_judge_request(case, "Answer", user_input="Fixture: 42 measured cases\nReview it")
+    assert "Fixture: 42 measured cases" in built
+
+
+def test_judge_input_contract_changes_invalidate_previous_grades(runner, monkeypatch):
+    skill = runner.discover_skills()["aipos-rapid-validation"]
+    case = runner.load_cases(skill)[0]
+    before = runner.input_digest(skill, case, _Args())
+    monkeypatch.setattr(runner, "JUDGE_INPUT_CONTRACT", "Another transcript format")
+    assert runner.input_digest(skill, case, _Args()) != before
+
+
+def test_regrading_reuses_only_matching_actual_subject_inputs(runner, tmp_path):
+    skill = runner.discover_skills()["aipos-rapid-validation"]
+    case = runner.load_cases(skill)[0]
+    args = _Args(turns=2)
+    system, user = runner.build_subject_request(skill, case)
+    trace = [
+        {"role": "system", "content": f"[{skill.name}/SKILL.md]\n\n{system}"},
+        {"role": "user", "content": user},
+        {"role": "assistant", "content": "First answer"},
+        {"role": "user", "content": runner.PROCEED_NUDGE},
+        {"role": "assistant", "content": "Second answer"},
+        {"role": "system", "content": "[judge rubric]"},
+        {"role": "assistant", "content": "old judgment"},
+    ]
+    (tmp_path / "traces").mkdir()
+    path = tmp_path / "traces" / f"{runner.case_key(case, 0)}.json"
+    path.write_text(json.dumps(trace))
+    runner.append_row(tmp_path / "results.jsonl", {
+        "prompt_id": case["name"], "rep": 0, "turns": 2,
+        "model": args.model, "stop_reasons": ["end_turn", "end_turn"],
+    })
+    answers, _ = runner.reusable_subject(tmp_path, skill, case, 0, args)
+    assert answers == ["First answer", "Second answer"]
+    trace[1]["content"] = "Different evidence"
+    path.write_text(json.dumps(trace))
+    with pytest.raises(ValueError, match="fixture changed"):
+        runner.reusable_subject(tmp_path, skill, case, 0, args)
+
+
+def test_regrading_refuses_missing_source_results(runner, tmp_path):
+    skill = runner.discover_skills()["aipos-rapid-validation"]
+    case = runner.load_cases(skill)[0]
+    with pytest.raises(ValueError, match="no completed source"):
+        runner.reusable_subject(tmp_path, skill, case, 0, _Args())
 
 
 def test_a_single_turn_is_joined_without_decoration(runner):
