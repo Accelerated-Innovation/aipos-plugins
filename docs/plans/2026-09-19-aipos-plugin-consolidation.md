@@ -579,3 +579,10 @@ a rubric change as coaching improvement. Retain the 40 original cases and the pr
 After behavioral checks, rerun offline/structural validation, verify the final isolated
 installation, update this ledger and the PR evidence, and recheck hosted CI. Merge and
 publication remain separate release actions.
+
+**Evaluation adjudication during implementation:** the original substantive profile is
+preserved at `f3419ce`. Version 2 corrects only slicing case 4, claim 1: the supplied
+expense fixture lacks explicit successful-payment and audit-retention coverage, so a
+response that identifies those gaps must not be penalized for refusing to call the
+selection shippable. Regrade the same baseline and both candidate cohorts for that case;
+retain the original judgments. This changes the evaluator, not the skill's release bar.

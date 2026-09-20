@@ -118,6 +118,60 @@ invalidated.
 Without that, editing a `SKILL.md` and re-running would skip every case and present the old
 grade as current — which would make the harness worse than useless for the one job it has.
 
+## Separate substantive acceptance assessment
+
+[`substantive-acceptance.json`](substantive-acceptance.json) records the 29 case-specific
+claims used to close PR #33's remaining substantive findings. Version 1 was frozen before
+coaching edits at `f3419ce`. Version 2 corrects one demonstrated evaluator error: finding
+missing payment/audit coverage is a valid shippability finding, not a failure to declare
+the journey complete. The file records that revision; baseline and candidate subjects
+are regraded under the same correction, and original verdicts remain in the report.
+It is a second assessment,
+not a replacement for the full rubric. Preserve the full-rubric results and grade the
+**same subjects** with `--regrade-from`; never reroll a failed answer to get a pass.
+The runner verifies the subject package, fixtures, conversation and model before reuse.
+An incomplete or mismatched transcript cannot supply acceptance evidence.
+
+For a new candidate, run each affected skill with the ordinary full cases first:
+
+```bash
+python evals/run_evals.py --skill aipos-feature-create --variant closure-full \
+  --model claude-opus-5 --judge-model claude-sonnet-5 \
+  --subject-max-tokens 32000 --judge-max-tokens 32000 --reps 3 --execute
+```
+
+Repeat for `aipos-feature-slice` and `aipos-rapid-validation`. To apply the frozen
+claims without editing the source cases, create a disposable assessment copy:
+
+```bash
+EVAL_SNAPSHOT=$(mktemp -d)
+cp -R plugins evals "$EVAL_SNAPSHOT/"
+python - "$EVAL_SNAPSHOT" <<'PY'
+import json, pathlib, sys
+snapshot = pathlib.Path(sys.argv[1])
+profile = json.loads((snapshot / 'evals/substantive-acceptance.json').read_text())
+claims = {(c['skill'], c['case_id']): c for c in profile['cases']}
+for path in (snapshot / 'plugins').glob('*/skills/*/evals/evals.json'):
+    data = json.loads(path.read_text())
+    for case in data['evals']:
+        rule = claims.get((path.parent.parent.name, case['id']))
+        if rule:
+            assert rule['case_name'] == case['name']
+            case['claims'] = rule['claims']
+            case['expected_output'] = '\n'.join(rule['claims'])
+    path.write_text(json.dumps(data, indent=2) + '\n')
+PY
+python "$EVAL_SNAPSHOT/evals/run_evals.py" --skill aipos-feature-create \
+  --variant closure-substantive --regrade-from closure-full \
+  --out "$PWD/.claude/hillclimb" --model claude-opus-5 --judge-model claude-sonnet-5 \
+  --subject-max-tokens 32000 --judge-max-tokens 32000 --reps 3 --execute
+```
+
+Repeat that last command for the other two skills. Report both assessments, every
+repetition and any transport/truncation errors. Compare against the baseline under
+the same frozen claims. A changed substantive requirement needs a documented rubric
+revision and matched regrade; it must not silently erase a failed result.
+
 ## What a real run cost
 
 Measured on `aipos-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:

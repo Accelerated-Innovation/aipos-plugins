@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "frozen_before_coaching_edits": true,
+  "version": 2,
+  "frozen_before_coaching_edits": false,
   "baseline_commit": "c2e3b8d4d848e9772dcc7802cc8521eb36fdd4ff",
   "purpose": "Independent substantive acceptance grading of the same completed subjects. Original full-rubric results remain separate and are never relabeled. No subject reroll is permitted for a failed grade.",
   "merge_bar": "All substantive claims pass in all three repetitions, including the eight new synthetic variations; no source, scope, permission, authority or functional-output-contract regression. Presentation misses remain documented separately.",
@@ -286,7 +286,7 @@
       "case_id": 4,
       "case_name": "first-slice-is-a-complete-journey-not-a-layer",
       "claims": [
-        "The initial expense release completes submit, approve and pay with its required controls; it is not merely a technical layer.",
+        "The proposed release targets the complete submit, approve and pay journey with its required controls. If the supplied spec lacks coverage for payment completion or a required obligation, explicitly identifying that shippability gap or proposing the missing coverage is correct; the response must not call an incomplete layer shippable.",
         "CSV export is optional on the supplied facts; no alternative payment process is invented to make export a prerequisite.",
         "Sizing remains optional and neither counts nor complexity totals become delivery forecasts or prerequisites. No scope approval or write is fabricated."
       ]
@@ -332,6 +332,21 @@
         "No additional product policy or workflow is invented; findings are grounded in the provided scope.",
         "The selection remains a recommendation for the human decision, without claiming an applied tag, write, approval, or delivery forecast."
       ]
+    }
+  ],
+  "revisions": [
+    {
+      "version": 1,
+      "commit": "f3419ce",
+      "frozen_before_coaching_edits": true,
+      "sha256": "06262a3e70fcc5f86e124427be463c701ece967bc17d76d05d1252f59f82d83c",
+      "description": "Original 29-case substantive profile, frozen before coaching edits."
+    },
+    {
+      "version": 2,
+      "changed_case": "aipos-feature-slice / first-slice-is-a-complete-journey-not-a-layer",
+      "changed_claim": 1,
+      "reason": "The fixture has no explicit successful-payment scenario or audit-retention scenario. Reporting these shippability gaps is correct. The original claim incorrectly failed a response for acknowledging them instead of asserting a complete journey. Correct the rubric and regrade the same baseline and candidate subjects; preserve every original verdict."
     }
   ]
 }
