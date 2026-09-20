@@ -1,0 +1,638 @@
+{
+  "scope": "Synthetic loopback integrations; actual services, scripts and native client, not production deployment or application implementation conformance. No real user configuration modified.",
+  "versions": {
+    "plugin": "1.0.1",
+    "claude_code": "2.1.274",
+    "native_model": "claude-sonnet-5",
+    "discovery_engine": "d0fe01383e34a7855e5e8c920bc40514f27109df",
+    "governed_ai_delivery": "af819455cb19ebc01ce6bd56b6d6490e128bc1a5"
+  },
+  "metrics_fixture": {
+    "checks": {
+      "scores": true,
+      "counts": true,
+      "ai_trailer": true,
+      "no_input_canaries": true,
+      "no_readiness_token": true
+    },
+    "scores": {
+      "checkout_assistant": 100,
+      "incomplete_feature": 15
+    },
+    "counts": {
+      "feature.package.snapshot": 2,
+      "rework.observed": 2,
+      "gate.run.completed": 4,
+      "pr.merged": 2
+    },
+    "ai_assisted": {
+      "42": true,
+      "43": false
+    },
+    "components": {
+      "checkout_assistant": [
+        {
+          "name": "gherkin_scenarios",
+          "points": 20,
+          "awarded": 20,
+          "reason": "1 scenario(s) in acceptance.feature"
+        },
+        {
+          "name": "nfrs",
+          "points": 10,
+          "awarded": 10,
+          "reason": "1 heading(s) in nfrs.md"
+        },
+        {
+          "name": "evaluation_prediction_block",
+          "points": 15,
+          "awarded": 15,
+          "reason": "evaluation_prediction parsed from plan.md"
+        },
+        {
+          "name": "thresholds_met",
+          "points": 15,
+          "awarded": 15,
+          "reason": "thresholds_met=True"
+        },
+        {
+          "name": "score_minima",
+          "points": 15,
+          "awarded": 15,
+          "reason": "first.average=4.5, virtues.average=4.5"
+        },
+        {
+          "name": "eval_criteria",
+          "points": 15,
+          "awarded": 15,
+          "reason": "mode=deterministic, criteria=0"
+        },
+        {
+          "name": "architecture_preflight",
+          "points": 10,
+          "awarded": 10,
+          "reason": "required=True, present=True"
+        }
+      ],
+      "incomplete_feature": [
+        {
+          "name": "gherkin_scenarios",
+          "points": 20,
+          "awarded": 0,
+          "reason": "0 scenario(s) in acceptance.feature"
+        },
+        {
+          "name": "nfrs",
+          "points": 10,
+          "awarded": 0,
+          "reason": "0 heading(s) in nfrs.md"
+        },
+        {
+          "name": "evaluation_prediction_block",
+          "points": 15,
+          "awarded": 0,
+          "reason": "plan.md missing or evaluation_prediction block absent/invalid"
+        },
+        {
+          "name": "thresholds_met",
+          "points": 15,
+          "awarded": 0,
+          "reason": "thresholds_met=None"
+        },
+        {
+          "name": "score_minima",
+          "points": 15,
+          "awarded": 0,
+          "reason": "first.average=None, virtues.average=None"
+        },
+        {
+          "name": "eval_criteria",
+          "points": 15,
+          "awarded": 15,
+          "reason": "mode=deterministic, criteria=0"
+        },
+        {
+          "name": "architecture_preflight",
+          "points": 10,
+          "awarded": 0,
+          "reason": "required=True, present=False"
+        }
+      ]
+    },
+    "command": [
+      "/Users/marty/repos/govkit-plugins/.venv/bin/python",
+      "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-metrics-emit/scripts/emit_metrics.py",
+      "/private/tmp/aipos-pe-evals/metrics-fixture-v2/testrepo",
+      "--ci-runs",
+      "/private/tmp/aipos-pe-evals/metrics-fixture-v2/testrepo/ci_runs.json",
+      "--prs",
+      "/private/tmp/aipos-pe-evals/metrics-fixture-v2/testrepo/prs.json",
+      "--validate",
+      "--out",
+      "/private/tmp/aipos-pe-evals/metrics-fixture-v2/events.ndjson"
+    ],
+    "note": "Completeness is not an execution token or product approval."
+  },
+  "native_metrics": [
+    {
+      "case": "aggregator-export",
+      "checks": {
+        "process_completed": true,
+        "original_inputs_unchanged": true,
+        "emitter_vocabulary_valid": true,
+        "expected_10_events": true,
+        "expected_scores": true,
+        "expected_trailers": true,
+        "canaries_absent": true,
+        "no_token": true,
+        "skill_invoked": true
+      },
+      "schema_validation": {
+        "total": 10,
+        "by_event": {
+          "feature.package.snapshot": 2,
+          "rework.observed": 2,
+          "gate.run.completed": 4,
+          "pr.merged": 2
+        },
+        "errors": [],
+        "valid": true
+      },
+      "scores": {
+        "checkout_assistant": 100,
+        "incomplete_feature": 15
+      },
+      "ai_assisted": {
+        "42": true,
+        "43": false
+      },
+      "artifacts": {
+        "/private/tmp/aipos-pe-evals/native-metrics-v3/aggregator-export/output/summary.json": "601f415907db8fddf1566be10b4768f09d8cc0337f4189069386889ab2ecd6a3",
+        "/private/tmp/aipos-pe-evals/native-metrics-v3/aggregator-export/output/events.ndjson": "26029985b71cd2cab9246af987a5c8bef2b77aa1dc855a8f511ba60ff28addd8"
+      },
+      "human_review": "Audit labels and conclusion describe metric completeness, not an execution token. Sharing verification describes the observed fixture and trailer heuristic. No aggregator transfer."
+    },
+    {
+      "case": "gate-readiness-audit",
+      "checks": {
+        "process_completed": true,
+        "original_inputs_unchanged": true,
+        "emitter_vocabulary_valid": true,
+        "expected_10_events": true,
+        "expected_scores": true,
+        "expected_trailers": true,
+        "canaries_absent": true,
+        "no_token": true,
+        "skill_invoked": true
+      },
+      "schema_validation": {
+        "total": 10,
+        "by_event": {
+          "feature.package.snapshot": 2,
+          "rework.observed": 2,
+          "gate.run.completed": 4,
+          "pr.merged": 2
+        },
+        "errors": [],
+        "valid": true
+      },
+      "scores": {
+        "checkout_assistant": 100,
+        "incomplete_feature": 15
+      },
+      "ai_assisted": {
+        "42": true,
+        "43": false
+      },
+      "artifacts": {
+        "/private/tmp/aipos-pe-evals/native-metrics-v3/gate-readiness-audit/output/metrics.ndjson": "26029985b71cd2cab9246af987a5c8bef2b77aa1dc855a8f511ba60ff28addd8",
+        "/private/tmp/aipos-pe-evals/native-metrics-v3/gate-readiness-audit/output/audit_report.md": "c905ee8838b66caf7ce10dda57636befd0d4b72358cb6c192d9cbff28ccae9b9"
+      },
+      "human_review": "Audit labels and conclusion describe metric completeness, not an execution token. Sharing verification describes the observed fixture and trailer heuristic. No aggregator transfer."
+    },
+    {
+      "case": "org-agnostic-verification",
+      "checks": {
+        "process_completed": true,
+        "original_inputs_unchanged": true,
+        "emitter_vocabulary_valid": true,
+        "expected_10_events": true,
+        "expected_scores": true,
+        "expected_trailers": true,
+        "canaries_absent": true,
+        "no_token": true,
+        "skill_invoked": true
+      },
+      "schema_validation": {
+        "total": 10,
+        "by_event": {
+          "feature.package.snapshot": 2,
+          "rework.observed": 2,
+          "gate.run.completed": 4,
+          "pr.merged": 2
+        },
+        "errors": [],
+        "valid": true
+      },
+      "scores": {
+        "checkout_assistant": 100,
+        "incomplete_feature": 15
+      },
+      "ai_assisted": {
+        "42": true,
+        "43": false
+      },
+      "artifacts": {
+        "/private/tmp/aipos-pe-evals/native-metrics-v3/org-agnostic-verification/output/verification_note.md": "133b79aba494d5e90bbf6dcfde554591a6e7ed926441194481beefd72d367489",
+        "/private/tmp/aipos-pe-evals/native-metrics-v3/org-agnostic-verification/output/events.ndjson": "26029985b71cd2cab9246af987a5c8bef2b77aa1dc855a8f511ba60ff28addd8"
+      },
+      "human_review": "Audit labels and conclusion describe metric completeness, not an execution token. Sharing verification describes the observed fixture and trailer heuristic. No aggregator transfer."
+    }
+  ],
+  "live_quarterly": [
+    {
+      "rep": 0,
+      "trace_sha256": "777affa3ab72f8a13cdf006d6813349b1c5a40be46b61e3511253035b32bc9e2",
+      "tools": {
+        "mcp__opportunity-engine__list_opportunities": 1,
+        "mcp__opportunity-engine__list_problems": 1,
+        "mcp__opportunity-engine__get_problem": 2,
+        "mcp__opportunity-engine__get_lineage": 2,
+        "mcp__opportunity-engine__list_evidence": 2,
+        "mcp__opportunity-engine__get_work_item_links": 2
+      },
+      "skill_invoked": true,
+      "completed": true,
+      "artifact_sha256": "85658952f2c36df13b95d262a560cf9fece4929cf357cf74921d6f48200a43de",
+      "human_review": "Five-move rehearsal pack inspected. Missing exploration/Proposed/WIP state remains unknown. Six read tools actually available; no MCP writes. Decision log is explicitly provisional; no claimed product approval."
+    },
+    {
+      "rep": 1,
+      "trace_sha256": "71c7f5bb6a2ad43bb87a5b8e7f70c9e4367295be8a951911a022bcb4e16d6821",
+      "tools": {
+        "mcp__opportunity-engine__list_opportunities": 1,
+        "mcp__opportunity-engine__list_problems": 1,
+        "mcp__opportunity-engine__get_problem": 2,
+        "mcp__opportunity-engine__get_lineage": 2,
+        "mcp__opportunity-engine__list_evidence": 2,
+        "mcp__opportunity-engine__get_work_item_links": 2
+      },
+      "skill_invoked": true,
+      "completed": true,
+      "artifact_sha256": "4e9991c951db171c333b16bb82dea35e3fb53c36118f1445a3991be958639a1d",
+      "human_review": "Five-move rehearsal pack inspected. Missing exploration/Proposed/WIP state remains unknown. Six read tools actually available; no MCP writes. Decision log is explicitly provisional; no claimed product approval."
+    },
+    {
+      "rep": 2,
+      "trace_sha256": "15bdf63c0d7d053c69c35f4632a6b493d64d62f76900f70ca23a671c7b478d84",
+      "tools": {
+        "mcp__opportunity-engine__list_opportunities": 1,
+        "mcp__opportunity-engine__list_problems": 1,
+        "mcp__opportunity-engine__get_problem": 2,
+        "mcp__opportunity-engine__get_lineage": 2,
+        "mcp__opportunity-engine__list_evidence": 2,
+        "mcp__opportunity-engine__get_work_item_links": 2
+      },
+      "skill_invoked": true,
+      "completed": true,
+      "artifact_sha256": "0b447c6391e006e2f29ec440f591a2adebf5d052dcb4f44326aa17c19d36e980",
+      "human_review": "Five-move rehearsal pack inspected. Missing exploration/Proposed/WIP state remains unknown. Six read tools actually available; no MCP writes. Decision log is explicitly provisional; no claimed product approval."
+    }
+  ],
+  "authority_pilot": [
+    {
+      "case": "Human approves baseline A",
+      "expected": "the decision binds exactly A and preserves rationale",
+      "status": "PASS",
+      "detail": "POST /v1/commitments -> 201, id=f02e0438-481f-4265-92b1-c206ea8a761e"
+    },
+    {
+      "case": "Approval caller lacks product authority",
+      "expected": "rejected; administrator does not inherit approval",
+      "status": "PASS",
+      "detail": "admin POST -> 403 APPROVAL_NOT_AUTHORIZED"
+    },
+    {
+      "case": "Approved but unconfirmed",
+      "expected": "does not authorize work; success is positively confirmed",
+      "status": "PASS",
+      "detail": "authorizes_work=False reason=COMMITMENT_INCOMPLETE"
+    },
+    {
+      "case": "Implementation satisfies A",
+      "expected": "drift and current authority are both checked; gate passes",
+      "status": "PASS",
+      "detail": "exit 0:   contract: 1 commitment(s) current and undrifted"
+    },
+    {
+      "case": "A baseline points at someone else's commitment",
+      "expected": "refused; the binding is compared, not just the status",
+      "status": "PASS",
+      "detail": "exit 1: [\"spoofed: NOT authorized \u2014 the commitment binds opportunity 'OPP-PILOT-1', and this baseline is for 'OPP-SOMEONE-ELSE'\"]"
+    },
+    {
+      "case": "AI adds auto-send behaviour",
+      "expected": "changed scope cannot proceed under A",
+      "status": "PASS",
+      "detail": "exit 1: ['response-approval-v1: drift \u2014 support-app/response-approval#scenario:unapproved-blocked: then clauses differ: 1 -> 2 step(s)']"
+    },
+    {
+      "case": "Background wording changes",
+      "expected": "inherited context is part of the closure, so it is detected",
+      "status": "PASS",
+      "detail": "exit 1 (Background inheritance reaches every scenario)"
+    },
+    {
+      "case": "Decision service unavailable",
+      "expected": "enforced does not pass; advisory continues, visibly unverified",
+      "status": "PASS",
+      "detail": "enforced exit 1; advisory exit 0 saying 'unverified'"
+    },
+    {
+      "case": "A is invalidated after a successful build",
+      "expected": "a fresh check blocks; stale green is not perpetual authorization",
+      "status": "PASS",
+      "detail": "invalidate -> 201, then gate exit 1"
+    },
+    {
+      "case": "Baseline B replaces A; execution readiness returns",
+      "expected": "new approval; the gate passes again",
+      "status": "PASS",
+      "detail": "approve B -> 201 (8823474e-0a71-46e8-a448-3232e8f02bc2), gate exit 0"
+    },
+    {
+      "case": "A's original decision and invalidation remain readable",
+      "expected": "history is append-only and survives replacement",
+      "status": "PASS",
+      "detail": "A's events: ['approved', 'confirmed', 'invalidated']"
+    },
+    {
+      "case": "Tracker unavailable or absent",
+      "expected": "the commitment works without any tracker",
+      "status": "PASS",
+      "detail": "no tracker was configured, contacted or required by any step above"
+    },
+    {
+      "case": "Opportunity supplied without an epic/story",
+      "expected": "AI drafts Rules/scenarios; no epic demanded",
+      "status": "NOT RUN",
+      "detail": "requires a model-driven skill run; this harness drives checkers, not agents"
+    },
+    {
+      "case": "Evidence or evaluation threshold missing",
+      "expected": "marked unresolved; nothing invented",
+      "status": "NOT RUN",
+      "detail": "same: a skill behaviour, covered by govkit-plugins' eval suite instead"
+    },
+    {
+      "case": "One Rule applies at multiple workflow steps",
+      "expected": "one canonical Rule, several map references",
+      "status": "NOT RUN",
+      "detail": "a govkit-plugins map-rendering behaviour; covered by its own tests"
+    },
+    {
+      "case": "Cross-feature dependency omitted from MVP",
+      "expected": "scope-completeness check identifies it",
+      "status": "NOT RUN",
+      "detail": "a slicing/refinement skill behaviour, not a checker behaviour"
+    },
+    {
+      "case": "Prototype includes auto-send, contract does not",
+      "expected": "explicit discrepancy",
+      "status": "NOT RUN",
+      "detail": "requires a prototype artifact and a refinement run"
+    },
+    {
+      "case": "Spec unchanged but code adds untraceable behaviour",
+      "expected": "review surfaces it; digest equality is not conformance",
+      "status": "NOT RUN",
+      "detail": "needs code review tooling over an implementation; nothing here implements the app"
+    },
+    {
+      "case": "PR edits the gate, policy, or approval endpoint",
+      "expected": "cannot self-authorize with modified enforcement",
+      "status": "NOT RUN",
+      "detail": "needs a hosted repository with branch protection and CODEOWNERS; the design is in ci/github/pdg-authority-gate.yml and is asserted by tests, not demonstrated here"
+    },
+    {
+      "case": "Simultaneous invalidate/approve, or retry after timeout",
+      "expected": "defined conflict or idempotent result",
+      "status": "NOT RUN",
+      "detail": "the engine's own concurrency suite covers it against a real database; this harness is single-threaded and would prove nothing"
+    },
+    {
+      "case": "Legacy installation upgraded",
+      "expected": "user files preserved; no retroactive approvals",
+      "status": "NOT RUN",
+      "detail": "needs an upgrade fixture from an older govkit install; increment 15 added `govkit inspect-package` for the conversion path but no upgrade fixture"
+    }
+  ],
+  "readiness_transition": {
+    "scope": "Actual HTTPS commitment/baseline verification and bundled token derivation. Local package completeness and score are synthetic premises, not a full native 12-dimension review. No application implementation is verified.",
+    "verify_contract": {
+      "exit": 0,
+      "stdout": "  response-approval-v1: authorized \u2014 commitment 8823474e-0a71-46e8-a448-3232e8f02bc2 is current\n  contract: 1 commitment(s) current and undrifted\n"
+    },
+    "states": [
+      {
+        "phase": "current",
+        "exit": 0,
+        "token": {
+          "feature_id": "synthetic-response-approval",
+          "decision": "approved",
+          "score": 10.5,
+          "blockers": [],
+          "draft_version": null,
+          "ts": "2026-09-20T10:22:59.924087+00:00",
+          "kind": "execution_readiness",
+          "authoritative": true,
+          "product_approval": {
+            "commitment_id": "8823474e-0a71-46e8-a448-3232e8f02bc2",
+            "verified_at": "2026-09-20T10:22:59.735671+00:00"
+          },
+          "states": [
+            "approved_for_scope",
+            "authority_verified",
+            "locally_executable",
+            "prepared"
+          ],
+          "reason": "no blockers, and the approval currently authorizes this scope"
+        },
+        "stdout": "  approved_for_scope\n  authority_verified\n  locally_executable\n  prepared\n  decision: approved \u2014 no blockers, and the approval currently authorizes this scope\n  authoritative: True\n  wrote /private/tmp/aipos-pe-evals/live-engine/current-token.json\n"
+      },
+      {
+        "phase": "withdrawn",
+        "exit": 1,
+        "token": {
+          "feature_id": "synthetic-response-approval",
+          "decision": "blocked",
+          "score": 10.5,
+          "blockers": [],
+          "draft_version": null,
+          "ts": "2026-09-20T10:22:59.959472+00:00",
+          "kind": "execution_readiness",
+          "authoritative": false,
+          "product_approval": null,
+          "states": [
+            "approved_for_scope",
+            "locally_executable",
+            "prepared"
+          ],
+          "reason": "the decision service does not currently authorize this baseline"
+        },
+        "stdout": "  approved_for_scope\n  locally_executable\n  prepared\n  decision: blocked \u2014 the decision service does not currently authorize this baseline\n  authoritative: False\n  wrote /private/tmp/aipos-pe-evals/live-engine/withdrawn-token.json\n"
+      }
+    ]
+  },
+  "browser": {
+    "method": "CUA in-app browser at http://127.0.0.1:18482/feature-map.html",
+    "html_sha256": "7c8ad7a59ae64737a15c45b7f9b90d8b80d33f8f167ae45593a900209a6194be",
+    "observed": {
+      "features": 2,
+      "rules": 3,
+      "scenarios": 4,
+      "covered": 5,
+      "uncovered": 2,
+      "diagnostic_errors": 0,
+      "diagnostic_warnings": 2,
+      "l1_visible": true,
+      "l2_expands_and_shows_handoff": true,
+      "l3_expands_and_links_canonical_refs": true,
+      "uncovered_section_expands": true,
+      "release_filter_active_class": "on",
+      "console_errors_or_warnings": [],
+      "visual_layout": "Read at 670px viewport; overview and expanded tables/diagnostics are legible with no overlap."
+    },
+    "scope": "Rendered from existing synthetic native fixture; no scores, readiness token, or approval. No claim of production data, broad device coverage, or implemented behavior."
+  },
+  "routing": {
+    "catalog_identical_to_accepted_snapshot": true,
+    "catalog_sha256": "a8ad87c64e6aa410842564fa343e73cd9d714af5e2103f0b64998b66f92ee4ec",
+    "snapshot": ".claude/routing/live-candidate-v2/inputs.json",
+    "note": "Prior 159/159 routing evidence retained; not a new model run."
+  },
+  "fixture_source_sha256": {
+    "/private/tmp/aipos-pe-evals/live_engine.py": "36a33eee93e413980c3aa20a6b58e122615e0f296c7ce7f252bae1b14a903e8e",
+    "/private/tmp/aipos-pe-evals/verify_authority.py": "a51ceac66f6b01e8830763321ac38a08b3534542905c41b9398446a377e7db81",
+    "/Users/marty/repos/govkit-plugins/evals/runtime_metrics.py": "49b2e9ba8e1b3ffae9c8095a9daaa688faae62fd047abb5f4836b09770211e1e",
+    "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-metrics-emit/scripts/emit_metrics.py": "6d5b044def4fe7cc72fc2a293436b64aeb0ff47db1083d539d7c505a0616a768"
+  },
+  "installation": {
+    "plugin": "aipos@aipos",
+    "version": "1.0.1",
+    "enabled_plugins": 1,
+    "skills": 11,
+    "source_files_identical": true,
+    "source_hashes": {
+      "README.md": "d764cfb7aa8f4015486d3d57cc76a3076331f2d3759e04ef63dba69d6d989087",
+      "references/spec-identifiers.md": "ea44fc3946a2684035463b6f266eab7b95bf73f14f51ff5c2517a6d824bd1870",
+      "references/gherkin-authoring-standard.md": "1e7691ec4bc00e037c47d5f7a3c145c471d9549e55cca249b23a7759e2e94c8d",
+      "references/workflow-source.md": "2de80ef002a365c9aafd4a5bd8922f6adbea5bd61be4315c419615e0f09f8568",
+      ".claude-plugin/plugin.json": "3fc928732e7ac9ff56e9a8fba7c6d63a2400a70c59cd93626c234d0bff6bd5ae",
+      "skills/aipos-feature-readiness/SKILL.md": "4d96dafc3dafd6e969c2108e98637b20e913f36c57e88d321d24af474f4d5765",
+      "skills/aipos-feature-readiness/evals/evals.json": "3fe02ecfb682441604fb81bc747dd98880c26c9bc3fcc76f4c2b4536d0755575",
+      "skills/aipos-feature-readiness/references/govkit-readiness-rubric.md": "4537b815d457d838120b720cab8f940ce8bc16cfc6c8be1255530536bc1eeeab",
+      "skills/aipos-feature-readiness/scripts/readiness_state.py": "bd4c9b55488348cfab5f56342d762733dfd4909cf6c8aeaf3463962087178548",
+      "skills/aipos-metrics-emit/SKILL.md": "d04e98e510ad0a98f060d78079fdf06cc29547a57df7efd43b1d425ff5931fad",
+      "skills/aipos-metrics-emit/evals/evals.json": "23033ed180a36ba156a957a20c265c0752fe72b91cb4d4a403a64c8fafcc6252",
+      "skills/aipos-metrics-emit/references/event_schema.md": "d0e1ab5c9f3e123e589412f53d1eb47cde05159ff600b7593ba8112298de1aa0",
+      "skills/aipos-metrics-emit/scripts/requirements.txt": "0aec104ab67f779220484cf43e73e2aba9464f16365b47754efec488552fbcb3",
+      "skills/aipos-metrics-emit/scripts/emit_metrics.py": "6d5b044def4fe7cc72fc2a293436b64aeb0ff47db1083d539d7c505a0616a768",
+      "skills/aipos-quarterly-planning/SKILL.md": "d9d57b56d91f689b366aa048114a70d3e9d30d9e64d80b92840fe3390cbee8ef",
+      "skills/aipos-quarterly-planning/evals/evals.json": "a11840cc1d420d72ccab822acc1c1c829a6f1b755c1176a8b1237f675441b9c5",
+      "skills/aipos-feature-map/SKILL.md": "da03c658ae6140fab308a788f2f0a94054d28e6db7d906ce6fa4369a8ccecebd",
+      "skills/aipos-feature-map/evals/evals.json": "b38281e324a505bb4199674147304ff7c9eb6841c6df203292cd6d9ab8e5dbf2",
+      "skills/aipos-feature-map/references/rendering.md": "88be507f0b164c688f20a25b2b4e98d0aef7faeec86b1929b2ff8f1ce34dc684",
+      "skills/aipos-feature-map/references/ingestion-contract.md": "e758ff3165409b72f4857e3ec9913e437489079b3e1f27902ca778274d8b41e8",
+      "skills/aipos-feature-map/references/scoring.md": "29d4bbd289c096894bd2a13f67e213821ebcf5f01f424b629036867c6203c62f",
+      "skills/aipos-feature-map/scripts/verify_scores.py": "91aa2a1432552456e0551b58d9d45e538ebd04a0f02db237f2f07c7b6ce944ac",
+      "skills/aipos-feature-map/scripts/requirements.txt": "16e50ac166570d4ecb5f3b37789986867134361e0b665a2a10d6d6bd8e640b9c",
+      "skills/aipos-feature-map/scripts/repo_ingest.py": "5698191cb4d363c8bd0da75587e0d237b30cb260efdce8f1784e6499ee5e9dcb",
+      "skills/aipos-feature-map/scripts/workflow_resolve.py": "92f550bb00e7e0475a67cdf9dde334ca9c245d9692ba6f99cf248e0789554e92",
+      "skills/aipos-feature-map/scripts/render_map.py": "119d0c52284e9f43465a513146812427d91a70164ec2ddac5bead054abe5019c",
+      "skills/aipos-feature-slice/SKILL.md": "b507fe329a77ee35fa77ae1fce39ce371f8eb457bf94c45c293e77f38d3b7c62",
+      "skills/aipos-feature-slice/evals/evals.json": "45f359405fdb1248ade1affd838ad0d95aa795adbf89a7c9636581a0c8172b86",
+      "skills/aipos-feature-slice/evals/files/feature-expense-reimbursement.md": "550f846b6375161900e9b039d5803597218015700b31c014d9c3b247f19e1fc1",
+      "skills/aipos-feature-slice/evals/files/feature-payment-checkout-heavy.md": "3d8f1029c8241c06cdbeeebcd85e7055a7b4b72b83691f2f84397ba56a40a4ae",
+      "skills/aipos-feature-slice/evals/files/feature-appointment-booking.md": "a5a71f067b33f53971489c5111fe5d78d39a2d958f5382b775d1e65f961011e1",
+      "skills/aipos-feature-slice/references/tracker-writeback.md": "c9c394ea4b78ec80cfd2b2ebc3d5d977f4cf766557819222d695e52a401b79a5",
+      "skills/aipos-feature-slice/references/slicing-rubric.md": "b6e7c21262406f3ff997ed657f6e34c0588a0c158f1cb7d8f4b3c436b5802e2b",
+      "skills/aipos-feature-slice/scripts/compute_size.py": "a6f307420343aba47665e37d231a3832e2738ddef84b2f2bab7ef49716fd3f7e",
+      "skills/aipos-workflow-map/SKILL.md": "08da7dfd092e995b3caacb4a8895c0c5ba54d0b7b4f63581cf2830ad749cce82",
+      "skills/aipos-workflow-map/evals/evals.json": "5810f67668520f4cd6b707a799263782bf70bf92bf6f518d87bce09a4842d6f1",
+      "skills/aipos-workflow-map/evals/files/support-response-journey.md": "75093b4859378ecf568c788e6fa17fc1d48325705d34c13c8c404b8d41048b1c",
+      "skills/aipos-synthetic-data/SKILL.md": "5b5aa147190553b8d7f485619734446757b9c31f8cf9c9959e9b3bef79e669ef",
+      "skills/aipos-synthetic-data/evals/evals.json": "869855adb85d78d9e371d23bacf9c64a5dd263427377ea2cd65fe063caa2308d",
+      "skills/aipos-synthetic-data/references/faker-patterns.md": "ad07bd5236cf25027e404f4c3f4ee410217f6eef2005feb2ddd5ba23a6047d4e",
+      "skills/aipos-synthetic-data/scripts/generator_template.py": "3e603db26ed99ae2d271c925ba30cd1463e1bbee7b42a74ede09071a5480af22",
+      "skills/aipos-synthetic-data/scripts/requirements.txt": "f2cca4ff0bc3f93548e0e341b2df6a2cab8d15df5b17d55b66a1d3973ae650e4",
+      "skills/aipos-feature-refine/SKILL.md": "4e10838c4185e151bd23efbd7ba6b28a51d4c6cb17fcb600fac3f2da5f6a50f6",
+      "skills/aipos-feature-refine/evals/evals.json": "920164c908376792f5070769144aa17b59d99c6973c36525740cdf763b4dea0c",
+      "skills/aipos-feature-refine/evals/files/feature-invoice-approval-strong.md": "a8d6604f06edbd41165de92a568c9935deb3394a82bd6881b8e18e8bfd9b2910",
+      "skills/aipos-feature-refine/evals/files/feature-agent-built-stock-adjustments.md": "0ffe5fc5f93ccec2199c0d85d8d20dada4b807bd218a6eb4c162177e7e3f1f1f",
+      "skills/aipos-feature-refine/evals/files/feature-ai-summary-missing-evals.md": "47a079f131eefc512c6156fd3f63af6cd7a17384b84dde1dceb58704cf9cf3f7",
+      "skills/aipos-feature-refine/evals/files/feature-bulk-export-weak.md": "2f24dc24bb4b8eec7e2f1bd6cf71cd8ac3166aa8382ec7ebd114269a53763e26",
+      "skills/aipos-feature-refine/evals/files/feature-invoice-approval-missing-approval.md": "8bc09af79b770a7d6e41777cb6e9a4d67215f863b1d15322d77845677cdf5075",
+      "skills/aipos-feature-refine/evals/files/feature-shift-swap-dependent.md": "6423ce97f6c50a502eadfcf5aef5d61c6b7b5908617585019c54c37622cbb950",
+      "skills/aipos-feature-refine/evals/files/feature-response-approval-committed.md": "32cbcfcb9bd91d2b75784a4825ff0d1a1220e23713ba6660c9a4c91897bbbcca",
+      "skills/aipos-feature-refine/evals/files/feature-stock-threshold-contradiction.md": "f98c97f9ce45f410b3b4a056f5ee9283e430a8aa78f48dc2db7ef2b6aa9ca44f",
+      "skills/aipos-feature-refine/evals/files/feature-invoice-approval-boundary-complete.md": "4a53966c32c7d6d9cce80f388e3812ea02dbf834151f2d377b73ded6936d0824",
+      "skills/aipos-feature-refine/evals/files/feature-loyalty-tier-contradictory.md": "8dcca37eb5de0725bdc245543db08dc4d351ca01c287f0f84e92e7450e21259b",
+      "skills/aipos-feature-refine/references/pm-review-checklist.md": "c0c03466d2f6aa08865d181826a927c494a36b5061e7c716c15570c9fe7d5484",
+      "skills/aipos-feature-refine/references/qa-evidence-checklist.md": "49a49baa6ed00ea3483711a5b06f4c7c1f9156d822d38b56bb47228d35d95ee7",
+      "skills/aipos-feature-refine/references/gherkin-quality-rubric.md": "6d80c1f2d3714db28e0db71e770690b38055c71bd30f9569e00e913ed44f73cb",
+      "skills/aipos-feature-refine/references/example-mapping-facilitator.md": "e5ea0991baf2666c8fa876f755d1b0725aadaaf42ec676875b2814eb779748b8",
+      "skills/aipos-feature-refine/scripts/change_package.py": "16d16e5f9d8533a3d289160490615b0474d645570e6a8c207500919c18c23a6a",
+      "skills/aipos-rapid-validation/README.md": "feca74d54c100f53a38b81bfc0c5d43b42443592a2772eb2808b21e1610c8eab",
+      "skills/aipos-rapid-validation/SKILL.md": "3bdeb5e4e1a012fec22636701c77da186beb0d277b32f2fa6f02a0141ded453b",
+      "skills/aipos-rapid-validation/evals/evals.json": "10d83542655fa2e8445e1d8a3b84ed11e5fbdbb07cd1cb9431ffc45e9c445925",
+      "skills/aipos-rapid-validation/evals/files/exploration-decision-budget-spent.md": "033ef56c16d9817fab7fa0639f88a0dc45b9a9001d15c4c43e8e1d252540cba7",
+      "skills/aipos-rapid-validation/evals/files/pillar2-exit-support-response.md": "b977797a88efd2f1d029db8378fff3bb267148947612132f85976ad2b55373bb",
+      "skills/aipos-rapid-validation/evals/files/validation-work-completed-ticket-search.md": "cda02cc18062fb1de24163c256409db030d6121ec1931f56656c0002a97a98da",
+      "skills/aipos-rapid-validation/evals/files/exploration-decision-ticket-search.md": "0a33e7cecb02d6432d9a13c8d488d3e083456e99b78c0af0356fb7405783e302",
+      "skills/aipos-rapid-validation/references/problem-sizing.md": "a4bc87e5992140dbd2a6b2fc16dba396d0516bd3ec85ab19e2c7b1998e77f2b3",
+      "skills/aipos-rapid-validation/references/viability-brief.md": "4d29f79fe34b498acd495d48e1259c2a3507b89ae0e2647579951d7e75d2b60b",
+      "skills/aipos-rapid-validation/references/eval-stub-brief.md": "128f1ba54f613254d395c7902d2f9015baab67ffb48b56f7c425299d55273119",
+      "skills/aipos-rapid-validation/references/feasibility-spike.md": "3c3f476802e2befb64a06501dcc0be97b697f394f081ec395c5123cb162ecb77",
+      "skills/aipos-rapid-validation/references/evidence-intake.md": "edeb8d3d03dd4c88395874cdb771d809092a04ce9225b8c99e5140dafc1960c6",
+      "skills/aipos-rapid-validation/references/interview-guide.md": "9fdb8079d82888440375291b1f113fb4cc84394dc712e8484d5cb8dba464c519",
+      "skills/aipos-rapid-validation/references/visual-prototype.md": "35c0f058730e37b9ee62c888224b2ac12d481925c5e0250a5d1e69736a6fb172",
+      "skills/aipos-rapid-validation/references/record-writeback.md": "e4bf6e519cf335d3d8ca7188d5f7fb9ecd8146b092463d35dcb28a45e9e80c0c",
+      "skills/aipos-rapid-validation/references/demand-test.md": "fbc9002e54f7a841c86319099505281a0c725f3e860bf469b747585b871cffff",
+      "skills/aipos-feature-create/SKILL.md": "a7c414487c86a39c174242dbf2b12adc1e4cd072c9393596394bed11579f14e1",
+      "skills/aipos-feature-create/evals/evals.json": "915950323d149b4f3a932125410afaa046e35d0632e99015325525697221e3f6",
+      "skills/aipos-feature-create/evals/files/feature-stub-claim-summary.md": "bbfbb0c1b2478e4a90b4833b72f461b96a08604c004ee95930a2385639d10126",
+      "skills/aipos-feature-create/evals/files/opportunity-support-response.md": "3cac13f02d53defe035f8372e97b87128c0d02ddeca3a01b1ca7f3f858d5126c",
+      "skills/aipos-feature-create/evals/files/epic-claims-triage.md": "5ee7cf5a42de9506aa0834c90a3b83690a6f83cbcd7a0081b5b3ecccbd2a85f9",
+      "skills/aipos-feature-create/references/story-mapping.md": "7e09a7afcdbd9b3a90dfa48112e0745561d2211dfebd28e036556ae30903b250",
+      "skills/aipos-feature-create/references/feature-template.md": "cc16adc7b8216f2cc39cc914fed329e5726ddc7cc5394c32fe757ebef7776eca",
+      "skills/aipos-feature-create/references/tracker-adapters.md": "f41d9e5fbe62c1f71826992e05548111f1321706e8ac066ffb933a143d30f62a",
+      "skills/aipos-feature-create/references/gherkin-tagging.md": "4943140c579e75a3407b264815137a6d41448a53b32b6ffa38131746c56fa55c",
+      "skills/aipos-epic-create/SKILL.md": "27c4e122a0656fea6faee1a4d5b3687888606aa9582271804853c22a5229caa1",
+      "skills/aipos-epic-create/evals/evals.json": "c88ee0539adcbfc927a65ba207f5984d2a8788900ad6d4ddb8a72c9f0aeb3cf3",
+      "skills/aipos-epic-create/evals/files/viability-brief-ticket-search.md": "96b0492a8a63265f8aaf2f4db0d3a1c0532d2a3c631d4796b4e153db48a8cf0d",
+      "skills/aipos-epic-create/evals/files/epic-draft-solution-shaped.md": "e86f7b9ea99c6ecbc958b74db4e74d81e6802ecbfd9e6c665fc9e0a786e12fe9",
+      "skills/aipos-epic-create/references/problem-framing.md": "a209fddb5b68c7c53f7dc38d038b46a31968c29ca7dbb7ccc5376c3ea0857791",
+      "skills/aipos-epic-create/references/epic-template.md": "504a4daf6fb9039d6c99fab41f780ee1ac4adb0b05f8a815d6e7482e6e2dcb29",
+      "skills/aipos-epic-create/references/metrics-and-evaluation.md": "dcbcefc4cd220ed11afb8768b471bb599f74e04e99617acd3dcff88d51216c21",
+      "skills/aipos-epic-create/references/tracker-adapters.md": "9e281bf42937eda96556688d77982b62ee30e20f8a8c1c15e1af3a1ef53ca970"
+    },
+    "profile": "/private/tmp/aipos-pe-evals/install-final-v2/config",
+    "note": "Fresh isolated local-marketplace installation; does not change real user settings or prove a GitHub publication."
+  },
+  "validation": {
+    "offline": {
+      "passed": 427,
+      "skipped": 5,
+      "scope": "Entire local pytest suite; skips are absent file-fixture directories."
+    },
+    "manifest": "Marketplace and plugin both validate.",
+    "skills": "All eleven quick_validate checks pass."
+  },
+  "cleanup": {
+    "loopback_engine_stopped": true,
+    "browser_http_server_stopped": true,
+    "disposable_browser_tab_closed": true,
+    "ephemeral_credentials_and_tls_key_removed": true
+  }
+}

@@ -9,7 +9,7 @@
     {
       "name": "aipos",
       "description": "AIPOS skills for evidence-based discovery, rapid validation, and governed AI-assisted delivery. Plan exploration, test assumptions, define and refine behavior, select release scope, prepare commitment packages, check repository readiness, visualize work, generate synthetic data, and emit delivery metrics. Skills support the pillars and their handoffs in one installation; product approval remains with the accountable authority.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Accelerated Innovation"
       },
