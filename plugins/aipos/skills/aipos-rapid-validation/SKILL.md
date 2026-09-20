@@ -125,7 +125,9 @@ a hunch. What is not acceptable is an artifact that *looks* evidence-backed when
 Mark every claim, and say in one line at the top what the evidence base actually was.
 Preserve a source's own uncertainty: a lead's estimate remains `[I]` or `[A]`,
 even when it appears in a document containing observed `[E]` facts. Keep those
-labels beside the values wherever reused in a table, hypothesis, or conclusion.
+labels and the supplied source identifiers beside the values wherever reused in a
+table, hypothesis, or conclusion. A general evidence-ID list does not map a source
+to an individual claim.
 Ask only for unanswered facts; evidence and mandate questions already answered
 in the request do not need another round. With neither, explain once that the
 interviews and problem sizing will establish the evidence; a finished guide

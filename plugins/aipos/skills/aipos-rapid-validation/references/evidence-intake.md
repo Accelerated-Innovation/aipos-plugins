@@ -159,6 +159,13 @@ that someone made a claim, not that the claim is true. Keep reported estimates l
 as estimates; never turn them into measured savings. Keep unknown quantities unknown in
 the artifact body, calculations and closing recommendation, not just the header.
 
+Put each quantitative claim's supplied source identifier in the same sentence or
+table row as the value and its provenance marker. For example, `[E] (source: <id>,
+as reported in the supplied summary)` distinguishes a supported summary from an
+independent read of the underlying record. A list of evidence IDs elsewhere is not
+that mapping. Preserve it when repeating the value; never invent an ID where none
+was supplied — use the source's actual name or describe the provenance limit.
+
 Do not mark decorative or structural text. Mark claims someone could act on or be wrong
 about.
 
