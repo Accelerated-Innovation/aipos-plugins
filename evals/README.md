@@ -19,9 +19,9 @@ floor.
 python -m pip install -r requirements-evals.txt
 
 python evals/run_evals.py --list                                    # skills with cases
-python evals/run_evals.py --skill govkit-feature-create             # dry run, free
-python evals/run_evals.py --skill govkit-feature-create --execute   # real calls, real money
-python evals/run_evals.py --skill govkit-feature-refine --case 9 --execute   # one case
+python evals/run_evals.py --skill aipos-feature-create             # dry run, free
+python evals/run_evals.py --skill aipos-feature-create --execute   # real calls, real money
+python evals/run_evals.py --skill aipos-feature-refine --case 9 --execute   # one case
 ```
 
 **`--execute` is required to spend anything.** Without it the runner assembles every request,
@@ -37,9 +37,11 @@ Credentials resolve the usual way: `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN
 alone, a legitimate clarifying question reads as a missing deliverable. After the first turn the
 harness replies `proceed` — the bare word the skills' own Proceed protocol documents as
 confirmation — and everything said so far stays in context, so the second turn continues the
-conversation rather than restarting it. All assistant turns are graded together.
+conversation rather than restarting it. All assistant turns are graded together, with their role boundaries and the intervening
+user follow-up preserved. The judge also receives the supplied fixture content,
+so it can distinguish provided facts from invented ones.
 
-Measured on `val-rapid-validation`: moving from one turn to two took the four cases from
+Measured on `aipos-rapid-validation`: moving from one turn to two took the four cases from
 0.29 / 0.20 / 0.86 / 0.88 to 0.50 / 0.86 / 0.87 / 1.00. **No case got worse** — one turn was
 measuring a transcript nobody has.
 
@@ -50,7 +52,7 @@ rather than reusing a grade that meant something else.
 ## How a case is graded
 
 1. **Subject call** — the **whole skill package** becomes the system prompt: `SKILL.md` plus
-   every reference its own text tells the subject to read. `govkit-feature-create` names six,
+   every reference its own text tells the subject to read. `aipos-feature-create` names six,
    and says of one that it *"is what the gates judge your Gherkin against"* — sending only
    `SKILL.md` would have the subject work from memory and the judge grade the memory. The
    case's `files` and `prompt` follow in the user turn.
@@ -72,10 +74,12 @@ multi-case run several times over.
 
 ## Cases this harness cannot run
 
-Some cases need inputs it cannot supply. All three `govkit-metrics-emit` cases point at a
+Some cases need inputs it cannot supply. The three original `aipos-metrics-emit` cases point at a
 governed repository at `/tmp/testrepo` and expect tools to inspect it; this runner has neither.
 
-Those cases are **skipped with the reason printed**, not run and recorded as failures:
+The newer completeness-versus-token coaching case has self-contained inputs and can run.
+
+Those runtime-dependent cases are **skipped with the reason printed**, not run and recorded as failures:
 
 ```
 SKIP  gate-readiness-audit: needs /tmp/testrepo — no runtime target and no tools,
@@ -97,7 +101,7 @@ grade as current — which would make the harness worse than useless for the one
 
 ## What a real run cost
 
-Measured on `val-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:
+Measured on `aipos-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:
 **$0.95 at one turn**, 92–237 seconds per case, 2.2k–11.4k output tokens per turn. The skill
 package cached at 24,780 tokens per case after the first.
 
@@ -149,6 +153,13 @@ model failure.
 Rows are appended and flushed as each case finishes, and a resume is keyed on `(case, rep)` — a
 crash mid-run costs only the cases still in flight.
 
+A truncated subject turn makes the conversation incomplete even if the judge
+approves the combined answer. Such rows are not passing results. New rows keep
+the judge's raw verdict in `judge_passed`; summaries also exclude historical
+`status: truncated` rows whose older `passed` field recorded only that verdict.
+Resuming an entirely cached run still reports its failures and returns a failing
+exit code when appropriate; it does not call a model again.
+
 ## Reporting a run
 
 Per CONTRIBUTING: **never report an eval as passing unless it actually ran.** When you run one,
@@ -161,9 +172,39 @@ runner deliberately does not compute cost, so a model swap cannot carry a stale 
 The merge gate stays `claude plugin validate` + `pytest tests -q`: offline, key-free, fast.
 
 An LLM-judged gate is non-deterministic. A required check that fails occasionally for no reason
-trains people to re-run until green — and `govkit-feature-refine` already says why that is
+trains people to re-run until green — and `aipos-feature-refine` already says why that is
 corrosive: *"false gates teach teams to ignore real ones."* A secrets-dependent check also cannot
 run on fork PRs at all.
 
 So the eval job is `workflow_dispatch` — run it deliberately, and paste the result into the PR
 when a change touches coaching behaviour.
+
+## Regrade an existing conversation
+
+When judge instructions change, reuse the actual subject conversation without
+paying to generate a replacement answer:
+
+```bash
+python evals/run_evals.py --skill aipos-feature-create \
+  --regrade-from consolidation --variant conversation-judge-v2 \
+  --model claude-opus-5 --judge-model claude-sonnet-5 --reps 3 --execute
+```
+
+This calls only the judge. The source and destination variants must differ.
+The source skill package, input fixtures, subject model, turn count, and user
+follow-ups must still match; otherwise the runner refuses reuse and a fresh
+subject run is required. Original results and traces remain intact. New rows
+record subject provenance and zero new subject usage, with the original usage
+retained separately. A judge-input contract change invalidates cached grades.
+
+Earlier versions concatenated assistant turns without the user's intervening
+reply. This made legitimate multi-turn pauses look like uninterrupted responses.
+Do not compare those historical coaching pass rates to conversation-aware grades
+as if only the skill had changed.
+
+For a recorded `judge-truncated` error, use `--judge-max-tokens 32000` in a
+separate variant. The output ceiling is recorded and a changed ceiling
+invalidates the grade fingerprint. Use `--regrade-from` when a completed source
+conversation exists; an attempt that failed before saving its conversation
+needs a fresh subject. Keep the original error visible, and do not rerun a
+completed behavioral failure merely to obtain a passing answer.

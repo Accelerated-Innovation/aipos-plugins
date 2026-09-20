@@ -5,15 +5,13 @@ sibling source trees and no guarantee that a neighbour skill came along.
 `test_plugin_boundaries.py` already holds the cross-*plugin* line. This
 holds two more that only matter once scripts exist:
 
-- **Third-party imports are declared, not assumed.** `govkit-feature-map`
+- **Third-party imports are declared, not assumed.** `aipos-feature-map`
   ships a `requirements.txt` because it needs a Gherkin parser. A script in
   another skill that quietly imports the same parser works perfectly in
   this source tree — where the dependency is installed for the tests — and
   fails in the project it was installed into.
-- **No skill reaches into a sibling skill's scripts.** Same failure as the
-  plugin boundary, one level down: the path that resolves here is exactly
-  the path that breaks there, because a user may install one skill and not
-  the other.
+- **Scripts do not hard-code sibling script paths.** Skills in one plugin ship
+  together, but callers may invoke scripts from an unrelated working directory.
 
 Both are asserted from the source rather than by importing, so a script
 that is broken *at import time* is still checked.
@@ -29,13 +27,14 @@ import sysconfig
 
 import pytest
 
+from skill_paths import skill_path, skill_paths
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SKILLS = ROOT / "plugins" / "govkit" / "skills"
 
 #: Skills allowed third-party imports, and the file that declares them.
 DECLARED = {
-    skill: SKILLS / skill / "scripts" / "requirements.txt"
-    for skill in ("govkit-feature-map", "govkit-metrics-emit", "govkit-synthetic-data")
+    skill: skill_path(skill) / "scripts" / "requirements.txt"
+    for skill in ("aipos-feature-map", "aipos-metrics-emit", "aipos-synthetic-data")
 }
 
 _STDLIB_DIR = pathlib.Path(sysconfig.get_paths()["stdlib"]).resolve()
@@ -70,7 +69,7 @@ def is_stdlib(name: str) -> bool:
 
 
 def scripts():
-    return sorted(SKILLS.glob("*/scripts/*.py"))
+    return sorted(p for skill in skill_paths().values() for p in skill.glob("scripts/*.py"))
 
 
 def test_there_are_scripts_to_check():
@@ -114,7 +113,7 @@ def test_a_script_does_not_reach_into_another_skill(path):
     """Scripts stay self-contained within their own skill directory.
 
     **Not** because a sibling skill might be missing — the installable
-    unit is the plugin, so `/plugin install govkit@aipos` brings every
+    unit is the plugin, so `/plugin install aipos@aipos` brings every
     skill under it and a sibling is always present. I first wrote the
     opposite here, and it was wrong: that reasoning belongs to
     `test_plugin_boundaries.py`, where a user really can have one plugin
@@ -124,27 +123,27 @@ def test_a_script_does_not_reach_into_another_skill(path):
     whatever working directory the caller has, so a hard-coded relative
     path into a sibling is fragile in a way a documented invocation is
     not — which is why two SKILL.md files legitimately call sibling
-    scripts (`govkit-workflow-map` runs `govkit-feature-map`'s ingester)
+    scripts (`aipos-workflow-map` runs `aipos-feature-map`'s ingester)
     and no script hard-codes one. Instructions are the documented place
     for that coupling; a module-level path is not.
 
     Matched on **path shapes and imports**, not on the name appearing
     anywhere. The first version flagged four files for mentioning a
     sibling in a comment — including the one explaining why the token
-    record preserves the fields `govkit-metrics-emit` reads, which is
+    record preserves the fields `aipos-metrics-emit` reads, which is
     exactly the kind of cross-reference that should be written down. A
     dependency is a path or an import; a sentence is not.
     """
     text = path.read_text(encoding="utf-8")
     own = path.parents[1].name
-    siblings = [p.name for p in SKILLS.iterdir() if p.is_dir() and p.name != own]
+    siblings = [p.name for p in path.parents[2].iterdir() if p.is_dir() and p.name != own]
 
     for other in siblings:
         for shape in (f"/{other}/", f"'{other}'", f'"{other}"'):
             assert shape not in text, (
                 f"{own}/{path.name} references the sibling skill {other!r} as "
-                f"{shape} — skills install independently and nothing guarantees "
-                "its presence"
+                f"{shape} — the script depends on a relative sibling path rather than "
+                "a stable invocation from the project directory"
             )
 
     tree = ast.parse(text, filename=str(path))

@@ -1,12 +1,12 @@
-# Contributing to GovKit Plugins
+# Contributing to AIPOS
 
-Thanks for helping improve GovKit. This repo is a [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces); most contributions are new or improved **skills** inside the `govkit` or `aipos-p2` plugins.
+Thanks for helping improve AIPOS. This repo is a [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces); most contributions are new or improved **skills** inside the single `aipos` plugin.
 
 ## Repository layout
 
 ```
-.claude-plugin/marketplace.json   # marketplace catalog (lists both plugins)
-plugins/<plugin>/                 # govkit/ or aipos-p2/
+.claude-plugin/marketplace.json   # marketplace catalog (one aipos entry)
+plugins/aipos/                    # all eleven aipos-* skills
   .claude-plugin/plugin.json      # plugin manifest (bump version on release)
   references/                     # plugin-wide references shared by several skills
   skills/<skill-name>/SKILL.md    # one folder per skill; loads automatically
@@ -14,14 +14,18 @@ templates/skill-template/         # copy this to start a new skill
 tests/                            # deterministic checks for the bundled skill scripts
 ```
 
-Guidance that more than one skill depends on belongs in `plugins/<plugin>/references/`, not copied into each skill. A skill reaches it with a relative path — `../../references/<file>.md`. `plugins/govkit/references/gherkin-authoring-standard.md` is the worked example: one Gherkin authoring standard, cited by five skills, restated by none.
+Guidance that more than one skill depends on belongs in `plugins/aipos/references/`, not copied into each skill. A skill reaches it with a relative path — `../../references/<file>.md`. `plugins/aipos/references/gherkin-authoring-standard.md` is the worked example: one Gherkin authoring standard, cited by five skills, restated by none.
 
 ## Adding or changing a skill
 
-1. Create `plugins/<plugin>/skills/<your-skill-name>/SKILL.md`, copying [`templates/skill-template/SKILL.md`](templates/skill-template/SKILL.md) as a starting point.
-2. Keep the frontmatter `description` specific — it is the only text Claude sees when deciding whether to load the skill, so include the trigger words a user would actually type.
+1. Create `plugins/aipos/skills/aipos-<your-skill-name>/SKILL.md`, copying [`templates/skill-template/SKILL.md`](templates/skill-template/SKILL.md) as a starting point.
+2. Keep the frontmatter `description` specific — it is the only text Claude sees when deciding whether to load the skill, so state the requested action, useful input context, result, and nearest competing boundary. Avoid broad noun-only triggers.
 3. Put any supporting material in the skill folder: `references/` for rubrics/checklists the skill reads at runtime, `evals/` for evaluation cases and sample inputs.
 4. Skills load automatically from a plugin's `skills/` directory — you don't need to register them anywhere.
+
+For selection changes, use the [skill ownership model](docs/workflow.md#ownership-and-handoffs)
+and add contrasting prompts to [the routing cases](evals/routing/README.md).
+Routing cases test which skill loads; per-skill cases test its behavior after loading.
 
 ## Before you open a PR
 
@@ -29,6 +33,7 @@ Validate the marketplace and plugin manifests, and run the deterministic checks:
 
 ```bash
 claude plugin validate .
+claude plugin validate plugins/aipos
 
 python -m pip install -r requirements-dev.txt
 python -m pytest tests -q
@@ -42,8 +47,8 @@ Each skill's `evals/evals.json` is a separate, **model-graded** pass. Those case
 
 ```bash
 python -m pip install -r requirements-evals.txt
-python evals/run_evals.py --skill govkit-feature-create             # dry run, free
-python evals/run_evals.py --skill govkit-feature-create --execute   # real calls, real money
+python evals/run_evals.py --skill aipos-feature-create             # dry run, free
+python evals/run_evals.py --skill aipos-feature-create --execute   # real calls, real money
 ```
 
 `--execute` is required to spend anything. The skill's `SKILL.md` becomes the system prompt and a **different** model grades the response against the case's `expected_output`. Results and full traces land in `.claude/hillclimb/<skill>/<variant>/` (gitignored) — read the traces, not just the score. Details and the limits of what a passing run proves: [`evals/README.md`](evals/README.md).
@@ -56,7 +61,7 @@ Then check:
 - [ ] `python -m pytest tests -q` passes.
 - [ ] If the change touches coaching behaviour (a `SKILL.md`, a reference it reads, or an eval case), ran `evals/run_evals.py` for the affected skill and reported which cases ran, the models used, and the results — or said plainly that it was not run.
 - [ ] JSON files (`marketplace.json`, `plugin.json`, any `evals.json`) are valid and consistent (names, descriptions, keywords).
-- [ ] Bumped `version` in the affected plugin's `.claude-plugin/plugin.json` if the change is user-visible. Users pick up updates with `/plugin marketplace update aipos`.
+- [ ] Bumped `version` in the affected plugin's `.claude-plugin/plugin.json` if the change is user-visible. See the [rollout guide](docs/rollout.md#later-updates) for marketplace refresh and installed-plugin update commands.
 - [ ] Updated the [README](README.md) and any relevant `references/` if behavior changed.
 
 ## Continuous integration

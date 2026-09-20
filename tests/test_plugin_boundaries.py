@@ -19,6 +19,8 @@ import re
 
 import pytest
 
+from skill_paths import skill_path
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PLUGINS = ROOT / "plugins"
 
@@ -93,20 +95,20 @@ def test_no_file_reaches_into_another_plugin(plugin_dir, path):
 
 
 def test_shared_references_stay_canonical_in_the_plugin_that_owns_them():
-    """The govkit plugin owns the shared references; nothing duplicates them.
+    """The AIPOS plugin owns the shared references; nothing duplicates them.
 
     The alternative to reaching across plugins is copying, and a copied
     reference is one nobody maintains — the failure this repo already avoids
     for the Gherkin authoring standard, which five skills cite and none
     restates.
     """
-    owned = {p.name for p in (PLUGINS / "govkit" / "references").glob("*.md")}
+    owned = {p.name for p in (skill_path("aipos-feature-map").parent.parent / "references").glob("*.md")}
     assert "spec-identifiers.md" in owned
     assert "workflow-source.md" in owned
 
     duplicates = [
         p for p in PLUGINS.rglob("references/*.md")
-        if p.name in owned and p.parent != PLUGINS / "govkit" / "references"
+        if p.name in owned and p.parent != skill_path("aipos-feature-map").parent.parent / "references"
     ]
     assert not duplicates, f"shared reference copied instead of cited: {duplicates}"
 
@@ -146,4 +148,6 @@ def test_every_plugin_appears_in_the_marketplace():
     catalog = json.loads((ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
     listed = {e["name"] for e in catalog.get("plugins", [])}
 
-    assert PLUGIN_NAMES <= listed, f"plugins missing from the marketplace: {PLUGIN_NAMES - listed}"
+    assert PLUGIN_NAMES == listed == {"aipos"}
+    assert len(catalog["plugins"]) == 1
+    assert catalog["plugins"][0]["source"] == "./plugins/aipos"

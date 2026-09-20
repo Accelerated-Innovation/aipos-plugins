@@ -1,314 +1,71 @@
-# AIPOS Skills For Real Delivery Teams
+# AIPOS skills
 
-Agent skills for governed AI product delivery, from [Accelerated Innovation](https://acceleratedinnovation.com).
+One plugin for evidence-based discovery, rapid validation, and governed AI-assisted
+delivery, from [Accelerated Innovation](https://acceleratedinnovation.com).
 
-Shipping software with agents is easy. Shipping software with agents that you'd stake a regulated program, a customer commitment, or a budget cycle on is hard. Frameworks that wrap the whole process around you tend to solve that by taking the wheel — and when the process is wrong, you can't reach the bug.
+AIPOS (AI Product Operating System) groups the work into pillars. The plugin keeps
+all eleven skills together because behavior authoring, review, journey definition,
+and scope selection support several pillars. Each skill owns a specific action
+and hands off when the requested work changes.
 
-These skills take the opposite bet. They're small, single-purpose, and composable. Each one owns one decision in the lifecycle and hands off explicitly to the next. They work with any model, any tracker, and any repo layout. They're organised around the **AI Product Operating System (AIPOS)** — the pillars that carry a product idea from *should we build this?* through to *is this safe to hand an agent?*
+## Install
 
-Nothing here writes to your tracker, your repo, or your record without showing you the exact content first and asking. That is the point.
-
-## Installation (30-second setup)
-
-Everything ships from one Claude Code plugin marketplace called `aipos`. Add it once, then install the plugins for the pillars you work in.
-
-### 1. Add the marketplace
-
-<details>
-<summary><strong>From inside a Claude Code session</strong></summary>
-
-```
-/plugin marketplace add Accelerated-Innovation/govkit-plugins
-```
-
-Once added, the marketplace is available in every session on that machine.
-
-</details>
-
-<details>
-<summary><strong>From your terminal</strong></summary>
+In a terminal with Claude Code installed:
 
 ```bash
 claude plugin marketplace add Accelerated-Innovation/govkit-plugins
+claude plugin install aipos@aipos
 ```
 
-Same result — pick whichever fits your habits.
+The marketplace and plugin are both named `aipos`; the repository remains
+`govkit-plugins`. Start a new Claude Code session after installation. For an early
+installation of `aipos-p1`, `aipos-p2`, or `govkit`, follow the short
+[replacement instructions](docs/rollout.md).
 
-</details>
+This repository uses Claude's `.claude-plugin` packaging. It does not currently
+provide a Codex plugin manifest.
 
-<details>
-<summary><strong>From the Claude web app</strong></summary>
+## Start with the work you need
 
-Settings → Customize → plugins, then add `Accelerated-Innovation/govkit-plugins` as a marketplace.
+Describe the action and provide the relevant evidence or artifacts:
 
-</details>
-
-### 2. Install the plugins
-
-```
-/plugin install aipos-p1@aipos     # Pillar 1 — Continuous Discovery
-/plugin install aipos-p2@aipos     # Pillar 2 — Rapid Validation
-/plugin install govkit@aipos       # Pillar 3 — Accelerated Development
-```
-
-Install all three if you own a product end to end. Install one if you only live in that part of the lifecycle.
-
-Pull later releases with:
-
-```
-/plugin marketplace update aipos
-```
-
-### 3. Just start talking
-
-There are no slash commands. Every skill triggers from natural phrases — "is this worth building?", "review this spec before we code", "how big is this feature?", "map this epic". Say what you're trying to do and the right skill loads itself.
-
-## Why These Skills Exist
-
-Each of these is a failure mode we kept watching teams hit once agents entered the delivery loop.
-
-### #1: We Built The Wrong Thing, Faster Than Ever
-
-> "The output is not a prototype. The prototype is evidence. The output is a documented decision — go, no-go, or revise."
->
-> The AIPOS, Pillar 2
-
-**The Problem**: Agents collapsed the cost of building. They did nothing to the cost of building the wrong thing — they made it cheaper to *start*, which means teams now commit engineering capacity to unvalidated assumptions faster than they ever could before. The expensive mistake was never the code. It was the six months spent on a problem nobody had.
-
-**The Fix** is to test the riskiest assumption at the point where testing costs days instead of sprints, and to end that work with an actual decision rather than a folder of artifacts.
-
-[`val-rapid-validation`](./plugins/aipos-p2/skills/val-rapid-validation/SKILL.md) builds the evidence — interview guides, problem sizing, prototype briefs, demand tests, feasibility spikes — and every one of them carries a hypothesis, an experiment, and a decision rule. If you can't say what you'd do differently based on the result, the artifact isn't finished.
-
-<details>
-<summary>
-The provenance discipline
-</summary>
-
-Every claim in every artifact is marked: `[E]` evidence-backed, `[I]` inferred, `[A]` assumption.
-
-This sounds like bookkeeping until you watch what it prevents. An agent asked to size a problem will happily produce "roughly 30% of support tickets" because that is what a sizing document looks like. Marked provenance makes the skill choose between writing `[A]` next to a number it invented, or asking you for the real one. It asks.
-
-A missing number becomes a marked assumption with a sensitivity pass around it. Never a plausible-looking figure.
-
-</details>
-
-### #2: The Spec Wasn't A Contract
-
-> GovKit's premise is that AI-assisted coding is safe when the spec is a contract.
->
-> [GovKit](./plugins/govkit/README.md)
-
-**The Problem**: A human developer handed a vague ticket asks a question. An agent handed a vague ticket writes 400 lines of confident, wrong code. Ambiguity that used to surface as a Slack message now surfaces as a pull request.
-
-Draft 0 specs — whether generated by Aha!, an LLM, or a hurried human — are almost never contracts. They have Gherkin that reads well and tests nothing, NFRs without thresholds, and evaluation criteria without gates.
-
-**The Fix** is a real refinement conversation before anyone writes code, with Product, QA, and Engineering in the room.
-
-[`govkit-feature-refine`](./plugins/govkit/skills/govkit-feature-refine/SKILL.md) runs that 3 Amigos review against a 10-dimension quality rubric: it finds blockers, names evidence gaps, and suggests rewritten Gherkin. It ends with a Development Token *recommendation* — a recommendation, because the gate itself lives in the repo, not in the tracker.
-
-> [!TIP]
-> The blocker list is the gate. The score is advisory.
->
-> A feature can score 7.5/10 and still be Blocked. Any badge or dashboard built from these scores carries that caveat on its face — because the moment a number becomes the gate, people optimise the number.
-
-### #3: Nobody Ever Said "Yes, Build It"
-
-> No token, no coding.
->
-> [GovKit](./plugins/govkit/README.md)
-
-**The Problem**: Ask a team when a feature became "ready to build" and you get shrugs. It drifted into ready. Somebody started, nobody objected, and the definition of done got written retroactively by whatever got merged.
-
-That was survivable at human pace. At agent pace, a feature can go from vague to merged inside an afternoon, and the drift becomes the whole process.
-
-**The Fix** is an explicit, repo-side, evidence-checked go/no-go: the **Development Token**.
-
-[`govkit-feature-readiness`](./plugins/govkit/skills/govkit-feature-readiness/SKILL.md) validates the actual package in your repository — `acceptance.feature`, `nfrs.md`, `eval_criteria.yaml` — against a 12-dimension gate, and issues the token. Not the tracker's opinion of readiness. The repo's.
-
-This is deliberately the *second* rubric in the lifecycle. Refine scores the draft where it lives; readiness scores the artifacts an agent will actually read.
-
-### #4: Everything Was MVP
-
-**The Problem**: "MVP" ends up meaning "the whole thing, but stressed." Nobody sized the scenarios, so nobody could argue about which ones could wait, so all of them shipped in release one.
-
-Agents make this worse in a specific way: when implementation is cheap, the discipline of *not building something yet* loses its last practical defender.
-
-**The Fix** is to make scenario size visible and slicing explicit.
-
-[`govkit-feature-slice`](./plugins/govkit/skills/govkit-feature-slice/SKILL.md) scores every scenario on the Scenario Complexity Matrix — Data & State, Integration, UI/UX, 1–3 points each — bands them Small/Medium/Large, and maps them onto `@mvp` / `@v1` / `@v2` tags with MoSCoW. It proposes splits for oversized scenarios and flags Large ones sitting on the MVP critical path.
-
-It recommends. The PM decides, and nothing is tagged or written back until they say so.
-
-> [!WARNING]
-> Sizing points are complexity, not story points. Don't feed them into sprint capacity math — that's a different number with a different meaning and a different failure mode.
-
-### #5: Nobody Could See The Whole Release
-
-**The Problem**: Per-feature governance gives you per-feature answers. It doesn't tell you where the release is weakest, which features are quietly blocking three others, or what the MVP slice actually costs across an epic.
-
-**The Fix** is a corpus view, and metrics that come from artifacts rather than from self-reporting.
-
-[`govkit-feature-map`](./plugins/govkit/skills/govkit-feature-map/SKILL.md) ingests from Jira, Aha!, or a repo directory and renders one self-contained HTML page: a producer/consumer chain diagram, a card per feature with its full spec, readiness and size badges, and MVP/V1/V2 slice views. Run it on an epic and the weak link is usually visible in about four seconds.
-
-[`govkit-workflow-map`](./plugins/govkit/skills/govkit-workflow-map/SKILL.md) answers the question a feature list cannot: how does a customer actually get from start to finish, and who does what along the way. It authors `workflow.json` — the single source the L1/L2/L3 views are generated from — referencing the Gherkin that already exists rather than restating it, and reports the behavior in your corpus that no step in the journey touches.
-
-[`govkit-metrics-emit`](./plugins/govkit/skills/govkit-metrics-emit/SKILL.md) emits Tier 1 metric events as NDJSON from the repo's own exhaust — spec completeness, gate readiness, delivery inputs. And [`govkit-synthetic-data`](./plugins/govkit/skills/govkit-synthetic-data/SKILL.md) closes the loop with seeded, repeatable Faker generators derived from the feature's own Gherkin scenarios, so the tests an agent writes have data that matches the spec it was given.
-
-### Summary
-
-Validation before commitment. Specs as contracts. An explicit token before an agent touches code. Size and slices you argued about on purpose. A view of the whole release, built from artifacts instead of status meetings.
-
-None of it is new. All of it got dramatically more load-bearing the moment delivery stopped being the bottleneck.
-
-## Reference
-
-Skills group by the AIPOS pillar they serve. Every skill here is **model-invoked** — there are no slash commands. Describe your situation in your own words and the right one loads. Each states its own handoff, so the pillars chain: Pillar 1 ends at the Exploration Decision, Pillar 2 begins there; Pillar 2 ends at the Validation Decision, Pillar 3 begins there.
-
-### Pillar 1 — Continuous Discovery
-
-*Evidence-governed planning.* Decide what deserves exploration capacity before anyone commits it. Runs against a live Product Definition Graph read over MCP — never from recollection, never from a slide deck.
-
-Primary output: the **Exploration Decisions** — explore with a declared budget and horizon, decline with a reason, or defer to a named session.
-
-- **[pdg-quarterly-planning](./plugins/aipos-p1/skills/pdg-quarterly-planning/SKILL.md)**: The quarterly session pack in five moves — portfolio read, evidence grading (Strong / Thin / Stale / Say-so, the grade beside the rank), gap analysis (coverage, attention, expiry pressure, funnel signals), the one-page agenda with its capacity ledger, and the Exploration Decision log. Every claim provenance-marked and traceable to an MCP tool call; the skill never writes — decisions enter the system of record through its own governed doors. Includes a dry-run rehearsal mode.
-
-Plugin: [`aipos-p1`](./plugins/aipos-p1/README.md) · `/plugin install aipos-p1@aipos`
-
-### Pillar 2 — Rapid Validation
-
-*Build-to-Learn.* Retire risk before an organization commits production engineering capacity. Deliberately ungoverned relative to delivery — applying production governance to disposable experiments kills the speed that makes validation cheap.
-
-Primary output: the **Validation Decision** — go, no-go, or revise.
-
-- **[val-rapid-validation](./plugins/aipos-p2/skills/val-rapid-validation/SKILL.md)**: Build the validation artifacts that feed the Validation Decision — interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the call. Organised by the three questions the decision must answer: is the problem real, will the solution solve it, is it feasible and economic. Every claim provenance-marked; every artifact carries a decision rule. Picks up Pillar 1's Exploration Decision as the exploration mandate — budget and horizon carried in every artifact's header, each artifact's cost stated against them, reconciled in the viability brief, and the outcome recorded back against the decision. Reports, never gates.
-
-Plugin: [`aipos-p2`](./plugins/aipos-p2/README.md) · `/plugin install aipos-p2@aipos`
-
-### Pillar 3 — Accelerated Development
-
-*Governed delivery.* The spec is a contract: Gherkin the whole team understands, NFRs with thresholds, evaluation criteria with gates, and an explicit go/no-go before any coding agent starts.
-
-Primary output: the **Development Token**.
-
-**Authoring**
-
-- **[govkit-epic-create](./plugins/govkit/skills/govkit-epic-create/SKILL.md)**: A problem-first interview that produces a complete epic — a problem statement with no solution smuggled into it, named personas, quantified impact, OKR alignment, three-to-five measurable success metrics, dated evidence, MVP scope with a real out-of-scope list, risks, and NFRs. In GenAI mode it sets the evaluation criteria every feature under the epic inherits. Where a Pillar 2 viability brief exists, this is the skill that writes out the handoff inputs it named.
-- **[govkit-feature-create](./plugins/govkit/skills/govkit-feature-create/SKILL.md)**: Break an epic into a workflow-aligned, non-overlapping feature set via lightweight story mapping, then author one feature into Draft 0 — user stories, structured description, auto-tagged Gherkin, NFRs, Definition of Done, privacy impact. Writes a repo feature package by default; creates or updates Jira and Aha! records only after an explicit, destination-named confirmation. Switches on evaluation-driven authoring automatically for GenAI features.
-
-**Spec and gate**
-
-- **[govkit-feature-refine](./plugins/govkit/skills/govkit-feature-refine/SKILL.md)**: The 3 Amigos review of a generated Draft 0. Scores against a 10-dimension quality rubric, finds blockers and evidence gaps, suggests rewritten Gherkin, and produces a Development Token recommendation. Also exposes a non-interactive batch mode for scoring a whole corpus.
-- **[govkit-feature-readiness](./plugins/govkit/skills/govkit-feature-readiness/SKILL.md)**: The repo-side 12-dimension gate that actually issues the Development Token, once the package (`acceptance.feature`, `nfrs.md`, `eval_criteria.yaml`) is in the repository.
-
-**Sizing and planning**
-
-- **[govkit-feature-slice](./plugins/govkit/skills/govkit-feature-slice/SKILL.md)**: Scenario sizing on the Scenario Complexity Matrix and MoSCoW release slicing onto `@mvp` / `@v1` / `@v2` tags. Proposes splits for Large scenarios, flags Large scenarios on the MVP critical path, and can write the tagged spec back to Jira or Aha! after an explicit confirmation.
-- **[govkit-workflow-map](./plugins/govkit/skills/govkit-workflow-map/SKILL.md)**: Authors the `workflow.json` behind a customer journey — outcome, ordered and branching activities, actors, the handoffs where work changes hands, and qualified references into canonical Gherkin. L1 journey, L2 collaboration and L3 behavior are generated from that one file, so a Rule shown at four steps is authored once and nobody maintains a diagram. Reports behavior in the corpus that no step touches.
-- **[govkit-feature-map](./plugins/govkit/skills/govkit-feature-map/SKILL.md)**: The cross-cutting corpus view — a self-contained HTML page with a producer/consumer chain diagram, one card per feature with its full spec, readiness badges, and size badges with MVP/V1/V2 slice views. Ingests from Jira, Aha!, or a repo directory, and merges tracker records with repo-resident Gherkin.
-
-**Execution support**
-
-- **[govkit-synthetic-data](./plugins/govkit/skills/govkit-synthetic-data/SKILL.md)**: A seeded, repeatable Python Faker generator derived from the feature's Gherkin scenarios, plus committed data files.
-- **[govkit-metrics-emit](./plugins/govkit/skills/govkit-metrics-emit/SKILL.md)**: Structured Tier 1 metric events (NDJSON) from a governed repo's exhaust — spec completeness, gate readiness, velocity and quality inputs. The producer side of the AIPOS federated metrics topology.
-
-Plugin: [`govkit`](./plugins/govkit/README.md) · `/plugin install govkit@aipos`
-
-### Other pillars
-
-No skills ship for the remaining AIPOS pillars yet. New skills are added as folders under an existing plugin's `skills/` directory, or as a new plugin under [`plugins/`](./plugins/).
-
-## Under a behavior contract
-
-Some teams approve behavior as a **versioned commitment** before implementation
-starts — a baseline binding exact Rules and scenarios to an immutable revision,
-adjudicated by a decision service rather than by a document. These skills work
-the same as ever without one. Where a project has one, three things change, and
-each is a bundled script so that following the skill executes the rule rather
-than restating it:
-
-| Script | What it settles |
+| Request | Skill |
 |---|---|
-| `govkit-feature-readiness/scripts/readiness_state.py` | A Development Token becomes a **derived execution-readiness record referencing the product approval**, not a substitute for one. Five states stay apart — prepared, approved for exact scope, locally executable, authority verified, implementation verified — and a stale reading cannot produce an authoritative green. |
-| `govkit-feature-refine/scripts/change_package.py` | Proposals against approved behavior become a **reapproval request that cannot approve anything**: no field can express a decision, nothing claims to have been submitted, and a request that would not be decidable is refused rather than written. |
-| `govkit-feature-map/scripts/render_map.py` | Cards **name the blocked commitment**, keeping a blocked commitment distinct from a Blocked token — different failures with different fixes. The chip is a snapshot; the gate runs in CI. |
+| “Review the live opportunity graph for next quarter's research choices.” | `aipos-quarterly-planning` |
+| “Design a demand test for this opportunity.” | `aipos-rapid-validation` |
+| “Draft acceptance criteria from these findings.” | `aipos-feature-create` |
+| “Review these existing criteria with Product, QA, and Engineering.” | `aipos-feature-refine` |
+| “Select the smallest useful release from these scenarios.” | `aipos-feature-slice` |
+| “Check this reviewed repo package before implementation.” | `aipos-feature-readiness` |
 
-All three run on a bare interpreter: adopting this adds no installation step.
+See the [complete skill catalog and prerequisites](plugins/aipos/README.md) for
+journey authoring, dashboards, optional epics, synthetic data, and metrics.
 
-**Nothing here is an approval, and none of these skills can issue one.** A
-product decision is recorded through an authenticated decision service by
-someone with the authority to make it; a statement in a conversation is not one.
+## How the pillars connect
 
-**Routes are unchanged.** New work still starts from an evidence-backed
-opportunity and goes straight to Rules and scenarios — no epic, user story or
-estimate required — and story mapping from a tracker epic remains available as
-an explicit legacy route.
+P1 reviews live evidence and drafts exploration decisions. P2 tests assumptions
+and progressively defines, reviews, and selects behavior for a commitment package.
+The accountable authority decides whether to approve that exact scope. P3 checks
+the reviewed repository package for execution readiness, then supports test data
+and delivery observation.
 
-## What these skills won't do
+An evidence-backed opportunity can go directly to Rules and scenarios. Epics,
+user stories, estimates, and a decision service are optional. Existing work can
+enter at the appropriate stage; this is not a compulsory sequence of eleven calls.
 
-Worth knowing before you install:
+The [workflow guide](docs/workflow.md) explains ownership, handoffs, and examples.
+Product approval, local execution readiness, current authority, and implementation
+evidence remain distinct. A dashboard badge or completeness score grants none of
+those by itself.
 
-- **Pillar 2 refuses to write specs.** Ask `val-rapid-validation` for Gherkin or NFRs and you get a polite redirect — specs are born *at* the Validation Decision, not before it.
-- **No skill writes to a system of record without a fresh, explicit yes.** Tracker write-back shows the exact final field content, names the destination, asks once, and verifies by read-back. An earlier "sounds good" is never standing approval.
-- **Two rubric scales exist.** Refine's 10 dimensions score tracker drafts; readiness's 12 score repo packages. A 7.5 does not mean the same thing on both, and the feature map labels which one produced each badge.
-- **None of these write implementation code.** They govern the work an agent does; they don't do it.
-- **Missing evidence stays missing.** These skills would rather ship an artifact full of `[A]` marks and a sensitivity analysis than one plausible fabricated baseline.
+## Develop and verify
 
-## Repository layout
+Read [CONTRIBUTING.md](CONTRIBUTING.md). Offline tests validate packaging and the
+bundled scripts. [Routing evaluations](evals/routing/README.md) test selection from
+the descriptions; [behavior evaluations](evals/README.md) test a loaded skill's
+coaching. Model results must be reported separately from offline test passes.
 
-```
-govkit-plugins/
-├── .claude-plugin/
-│   └── marketplace.json          # marketplace catalog (lists both plugins)
-├── plugins/
-│   ├── govkit/
-│   │   ├── .claude-plugin/
-│   │   │   └── plugin.json        # plugin manifest
-│   │   ├── references/            # shared across skills (Gherkin standard, identifiers)
-│   │   └── skills/
-│   │       ├── govkit-feature-refine/
-│   │       │   ├── SKILL.md
-│   │       │   ├── references/     # rubrics the skill reads at runtime
-│   │       │   └── evals/          # skill evaluations
-│   │       └── ...                 # one folder per skill
-│   └── aipos-p2/
-│       ├── .claude-plugin/
-│       │   └── plugin.json        # plugin manifest
-│       └── skills/
-│           └── val-rapid-validation/
-│               ├── SKILL.md
-│               └── references/     # per-artifact templates and quality bars
-├── templates/
-│   └── skill-template/SKILL.md     # starting point for new skills (does not auto-load)
-├── tests/                          # deterministic checks for the bundled skill scripts
-├── requirements-dev.txt
-├── LICENSE
-└── README.md
-```
+The [implementation plan](docs/plans/2026-09-19-aipos-plugin-consolidation.md)
+records the consolidation work and outstanding release checks.
 
-Two references sit at the plugin level rather than inside one skill, because five skills depend on them and a second copy drifts:
-
-- [`plugins/govkit/references/gherkin-authoring-standard.md`](./plugins/govkit/references/gherkin-authoring-standard.md) — the shared Gherkin authoring standard: BRIEF, explicit `Rule:` blocks, boundary coverage, scenario isolation, the confirmed/proposed/unresolved registers, what makes a spec automatable without turning it into implementation instructions, and the line between a deterministic behavior check and an aggregate GenAI evaluation.
-- [`plugins/govkit/references/spec-identifiers.md`](./plugins/govkit/references/spec-identifiers.md) — `@rule:` / `@scenario:` identifiers that survive rewording, connecting rules, scenarios, NFRs, evaluations and evidence. Optional and additive; existing packages keep working.
-- [`plugins/govkit/references/workflow-source.md`](./plugins/govkit/references/workflow-source.md) — the `workflow.json` format: a customer outcome, ordered and branching activities, actors and handoffs, and qualified references into canonical Gherkin. L1 journey / L2 collaboration / L3 behavior are views of one file, and the diagram is a generated projection — a Rule shown at four steps is authored once.
-
-## Adding another skill
-
-1. Create `plugins/<plugin>/skills/<your-skill-name>/SKILL.md` (copy `templates/skill-template/SKILL.md` as a starting point).
-2. Add any `references/` or `assets/` the skill needs alongside it.
-3. Bump `version` in `plugins/<plugin>/.claude-plugin/plugin.json`.
-4. Run `claude plugin validate .`, commit, and push. Users pick it up with `/plugin marketplace update aipos`.
-
-Skills in a plugin's `skills/` directory load automatically — you don't need to list them anywhere.
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add a skill, validate locally, and open a PR. Every pull request runs `claude plugin validate` and a deterministic `pytest` suite in CI; both are offline and need no API key.
-
-```bash
-claude plugin validate .
-python -m pip install -r requirements-dev.txt && python -m pytest tests -q
-```
-
-## License
-
-MIT. See [LICENSE](./LICENSE).
+Licensed under [MIT](LICENSE).

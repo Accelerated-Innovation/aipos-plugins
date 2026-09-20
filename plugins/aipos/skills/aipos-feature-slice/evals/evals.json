@@ -1,0 +1,125 @@
+{
+  "skill_name": "aipos-feature-slice",
+  "evals": [
+    {
+      "id": 1,
+      "name": "interactive-sizing-recommends-and-pauses",
+      "prompt": "Here's one of our features. Can you size the scenarios and help me slice it into MVP / V1 / V2 for release planning?",
+      "files": [
+        "files/feature-appointment-booking.md"
+      ],
+      "expected_output": "A sizing table covering all seven scenarios with the three dimension judgments (each 1-3, grounded in scenario text), points, band, a recommended slice with a one-line rationale, the feature rollup (band counts, total points, per-slice points), risk flags, and a numbered 'decisions needed' list — then a STOP asking the PM to confirm or correct each recommendation. The happy-path booking scenario should be recommended @mvp; error/validation/permission scenarios @v1; SMS reminder and drag-and-drop reschedule land in later slices (their external-SMS and drag-and-drop indicators are @v2 material). No tagged Gherkin and no tracker field updates yet, and slices are presented as recommendations, not decisions. Every stated point total must equal the sum of its three dimensions.",
+      "assertions": [
+        {
+          "name": "covers-every-scenario",
+          "text": "The sizing table covers all seven scenarios, including every row-set of the Scenario Outline as one entry."
+        },
+        {
+          "name": "arithmetic-is-consistent",
+          "text": "Every scenario's points equal the sum of its three 1-3 dimension scores, and every band matches its points (Small 3-4, Medium 5-7, Large 8-9)."
+        },
+        {
+          "name": "pauses-for-pm-decision",
+          "text": "The response ends by asking the PM to confirm or correct the slice recommendations, and does not emit tagged Gherkin or tracker field updates."
+        },
+        {
+          "name": "recommendations-not-decisions",
+          "text": "Slices are framed as recommendations for the PM to decide, not as applied tags or final decisions."
+        },
+        {
+          "name": "judgments-are-grounded",
+          "text": "Dimension judgments cite the scenario's own text (e.g. the SMS provider for Integration, drag-and-drop for UI/UX); no integrations or state are invented."
+        },
+        {
+          "name": "mvp-is-thin",
+          "text": "Only the critical-path happy booking scenario is recommended @mvp; error handling, validation, reminders, reschedule, and permissions are not in the MVP slice."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "large-mvp-critical-path-flagged",
+      "prompt": "Size and slice this checkout feature for me — I want to know what the MVP looks like.",
+      "files": [
+        "files/feature-payment-checkout-heavy.md"
+      ],
+      "expected_output": "The saved-card payment scenario is the feature's critical path (so @mvp material) and scores Large or high-Medium: third-party tokenized card data (Data & State 3), external payment gateway (Integration 3), and a 3-D Secure multi-step flow (UI/UX 2). The response must flag the Large-on-critical-path risk explicitly and propose a concrete split — the natural one is by integration boundary (prove checkout behavior against a stubbed gateway in @mvp, live gateway integration as its own scenario) — with re-sized pieces, or ask the PM for an explicit risk acceptance. It must not silently tag a Large scenario @mvp, and it must not let the size argument change what the scenarios promise.",
+      "assertions": [
+        {
+          "name": "critical-path-scored-heavy",
+          "text": "The saved-card payment scenario's dimensions reflect the spec: high Data & State (gateway-tokenized card), high Integration (external gateway), and at least medium UI/UX (3-D Secure multi-step)."
+        },
+        {
+          "name": "risk-flagged-not-silent",
+          "text": "The combination of a Large (or near-Large) scenario on the MVP critical path is explicitly flagged as a risk, not passed over."
+        },
+        {
+          "name": "split-proposed",
+          "text": "A concrete split is proposed for the heavy scenario (e.g. stubbed-gateway MVP scenario plus a live-integration scenario in a later slice), with the pieces re-sized."
+        },
+        {
+          "name": "intent-preserved",
+          "text": "Proposed splits do not change what the feature promises — no scenarios are dropped or weakened, and the stub is stated in the Given rather than hidden."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "batch-mode-raw-json",
+      "prompt": "Batch sizing for aipos-feature-map: size this feature non-interactively and return the batch JSON verdict. Do not pause, do not ask questions, output raw JSON only.",
+      "files": [
+        "files/feature-appointment-booking.md"
+      ],
+      "expected_output": "A single raw JSON object matching the batch output schema in SKILL.md: key, scenarios[] each with name, rule, dimensions (dataState/integration/uiSteps as integers 1-3), per-dimension notes, taggedSlice: null (the fixture has no tags), recommendedSlice, and sliceRationale. No prose, no markdown fence, no pause. Critically, the JSON must contain no points, band, or total fields — arithmetic belongs to compute_size.py — and no tracker writes may be offered or attempted.",
+      "assertions": [
+        {
+          "name": "raw-json-only",
+          "text": "The response is a single raw JSON object with no prose and no markdown code fence."
+        },
+        {
+          "name": "no-computed-totals",
+          "text": "The JSON contains no points, band, total, or rollup fields — only dimension judgments and slice fields."
+        },
+        {
+          "name": "tagged-slice-read-not-invented",
+          "text": "taggedSlice is null for every scenario, since the fixture's Gherkin carries no slice tags."
+        },
+        {
+          "name": "all-scenarios-present",
+          "text": "Every scenario in the feature appears in scenarios[], each with all three dimension judgments as integers 1-3 and grounding notes."
+        },
+        {
+          "name": "no-writes",
+          "text": "The response does not offer, attempt, or mention writing anything back to a tracker."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "first-slice-is-a-complete-journey-not-a-layer",
+      "prompt": "Slice this for release. What's the smallest thing we could actually ship?",
+      "files": [
+        "files/feature-expense-reimbursement.md"
+      ],
+      "expected_output": "The MVP selection is a journey a user can complete end to end — submit, approve, pay — rather than a set of individually small scenarios. The shippability check is run and reported: the response walks the selected scenarios as a user would and says whether the journey completes. The CSV export (@scenario:export-approved-claims-to-csv) is excluded as an attractive but unnecessary enhancement, with the reason given: the journey functions without it indefinitely. Sizing is treated as optional — the response either skips it or offers it once without making it a precondition for discussing scope, and if any total is reported it is explicitly not presented as a delivery estimate, duration or cost. No story points are requested and no scenario count is offered as a forecast."
+    },
+    {
+      "id": 5,
+      "name": "required-authorization-cannot-be-deferred-as-an-exception-path",
+      "prompt": "Put the unauthorized-approver scenario in V1 — it's an error case, and we need to move fast on the happy path.",
+      "files": [
+        "files/feature-expense-reimbursement.md"
+      ],
+      "expected_output": "The request is not simply carried out. @scenario:unauthorized-approver-rejected is identified as risk-critical authorization behavior judged on the consequence of shipping without it, not on its category as an error path. The response names what shipping without it risks in concrete terms — anyone could approve a payment — and points out that it proves the obligation of the same Rule (@rule:claims-require-approval-before-payment) whose happy-path scenario is in the MVP, so selecting the approval scenario while deferring this one leaves the Rule's obligation unmet. NFR-2 (server-side authority check) is cited as reinforcing this. If the PM still wants it deferred, the response requires an explicit recorded acceptance rather than applying the change silently — release intent belongs to the PM, but the category is never allowed to do the deferring on its own."
+    },
+    {
+      "id": 6,
+      "name": "cross-feature-prerequisite-and-post-approval-retag-are-surfaced",
+      "prompt": "We already committed the MVP for this last sprint. Add the receipt-display scenario to the MVP too, and re-emit the tagged spec.",
+      "files": [
+        "files/feature-expense-reimbursement.md"
+      ],
+      "expected_output": "Two separate problems are raised and neither is silently applied. First, @scenario:claim-shows-attached-receipt depends on receipt storage owned by FIN-388, which is not committed to any release — the response names the cross-feature prerequisite and says the scenario is not shippable in the MVP until that behavior is committed somewhere. It cites FIN-388 and the behavior in the fixture's own words and does NOT invent a qualified identifier such as a #scenario: slug for a feature it cannot see, because the fixture supplies none. Second, adding a scenario to an already-committed MVP changes which behavior is included, so it is a scope change: the response proposes it with the affected identifier and what it adds, rather than re-emitting the spec as though the tags were the skill's to move. A tag is treated as a view over selected behavior. If the response reasons about whether a baseline exists — noting that it cannot tell from the input and asking — that is correct rather than a miss; what it must not do is apply the retag silently."
+    }
+  ]
+}

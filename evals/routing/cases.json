@@ -1,0 +1,753 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "quarter-research",
+      "prompt": "Which evidenced problems deserve exploration capacity next quarter?",
+      "context": "A live Product Definition Graph MCP server is connected.",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-quarterly-planning",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "planning-gaps",
+      "prompt": "Prepare our planning agenda from research coverage gaps and opportunity evidence.",
+      "context": "Use the connected Product Definition Graph.",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-quarterly-planning",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "demand",
+      "prompt": "Do people want this? Plan a fake-door demand test.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "opportunity-size",
+      "prompt": "Size the problem before we decide whether it merits investment.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "epic-draft",
+      "prompt": "Write an epic from this validated opportunity.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-epic-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "epic-metrics",
+      "prompt": "Improve the success metrics and OKR alignment in this existing epic.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-epic-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "new-criteria",
+      "prompt": "Draft acceptance criteria from these interview findings.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "new-feature",
+      "prompt": "Author a new feature package for password recovery from this agreed behavior brief.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "review-criteria",
+      "prompt": "Review these existing acceptance criteria for ambiguity.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-refine",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "three-amigos",
+      "prompt": "Facilitate a 3 Amigos review of our Draft 0 specification.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-refine",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "journey-source",
+      "prompt": "Map the actors and handoffs in this customer journey.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-workflow-map",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "journey-update",
+      "prompt": "Update workflow.json with a branching approval path and references to these existing Rules.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-workflow-map",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "release-scope",
+      "prompt": "Select the smallest usable release from these existing scenarios.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-slice",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "scenario-size",
+      "prompt": "Assess scenario complexity for this feature and recommend splits for the large scenarios.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-slice",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "render-existing",
+      "prompt": "Render these existing features and workflow.json into an HTML diagram.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-map",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "release-dashboard",
+      "prompt": "Show dependencies and advisory readiness across this release in a feature dashboard.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-map",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "issue-token",
+      "prompt": "Issue a Development Token for this reviewed repository package.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-readiness",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "repo-handoff",
+      "prompt": "Check repo fit and verification paths before handing this reviewed package to a coding agent.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-readiness",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "scenario-fixtures",
+      "prompt": "Generate repeatable fixtures for these Gherkin scenarios.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-synthetic-data",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "schema-records",
+      "prompt": "Generate seeded synthetic sample records from this explicit schema.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-synthetic-data",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "export-events",
+      "prompt": "Export our repository delivery metric events as NDJSON.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-metrics-emit",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "completeness",
+      "prompt": "Report completeness component scores from this GovKit repo for the metrics aggregator.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-metrics-emit",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "prototype-spec",
+      "prompt": "Turn the behavior demonstrated in this prototype into new Rules and scenarios, keeping uncertain claims marked unknown.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "prototype-test",
+      "prompt": "Design a prototype experiment to learn whether users can complete the proposed task.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "experiment-metrics",
+      "prompt": "Define experimental success criteria for a GenAI feasibility spike.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "existing-evals",
+      "prompt": "Review these existing feature evaluation criteria for missing evidence and vague thresholds.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-refine",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "commitment-prepare",
+      "prompt": "Assemble the exact selected Rules, scenarios, exclusions, evidence, and source revision into a prepared commitment package.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "baseline-materialize",
+      "prompt": "Materialize the feature package selected by this approved baseline without changing its behavior.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "committed-change",
+      "prompt": "Review this approved Rule and propose a missing recovery path for reapproval.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-refine",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "token-question",
+      "prompt": "The spec has completed refinement. Check whether it can receive its execution-readiness token.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-readiness",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "epic-decompose",
+      "prompt": "Break this existing epic down into non-overlapping feature stubs.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "create-journey-render",
+      "prompt": "Define this customer journey and then show me its diagram.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-workflow-map",
+          "handoffs": [
+            "aipos-feature-map"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "existing-map-slices",
+      "prompt": "Render the current MVP and V1 tags across these feature packages; do not change the selected scope.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-map",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "change-slices",
+      "prompt": "Which of these existing scenarios can wait until V1? Recommend the MVP selection.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-slice",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "repo-draft-corpus",
+      "prompt": "Produce a scored HTML feature map of these unreviewed Draft 0 packages stored in the repository.",
+      "context": "The packages have not undergone refinement.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-map",
+          "handoffs": [
+            "aipos-feature-refine"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reviewed-corpus",
+      "prompt": "Produce an HTML readiness map of these reviewed repository packages.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-map",
+          "handoffs": [
+            "aipos-feature-readiness"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "budget-spent",
+      "prompt": "We have spent the exploration budget. Summarize what the experiments established and prepare the viability decision.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "research-not-release",
+      "prompt": "Find high-ranked problems nobody is researching in our connected graph.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-quarterly-planning",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "load-dataset",
+      "prompt": "Generate a seeded load dataset using the volume thresholds in this feature package.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-synthetic-data",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "clarify-ready",
+      "prompt": "Is this ready?",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "clarify",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "clarify-size",
+      "prompt": "How big is this?",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "clarify",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "unrelated-css",
+      "prompt": "Fix the CSS alignment on this checkout page.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "none",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "unrelated-news",
+      "prompt": "Summarize this news article.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "none",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "unrelated-calendar",
+      "prompt": "Schedule a team meeting for next Tuesday.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "none",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "prompt": "Implement this approved feature in application code and run its unit tests.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "none",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "production-masking",
+      "prompt": "Mask the customer emails in this production database export.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "none",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "date-forecast",
+      "prompt": "Calculate our delivery date from these scenario complexity totals.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "none",
+          "skill": null,
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-new",
+      "prompt": "We have user research and no spec. Write the business rules and examples we can take to refinement.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-review",
+      "prompt": "Read this draft contract with Product and QA and surface ambiguous outcomes.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-refine",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-token",
+      "prompt": "The team has reviewed the contract. Inspect its repo context and decide whether agent execution may begin.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-readiness",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-journey",
+      "prompt": "Capture who acts at each step and where work changes hands in a workflow source file.",
+      "context": "",
+      "critical": false,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-workflow-map",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-telemetry",
+      "prompt": "Produce machine-readable repository quality events for downstream aggregation.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-metrics-emit",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-experiment",
+      "prompt": "We have a hunch about demand but no customer evidence. Help us test it cheaply.",
+      "context": "",
+      "critical": false,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    }
+  ]
+}

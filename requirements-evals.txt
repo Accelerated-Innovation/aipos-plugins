@@ -6,8 +6,8 @@
 # environment would invite a test that quietly bills the account.
 #
 #   python -m pip install -r requirements-evals.txt
-#   python evals/run_evals.py --skill govkit-feature-create            # free
-#   python evals/run_evals.py --skill govkit-feature-create --execute  # costs money
+#   python evals/run_evals.py --skill aipos-feature-create            # free
+#   python evals/run_evals.py --skill aipos-feature-create --execute  # costs money
 #
 # REQUIRES PYTHON 3.10+. The deterministic suite runs on older interpreters;
 # the Anthropic SDK does not, and pip's error for that is a wall of version
@@ -15,3 +15,4 @@
 #
 # See evals/README.md.
 anthropic>=1.0
+PyYAML>=6,<7  # routing catalog descriptions use YAML scalar semantics

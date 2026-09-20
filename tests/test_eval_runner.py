@@ -34,8 +34,8 @@ def runner():
 def test_every_skill_with_cases_is_discovered(runner):
     skills = runner.discover_skills()
 
-    assert "govkit-feature-create" in skills
-    assert "val-rapid-validation" in skills, "plugins other than govkit must be reachable"
+    assert "aipos-feature-create" in skills
+    assert "aipos-rapid-validation" in skills, "plugins other than govkit must be reachable"
     assert all((d / "SKILL.md").is_file() for d in skills.values())
 
 
@@ -51,12 +51,12 @@ def test_cases_load_from_every_discovered_skill(runner):
 def test_the_system_prompt_is_the_whole_skill_package(runner):
     """A skill is SKILL.md *and* the references it tells the subject to read.
 
-    govkit-feature-create names six, and says of one that it "is what the
+    aipos-feature-create names six, and says of one that it "is what the
     gates judge your Gherkin against". Sending only SKILL.md would have the
     subject work from memory and the judge grade the memory — which measures
     nothing about the shipped package.
     """
-    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    skill_dir = runner.discover_skills()["aipos-feature-create"]
     case = runner.load_cases(skill_dir)[0]
 
     system, _user = runner.build_subject_request(skill_dir, case)
@@ -87,24 +87,24 @@ def test_references_outside_the_plugin_are_not_shipped(runner, tmp_path):
 
 
 def test_a_case_needing_an_unavailable_runtime_target_is_detected(runner):
-    """govkit-metrics-emit points at a governed repo at /tmp/testrepo. This
+    """aipos-metrics-emit points at a governed repo at /tmp/testrepo. This
     runner has no such repo and no tools, so the case cannot perform the
     behaviour its rubric grades — it must be skipped, not run and failed."""
-    skill_dir = runner.discover_skills()["govkit-metrics-emit"]
+    skill_dir = runner.discover_skills()["aipos-metrics-emit"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
 
     assert runner.unavailable_targets(skill_dir, case) == ["/tmp/testrepo"]
 
 
 def test_a_fully_bundled_case_is_runnable(runner):
-    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    skill_dir = runner.discover_skills()["aipos-feature-create"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
 
     assert runner.unavailable_targets(skill_dir, case) == []
 
 
 def test_attached_files_are_inlined_with_the_prompt_last(runner):
-    skill_dir = runner.discover_skills()["govkit-feature-create"]
+    skill_dir = runner.discover_skills()["aipos-feature-create"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("files"))
 
     _system, user = runner.build_subject_request(skill_dir, case)
@@ -226,7 +226,7 @@ def test_changing_the_skill_invalidates_a_recorded_grade(runner, tmp_path, monke
     """The defect that would make this harness worse than useless: edit a
     SKILL.md, re-run, and every case is skipped as already done while the old
     grade is presented as current."""
-    skill_dir = runner.discover_skills()["govkit-feature-slice"]
+    skill_dir = runner.discover_skills()["aipos-feature-slice"]
     case = runner.load_cases(skill_dir)[0]
     before = runner.input_digest(skill_dir, case, _Args())
 
@@ -249,7 +249,7 @@ def test_changing_the_skill_invalidates_a_recorded_grade(runner, tmp_path, monke
 def test_changing_either_model_invalidates_a_recorded_grade(runner, args):
     """A grade means 'this model, judged by that one'. Reusing it across a
     model swap silently compares two different things."""
-    skill_dir = runner.discover_skills()["govkit-feature-slice"]
+    skill_dir = runner.discover_skills()["aipos-feature-slice"]
     case = runner.load_cases(skill_dir)[0]
 
     assert runner.input_digest(skill_dir, case, _Args()) != runner.input_digest(
@@ -307,7 +307,7 @@ def test_turns_defaults_to_two_so_an_interactive_skill_can_deliver(runner):
 def test_the_turn_count_changes_the_input_digest(runner):
     """A grade means "this many turns". Reusing a one-turn result for a
     two-turn run would compare two different things."""
-    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill_dir)[0]
 
     one = runner.input_digest(skill_dir, case, _Args(turns=1))
@@ -322,6 +322,120 @@ def test_every_assistant_turn_is_graded_not_just_the_last(runner):
     joined = runner.join_turns(["first part", "second part"])
 
     assert "first part" in joined and "second part" in joined
+    assert json.loads(joined) == [
+        {"role": "assistant", "content": "first part"},
+        {"role": "user", "content": runner.PROCEED_NUDGE},
+        {"role": "assistant", "content": "second part"},
+    ]
+
+
+def test_judge_sees_supplied_evidence_not_just_the_prompt(runner):
+    case = {"prompt": "Review it", "expected_output": "Use actual evidence"}
+    built = runner.build_judge_request(case, "Answer", user_input="Fixture: 42 measured cases\nReview it")
+    assert "Fixture: 42 measured cases" in built
+
+
+def test_judge_input_contract_changes_invalidate_previous_grades(runner, monkeypatch):
+    skill = runner.discover_skills()["aipos-rapid-validation"]
+    case = runner.load_cases(skill)[0]
+    before = runner.input_digest(skill, case, _Args())
+    monkeypatch.setattr(runner, "JUDGE_INPUT_CONTRACT", "Another transcript format")
+    assert runner.input_digest(skill, case, _Args()) != before
+
+
+def test_judge_token_ceiling_invalidates_only_changed_requests(runner):
+    skill = runner.discover_skills()["aipos-feature-slice"]
+    case = runner.load_cases(skill)[0]
+    args = _Args()
+    before = runner.input_digest(skill, case, args)
+    args.judge_max_tokens = 16000
+    assert runner.input_digest(skill, case, args) == before
+    args.judge_max_tokens = 32000
+    assert runner.input_digest(skill, case, args) != before
+
+
+def test_large_judge_budget_uses_streaming_and_preserves_request(runner):
+    import asyncio
+    from types import SimpleNamespace
+
+    request = {"model": "judge", "max_tokens": 32000,
+               "messages": [{"role": "user", "content": "Grade this"}]}
+    response = object()
+    seen = []
+
+    class Stream:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def get_final_message(self):
+            return response
+
+    def stream(**kwargs):
+        seen.append(kwargs)
+        return Stream()
+
+    client = SimpleNamespace(messages=SimpleNamespace(stream=stream))
+    assert asyncio.run(runner.judge_completion(client, **request)) is response
+    assert seen == [request]
+
+
+@pytest.mark.parametrize("status,passed,expected", [
+    ("ok", True, 0), ("truncated", True, 1), ("ok", False, 1),
+])
+def test_cached_results_still_report_failure_without_model_calls(runner, tmp_path, status, passed, expected):
+    import asyncio
+    from types import SimpleNamespace
+
+    name = "aipos-quarterly-planning"
+    skill = runner.discover_skills()[name]
+    case = runner.load_cases(skill)[0]
+    args = SimpleNamespace(list=False, skill=name, case=case["name"],
+                           out=str(tmp_path), variant="cached", model="subject",
+                           judge_model="judge", turns=2, reps=1, execute=True)
+    runner.append_row(tmp_path / name / "cached" / "results.jsonl", {
+        "prompt_id": case["name"], "rep": 0, "status": status, "passed": passed,
+        "input_digest": runner.input_digest(skill, case, args),
+    })
+    assert asyncio.run(runner.main_async(args)) == expected
+
+
+def test_regrading_reuses_only_matching_actual_subject_inputs(runner, tmp_path):
+    skill = runner.discover_skills()["aipos-rapid-validation"]
+    case = runner.load_cases(skill)[0]
+    args = _Args(turns=2)
+    system, user = runner.build_subject_request(skill, case)
+    trace = [
+        {"role": "system", "content": f"[{skill.name}/SKILL.md]\n\n{system}"},
+        {"role": "user", "content": user},
+        {"role": "assistant", "content": "First answer"},
+        {"role": "user", "content": runner.PROCEED_NUDGE},
+        {"role": "assistant", "content": "Second answer"},
+        {"role": "system", "content": "[judge rubric]"},
+        {"role": "assistant", "content": "old judgment"},
+    ]
+    (tmp_path / "traces").mkdir()
+    path = tmp_path / "traces" / f"{runner.case_key(case, 0)}.json"
+    path.write_text(json.dumps(trace))
+    runner.append_row(tmp_path / "results.jsonl", {
+        "prompt_id": case["name"], "rep": 0, "turns": 2,
+        "model": args.model, "stop_reasons": ["end_turn", "end_turn"],
+    })
+    answers, _ = runner.reusable_subject(tmp_path, skill, case, 0, args)
+    assert answers == ["First answer", "Second answer"]
+    trace[1]["content"] = "Different evidence"
+    path.write_text(json.dumps(trace))
+    with pytest.raises(ValueError, match="fixture changed"):
+        runner.reusable_subject(tmp_path, skill, case, 0, args)
+
+
+def test_regrading_refuses_missing_source_results(runner, tmp_path):
+    skill = runner.discover_skills()["aipos-rapid-validation"]
+    case = runner.load_cases(skill)[0]
+    with pytest.raises(ValueError, match="no completed source"):
+        runner.reusable_subject(tmp_path, skill, case, 0, _Args())
 
 
 def test_a_single_turn_is_joined_without_decoration(runner):
@@ -333,7 +447,7 @@ def test_a_single_turn_is_joined_without_decoration(runner):
 def test_the_proceed_nudge_is_part_of_the_input_digest(runner, monkeypatch):
     """The nudge is sent to the subject, so it shapes the interaction being
     graded. Changing it and reusing an old grade compares two different runs."""
-    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill_dir)[0]
     before = runner.input_digest(skill_dir, case, _Args())
 
@@ -429,7 +543,7 @@ def test_the_judge_contract_is_part_of_the_input_digest(runner, monkeypatch):
     """Changing the judge's instructions or its output schema changes what a
     grade means. Resume must not present a grade from the old contract as
     current."""
-    skill_dir = runner.discover_skills()["val-rapid-validation"]
+    skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = next(c for c in runner.load_cases(skill_dir) if c.get("claims"))
     before = runner.input_digest(skill_dir, case, _Args())
 

@@ -120,8 +120,9 @@ import sys  # noqa: E402
 
 import pytest  # noqa: E402
 
-_SCRIPTS = (pathlib.Path(__file__).resolve().parents[1]
-            / "plugins" / "govkit" / "skills" / "govkit-feature-map" / "scripts")
+from skill_paths import skill_path
+
+_SCRIPTS = skill_path("aipos-feature-map") / "scripts"
 
 
 @pytest.fixture(scope="module")

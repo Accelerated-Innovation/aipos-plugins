@@ -10,8 +10,9 @@ import pathlib
 import subprocess
 import sys
 
-SCRIPT = (pathlib.Path(__file__).resolve().parents[1] / "plugins" / "govkit" / "skills"
-          / "govkit-feature-slice" / "scripts" / "compute_size.py")
+from skill_paths import skill_path
+
+SCRIPT = skill_path("aipos-feature-slice") / "scripts" / "compute_size.py"
 
 
 def sizing_for(feat):

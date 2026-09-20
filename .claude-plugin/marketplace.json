@@ -1,15 +1,15 @@
 {
   "name": "aipos",
-  "description": "AIPOS skills from Accelerated Innovation \u2014 Continuous Discovery (Pillar 1), Rapid Validation (Pillar 2), and GovKit governed AI delivery (Pillar 3).",
+  "description": "One AIPOS plugin for Continuous Discovery, Rapid Validation, and Accelerated Development from Accelerated Innovation.",
   "owner": {
     "name": "Accelerated Innovation",
     "email": "marty@acceleratedinnovation.com"
   },
   "plugins": [
     {
-      "name": "aipos-p1",
-      "source": "./plugins/aipos-p1",
-      "description": "AIPOS Pillar 1 (Continuous Discovery) skills: run evidence-governed planning over a Product Definition Graph \u2014 read the ranked opportunity list over MCP, grade the evidence behind each candidate, find the coverage and attention gaps, and record the Exploration Decisions (explore with budget and horizon, decline, or defer) that hand off to Pillar 2.",
+      "name": "aipos",
+      "description": "AIPOS skills for evidence-based discovery, rapid validation, and governed AI-assisted delivery. Plan exploration, test assumptions, define and refine behavior, select release scope, prepare commitment packages, check repository readiness, visualize work, generate synthetic data, and emit delivery metrics. Skills support the pillars and their handoffs in one installation; product approval remains with the accountable authority.",
+      "version": "1.0.0",
       "author": {
         "name": "Accelerated Innovation"
       },
@@ -18,80 +18,24 @@
       "license": "MIT",
       "keywords": [
         "aipos",
-        "continuous-discovery",
+        "product-discovery",
         "quarterly-planning",
-        "product-definition-graph",
+        "rapid-validation",
         "evidence",
-        "gap-analysis",
-        "portfolio",
-        "mcp",
-        "product-management"
-      ],
-      "category": "productivity"
-    },
-    {
-      "name": "govkit",
-      "source": "./plugins/govkit",
-      "description": "GovKit skills for governed, AI-assisted delivery: draft Rules and Gherkin scenarios directly from an evidence-backed opportunity with no epic, user story or estimate required; materialize behavior an approved commitment baseline already selected; define a workflow's L1/L2/L3 views with references into canonical behavior; refine Draft 0 specs (Gherkin + NFRs + evaluation criteria); size and slice scenarios into MVP/V1/V2 releases; validate repo readiness before coding; map a spec corpus into a scored feature map; emit delivery metrics; and generate synthetic test data. Story mapping from a tracker epic remains available as a legacy route.",
-      "author": {
-        "name": "Accelerated Innovation"
-      },
-      "homepage": "https://acceleratedinnovation.com",
-      "repository": "https://github.com/Accelerated-Innovation/govkit-plugins",
-      "license": "MIT",
-      "keywords": [
-        "govkit",
+        "experiments",
         "gherkin",
         "bdd",
-        "governance",
-        "ai-delivery",
-        "epic",
-        "problem-framing",
-        "success-metrics",
-        "story-mapping",
-        "feature-creation",
-        "user-stories",
+        "behavior-contracts",
         "refinement",
-        "slicing",
-        "sizing",
-        "moscow",
-        "mvp",
-        "readiness",
-        "feature-map",
-        "development-token",
-        "metrics",
-        "synthetic-data",
+        "release-slicing",
         "workflow",
-        "workflow-map",
-        "opportunity",
-        "behavioral-baseline",
-        "workflow-authoring",
-        "journey-map"
+        "feature-map",
+        "readiness",
+        "development-token",
+        "synthetic-data",
+        "metrics"
       ],
-      "category": "productivity"
-    },
-    {
-      "name": "aipos-p2",
-      "source": "./plugins/aipos-p2",
-      "description": "AIPOS Pillar 2 (Rapid Validation) skills: test the riskiest assumptions before committing engineering capacity \u2014 interview guides, problem sizing, visual prototype briefs, demand tests, feasibility spikes, GenAI eval stubs, and the viability brief that carries the go / no-go / revise Validation Decision.",
-      "author": {
-        "name": "Accelerated Innovation"
-      },
-      "homepage": "https://acceleratedinnovation.com",
-      "repository": "https://github.com/Accelerated-Innovation/govkit-plugins",
-      "license": "MIT",
-      "keywords": [
-        "aipos",
-        "rapid-validation",
-        "product-discovery",
-        "validation",
-        "problem-sizing",
-        "demand-test",
-        "feasibility",
-        "viability",
-        "product-management",
-        "exploration-decision"
-      ],
+      "source": "./plugins/aipos",
       "category": "productivity"
     }
   ]

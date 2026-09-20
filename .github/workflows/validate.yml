@@ -35,7 +35,9 @@ jobs:
       # Structural validation of marketplace.json and plugin manifests.
       # No API key required — this does not call the model.
       - name: Validate marketplace and plugins
-        run: claude plugin validate .
+        run: |
+          claude plugin validate .
+          claude plugin validate plugins/aipos
 
   checks:
     name: pytest (skill scripts)
