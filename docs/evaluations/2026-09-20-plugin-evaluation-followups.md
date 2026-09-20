@@ -1,5 +1,7 @@
 # Plugin evaluation follow-ups — 2026-09-20
 
+**Historical checkpoint:** the results below describe PR #33 before substantive closure. See the [current closure report](2026-09-20-substantive-closure.md) for the later fixes, versioned adjudications and acceptance status; these earlier failures remain preserved.
+
 PE1–PE5 follow the plugin consolidation, distinct from the completed E1–E5 increments in the cross-repository behavior-contract ledger. Work starts from `c622ec4` (PR #32); original observations remain in the September 19 report and git history. This record includes actual runs, unresolved findings, and limitations.
 
 ## PE1: fixture ground truth
@@ -174,7 +176,7 @@ without the optional Anthropic dependency and exited before model calls; the
 configured evaluation environment then ran normally. These are not behavioral
 passes or reasons to discard an unfavorable completed subject.
 
-### Remaining findings — acceptance stays open
+### Findings at the pre-closure checkpoint
 
 **19/141 candidate trials do not meet their full rubric.** The aggregate improves
 by 16 passes, but rapid validation remains 18/27, and these are not all cosmetic:

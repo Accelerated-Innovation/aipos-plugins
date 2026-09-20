@@ -529,10 +529,11 @@ Increment 02 and the live rename comparison in 08 are now complete. Increments 0
 
 The implementation uses focused commits for fixtures, conversation execution,
 rubric adjudication, discovery coaching, feature handoffs, and metrics/schema
-reporting. The [follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md)
-is the current evidence ledger; its JSON companions preserve all repetitions,
-input fingerprints, runtime checks, and earlier failures. Release readiness is a
-separate judgment from finishing these implementation slices.
+reporting. The [substantive closure report](../evaluations/2026-09-20-substantive-closure.md)
+is the current coaching ledger; the [prior follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md)
+retains the earlier comparison and integration evidence. Their JSON companions preserve
+all repetitions, input fingerprints, runtime checks, and earlier failures. Release
+readiness is a separate judgment from finishing these implementation slices.
 
 ### Current slice status (September 20)
 
@@ -540,16 +541,15 @@ separate judgment from finishing these implementation slices.
 |---|---|---|
 | PE1 | Complete | Corrected synthetic policy and rubric ambiguities; final matched baseline 106/141; negative controls preserved |
 | PE2 | Complete | Authored conversations, stage-aware judging, budget controls, fingerprint-safe regrades; 427 offline passes and 5 fixture skips overall |
-| PE3 | Implemented, acceptance open | Ten skills revised; final comparison 122/141 versus 106/141. Nineteen strict failures remain, including substantive evidence/scope/handoff misses |
+| PE3 | Substantive acceptance complete; coaching polish open | Latest affected cohort: 81/87 → 87/87 substantive, 71/87 → 73/87 full rubric. Fourteen full-rubric misses remain documented; [closure report](../evaluations/2026-09-20-substantive-closure.md) records the matched criteria and original judgments |
 | PE4 | Complete within recorded scope | Three runtime metrics cases; actual MCP planning (three final rehearsals), HTTPS authority and token transition, browser inspection. Production/concurrency/application-conformance claims excluded |
-| PE5 | Review performed, release acceptance open | Upstream PRs and source checked; fresh 1.0.1 install; hosted checks pass. Draft PR #33 is unmerged and unpublished; PE3 findings prevent sign-off |
+| PE5 | Release review complete; merge/publication pending | Final source and isolated 1.0.1 installation verified; three native handoffs pass. Draft PR #33 remains unmerged and unpublished; the review includes explicit nonblocking coaching follow-ups and evaluator adjudications |
 
-The next work remains inside **PE3**: complete the GO-to-commitment handoff,
-keep observed evidence distinct from inference and unknown quantities, avoid an
-acceptance scenario without a stated Rule, and preserve required validation in
-release scope. Retest those changes with matched inputs and retain failures.
-**PE5** closes only after those findings are reconciled and the actual release
-action is authorized. These are not new or reopened historical E1–E5 slices.
+The four substantive **PE3** increments below are implemented and pass all 87
+substantive trials under the versioned acceptance profile. Full-rubric coaching
+polish remains tracked in the closure report. **PE5** release review is complete;
+merge/publication still requires the release decision. These are not new or
+reopened historical E1–E5 slices.
 
 ### PE3 substantive closure — implementation increments
 
@@ -601,3 +601,5 @@ is outside the proposed commitment. The evaluator must not demand that the skill
 declare it permanently excluded. Silent omission and committing it without evidence
 remain failures. Preserve the original judgment and apply the correction to matched
 baseline and candidate transcripts.
+
+**Closure evidence:** source `0000375fdf358797011855ea66671e5774f171a1`; 87/87 substantive trials, 73/87 full-rubric trials for the affected set; three final native checks; 427 offline passes and five fixture skips; all eleven skills and both manifests valid; fresh isolated installation with 58 matching runtime files. All candidate revisions and original evaluator failures remain in the [closure report and JSON](../evaluations/2026-09-20-substantive-closure.md).
