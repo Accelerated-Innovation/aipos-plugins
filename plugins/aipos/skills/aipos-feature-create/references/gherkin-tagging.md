@@ -239,7 +239,7 @@ Run these before presenting Gherkin. Fix what fails — a missing tag is a defec
 13. Every `Background:` is correctly scoped: a feature-level one is true for every scenario in the file; setup true for only one rule's scenarios sits in that rule's `Background:`.
 14. Every rule with a threshold, limit, window or count has an example **on** the boundary, not only either side of it.
 15. No scenario mixes a single-occasion assertion with an aggregate statistic over a dataset.
-16. Every scenario carrying an unresolved `<TBD — …>` placeholder is listed as not ready for execution.
+16. A TBD parameter of a stated outcome is listed as not ready for execution. If the outcome itself is undecided, remove that proposed scenario from `acceptance.feature` and retain the question in the unresolved register; a warning comment cannot turn an unknown policy into acceptance behavior.
 
 Correcting a tag needs no announcement. **Hiding the result does** — always present the full Gherkin plus a one-line coverage summary so the tagging is inspectable even though it was automatic:
 

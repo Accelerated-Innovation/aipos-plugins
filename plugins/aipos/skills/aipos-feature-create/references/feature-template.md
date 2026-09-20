@@ -31,6 +31,26 @@ Stubs get the directory and a `feature_source.md` containing only the stub field
 
 ## feature_source.md
 
+Choose the mode-specific source block before filling the shared fields below.
+**Opportunity and baseline mode** use references in place of the Outcome, Summary
+and user-story sections; do not paste or quote the canonical outcome into them:
+
+```markdown
+## Source references
+opportunity_ref: <exact supplied identifier>
+decision_thread_ref: <exact supplied identifier, or unknown>
+outcome_ref: <canonical source and section>
+
+## Distinct local behavior
+<Only if this feature has an observable effect not already expressed by the source
+outcome; otherwise omit this section. Functional scope and Rules below still describe
+the behavior needed for refinement.>
+```
+
+Use the remaining metadata, functional scope, exclusions, constraints and unresolved
+register from the shared template. The Summary and user-story sections are for the
+legacy epic/feature routes.
+
 ```markdown
 # <Feature Name>
 

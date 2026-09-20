@@ -282,6 +282,11 @@ exists.
 stated, sitting in a Draft 0, is read downstream as a decision somebody made. "The PM has not
 said what happens above the limit" is a finding; an invented limit is a fabrication.
 
+Evidence of a problem can motivate a policy proposal without establishing that policy.
+A Rule described as inferred, unconfirmed or awaiting a product choice stays in the
+unresolved register, outside acceptance Gherkin. Draft the supported portion now;
+missing policy does not require withholding the whole Draft 0.
+
 Ask each rule's **boundary** — a threshold, window, limit or count is where the business most
 often disagrees with itself. If the boundary is unknown, it goes in the unresolved register with
 the number left blank, not filled in with something plausible.
@@ -292,8 +297,10 @@ Per `../../references/gherkin-authoring-standard.md`, with `@scenario:<slug>` id
 Every scenario illustrates a stated Rule. If no stated Rule explains it, keep the proposed
 policy or test idea in the unresolved register, outside `acceptance.feature`. A warning,
 TBD threshold or unrelated parent Rule does not make an unsupported scenario valid.
-When a quality Rule exists but its metric or threshold is unknown, a clearly incomplete
-scenario under that Rule may expose the gap; it is not ready for execution.
+Distinguish a missing **parameter** from a missing **behavioral decision**. A stated
+quality outcome with an unknown threshold can have a non-executable TBD parameter
+under its Rule. If nobody has decided what happens in that situation, keep it as a
+question outside Gherkin; a `Then <TBD — behavior undecided>` is not an acceptance scenario.
 
 Where behavior comes from a **prototype**, say so and treat it as a proposal. A prototype
 demonstrating something is not a decision to build it, and behavior that reaches a spec because
@@ -546,7 +553,7 @@ Four things from the standard are worth stating here because they are what the g
 - **Every scenario illustrates a stated rule, establishes a meaningful context and one trigger, and asserts observable outcomes.** Several related outcomes of one trigger are fine. Without a supporting Rule, keep the proposal in the unresolved register, outside accepted Gherkin; merely flagging the missing Rule is insufficient.
 - **Every scenario is independently executable.** Never write "the invoice from the previous scenario"; put the state in this scenario's own `Given`.
 - **Cover the boundary, the negative path, permissions and exceptions where they matter — then stop.** An exhaustive combinatorial catalog drives readers away from the document, which costs more understanding than the extra cases buy. Use `Scenario Outline` for real data variation of one behavior.
-- **Mark what is derived.** You may derive illustrating examples from a confirmed rule; say in the summary that the values are proposed for confirmation. You may not invent a policy, a threshold, a permission model, or anyone's approval. Unresolved decisions stay visible as `<TBD — …>` placeholders plus an open question, and a scenario carrying one is never reported as ready for execution.
+- **Mark what is derived.** You may derive illustrating examples from a confirmed rule; say in the summary that the values are proposed for confirmation. You may not invent a policy, a threshold, a permission model, or anyone's approval. A missing parameter of a stated outcome may be `<TBD — …>` plus an open question, making the scenario non-executable. An undecided outcome or inferred policy stays outside acceptance Gherkin in the unresolved register.
 
 **Assign tags automatically.** Derive the delivery-phase tag from the feature's slice and the classification tags from each scenario's behavior. Do not make the PM pick tags. Ask only when the feature's slice is unclear, a scenario spans delivery phases, or the intent genuinely cannot be classified.
 
