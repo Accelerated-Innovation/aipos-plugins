@@ -89,6 +89,12 @@ governed door Pillar 1 named in the decision log's `Record via` line. The opport
 the artifacts; the decision record gets the outcome — the Validation Decision, its
 confidence, the budget used against the budget declared, and the evidence by filename.
 
+Use that second destination only when a mandate or Exploration Decision is actually
+supplied or verified. A GO recommendation, opportunity ID or completed handoff does not
+establish that planning issued one. If none is known, keep the decision-record route
+conditional or omit it; never close with "since an Exploration Decision governed this"
+merely because this is a Pillar 2 artifact. Do not invent a decision reference or door.
+
 This is what lets the next planning session see that what it funded came back with an
 answer. Offer it in the same prompt as the three pieces above, as a fourth item, only for
 the viability brief. Name the destination exactly (the ref, the door). If the door is not

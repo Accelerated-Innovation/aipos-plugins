@@ -180,6 +180,8 @@ End every artifact the same way:
    future destination without asking again. Otherwise offer the concrete save
    once. Write only within explicit authorization for that artifact and destination;
    do not treat approval of its content as approval of a system-of-record write.
+   A decision-record destination requires a supplied or verified mandate; do not
+   infer an Exploration Decision from GO or from preparing this handoff.
 4. **Name the next artifact.** For a GO recommendation with existing behavior, include the
    **commitment package** in the viability handoff using `references/viability-brief.md`.
    With no selected behavior or immutable revision, explicitly mark the handoff incomplete
