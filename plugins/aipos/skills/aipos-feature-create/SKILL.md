@@ -297,10 +297,16 @@ Per `../../references/gherkin-authoring-standard.md`, with `@scenario:<slug>` id
 Every scenario illustrates a stated Rule. If no stated Rule explains it, keep the proposed
 policy or test idea in the unresolved register, outside `acceptance.feature`. A warning,
 TBD threshold or unrelated parent Rule does not make an unsupported scenario valid.
-Distinguish a missing **parameter** from a missing **behavioral decision**. A stated
-quality outcome with an unknown threshold can have a non-executable TBD parameter
-under its Rule. If nobody has decided what happens in that situation, keep it as a
-question outside Gherkin; a `Then <TBD — behavior undecided>` is not an acceptance scenario.
+For an opportunity Draft 0, keep incomplete scenario candidates in the unresolved
+register alongside their Rule, source and missing decision/parameter. The acceptance
+file contains only scenarios whose policy and expected outcome are established; it
+does not contain placeholder scenarios. This changes where the unknown is recorded,
+not whether the draft can proceed. Preserve the stated Rule and the coverage gap.
+
+Check the inference behind each `Then`: could a different behavior also satisfy the
+source Rule? If so, choosing between those behaviors is a product decision, not an
+illustrating example. Do not choose a lifecycle transition, permission or recovery
+policy merely because it would be a plausible way to enforce the Rule.
 
 Where behavior comes from a **prototype**, say so and treat it as a proposal. A prototype
 demonstrating something is not a decision to build it, and behavior that reaches a spec because

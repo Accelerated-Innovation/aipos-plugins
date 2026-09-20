@@ -51,6 +51,11 @@ Use the remaining metadata, functional scope, exclusions, constraints and unreso
 register from the shared template. The Summary and user-story sections are for the
 legacy epic/feature routes.
 
+In an opportunity draft, the unresolved register also holds incomplete scenario
+candidates with their Rule/source and missing policy or parameter. Do not copy those
+candidates into `acceptance.feature` as TBD scenarios. The supported scenarios can be
+reviewed now without implying that the missing coverage has been supplied.
+
 ```markdown
 # <Feature Name>
 
