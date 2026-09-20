@@ -18,7 +18,7 @@
 Two judgments per scenario, kept deliberately separate:
 
 1. **Size** — how big the scenario is, judged from the underlying architecture it touches, not from its line count.
-2. **Slice** — which release it belongs to, judged from what the feature needs to fundamentally function.
+2. **Slice** — which release it belongs to, judged from what completes the selected outcome under its stated Rules and NFRs.
 
 Size never decides slice. A tiny nice-to-have stays `@v2`; a Large must-have stays `@mvp` — and that combination is precisely the risk the rubric exists to surface.
 
@@ -59,23 +59,28 @@ A Large band is an instruction, not just a label: propose a split (patterns belo
 
 ## Step 2 — MoSCoW release slicing
 
-Map each scenario to a release slice using MoSCoW matched against its Gherkin structure.
+Before assigning slices, identify the selected journey, then the Rules, NFRs and
+prerequisites it triggers. **The MVP test:** *can the user complete that outcome while
+honoring those obligations without this scenario?* MoSCoW prioritizes optional scope
+only after this check; Gherkin structure and tag categories do not decide priority.
 
-**The MVP test is strict:** *can the feature fundamentally function without this scenario?* If yes, it is not `@mvp`. Most scenarios fail this test; a thin MVP is the point.
-
-| Slice | MoSCoW | Contains | Gherkin indicators | Example (login feature) |
-|---|---|---|---|---|
-| `@mvp` | Must-have | The critical path only — scenarios without which the feature cannot fundamentally function. | The simplest positive happy path. Usually zero error handling, standard default settings, primary user persona. | Authenticating with a basic username and password. |
-| `@v1` | Should-have | Vital operational stability, security, and the most common alternative paths. | Common error pathways, critical validation rules (e.g., password strength), primary data variations (often a `Scenario Outline`). | Resetting a forgotten password, locked-account handling, basic form validation. |
-| `@v2` | Could-have / nice-to-have | Optimization, advanced UX, edge cases, and secondary personas. V2 *or later*. | Complex third-party integrations, edge-case rules, performance-heavy scenarios, nice-to-have UI enhancements. | Biometric FaceID login, social SSO, "Remember Me" session persistence. |
+| Slice | MoSCoW | Contains | Example (login feature) |
+|---|---|---|---|
+| `@mvp` | Must-have | The complete selected outcome and its required validation, boundaries, refusals and controls. | Sign-in plus rejecting invalid credentials and any lockout required by the supplied policy. |
+| `@v1` | Should-have | Useful additional paths that the selected contract does not require. | Self-service recovery when an existing, supported recovery process already satisfies the release contract. |
+| `@v2` | Could-have / nice-to-have | Optional optimizations, interface enhancements or additional personas. V2 or later. | Biometric sign-in when password sign-in already satisfies the stated contract. |
 
 Slicing guidance:
 
-- **Compliance can promote a scenario.** The table puts security and error handling in `@v1`, but a scenario backed by a compliance, privacy, or safety NFR may be unshippable-without — in some organizations a login feature cannot go live without lockout. When an NFR or a privacy note implies promotion, flag it and let the PM make the call. Release intent is theirs.
-- **A tag category never defers risk-critical behavior by itself.** The "Gherkin indicators" column says where a scenario *usually* lands, not what it is worth. Authorization, privacy, safety, regulatory compliance, financial correctness and data loss are judged on the consequence of shipping without them, and that routinely puts an "edge case" in `@mvp`. When a recommendation would defer such a scenario, name what shipping without it risks and make the PM accept it explicitly — never let the category do the deferring silently.
+- **Ordinary business policy counts.** An administrative cutoff or eligibility condition
+  is part of the selected behavior even without safety, financial or compliance risk.
+  Keep its required rejection and exact-boundary coverage. To defer it, propose a change
+  to the Rule or remove the dependent capability; do not call the unchanged contract
+  satisfied merely because someone accepts the risk. Committed changes need the
+  refinement and commitment workflow.
 - **A selected scenario brings its obligations with it.** Including a scenario commits the
-  behavior it cannot safely run without: the authorization it assumes, the recovery path for the
-  failure it can hit, the audit record it must leave. Those are not separate candidates to be
+  behavior the stated Rules and NFRs require: validation, authorization, recovery or audit.
+  Those are not separate candidates to be
   triaged independently — deferring one leaves the selected scenario unshippable while the slice
   table looks complete. Check **both** places an obligation lives: the `Rule:` the scenario sits
   under (a Rule's obligation is not satisfied by selecting one scenario that illustrates it and
@@ -91,7 +96,8 @@ Slicing guidance:
   **Never construct one that was not written down:** a plausible `#scenario:<slug>` for a feature
   you cannot see is a dangling reference that looks authoritative, and `spec-identifiers.md`
   forbids exactly that. Naming the gap is the finding.
-- **`Scenario Outline` rows can split across slices.** If the happy row is critical path and the edge rows are not, recommend splitting the outline rather than dragging the whole table into `@mvp`.
+- **`Scenario Outline` rows can split across slices** only when the deferred rows describe
+  optional scope; retain every row needed to prove the selected Rule and its boundaries.
 - **Untagged is a valid state.** A scenario the PM has not decided on stays untagged; do not default it into a slice to make the table look finished.
 
 ## Size × slice: the risk view
@@ -125,9 +131,9 @@ Patterns for taking an 8–9 point scenario apart. After any split, re-size each
 | Pattern | When | How |
 |---|---|---|
 | **Split by rule** | The scenario proves two business rules at once. | One scenario per rule; each keeps its own observable outcome. |
-| **Split by variation** | A `Scenario Outline` mixes the critical row with edge rows. | Happy row becomes a plain `@mvp` scenario; edge rows stay an outline in a later slice. |
+| **Split by variation** | A `Scenario Outline` mixes required behavior with optional variations. | Keep all rows needed for the selected Rule in `@mvp`; independent optional behavior may move to a later slice. |
 | **Split by state** | A heavy `Given` sets up a complex prior state. | One scenario establishes and proves the state transition; a second consumes it with a thin `Given`. |
-| **Split by integration boundary** | The critical path routes through a third party. | An `@mvp` scenario proves the behavior against a stubbed boundary; a later-slice scenario proves the live integration. State the stub in the `Given` so the scenario stays honest. |
+| **Split by integration boundary** | The critical path routes through a third party. | A stub can support an engineering increment, but a release requiring a real external outcome still needs the live integration. State the stub in the `Given`; do not label a stub-only increment a shippable payment or delivery MVP. |
 | **Reduce interaction ambition** | The UI/UX dimension alone drives the score. | A static or simplified interaction in `@mvp`; the dynamic/real-time version as its own `@v2` scenario. |
 
 Splitting restructures scenarios; it never changes what they promise. If a split would alter product intent, that is a refinement conversation (`aipos-feature-refine`), not a slicing edit.

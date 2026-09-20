@@ -140,9 +140,17 @@ it is not when you do.
 
 ### Step 3: Recommend a slice per scenario
 
-Apply the MoSCoW mapping from the rubric. The MVP test is strict: *can the feature fundamentally function without this scenario?* If yes, it is not `@mvp`. Give a one-line rationale per recommendation, citing the rubric's Gherkin indicators (happy path, error pathway, third-party integration, …).
+First identify the selected user journey and its obligations in the stated Rules, NFRs
+and prerequisites. Then apply MoSCoW to the remaining optional scope. The MVP test is:
+*can the user complete the selected outcome while honoring those obligations without
+this scenario?* Give a one-line rationale tied to the supplied contract.
 
-**Never defer risk-critical behavior on the strength of a tag category alone.** "Error pathway", "edge case" and "permission" are indicators of where a scenario usually lands, not a licence to postpone. A scenario that guards authorization, privacy, safety, regulatory compliance, financial correctness or data loss is judged on the consequence of shipping without it — and that consequence often puts an "edge case" squarely in the MVP. When a recommendation defers such a scenario, say what shipping without it risks and make the PM accept it explicitly rather than letting a category do the deferring silently.
+An ordinary business cutoff, validation boundary or refusal path can be required even
+when no safety or compliance risk is involved. "Happy path", "error" and "edge case"
+do not decide release priority. Include the controls for the behavior selected, or
+propose removing the dependent capability/changing its Rule for a human scope decision.
+Accepting risk alone does not make a release comply with an unchanged Rule. For committed
+behavior, route an intended scope change through refinement and the commitment workflow.
 
 ### Step 4: Check the selection is actually shippable
 
@@ -153,9 +161,10 @@ each of which produces a finding rather than a silent fix:
 selection stops partway — a request that can be submitted but not resolved, an approval that can
 be granted but not acted on — the slice is a layer, not a release. Name the missing step. Judge against the supplied journey: do not invent an alternative payment, export, or operations process to make a stated optional enhancement seem required. If the existing selection completes the outcome without it, explain that directly.
 
-**Selected behavior carries its obligations.** Including a scenario commits what it cannot safely
-run without: the authorization it assumes, the recovery path for the failure it can hit, the
-audit record it must leave. Check two places, because an obligation lives in whichever the author
+**Selected behavior carries its obligations.** Include what makes the stated contract true:
+business validation and boundaries, required authorization, recovery and audit behavior.
+Use obligations supported by the input, not imagined dependencies for optional enhancements.
+Check two places, because an obligation lives in whichever the author
 used:
 
 - **The `Rule:` each selected scenario sits under.** A Rule's obligation is not satisfied by
