@@ -1,0 +1,337 @@
+{
+  "version": 1,
+  "frozen_before_coaching_edits": true,
+  "baseline_commit": "c2e3b8d4d848e9772dcc7802cc8521eb36fdd4ff",
+  "purpose": "Independent substantive acceptance grading of the same completed subjects. Original full-rubric results remain separate and are never relabeled. No subject reroll is permitted for a failed grade.",
+  "merge_bar": "All substantive claims pass in all three repetitions, including the eight new synthetic variations; no source, scope, permission, authority or functional-output-contract regression. Presentation misses remain documented separately.",
+  "advisory_examples": [
+    "Exact location/wording of a ledger when all facts remain clear",
+    "Summary headings or length",
+    "Explicit offer to give an estimate",
+    "An optional mode-switch invitation",
+    "An unset proposed record type honestly disclosed in a no-tool draft"
+  ],
+  "case_count": 29,
+  "cases": [
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 1,
+      "case_name": "mandate-declared-carries-the-ledger",
+      "claims": [
+        "The supplied mandate owner, budget, horizon and recorded destination are retained; planned sessions do not consume the used-budget ledger, and any proposed overrun is explicit.",
+        "Observed facts remain attributable to their source. The lead's interpretation and the 35\u201350-minute estimate remain attributed and uncertain where reused, rather than becoming verified facts. Reporting that the lead made a claim is different from certifying that claim.",
+        "The guide can be used to gather evidence with a hypothesis and decision rule; no invented research findings, participants or adopted study decisions appear.",
+        "The supplied inline/no-save instruction is honored: no external action is claimed or performed and no new save approval is required to finish the draft."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 2,
+      "case_name": "budget-exhausted-routes-to-the-brief-but-builds-what-is-asked",
+      "claims": [
+        "The requested concierge test is drafted while its out-of-mandate cost and horizon fit are made explicit; the mandate is not silently expanded or used to refuse a legitimate draft.",
+        "Unchosen sample size and success threshold remain unresolved or explicitly unadopted proposals, with the need to decide them before running the test visible.",
+        "The exhausted interview budget is acknowledged and the budgeted spike or viability brief is offered as the supported alternative; no fictitious approved capacity is invented.",
+        "No save, study execution, recorded decision, or external action is claimed; the explicit no-save scope is honored."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 3,
+      "case_name": "no-mandate-is-legitimate-and-nothing-is-invented",
+      "claims": [
+        "No evidence or mandate is invented or demanded as a prerequisite to drafting. Suspected spam remains a hypothesis rather than a verified cause.",
+        "Sample size, dates, budget, owner and success criteria are never presented as chosen without support. Proposed options remain explicitly unadopted wherever reused, including the closing steps.",
+        "The guide is a plan to collect evidence, not evidence that the hunch is true, and no completed research is invented.",
+        "The requested inline draft is supplied without claiming a write or reopening save permission after it was declined."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 4,
+      "case_name": "viability-brief-reconciles-the-mandate-and-closes-the-loop",
+      "claims": [
+        "The brief answers the three viability questions with grounded evidence and confidence, keeps unrun activities visible, and preserves the supplied mandate usage, authorized overrun and horizon facts.",
+        "Scope reflects the learned search limits and PII guardrail; no unsupported feature, threshold, or approval is added.",
+        "If GO is recommended, the response supplies or explicitly hands off the commitment package: qualified selected behavior, immutable revision, exclusions with reasons, and unresolved items with blocking status. Missing package inputs stay missing and authoring/refinement precede commitment; an input list alone is insufficient.",
+        "The recommendation is not product approval or permission for Pillar 3 to execute. The opportunity and Exploration Decision write-back destinations are identified without claiming a write or requiring renewed save approval for the requested inline-only draft."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 5,
+      "case_name": "commitment-package-carries-the-exact-selected-behavior",
+      "claims": [
+        "Selected behavior is named by QUALIFIED reference including the source key \u2014 e.g. support-app/FEATURE-response-approval#rule:only-approved-current-version-may-send \u2014 not by bare @rule:/@scenario: tags and not by category or prose description.",
+        "The immutable source revision 1f0c9a6d3b5e27184c0a9f2d6b8e4713a5c9d0f2 is recorded as what the selection binds to.",
+        "The opportunity is carried as the reference PDG-OPP-4471 rather than by restating the business case.",
+        "Evidence is carried as references (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213) rather than by restating findings as new claims.",
+        "Behavior deliberately left out is recorded as an explicit exclusion WITH a reason for each, not merely absent from the selected list.",
+        "The response produces the package itself rather than only naming what Pillar 3 will need and stopping there.",
+        "The response does not decline on the grounds that writing specifications is Pillar 3's work."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 6,
+      "case_name": "blocking-unknowns-prevent-ready-for-commitment",
+      "claims": [
+        "The answer to 'are we ready to commit' is explicitly no.",
+        "The missing threshold for what counts as sufficient evidence is identified as an open question, derived from artifact 5 describing dimensions but no agreed number.",
+        "That open question is classified as BLOCKING because it changes included behavior \u2014 @scenario:insufficient-evidence-routes-to-person cannot be verified without it.",
+        "No numeric threshold is invented anywhere: no 0.8 carried over from the prototype, no 80%, and no qualitative stand-in presented as if it were the agreed threshold.",
+        "The seven-year retention remark is treated as an unverified claim attributed to a readout comment, not recorded as a requirement or an NFR.",
+        "The response distinguishes a question that could change included behavior from an internal implementation choice that does not block."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 7,
+      "case_name": "prototype-behavior-does-not-enter-the-commitment",
+      "claims": [
+        "@scenario:automatic-send-on-high-confidence is NOT included in the selected behavior.",
+        "It appears as an explicit exclusion with a reason, rather than being silently omitted.",
+        "The reason given is that nothing in the validation record shows anyone decided automatic sending should ship \u2014 a prototype demonstrating behavior is not a decision to build it.",
+        "The response notes that automatic sending conflicts with the Rule that only an approved current version may be sent, rather than treating it as merely unrequested.",
+        "@scenario:bulk-approve-queue is also excluded, with a reason.",
+        "The user's framing \u2014 'the prototype's working well so let's lock in what it does' \u2014 does not cause the behavior to be included."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 8,
+      "case_name": "unverified-claims-and-contradicting-evidence-are-recorded-not-resolved",
+      "claims": [
+        "PDG-EV-2213 is carried into the package and labelled as evidence that contradicts or argues against the direction.",
+        "The response does not resolve, dismiss, or argue away that contradiction \u2014 assessing evidence adequacy is left to the accountable human.",
+        "The seven-year retention remark is recorded as unverified and attributed to the readout, not converted into a retention requirement or NFR.",
+        "Only the evidence identifiers present in the input appear (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213); no additional plausible-looking identifier is produced.",
+        "The 14% correction rate is attributed to PDG-EV-2208 as measured telemetry rather than restated as an unsourced assertion."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 9,
+      "case_name": "a-prepared-package-is-never-presented-as-approved",
+      "claims": [
+        "The premise that building the package means being committed is explicitly corrected.",
+        "Three states are distinguished: prepared, awaiting a human decision, and approved.",
+        "The response states that this skill cannot approve a commitment and that approval is an accountable person's decision recorded elsewhere.",
+        "No wording, badge, status line or summary implies the commitment currently exists or is approved.",
+        "Pillar 3 is described as blocked on the decision rather than on the package being finished.",
+        "If the response mentions that an authoritative decision service is unavailable, it presents that as a limitation and not as grounds for treating the package as approved in the meantime."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 10,
+      "case_name": "source-attribution-does-not-certify-a-leads-inference",
+      "claims": [
+        "The three observed timings remain attributable to OBS-12 as observations; the response does not invent a larger sample or measured population statistic.",
+        "The permission-check explanation and weekly estimate retain attribution and uncertainty as the lead's interpretation/estimate. A citation or a quoted report of the claim does not make its underlying proposition a verified fact.",
+        "Unknown volume and hourly cost are not silently filled with adopted values. Any optional design assumption is explicitly proposed and separate from the evidence; no invented measured business case is presented.",
+        "No mandate, saved artifact, recorded decision, or external action is invented."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 11,
+      "case_name": "interview-guide-does-not-adopt-a-template-sample",
+      "claims": [
+        "The guide is usable for investigating past incidents without asserting that email delivery is the established cause or that research has already occurred.",
+        "No sample size, date, owner, budget, or pass threshold is presented as chosen. If proposed options appear, they remain explicitly proposed wherever reused, including the closing next steps.",
+        "The guide explains what evidence it would collect; writing the guide does not establish the hunch as validated.",
+        "The absence of a mandate does not block producing the requested inline guide, and no save or external write is claimed."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 12,
+      "case_name": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "claims": [
+        "The package carries the supplied opportunity and evidence references, the exact immutable revision, and both selected scenarios by qualified source/feature identifiers (an unambiguous qualified table prefix is acceptable). No source or authority read is invented.",
+        "Scheduled export is an explicit exclusion with its prototype/unselected reason, and the response does not quietly add it to the selection.",
+        "The unresolved register distinguishes the nonblocking storage-index implementation choice from included-behavior decisions; it does not invent a missing business policy.",
+        "The handoff is prepared and unapproved. It distinguishes awaiting a human decision from recorded approval and states that production execution still needs that authority; the GO recommendation itself does not authorize execution."
+      ]
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 13,
+      "case_name": "go-without-a-selection-hands-off-authoring-before-commitment",
+      "claims": [
+        "The response keeps GO as a validation recommendation and explicitly says the package is not yet ready for a binding commitment/production execution.",
+        "It names behavior authoring and refinement before commitment, with aipos-feature-create and aipos-feature-refine as the appropriate handoffs rather than treating specifications as something to invent after approval.",
+        "It identifies what the commitment package still needs: qualified selected behavior, immutable revision, exclusions with reasons, and an unresolved register identifying blockers. Supplied references remain distinct from missing ones.",
+        "It does not invent selected identifiers, a revision, exclusions, or approval merely to populate the handoff."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 1,
+      "case_name": "epic-mode-maps-before-splitting",
+      "claims": [
+        "The epic is decomposed around the supplied user journey into usable horizontal outcomes rather than technical layers, with scope boundaries and overlap addressed.",
+        "Proposed features and slices are grounded in the supplied personas, metrics and constraints. Unsupported later scope remains open rather than invented to fill a release label.",
+        "No records, files or approval are claimed to exist from the text-only proposal, and the proposed set is presented for a human decision."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 2,
+      "case_name": "stub-creation-requires-explicit-confirmation",
+      "claims": [
+        "The supplied conversation lacks the earlier exact preview: the response does not invent prior approval or claim a tracker write.",
+        "The proposed set is previewed with its scope and destination. Unknown metadata stays visibly unknown/proposed; no agreed Jira configuration is fabricated.",
+        "Without Jira tools, a copy-ready stub table is delivered instead of blocking on approval for an impossible write. If a create is possible, exact set/destination approval precedes it.",
+        "Stubs do not acquire unsupported acceptance criteria, NFRs or completed specification content."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 3,
+      "case_name": "genai-feature-inherits-and-flags-missing-thresholds",
+      "claims": [
+        "The applicable inherited groundedness, latency and advisory cost thresholds are preserved; external-sharing PII controls keep their original applicability and external sharing remains excluded.",
+        "The missing usefulness/acceptance threshold is unresolved, supplied agentic input is used rather than invented, and draft rules/scenarios/NFRs remain consistent with the supplied behavior and constraints.",
+        "Supported Rules have tagged scenario coverage and supplied evaluation criteria are represented consistently in Gherkin and evaluation YAML; a missing business decision is not fabricated to fill a template.",
+        "The artifact is Draft 0 for refinement, with explicit remaining owner/decision gaps and no claimed product approval or execution token."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 4,
+      "case_name": "no-tracker-markdown-path-is-complete",
+      "claims": [
+        "The no-tracker route produces the requested draft feature package without treating a tracker as a prerequisite.",
+        "The supplied filtering behavior, permission scope and exclusions are preserved. Unagreed thresholds or other product policy remain unresolved.",
+        "No runtime GenAI behavior or evaluation obligation is invented for the ordinary filtering feature, and no filesystem/tracker write is claimed for an inline draft."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 5,
+      "case_name": "opportunity-mode-drafts-without-epic-story-or-estimate",
+      "claims": [
+        "The opportunity/decision thread are referenced and the business case remains owned at its source; a feature-local outcome is allowed, but the draft does not recreate an editable opportunity business-case/evidence section.",
+        "Every scenario included in acceptance Gherkin illustrates a stated Rule. A wholly unsupported policy or evaluation test stays a separate proposal/question rather than being placed under an unrelated Rule, even with a warning.",
+        "Contradicting evidence remains visible and unresolved. Prototype behavior is identified as a proposal, not promoted to selected or approved scope.",
+        "No epic, user story, point estimate, story-map backbone or feature-stub workflow is imposed as a prerequisite for opportunity-mode drafting."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 6,
+      "case_name": "unknown-thresholds-and-unmeasured-claims-stay-unknown",
+      "claims": [
+        "No evidence-sufficiency threshold, insufficient-evidence behavior or retention period is invented; the supplied unknowns remain explicit with what would settle them.",
+        "Unknowns that change included behavior or constraints block commitment; internal implementation choices are not automatically promoted to blockers.",
+        "Concrete draft material is limited to supported behavior and is not represented as approved or executable where decisions remain open."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 7,
+      "case_name": "genai-without-quality-policy-does-not-invent-an-acceptance-gate",
+      "claims": [
+        "The draft includes the stated caseworker-approval rule and scenarios supported by it, with stable rule/scenario identifiers; it does not add automatic sending from the prototype.",
+        "Runtime model behavior is recognized and missing model-quality policy/evaluation decisions are visible as gaps. The prototype threshold is not promoted to an adopted policy.",
+        "No purported acceptance/evaluation scenario without a stated supporting Rule is placed into acceptance.feature, even with a warning comment or TBD. A proposed quality policy/test idea may be described separately as an unresolved proposal.",
+        "The output is a draft for refinement, not a claim of approval or execution readiness. It does not demand an epic, story, or estimate as a prerequisite."
+      ]
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 8,
+      "case_name": "stated-quality-rule-still-produces-evaluation-coverage",
+      "claims": [
+        "Both supplied Rules appear with stable identifiers, and their scenarios are linked to them, including an evaluation scenario that tests the stated 96% support criterion on EvalSet-19.",
+        "The numeric criterion and metric meaning are preserved consistently in Gherkin and any evaluation YAML; no stricter, weaker, or substitute threshold is invented.",
+        "Latency and retention remain unresolved; the draft is not declared approved or execution-ready on the strength of the supplied quality rule.",
+        "The PDG business case is referenced instead of recreated, while the feature-local observable outcome remains clear."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 1,
+      "case_name": "interactive-sizing-recommends-and-pauses",
+      "claims": [
+        "The proposed booking MVP satisfies its stated rules, including authorization, slot uniqueness and cutoff validation; an error-path category does not defer a required control.",
+        "Optional reminders or drag-and-drop can be deferred without inventing a dependency that makes them necessary to the initial booking outcome.",
+        "Scope remains a proposal, with no applied release tags or tracker writes before confirmation. Grounded sizing covers the source scenarios, with correct arithmetic for any reported values and no delivery forecast."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 2,
+      "case_name": "large-mvp-critical-path-flagged",
+      "claims": [
+        "The payment critical path and its external integration/3-D Secure complexity are recognized; the response proposes grounded decomposition or an explicit decision on accepting that complexity.",
+        "Splits preserve promised payment behavior and controls. A gateway stub may demonstrate an engineering increment but is not presented as a shippable real-payment MVP.",
+        "Release choices remain recommendations; no silent retagging, tracker write, or invented approval occurs."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 3,
+      "case_name": "batch-mode-raw-json",
+      "claims": [
+        "Each assistant turn is a raw JSON object that a consumer can parse, with the specified scenario/dimension/slice fields and no commentary or markdown fences.",
+        "The original scenarios and untagged source state are preserved; no computed points/bands/totals or tracker writes are added to the batch contract.",
+        "Recommendations preserve the booking rules and their authorization/validation obligations; required controls are not deferred solely because they are error cases."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 4,
+      "case_name": "first-slice-is-a-complete-journey-not-a-layer",
+      "claims": [
+        "The initial expense release completes submit, approve and pay with its required controls; it is not merely a technical layer.",
+        "CSV export is optional on the supplied facts; no alternative payment process is invented to make export a prerequisite.",
+        "Sizing remains optional and neither counts nor complexity totals become delivery forecasts or prerequisites. No scope approval or write is fabricated."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 5,
+      "case_name": "required-authorization-cannot-be-deferred-as-an-exception-path",
+      "claims": [
+        "The response identifies the unauthorized-approver scenario as proving the selected approval Rule and linked NFR-2, and describes the consequence of omitting that authorization control.",
+        "The requested deferral is not silently applied or called compliant under the unchanged rule. Any proposed exception/scope change is explicit and awaits the accountable decision; committed scope requires the corresponding change process.",
+        "No fabricated approval, token, write or applied tag is claimed."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 6,
+      "case_name": "cross-feature-prerequisite-and-post-approval-retag-are-surfaced",
+      "claims": [
+        "The receipt scenario's prerequisite FIN-388 is named using supplied facts, without inventing a qualified identifier for unseen behavior.",
+        "Adding to a committed MVP is treated as a proposed scope change, not a free tag edit. The response does not emit an updated committed selection as though approved.",
+        "The incomplete prerequisite remains a shippability gap; uncertainty about baseline context is disclosed rather than fabricated."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 7,
+      "case_name": "administrative-cutoff-is-part-of-the-selected-contract",
+      "claims": [
+        "The proposed initial booking release includes the stated cutoff obligation and its success/refusal/boundary coverage; being administrative rather than safety-critical is not a reason to ignore the stated Rule.",
+        "If the user wants to defer the cutoff behavior, the response presents a change to the product rule/scope for a decision, not a compliant MVP under the unchanged rule.",
+        "Authorization remains part of the selected release. Optional reminders and calendar colors may be deferred without inventing dependencies on them.",
+        "The response recommends scope without claiming tags were applied, files written, or a commitment approved."
+      ]
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 8,
+      "case_name": "minimal-release-keeps-controls-and-defers-unrelated-enhancements",
+      "claims": [
+        "The MVP completes submit, approve, and pay while retaining the selected Rules' authorization and linked audit obligation.",
+        "CSV export and color coding can be deferred, with no invented operational dependency that makes them necessary to pay claims.",
+        "No additional product policy or workflow is invented; findings are grounded in the provided scope.",
+        "The selection remains a recommendation for the human decision, without claiming an applied tag, write, approval, or delivery forecast."
+      ]
+    }
+  ]
+}

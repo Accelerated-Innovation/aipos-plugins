@@ -550,3 +550,32 @@ acceptance scenario without a stated Rule, and preserve required validation in
 release scope. Retest those changes with matched inputs and retain failures.
 **PE5** closes only after those findings are reconciled and the actual release
 action is authorized. These are not new or reopened historical E1–E5 slices.
+
+### PE3 substantive closure — implementation increments
+
+Continue in PR #33; no new planning round is needed. The baseline for these fixes is
+the PR's existing candidate, `c2e3b8d`, not the pre-PR consolidation baseline.
+
+| Increment | Change | Acceptance evidence |
+|---|---|---|
+| Evidence and unknowns | Correct provenance definitions and remove adopted interview-template sample defaults; preserve unknown quantities throughout the artifact. | Existing discovery cases plus source-interpretation and unchosen-sample variations. |
+| GO handoff | Make the viability template produce the binding commitment fields or an explicitly incomplete authoring/refinement handoff; distinguish recommendation, preparation, submission and recorded approval. Honor existing no-save instructions. | Existing commitment cases plus supplied-selection and missing-selection GO variations. |
+| Grounded feature scenarios | Reference the source outcome; derive acceptance scenarios only from stated Rules; preserve real quality-policy coverage while keeping proposed policy outside acceptance Gherkin. | Existing authoring cases plus absent/present quality-policy variations. |
+| Complete release scope | Apply Rules/NFRs and prerequisites before optional scope prioritization; retain ordinary business validation as well as risk controls. Distinguish engineering stubs from shippable outcomes. | Existing slicing cases plus administrative-boundary and optional-enhancement variations. |
+
+Before coaching edits, freeze [substantive acceptance claims](../../evals/substantive-acceptance.json)
+for all 29 affected cases and add eight synthetic variations. Run three repetitions per case.
+Grade the same subject transcripts separately against the full rubric and substantive claims;
+retain both, including all failed revisions. Only the substantive profile decides closure of
+these findings; presentation misses remain visible and are not relabeled as full-rubric passes.
+All substantive claims must pass all three repetitions, with no source, scope, permission,
+authority or functional-output-contract regression. Missing/truncated trials do not count as passes.
+
+One existing slicing rubric is corrected before the comparison: a stubbed payment gateway
+is an engineering increment, not a shippable real-payment MVP under an unchanged payment
+contract. Regrade its existing baseline subjects under that correction rather than reporting
+a rubric change as coaching improvement. Retain the 40 original cases and the prior reports.
+
+After behavioral checks, rerun offline/structural validation, verify the final isolated
+installation, update this ledger and the PR evidence, and recheck hosted CI. Merge and
+publication remain separate release actions.

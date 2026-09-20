@@ -45,7 +45,7 @@
       "files": [
         "files/feature-payment-checkout-heavy.md"
       ],
-      "expected_output": "The saved-card payment scenario is the feature's critical path (so @mvp material) and scores Large or high-Medium: third-party tokenized card data (Data & State 3), external payment gateway (Integration 3), and a 3-D Secure multi-step flow (UI/UX 2). The response must flag the Large-on-critical-path risk explicitly and propose a concrete split \u2014 the natural one is by integration boundary (prove checkout behavior against a stubbed gateway in @mvp, live gateway integration as its own scenario) \u2014 with re-sized pieces, or ask the PM for an explicit risk acceptance. It must not silently tag a Large scenario @mvp, and it must not let the size argument change what the scenarios promise.",
+      "expected_output": "The saved-card payment scenario is the feature's critical path and is Large or high-Medium: gateway-tokenized card data, external payment gateway, and a multi-step 3-D Secure flow. Flag the complexity on the critical path and propose a concrete decomposition with re-sized pieces, or ask for an explicit decision to accept that complexity. A gateway stub may prove an engineering increment but cannot be described as a shippable payment MVP while real payment is required. Preserve what the scenarios promise; live payment and required controls remain in the shippable selection unless Product explicitly changes the promised scope. No release tags are silently applied.",
       "assertions": [
         {
           "name": "critical-path-scored-heavy",
@@ -57,7 +57,7 @@
         },
         {
           "name": "split-proposed",
-          "text": "A concrete split is proposed for the heavy scenario (e.g. stubbed-gateway MVP scenario plus a live-integration scenario in a later slice), with the pieces re-sized."
+          "text": "Propose a concrete decomposition with re-sized pieces or a decision to accept the complexity; a stubbed gateway is an engineering increment, not a production payment release."
         },
         {
           "name": "intent-preserved",
@@ -134,6 +134,36 @@
       "expected_output": "Two separate problems are raised and neither is silently applied. First, @scenario:claim-shows-attached-receipt depends on receipt storage owned by FIN-388, which is not committed to any release \u2014 the response names the cross-feature prerequisite and says the scenario is not shippable in the MVP until that behavior is committed somewhere. It cites FIN-388 and the behavior in the fixture's own words and does NOT invent a qualified identifier such as a #scenario: slug for a feature it cannot see, because the fixture supplies none. Second, adding a scenario to an already-committed MVP changes which behavior is included, so it is a scope change: the response proposes it with the affected identifier and what it adds, rather than re-emitting the spec as though the tags were the skill's to move. A tag is treated as a view over selected behavior. If the response reasons about whether a baseline exists \u2014 noting that it cannot tell from the input and asking \u2014 that is correct rather than a miss; what it must not do is apply the retag silently.",
       "follow_ups": [],
       "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 7,
+      "name": "administrative-cutoff-is-part-of-the-selected-contract",
+      "prompt": "Recommend the smallest release for this appointment feature; no sizing or file writes needed. Rule booking-window: routine appointments may be booked only at least 24 hours ahead. This is an administrative policy, not a clinical safety measure. Scenarios: book-open-slot (succeeds at 48 hours), refuse-late-booking (refuses at 12 hours), booking-at-cutoff (accepts at exactly 24 hours). Rule own-appointments-only: other-patient-record-denied prevents viewing someone else's appointment. Optional behavior: send an SMS reminder; choose a custom calendar color. All identifiers are provisional and no commitment exists. Can the late-booking refusal wait for V1 because it's just an error path?",
+      "files": [],
+      "expected_output": "The proposed initial booking release includes the stated cutoff obligation and its success/refusal/boundary coverage; being administrative rather than safety-critical is not a reason to ignore the stated Rule. If the user wants to defer the cutoff behavior, the response presents a change to the product rule/scope for a decision, not a compliant MVP under the unchanged rule. Authorization remains part of the selected release. Optional reminders and calendar colors may be deferred without inventing dependencies on them. The response recommends scope without claiming tags were applied, files written, or a commitment approved.",
+      "claims": [
+        "The proposed initial booking release includes the stated cutoff obligation and its success/refusal/boundary coverage; being administrative rather than safety-critical is not a reason to ignore the stated Rule.",
+        "If the user wants to defer the cutoff behavior, the response presents a change to the product rule/scope for a decision, not a compliant MVP under the unchanged rule.",
+        "Authorization remains part of the selected release. Optional reminders and calendar colors may be deferred without inventing dependencies on them.",
+        "The response recommends scope without claiming tags were applied, files written, or a commitment approved."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
+    },
+    {
+      "id": 8,
+      "name": "minimal-release-keeps-controls-and-defers-unrelated-enhancements",
+      "prompt": "Select MVP and later scope without complexity scoring. This expense feature has Rule employee-submits-own-claim, with submit-own-claim and other-employee-claim-refused. Rule manager-approves-before-payment has manager-approves, non-manager-denied, and pay-approved-claim. Linked NFR audit-1 requires an approval audit record; scenario approval-audited proves it. Optional scenarios are export-paid-claims-to-CSV and color-code-claim-list; nothing in submit/approve/pay depends on either. No release selection is committed yet. Give recommendations only, and do not invent policies or missing workflows.",
+      "files": [],
+      "expected_output": "The MVP completes submit, approve, and pay while retaining the selected Rules' authorization and linked audit obligation. CSV export and color coding can be deferred, with no invented operational dependency that makes them necessary to pay claims. No additional product policy or workflow is invented; findings are grounded in the provided scope. The selection remains a recommendation for the human decision, without claiming an applied tag, write, approval, or delivery forecast.",
+      "claims": [
+        "The MVP completes submit, approve, and pay while retaining the selected Rules' authorization and linked audit obligation.",
+        "CSV export and color coding can be deferred, with no invented operational dependency that makes them necessary to pay claims.",
+        "No additional product policy or workflow is invented; findings are grounded in the provided scope.",
+        "The selection remains a recommendation for the human decision, without claiming an applied tag, write, approval, or delivery forecast."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
     }
   ]
 }

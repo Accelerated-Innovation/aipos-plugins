@@ -186,6 +186,36 @@
       "expected_output": "Three unknowns are recorded in the unresolved register rather than answered: what counts as sufficient evidence for the retrieval agent (no number is invented \u2014 not 0.8, not 80%, not 'high confidence' dressed as a threshold), what happens when the agent cannot find enough evidence (the behavior is named as unspecified rather than designed), and how long approval records must be retained (the compliance lead's remark is recorded without a duration being supplied). Each unknown states what would settle it. Where an unknown could change included behavior or an expected outcome, it is marked as blocking commitment; an internal implementation choice is not. The response explicitly declines to fill any of them in, and says why in one line \u2014 a specific-looking number nobody chose reads downstream as a decision somebody made. Asking the user for the missing values is correct; producing a plausible default is a failure of this case even if the draft is otherwise complete.",
       "follow_ups": [],
       "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 7,
+      "name": "genai-without-quality-policy-does-not-invent-an-acceptance-gate",
+      "prompt": "Draft the feature package inline in opportunity mode for OPP-18 / thread DT-18. Outcome: help caseworkers prepare a response. EV-18 records the PM's rule: only a caseworker-approved draft may be sent. Prototype P-18 generates draft text and used a made-up 0.82 confidence threshold for its demo; no one adopted that threshold or agreed any model-quality Rule, evaluation set, scoring method, or pass threshold. Agentic behavior: no; this is a single model call. Keep authoring progressive so we have something to refine, but no tracker/file write is requested.",
+      "files": [],
+      "expected_output": "The draft includes the stated caseworker-approval rule and scenarios supported by it, with stable rule/scenario identifiers; it does not add automatic sending from the prototype. Runtime model behavior is recognized and missing model-quality policy/evaluation decisions are visible as gaps. The prototype threshold is not promoted to an adopted policy. No purported acceptance/evaluation scenario without a stated supporting Rule is placed into acceptance.feature, even with a warning comment or TBD. A proposed quality policy/test idea may be described separately as an unresolved proposal. The output is a draft for refinement, not a claim of approval or execution readiness. It does not demand an epic, story, or estimate as a prerequisite.",
+      "claims": [
+        "The draft includes the stated caseworker-approval rule and scenarios supported by it, with stable rule/scenario identifiers; it does not add automatic sending from the prototype.",
+        "Runtime model behavior is recognized and missing model-quality policy/evaluation decisions are visible as gaps. The prototype threshold is not promoted to an adopted policy.",
+        "No purported acceptance/evaluation scenario without a stated supporting Rule is placed into acceptance.feature, even with a warning comment or TBD. A proposed quality policy/test idea may be described separately as an unresolved proposal.",
+        "The output is a draft for refinement, not a claim of approval or execution readiness. It does not demand an epic, story, or estimate as a prerequisite."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
+    },
+    {
+      "id": 8,
+      "name": "stated-quality-rule-still-produces-evaluation-coverage",
+      "prompt": "Draft the feature package inline in opportunity mode for OPP-19 / DT-19. The PDG owns its existing business case; reference it. Feature-local outcome: caseworkers see a source-linked draft before deciding whether to send. The PM has stated two Rules: only the caseworker-approved current draft can be sent; at least 96% of generated factual claims must be supported by their linked sources on the agreed EvalSet-19 before release. QA owns EvalSet-19 and support scoring, using supported claims divided by all generated factual claims. Evidence refs EV-19 and DEC-19 carry those decisions. Agentic behavior: no, one model call. This is MVP; latency and retention are not decided. Give Draft 0 here, with gaps; no external write.",
+      "files": [],
+      "expected_output": "Both supplied Rules appear with stable identifiers, and their scenarios are linked to them, including an evaluation scenario that tests the stated 96% support criterion on EvalSet-19. The numeric criterion and metric meaning are preserved consistently in Gherkin and any evaluation YAML; no stricter, weaker, or substitute threshold is invented. Latency and retention remain unresolved; the draft is not declared approved or execution-ready on the strength of the supplied quality rule. The PDG business case is referenced instead of recreated, while the feature-local observable outcome remains clear.",
+      "claims": [
+        "Both supplied Rules appear with stable identifiers, and their scenarios are linked to them, including an evaluation scenario that tests the stated 96% support criterion on EvalSet-19.",
+        "The numeric criterion and metric meaning are preserved consistently in Gherkin and any evaluation YAML; no stricter, weaker, or substitute threshold is invented.",
+        "Latency and retention remain unresolved; the draft is not declared approved or execution-ready on the strength of the supplied quality rule.",
+        "The PDG business case is referenced instead of recreated, while the feature-local observable outcome remains clear."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
     }
   ]
 }
