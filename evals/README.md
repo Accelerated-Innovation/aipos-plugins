@@ -130,6 +130,9 @@ Version 3 accepts equivalent explanations that prototype behavior lacks an adopt
 policy, and requires quantitative attribution when a finding is repeated without
 forcing reference-only handoffs to copy the finding. It likewise regrades the same
 baseline and candidate subjects and preserves the original judgments.
+Version 4 accepts a named, reasoned **not-selected/pending-human-decision** item as
+outside the proposed commitment; the skill need not imply a permanent product exclusion.
+Silent omission or inclusion in committed scope still fails.
 It is a second assessment,
 not a replacement for the full rubric. Preserve the full-rubric results and grade the
 **same subjects** with `--regrade-from`; never reroll a failed answer to get a pass.

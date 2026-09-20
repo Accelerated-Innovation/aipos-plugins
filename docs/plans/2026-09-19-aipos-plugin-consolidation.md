@@ -594,3 +594,10 @@ the 14% telemetry finding; when it does repeat that finding, source attribution 
 required. Apply both clarifications to the same baseline and candidate subjects and keep
 the original grades. The earlier candidate that repeated 14% without mapping it to its
 source remains a real failure; the later candidate that omitted the number is different.
+
+Profile version 4 clarifies the same distinction for scope: a scenario explicitly named
+as **not selected pending the human decision**, with its missing-validation reason,
+is outside the proposed commitment. The evaluator must not demand that the skill also
+declare it permanently excluded. Silent omission and committing it without evidence
+remain failures. Preserve the original judgment and apply the correction to matched
+baseline and candidate transcripts.
