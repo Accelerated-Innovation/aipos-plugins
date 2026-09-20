@@ -50,14 +50,14 @@ Stubs get the directory and a `feature_source.md` containing only the stub field
 
 > **Legacy route only.** This section and the Secondary user stories below are written in epic
 > and feature mode. In **opportunity** and **baseline** mode they are omitted entirely — the
-> outcome statement and the Rules carry the scope, and a story would add a restatement to keep
+> outcome reference and the Rules carry the scope, and a story would add a restatement to keep
 > in sync with them. Omitting them is not an incomplete package; requiring them would
 > reintroduce the prerequisite the opportunity route exists to remove.
 >
-> What replaces them: the feature-local **outcome** from Step O2, the **Rules** from O3,
-> and the **opportunity reference**. The outcome describes observable user behavior
-> this package enables. Do not copy the opportunity's investment rationale, strategic
-> benefit, or business-case paragraph into an Outcome or Summary section; link to it.
+> What replaces them: **outcome_ref** from Step O2, the **Rules** from O3,
+> and the **opportunity reference**. Add a feature-local observable effect only when
+> distinct from the source's outcome. Omit the Summary below if it would copy or
+> paraphrase that outcome, investment rationale, strategic benefit or business case.
 
 
 As a <primary persona>, I need <capability> so that <outcome>.
@@ -290,7 +290,16 @@ code_quality:
 
 `method`/`data_source`/`evidence`/`owner` are the fields both gates check (`aipos-feature-refine` Step 8; `aipos-feature-readiness` dimension 8 — "thresholds, data, evidence, and owner"). Filling them at authoring costs one question each; leaving them lands as a 0.5 at the gate.
 
-Every criterion needs a `method` and a `pass_threshold`. Criteria without thresholds are a named readiness blocker, and a threshold you invented is worse than a gap you flagged: write `pass_threshold: "TBD"` with the gap listed in `feature_source.md` and let the PM supply the number.
+Every criterion needs a supporting stated Rule or applicable inherited criterion.
+The YAML example's policies, datasets, methods, thresholds, owners and gates are
+illustrative, not defaults. When no quality policy exists, keep
+`evaluation_criteria: &criteria []` (and its alias) empty and list the missing policy
+in `feature_source.md`; do not populate it to improve a completeness score.
+
+For a supported criterion, unknown `method`, `pass_threshold`, data or owner stays
+`TBD` with the gap listed in `feature_source.md`. Such a draft is not ready; an
+invented threshold is worse than a visible gap. Preserve a supplied measurable
+quality Rule and its evaluation coverage even when unrelated fields remain unknown.
 
 Keep this draft narrow. Full evaluation design belongs to refinement and to the team's eval tooling — this file's job is to make sure the feature arrives at refinement with the evaluation question already asked.
 

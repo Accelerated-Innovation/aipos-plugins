@@ -216,9 +216,13 @@ Switch on GenAI mode when you see model-generated behavior, in either mode.
 
 When detected, say once:
 
-> This involves GenAI behavior, so I'll include evaluation scenarios and evaluation NFRs. Tell me if you'd rather not.
+> This involves GenAI behavior, so I'll carry the stated evaluation requirements and flag any missing quality policy or thresholds. Tell me if you'd rather not.
 
-Proceed in GenAI mode unless the PM explicitly disables it. GenAI mode changes three things: Gherkin gains `@genai` and `@evaluation` scenarios (`references/gherkin-tagging.md`), NFRs gain the evaluation categories (`references/feature-template.md`), and the package gains a draft `eval_criteria.yaml`.
+Proceed in GenAI mode unless the PM explicitly disables it. Tag supported model behavior
+`@genai`; derive `@evaluation` scenarios only from stated quality Rules or applicable
+inherited criteria (`references/gherkin-tagging.md`). Review evaluation NFR categories
+and produce a draft `eval_criteria.yaml` (`references/feature-template.md`). Missing
+quality policy is a gap to resolve, not permission to invent acceptance behavior.
 
 **The agentic-behavior question.** Once GenAI mode is on, ask the PM explicitly, once — the same question `aipos-feature-refine` asks at its checkpoint:
 
@@ -259,8 +263,10 @@ findings maintained in the PDG.
 
 ### Step O2 — Name the outcome and the actors
 
-One sentence on the outcome this behavior is meant to produce, and who is involved. If the PDG
-carries personas, use them; if not, a role name is a real answer. **Do not invent a named
+Use `outcome_ref` when the opportunity already owns the outcome. Add a feature-local
+observable effect only if it is distinct; do not copy or paraphrase the canonical outcome
+into another editable Outcome, Summary or business-case section. Name who is involved.
+If the PDG carries personas, use them; if not, a role name is a real answer. **Do not invent a named
 persona with invented goals** — the point is grounding, and a fabricated persona is the opposite.
 
 ### Step O3 — Derive the Rules from the evidence
@@ -283,8 +289,11 @@ the number left blank, not filled in with something plausible.
 ### Step O4 — Draft scenarios against the Rules
 
 Per `../../references/gherkin-authoring-standard.md`, with `@scenario:<slug>` identifiers.
-Every scenario illustrates a stated Rule. A scenario no Rule explains means a Rule is missing —
-surface it; do not write the Rule to justify the scenario.
+Every scenario illustrates a stated Rule. If no stated Rule explains it, keep the proposed
+policy or test idea in the unresolved register, outside `acceptance.feature`. A warning,
+TBD threshold or unrelated parent Rule does not make an unsupported scenario valid.
+When a quality Rule exists but its metric or threshold is unknown, a clearly incomplete
+scenario under that Rule may expose the gap; it is not ready for execution.
 
 Where behavior comes from a **prototype**, say so and treat it as a proposal. A prototype
 demonstrating something is not a decision to build it, and behavior that reaches a spec because
@@ -534,7 +543,7 @@ Generate complete, syntactically valid Gherkin per `../../references/gherkin-aut
 
 Four things from the standard are worth stating here because they are what the gates check first:
 
-- **Every scenario illustrates a stated rule, establishes a meaningful context and one trigger, and asserts observable outcomes.** Several related outcomes of one trigger are fine.
+- **Every scenario illustrates a stated rule, establishes a meaningful context and one trigger, and asserts observable outcomes.** Several related outcomes of one trigger are fine. Without a supporting Rule, keep the proposal in the unresolved register, outside accepted Gherkin; merely flagging the missing Rule is insufficient.
 - **Every scenario is independently executable.** Never write "the invoice from the previous scenario"; put the state in this scenario's own `Given`.
 - **Cover the boundary, the negative path, permissions and exceptions where they matter — then stop.** An exhaustive combinatorial catalog drives readers away from the document, which costs more understanding than the extra cases buy. Use `Scenario Outline` for real data variation of one behavior.
 - **Mark what is derived.** You may derive illustrating examples from a confirmed rule; say in the summary that the values are proposed for confirmation. You may not invent a policy, a threshold, a permission model, or anyone's approval. Unresolved decisions stay visible as `<TBD — …>` placeholders plus an open question, and a scenario carrying one is never reported as ready for execution.
@@ -633,7 +642,7 @@ Do not:
 - Create or modify any record without the explicit, destination-named confirmation — a bare "proceed" never covers a write
 - Create multiple features without confirming the whole set in one preview first
 - Invent personas, success metrics, evidence, quotes, thresholds, or evaluation numbers
-- Invent business rules, or write a scenario no stated rule explains without surfacing the missing rule
+- Invent business rules, or put a scenario no stated rule explains into `acceptance.feature`, even with a warning
 - Write a scenario that depends on another scenario having run first
 - Present a derived example as a confirmed requirement, or an unresolved placeholder as ready for execution
 - Switch on GenAI mode because a coding agent is building the feature
