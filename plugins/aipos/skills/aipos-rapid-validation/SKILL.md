@@ -250,6 +250,12 @@ Every open question, each marked **blocking** or **not blocking**, with the reas
 Say which each is and why. "There are open questions" is not the finding; *which ones would
 change the commitment* is.
 
+When asked whether the package is ready to commit, answer that question directly.
+If blocking items remain, say **not ready for commitment**, even when the package
+has been assembled and labelled prepared. That is an assessment of the recorded
+gaps, not an approval decision. Do not replace it with “that call isn't mine”;
+the accountable person's authority does not remove the need to report blockers.
+
 **Never invent a value to clear the register.** Not a threshold, not a date, not a session count
 — and not a number lifted from a prototype, which was chosen to make a demo work, not to be the
 policy.
