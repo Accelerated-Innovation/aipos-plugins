@@ -152,6 +152,11 @@ propose removing the dependent capability/changing its Rule for a human scope de
 Accepting risk alone does not make a release comply with an unchanged Rule. For committed
 behavior, route an intended scope change through refinement and the commitment workflow.
 
+When the user asks to defer a required scenario, make the alternative explicit in the
+recommendation: name the Rule or dependent capability that would have to change before
+that deferral could describe a valid release. An invitation to “override” the slice must
+not imply that the original Rule can stay in force while its required behavior is omitted.
+
 ### Step 4: Check the selection is actually shippable
 
 A set of individually reasonable tags can still describe a release nobody can ship. Three checks,

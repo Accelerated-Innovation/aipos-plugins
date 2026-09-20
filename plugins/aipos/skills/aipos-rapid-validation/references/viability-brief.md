@@ -122,7 +122,7 @@ for itself. Say what changed and why.>
 
 ### GO — proposed commitment package
 **State:** prepared — not approved
-**Opportunity / decision thread / evidence refs:** <supplied references; unknown if absent>
+**Opportunity / decision thread / evidence refs:** <copy supplied identifiers exactly, including their prefixes; unknown if absent>
 **Selected Rules:** <source/feature#rule:slug, each selected Rule>
 **Selected scenarios:** <source/feature#scenario:slug, each selected scenario>
 **Immutable source revision:** <supplied commit SHA; unknown if absent>
@@ -132,8 +132,9 @@ for itself. Say what changed and why.>
 **Commitment readiness:** <not ready while binding fields or behavior-changing decisions are missing>
 **Authority and next action:** Prepared means the package is assembled; awaiting decision
 means it is before the accountable person; approved requires a recorded, authenticated
-decision binding this exact version and selection. <State which applies and the next step;
-never infer submission or approval from this recommendation.>
+decision binding this exact version and selection. <State only the current status; describe
+later transitions conditionally. Do not call an unsubmitted package awaiting decision,
+and never infer submission or approval from this recommendation.>
 
 <If selection or revision is absent: say this handoff is incomplete and not ready for
 commitment. Keep those fields unknown. Route to `aipos-feature-create` opportunity mode

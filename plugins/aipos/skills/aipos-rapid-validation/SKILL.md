@@ -225,8 +225,9 @@ scenarios" is not a commitment, it is a description of one.
 **The immutable source revision** the selection resolves against — a commit SHA, never a branch
 name. A commitment bound to a moving pointer can change without anyone deciding to change it.
 
-**The opportunity and evidence, by reference.** `PDG-OPP-…`, the decision thread, the evidence
-ids. Reference them; do not restate the business case. A copied business case is a second
+**The opportunity and evidence, by reference.** Copy the supplied opportunity,
+decision-thread and evidence identifiers exactly; do not add a prefix, normalize a
+namespace or infer a different record key. Reference them; do not restate the business case. A copied business case is a second
 editable copy that drifts from the first, invisibly, because both look authoritative.
 
 **Exclusions, each with a reason.** Behavior considered and not committed. An exclusion with a
@@ -274,7 +275,10 @@ policy.
 assembling a package is not committing to one. Say so plainly when asked — including when the
 question assumes otherwise, which is the moment it matters.
 
-Label the output **prepared**. No badge, status line or summary may read as approval. Where the
+Label the output **prepared**. Do not also call it **awaiting decision** unless its
+placement before the accountable person is established. Explain subsequent states
+conditionally: submission would make it awaiting decision; a recorded authenticated
+decision would make it approved. No badge, status line or summary may read as approval. Where the
 authoritative decision service is unavailable, that is a limitation to report, never grounds for
 treating the package as approved in the meantime. Pillar 3 is blocked on the decision, not on
 the package being finished.
