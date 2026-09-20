@@ -8,7 +8,7 @@
       "files": [
         "files/epic-claims-triage.md"
       ],
-      "expected_output": "Epic mode is detected and stated in one line without a routing question. The response builds a workflow backbone of 4-7 user activities named from the adjuster's side (receive/notice a claim, assemble the file, triage the queue, route or assign, make a determination) — not architectural layers. It then proposes horizontal slices (MVP/V1/V2) where each spans multiple backbone stages, delivers a usable outcome, and names which of the epic's three success metrics it moves. Feature candidates follow, each with a short action-oriented name, a one-line scope boundary saying what it owns and does not own, and its slice. The overlap and vertical-only checks are run and reported. Defaults for release, type, and owner are proposed (owner defaulting to Dana Whitfield from the epic). Nothing is created — the response ends by presenting the set for confirmation.",
+      "expected_output": "Epic mode is detected and stated in one line without a routing question. The response builds a workflow backbone of 4-7 user activities named from the adjuster's side (receive/notice a claim, assemble the file, triage the queue, route or assign, make a determination) \u2014 not architectural layers. It then proposes horizontal slices (MVP/V1/V2) where each spans multiple backbone stages, delivers a usable outcome, and names which of the epic's three success metrics it moves. Feature candidates follow, each with a short action-oriented name, a one-line scope boundary saying what it owns and does not own, and its slice. The overlap and vertical-only checks are run and reported. Defaults for release, type, and owner are proposed (owner defaulting to Dana Whitfield from the epic). Nothing is created \u2014 the response ends by presenting the set for confirmation.",
       "assertions": [
         {
           "name": "backbone-is-a-journey",
@@ -38,16 +38,18 @@
           "name": "no-invented-evidence",
           "text": "No personas, success metrics, evidence, or thresholds appear that are not in the epic; the two open questions (state licensing, fax gateway) are carried as gaps rather than answered."
         }
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Story-map proposal, before approval to create records."
     },
     {
       "id": 2,
       "name": "stub-creation-requires-explicit-confirmation",
-      "prompt": "Great, that feature list looks right. Proceed — and go ahead and put them in Jira under CLM-88.",
+      "prompt": "Great, that feature list looks right. Proceed \u2014 and go ahead and put them in Jira under CLM-88.",
       "files": [
         "files/epic-claims-triage.md"
       ],
-      "expected_output": "The skill does NOT treat 'proceed' plus a general instruction as sufficient authorization to create records. It first previews the complete set of stubs to be created as a table with actual field values (name, epic link, release, type, owner, one-sentence description), names the destination precisely (project, parent epic CLM-88, record type, tracker), states that record creation is not reversible by this skill, and asks a single explicit yes/no question covering the whole set. If no Jira MCP is connected, it says so plainly and emits the copy-ready stub table instead. Stubs contain only the six stub fields — no acceptance criteria, no NFRs, no Definition of Done, no privacy text.",
+      "expected_output": "The skill previews the complete proposed stub set as a table with name, epic link, release, type, owner, and one-sentence description. It names Jira, the project/parent CLM-88, and the proposed record type; unverified metadata remains visibly proposed. The supplied conversation contains no actual earlier preview, so it must not claim the exact set was already approved or that a write occurred. If Jira tools are available and required values are resolved, it states the permanent-key/deletion limitation and asks one explicit question covering this complete set before creating records. If no Jira MCP is connected, it states that limitation and delivers the same copy-ready table immediately; no approval for an impossible write or question about tool availability is required. Stubs contain only the six stub fields \u2014 no acceptance criteria, NFRs, Definition of Done, or privacy text.",
       "assertions": [
         {
           "name": "proceed-does-not-authorize-create",
@@ -59,26 +61,28 @@
         },
         {
           "name": "destination-named-precisely",
-          "text": "The confirmation question names the tracker, the parent epic (CLM-88), and the record type."
+          "text": "The preview names Jira, the project/parent epic CLM-88, and the proposed record type; the final write question does so when a create can actually be performed."
         },
         {
           "name": "irreversibility-stated",
-          "text": "The response states that created records and their keys are permanent and that this skill will not delete them."
+          "text": "When seeking approval for an available tracker create, state that keys are permanent and this skill will not delete the resulting records."
         },
         {
           "name": "stubs-stay-empty",
           "text": "No stub carries acceptance criteria, NFRs, a Definition of Done, or privacy text."
         }
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Preview of stub set before destination-named write approval."
     },
     {
       "id": 3,
       "name": "genai-feature-inherits-and-flags-missing-thresholds",
-      "prompt": "Let's flesh out this feature. I want the full spec — stories, acceptance criteria, NFRs, definition of done, the lot.",
+      "prompt": "Let's flesh out this feature. I want the full spec \u2014 stories, acceptance criteria, NFRs, definition of done, the lot.",
       "files": [
         "files/feature-stub-claim-summary.md"
       ],
-      "expected_output": "Feature mode is detected. GenAI mode switches on automatically (summarization of documents) and is announced once, and the explicit agentic-behavior question (yes or no) is asked rather than inferred. The four epic-level evaluation criteria are shown and inherited with their exact thresholds (0.95 groundedness, 0 PII detections, p95 < 3s, $0.04 advisory) — never altered or re-derived. The response works through personas (Regional adjuster as primary), intent and two-sprint size check, a primary user story whose 'so that' is a real outcome, the structured description including a populated Out of Scope section (external-partner review workflow, partial-file summaries), an enumeration of the business rules in the PM's words, and fully-formed Gherkin with a Feature header, persona intent block, Rule: blocks grouping scenarios under the rules they prove, exactly one delivery-phase tag per scenario, at least one classification tag per scenario, and at least one @genai and one @evaluation scenario. The @evaluation scenarios assert the inherited thresholds. Crucially, the un-agreed summary usefulness / adjuster acceptance threshold is marked as an open gap rather than given an invented number. NFRs walk the ten gate-reviewed areas (Performance, Security, Privacy, Reliability, Observability, Accessibility, Data quality, Compliance, Cost, Supportability) plus the GenAI categories, each captured row carrying an owner, with EU data residency captured. A draft eval_criteria.yaml is produced. The output is labelled Draft 0 and hands off to aipos-feature-refine.",
+      "expected_output": "Feature mode is detected. GenAI mode switches on automatically (summarization of documents) and is announced once, and the explicit agentic-behavior question (yes or no) is asked on the intake turn rather than inferred; the supplied follow-up answer is used in the draft. The epic-level criteria are shown with their applicability: groundedness >= 0.95, p95 < 3s, and cost <= $0.04 advisory are inherited unchanged. EPIC-E2 requires zero PII detections in text shared outside the claims team; that external-sharing workflow is excluded here, so record the criterion and its unchanged threshold as conditional/out of scope rather than silently broadening it to all internal summaries. The draft must prevent external sharing under this feature and flag a future sharing workflow for the criterion and review requirement. The response works through personas (Regional adjuster as primary), intent and two-sprint size check, a primary user story whose 'so that' is a real outcome, the structured description including a populated Out of Scope section (external-partner review workflow, partial-file summaries), an enumeration of the business rules in the PM's words, and fully-formed Gherkin with a Feature header, persona intent block, Rule: blocks grouping scenarios under the rules they prove, exactly one delivery-phase tag per scenario, at least one classification tag per scenario, and at least one @genai and one @evaluation scenario. The @evaluation scenarios assert the applicable inherited thresholds. Crucially, the un-agreed summary usefulness / adjuster acceptance threshold is marked as an open gap rather than given an invented number. NFRs walk the ten gate-reviewed areas (Performance, Security, Privacy, Reliability, Observability, Accessibility, Data quality, Compliance, Cost, Supportability) plus the GenAI categories, each captured row carrying a supplied owner or an explicit unassigned-owner gap; proposed roles must not be presented as confirmed assignments, with EU data residency captured. A draft eval_criteria.yaml is produced. The output is labelled Draft 0 and hands off to aipos-feature-refine.",
       "assertions": [
         {
           "name": "genai-mode-auto-detected",
@@ -86,7 +90,7 @@
         },
         {
           "name": "thresholds-inherited-unchanged",
-          "text": "The epic's evaluation thresholds (0.95, 0 detections, p95 < 3s, $0.04) are carried across exactly as written, not re-derived, rounded, or replaced."
+          "text": "Applicable epic thresholds (groundedness >= 0.95, p95 < 3s, cost <= $0.04 advisory) are inherited unchanged. EPIC-E2 is recorded with its original zero-detection threshold and external-sharing scope; it is not silently broadened to internal summaries or lost. External sharing stays excluded."
         },
         {
           "name": "missing-threshold-flagged-not-invented",
@@ -98,11 +102,11 @@
         },
         {
           "name": "agentic-question-asked-not-inferred",
-          "text": "The explicit agentic-behavior question (yes or no) is asked of the PM; multi_agent is not inferred from the spec or silently filled in."
+          "text": "The intake asks the agentic yes/no question. The draft may set multi_agent from the explicit follow-up answer, never from inference."
         },
         {
           "name": "nfrs-walk-the-gate-areas-with-owners",
-          "text": "The NFR pass walks the ten gate-reviewed areas rather than a shorter list, and every captured NFR row names an owner."
+          "text": "The NFR pass walks the ten gate-reviewed areas, and every captured row names a supplied owner or records an unassigned-owner gap. Proposed roles remain explicitly proposed."
         },
         {
           "name": "tag-coverage-shown",
@@ -120,14 +124,18 @@
           "name": "labelled-draft-zero",
           "text": "The output is identified as Draft 0 / not yet refined, no Development Token is issued or implied, and aipos-feature-refine is named as the next step."
         }
-      ]
+      ],
+      "follow_ups": [
+        "Regional adjuster is the primary persona. Yes, the delivered feature will use agentic behavior. The release is V1 and Dana Whitfield owns it. Please assemble Draft 0 here now from the supplied constraints, using explicit gaps for every unagreed rule or threshold. External sharing and partial-file summaries remain out of scope. NFR evidence owners are Engineering for runtime controls, QA for tests, and Legal for privacy/retention decisions. Do not write to a tracker."
+      ],
+      "evaluation_stage": "Draft 0 assembly after explicit persona, agentic answer, scope, and evidence-owner input. The first assistant turn must ask the agentic question; a later answer may set multi_agent."
     },
     {
       "id": 4,
       "name": "no-tracker-markdown-path-is-complete",
-      "prompt": "We don't use Jira or Aha for this — I just want to talk it through with you and get a markdown file at the end. Feature: let adjusters filter their queue by claim value and age.",
+      "prompt": "We don't use Jira or Aha for this \u2014 I just want to talk it through with you and get a markdown file at the end. Feature: let adjusters filter their queue by claim value and age.",
       "files": [],
-      "expected_output": "The skill proceeds without asking about trackers or treating their absence as a limitation. It runs Feature mode conversationally — one primary question at a time, starting with persona and intent rather than dumping a questionnaire — and produces the repo feature package: feature_source.md with the stub header block, primary user story, structured description including Out of Scope, Definition of Done, and privacy impact; acceptance.feature with tagged, Rule-grouped Gherkin; nfrs.md as the owner-carrying table. Since nothing establishes GenAI behavior, GenAI mode stays off and no eval_criteria.yaml is produced. Gaps are recorded honestly rather than filled in, since the prompt supplies almost no detail. The markdown output is never described as a fallback, degraded, or second-best path.",
+      "expected_output": "The skill proceeds without asking about trackers or treating their absence as a limitation. It runs Feature mode conversationally \u2014 one primary question at a time, starting with persona and intent rather than dumping a questionnaire \u2014 and produces the repo feature package: feature_source.md with the stub header block, primary user story, structured description including Out of Scope, Definition of Done, and privacy impact; acceptance.feature with tagged, Rule-grouped Gherkin; nfrs.md as the owner-carrying table. Since nothing establishes GenAI behavior, GenAI mode stays off and no eval_criteria.yaml is produced. Gaps are recorded honestly rather than filled in, using the facts supplied in the follow-up and recording any remaining gaps. The markdown output is never described as a fallback, degraded, or second-best path.",
       "assertions": [
         {
           "name": "no-tracker-no-friction",
@@ -149,7 +157,11 @@
           "name": "gaps-recorded-not-filled",
           "text": "Unknown details (thresholds, personas, dependencies) are recorded as open questions or gaps rather than invented to complete the template."
         }
-      ]
+      ],
+      "follow_ups": [
+        "The regional adjuster filters their own assigned queue to find the oldest high-value claims. Value and age ranges are inclusive and can be combined; clearing filters restores the queue, and no matches shows an empty result. Permissions stay the same as for the unfiltered queue. Sorting, saved filters, and cross-adjuster queues are out of scope. Engineering owns runtime NFR evidence and QA owns acceptance tests. We have no agreed performance threshold. Please assemble the draft package here with remaining gaps explicit; no filesystem write is requested."
+      ],
+      "evaluation_stage": "Conversational intake followed by draft package assembly. One primary question is required on the intake turn; the final draft may enumerate unresolved questions."
     },
     {
       "id": 5,
@@ -158,7 +170,11 @@
       "files": [
         "files/opportunity-support-response.md"
       ],
-      "expected_output": "Opportunity mode is detected and stated in one line without a routing question. The response NEVER asks for an epic, a user story, or a point estimate, and never reports their absence as a gap or a missing prerequisite. The opportunity and decision-thread identifiers are referenced, not restated: the business case, the evidence table and the rationale are pointed at rather than copied into the draft. Rules are derived from what the evidence and the conversations actually say, each with a @rule:<slug> identifier, and each traceable to the evidence reference supporting it. Scenarios follow with @scenario:<slug> identifiers, each illustrating a stated Rule. The contradicting evidence (PDG-EV-2213, the high-volume team lead) is carried through as recorded and unresolved rather than dropped for being inconvenient. Behavior taken from the prototype is labelled as coming from the prototype and treated as a proposal, not as decided. The response does not produce a story-mapping backbone, horizontal slices or feature stubs, because those belong to epic mode."
+      "expected_output": "Opportunity mode is detected and stated in one line without a routing question. The response NEVER asks for an epic, a user story, or a point estimate, and never reports their absence as a gap or a missing prerequisite. The opportunity and decision-thread identifiers are referenced, not restated: the business case, the evidence table and the rationale are pointed at rather than copied into the draft. Rules are derived from what the evidence and the conversations actually say, each with a @rule:<slug> identifier, and each traceable to the evidence reference supporting it. Scenarios follow with @scenario:<slug> identifiers, each illustrating a stated Rule. The contradicting evidence (PDG-EV-2213, the high-volume team lead) is carried through as recorded and unresolved rather than dropped for being inconvenient. Behavior taken from the prototype is labelled as coming from the prototype and treated as a proposal, not as decided. The response does not produce a story-mapping backbone, horizontal slices or feature stubs, because those belong to epic mode.",
+      "follow_ups": [
+        "Use the supplied opportunity and decision thread. Assemble the draft here from that evidence; keep unresolved policy choices open and do not copy the business case. No external write is requested."
+      ],
+      "evaluation_stage": "Draft behavior from supplied opportunity evidence; no epic, estimates, or new product policy required."
     },
     {
       "id": 6,
@@ -167,7 +183,9 @@
       "files": [
         "files/opportunity-support-response.md"
       ],
-      "expected_output": "Three unknowns are recorded in the unresolved register rather than answered: what counts as sufficient evidence for the retrieval agent (no number is invented — not 0.8, not 80%, not 'high confidence' dressed as a threshold), what happens when the agent cannot find enough evidence (the behavior is named as unspecified rather than designed), and how long approval records must be retained (the compliance lead's remark is recorded without a duration being supplied). Each unknown states what would settle it. Where an unknown could change included behavior or an expected outcome, it is marked as blocking commitment; an internal implementation choice is not. The response explicitly declines to fill any of them in, and says why in one line — a specific-looking number nobody chose reads downstream as a decision somebody made. Asking the user for the missing values is correct; producing a plausible default is a failure of this case even if the draft is otherwise complete."
+      "expected_output": "Three unknowns are recorded in the unresolved register rather than answered: what counts as sufficient evidence for the retrieval agent (no number is invented \u2014 not 0.8, not 80%, not 'high confidence' dressed as a threshold), what happens when the agent cannot find enough evidence (the behavior is named as unspecified rather than designed), and how long approval records must be retained (the compliance lead's remark is recorded without a duration being supplied). Each unknown states what would settle it. Where an unknown could change included behavior or an expected outcome, it is marked as blocking commitment; an internal implementation choice is not. The response explicitly declines to fill any of them in, and says why in one line \u2014 a specific-looking number nobody chose reads downstream as a decision somebody made. Asking the user for the missing values is correct; producing a plausible default is a failure of this case even if the draft is otherwise complete.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     }
   ]
 }

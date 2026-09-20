@@ -9,8 +9,7 @@
 
 Warehouse supervisors correct stock levels after a physical count. Every
 adjustment records the counted quantity, the variance against the system figure,
-and the supervisor who made it. Variance means the absolute difference between
-counted and system quantities, for both shortages and overages.
+and the supervisor who made it.
 
 **Delivery note:** the team will implement this feature with an AI coding agent,
 as they do for all work this quarter. The product itself contains no model
@@ -39,27 +38,8 @@ Feature: Warehouse stock adjustments
       Examples: Around the second-approver threshold
         | counted | status            |
         | 401     | Applied           |
-        | 400     | Applied           |
+        | 400     | Awaiting approval |
         | 250     | Awaiting approval |
-        | 599     | Applied           |
-        | 600     | Applied           |
-        | 601     | Awaiting approval |
-
-    @mvp @functional @scenario:second-supervisor-approves
-    Scenario: A second supervisor approves a large adjustment
-      Given Dana Ellis has recorded 250 units against a system figure of 500
-      And the adjustment is awaiting approval without changing the ledger
-      When supervisor Alex Chen approves the adjustment
-      Then the adjustment status is "Applied"
-      And the stock ledger shows 250 units
-      And the record names Dana Ellis as initiator and Alex Chen as approver
-
-    @mvp @security @scenario:initiator-cannot-second-approve
-    Scenario: The initiating supervisor cannot provide the second approval
-      Given Dana Ellis has recorded an adjustment awaiting approval
-      When Dana Ellis attempts to provide its second approval
-      Then approval is refused
-      And the stock ledger is unchanged
 
   @rule:adjustment-audit-record
   Rule: Every adjustment is attributable
@@ -84,8 +64,7 @@ Feature: Warehouse stock adjustments
 
 ## NFRs
 
-- Performance: after the required approval (or recording when no second approval
-  is required), an adjustment is applied within 1 second at the 95th percentile.
+- Performance: an adjustment is applied within 1 second at the 95th percentile.
   Evidence: performance test report. Owner: Engineering.
 - Security: adjustment endpoints enforce role-based access. Evidence: automated
   authorization tests in CI. Owner: Engineering.

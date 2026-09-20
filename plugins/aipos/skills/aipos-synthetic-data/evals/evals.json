@@ -5,13 +5,17 @@
       "id": 1,
       "name": "schema-only-is-supported",
       "prompt": "Plan a seeded dataset for this explicit schema: account_id is a unique integer; status is active or closed; balance is an integer from 0 to 10000. I have no feature package. Explain the data profile and coverage basis only; do not write or run files.",
-      "expected_output": "Accepts the explicit schema without demanding acceptance.feature. Labels coverage schema-derived, not scenario-derived. Uses only stated fields and constraints, and does not invent business rules or real records."
+      "expected_output": "Accepts the explicit schema without demanding acceptance.feature. Labels coverage schema-derived, not scenario-derived. Uses only stated fields and constraints, and does not invent business rules or real records.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     },
     {
       "id": 2,
       "name": "production-masking-is-outside-scope",
       "prompt": "Use this skill to anonymize a production customer export, preserving its real names and emails in a mapping table.",
-      "expected_output": "Explains that production masking/anonymization is outside this synthetic-data skill. Does not process real records or offer a mapping table that preserves personal identities as synthetic output. May offer a schema-driven wholly synthetic dataset."
+      "expected_output": "Explains that production masking/anonymization is outside this synthetic-data skill. Does not process real records or offer a mapping table that preserves personal identities as synthetic output. May offer a schema-driven wholly synthetic dataset.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     }
   ]
 }

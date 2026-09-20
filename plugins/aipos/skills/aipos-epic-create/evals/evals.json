@@ -8,7 +8,7 @@
       "files": [
         "files/epic-draft-solution-shaped.md"
       ],
-      "expected_output": "Update intent is detected and only the problem statement is worked on, since that is what the PM asked for — other weak sections (the five-way OKR alignment, the unmeasurable success metrics, the 'monitor closely' mitigation, the 'fast and secure' NFRs) may be noted in at most one line at the end but are NOT rewritten uninvited. The response identifies that the stated problem is solution-shaped: 'We don't have a document management system' is the absence of a solution, not a problem, and 'users can't find documents' has no sufferer, no measure, and no evidence. It applies the reframing script — asking who is struggling and what is slow or difficult — rather than rejecting the PM's framing or silently rewriting it. It notes that the storage contract renewal is a real constraint that belongs in Initial Scope as a decision, not in the problem statement. It asks one primary question at a time.",
+      "expected_output": "Update intent is detected and only the problem statement is worked on, since that is what the PM asked for \u2014 other weak sections (the five-way OKR alignment, the unmeasurable success metrics, the 'monitor closely' mitigation, the 'fast and secure' NFRs) may be noted in at most one line at the end but are NOT rewritten uninvited. The response identifies that the stated problem is solution-shaped: 'We don't have a document management system' is the absence of a solution, not a problem, and 'users can't find documents' has no sufferer, no measure, and no evidence. It applies the reframing script \u2014 asking who is struggling and what is slow or difficult \u2014 rather than rejecting the PM's framing or silently rewriting it. It notes that the storage contract renewal is a real constraint that belongs in Initial Scope as a decision, not in the problem statement. It asks one primary question at a time.",
       "assertions": [
         {
           "name": "solution-in-problem-detected",
@@ -34,16 +34,18 @@
           "name": "no-invented-content",
           "text": "No personas, baselines, targets, or evidence are invented to fill the epic's gaps."
         }
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "First-turn problem-framing intake. Ask the next useful question; do not require a rewritten epic before the user answers."
     },
     {
       "id": 2,
       "name": "consumes-viability-brief-and-preserves-provenance",
-      "prompt": "We got a go on this from validation. Here's the viability brief — turn it into an epic.",
+      "prompt": "We got a go on this from validation. Here's the viability brief \u2014 turn it into an epic.",
       "files": [
         "files/viability-brief-ticket-search.md"
       ],
-      "expected_output": "The brief is read before any questions are asked, and the questions that follow are only about what the brief does not answer (owner, category, target release, and the unresolved thresholds). GenAI mode activates automatically (semantic retrieval / embeddings). The epic's Validation Decision line records GO (revise scope). The revised scope is honored: retrieval is in MVP scope and summarization is explicitly OUT, carried across with the brief's reason. Provenance survives translation — the measured 41-minute median and the 34/40 demand test are recorded as measured with their dates, while the 30%-recoverable figure and the $0.01 per-search cost are carried as assumptions, not promoted to fact. The un-agreed retrieval relevance threshold stays TBD and appears in Open Questions; the zero cross-account leakage guardrail becomes an evaluation criterion or NFR since the brief states it absolutely. The four 'what we still don't know' items appear in Open Questions. The epic hands off to aipos-feature-create.",
+      "expected_output": "The brief is read before any questions are asked, and the questions that follow are only about what the brief does not answer (owner, category, target release, and the unresolved thresholds). GenAI mode activates automatically (semantic retrieval / embeddings). The epic's Validation Decision line records GO (revise scope). The revised scope is honored: retrieval is in MVP scope and summarization is explicitly OUT, carried across with the brief's reason. Provenance survives translation \u2014 the measured 41-minute median and the 34/40 demand test are recorded as measured with their dates, while the 30%-recoverable figure and the $0.01 per-search cost are carried as assumptions, not promoted to fact. The un-agreed retrieval relevance threshold stays TBD and appears in Open Questions; the zero cross-account leakage guardrail becomes an evaluation criterion or NFR since the brief states it absolutely. The four 'what we still don't know' items appear in Open Questions. The epic hands off to aipos-feature-create.",
       "assertions": [
         {
           "name": "brief-read-before-questioning",
@@ -73,14 +75,18 @@
           "name": "unknowns-carried-forward",
           "text": "The brief's 'what we still don't know' items appear in the epic's Open Questions and gaps section rather than being dropped."
         }
-      ]
+      ],
+      "follow_ups": [
+        "Use Priya Raman from the brief as the epic owner, Support Platform as the category, and Q4 2026 as the target release. I confirm retrieval only and summarization out. Draft the complete epic here from the brief now, with unanswered facts and thresholds left as gaps; do not write to a tracker."
+      ],
+      "evaluation_stage": "Draft epic after the user supplies metadata and asks for assembly. Judge preservation of supplied evidence, not a file write."
     },
     {
       "id": 3,
       "name": "genai-thresholds-flagged-as-inherited-contract",
       "prompt": "This epic is for an AI assistant that drafts responses to customer emails. Let's do the success metrics and evaluation criteria section.",
       "files": [],
-      "expected_output": "GenAI mode activates and is announced once. Success metrics are pushed toward the three-part form — baseline, target, observation method — with at most one push per metric and an explicit offer that an estimate is acceptable. When setting evaluation criteria, the response states plainly that these thresholds are inherited by every feature under the epic and become release gates two skills downstream, so they should be set deliberately. It walks the relevant evaluation dimensions for drafted customer email (groundedness, correctness, tone, safety, privacy, latency, cost) rather than listing all of them mechanically. Since the prompt supplies no numbers, no threshold is invented anywhere — each is asked for, and unanswered ones would be marked TBD. It asks about golden test cases and evaluation cadence. At least one counter-metric is suggested, since an epic that speeds up email drafting could degrade response quality.",
+      "expected_output": "GenAI mode activates and is announced once. Success metrics are pushed toward the three-part form \u2014 baseline, target, observation method \u2014 with at most one push per metric and an explicit offer that an estimate is acceptable. When setting evaluation criteria, the response states plainly that these thresholds are inherited by every feature under the epic and become release gates two skills downstream, so they should be set deliberately. It walks the relevant evaluation dimensions for drafted customer email (groundedness, correctness, tone, safety, privacy, latency, cost) rather than listing all of them mechanically. Since the prompt supplies no numbers, no threshold is invented anywhere \u2014 each is asked for, and unanswered ones would be marked TBD. It asks about golden test cases and evaluation cadence. At least one counter-metric is suggested, since an epic that speeds up email drafting could degrade response quality.",
       "assertions": [
         {
           "name": "inheritance-stated-explicitly",
@@ -106,14 +112,18 @@
           "name": "cadence-and-golden-cases-asked",
           "text": "The response asks about golden test cases or past failures and about evaluation cadence."
         }
-      ]
+      ],
+      "follow_ups": [
+        "We have no measured baseline or agreed targets yet. Please draft this section with those gaps visible, including a quality counter-metric. We have not picked golden cases or an evaluation cadence; ask us for those decisions."
+      ],
+      "evaluation_stage": "Draft metrics and evaluation section with explicitly unanswered quantitative decisions."
     },
     {
       "id": 4,
       "name": "no-tracker-markdown-path-and-write-discipline",
       "prompt": "We don't use Jira or Aha. I just want to talk through a new epic and end up with a markdown file. It's about reducing onboarding time for new warehouse staff.",
       "files": [],
-      "expected_output": "The skill proceeds without asking which tracker to use and without describing markdown as a fallback or limitation. New-epic intent is detected and the interview opens at Step 1 with core metadata, one question at a time, starting with an outcome-focused title. GenAI mode stays off — nothing in the request involves model behavior. The response does not dump the whole template or ask for every field at once, and it does not write any file before reaching final assembly and receiving explicit approval. Gaps are recorded honestly rather than filled in.",
+      "expected_output": "The skill proceeds without asking which tracker to use and without describing markdown as a fallback or limitation. New-epic intent is detected and the interview opens at Step 1 with core metadata, one question at a time, starting with an outcome-focused title. GenAI mode stays off \u2014 nothing in the request involves model behavior. The response does not dump the whole template or ask for every field at once, and it does not write any file before reaching final assembly and receiving explicit approval. Gaps are recorded honestly rather than filled in.",
       "assertions": [
         {
           "name": "no-tracker-no-friction",
@@ -135,7 +145,9 @@
           "name": "package-path-correct",
           "text": "If an output location is named, it is epics/<key-or-slug>/epic.md."
         }
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "First-turn new-epic intake only. A legitimate question is the expected result; no complete epic or write is required."
     }
   ]
 }
