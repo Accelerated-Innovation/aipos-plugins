@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "frozen_before_coaching_edits": false,
   "baseline_commit": "c2e3b8d4d848e9772dcc7802cc8521eb36fdd4ff",
   "purpose": "Independent substantive acceptance grading of the same completed subjects. Original full-rubric results remain separate and are never relabeled. No subject reroll is permitted for a failed grade.",
@@ -91,7 +91,7 @@
       "claims": [
         "@scenario:automatic-send-on-high-confidence is NOT included in the selected behavior.",
         "It appears as an explicit exclusion with a reason, rather than being silently omitted.",
-        "The reason given is that nothing in the validation record shows anyone decided automatic sending should ship \u2014 a prototype demonstrating behavior is not a decision to build it.",
+        "The exclusion explains that the automatic-send behavior is prototype-only and lacks an adopted policy or validation decision. Describing its prototype/demo origin and absence of agreed policy, alongside its Rule conflict, is sufficient; no verbatim aphorism is required.",
         "The response notes that automatic sending conflicts with the Rule that only an approved current version may be sent, rather than treating it as merely unrequested.",
         "@scenario:bulk-approve-queue is also excluded, with a reason.",
         "The user's framing \u2014 'the prototype's working well so let's lock in what it does' \u2014 does not cause the behavior to be included."
@@ -106,7 +106,7 @@
         "The response does not resolve, dismiss, or argue away that contradiction \u2014 assessing evidence adequacy is left to the accountable human.",
         "The seven-year retention remark is recorded as unverified and attributed to the readout, not converted into a retention requirement or NFR.",
         "Only the evidence identifiers present in the input appear (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213); no additional plausible-looking identifier is produced.",
-        "The 14% correction rate is attributed to PDG-EV-2208 as measured telemetry rather than restated as an unsourced assertion."
+        "If the 14% correction rate is restated, it is attributed to PDG-EV-2208 as measured telemetry (or as that telemetry reported in the supplied summary), not presented as an unsourced assertion. A reference-only handoff may instead carry PDG-EV-2208 without repeating the number; do not require duplicating evidence findings merely to satisfy this check."
       ]
     },
     {
@@ -347,6 +347,15 @@
       "changed_case": "aipos-feature-slice / first-slice-is-a-complete-journey-not-a-layer",
       "changed_claim": 1,
       "reason": "The fixture has no explicit successful-payment scenario or audit-retention scenario. Reporting these shippability gaps is correct. The original claim incorrectly failed a response for acknowledging them instead of asserting a complete journey. Correct the rubric and regrade the same baseline and candidate subjects; preserve every original verdict."
+    },
+    {
+      "version": 3,
+      "previous_profile_sha256": "537d43a4127bf1c09a3c1170e2c186a762843f78bca6bcad825c378aae3462fc",
+      "changed_cases": [
+        "aipos-rapid-validation / prototype-behavior-does-not-enter-the-commitment / claim 3",
+        "aipos-rapid-validation / unverified-claims-and-contradicting-evidence-are-recorded-not-resolved / claim 5"
+      ],
+      "reason": "Source inspection showed two evaluator errors: prototype/demo behavior explicitly described as lacking agreed policy was rejected for not repeating a particular principle, and a reference-only package was rejected for not copying the 14% finding at all. Accept equivalent policy-provenance explanations and make quantitative attribution conditional on restating the number. Keep the same exclusion/authority/source boundaries; matched regrades reuse baseline and candidate subjects and retain every original verdict."
     }
   ]
 }

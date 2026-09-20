@@ -586,3 +586,11 @@ expense fixture lacks explicit successful-payment and audit-retention coverage, 
 response that identifies those gaps must not be penalized for refusing to call the
 selection shippable. Regrade the same baseline and both candidate cohorts for that case;
 retain the original judgments. This changes the evaluator, not the skill's release bar.
+
+**Further source-verified adjudication:** profile version 3 clarifies two rapid-validation
+claims. “Prototype-only, not agreed policy” is a valid explanation of the missing product
+decision without requiring a particular aphorism. A reference-only handoff need not repeat
+the 14% telemetry finding; when it does repeat that finding, source attribution is still
+required. Apply both clarifications to the same baseline and candidate subjects and keep
+the original grades. The earlier candidate that repeated 14% without mapping it to its
+source remains a real failure; the later candidate that omitted the number is different.

@@ -126,6 +126,10 @@ coaching edits at `f3419ce`. Version 2 corrects one demonstrated evaluator error
 missing payment/audit coverage is a valid shippability finding, not a failure to declare
 the journey complete. The file records that revision; baseline and candidate subjects
 are regraded under the same correction, and original verdicts remain in the report.
+Version 3 accepts equivalent explanations that prototype behavior lacks an adopted
+policy, and requires quantitative attribution when a finding is repeated without
+forcing reference-only handoffs to copy the finding. It likewise regrades the same
+baseline and candidate subjects and preserves the original judgments.
 It is a second assessment,
 not a replacement for the full rubric. Preserve the full-rubric results and grade the
 **same subjects** with `--regrade-from`; never reroll a failed answer to get a pass.
