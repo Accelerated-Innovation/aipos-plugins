@@ -149,6 +149,10 @@ package and seeking the human decision. Do not invent identifiers or a revision.
 - **Architecture and data constraints:** <supported spike findings>
 <These inputs support authoring or further validation; they do not bind a commitment.>
 
+**What this package retires:** <the binding-scope/handoff gap only; assembling references
+does not independently validate the problem, solution or feasibility. Attribute supplied
+recommendations and do not claim to have read evidence whose contents were not provided.>
+
 ## If NO-GO or REVISE
 **What we learned that was worth the cost:** <...>
 **What would have to be true to revisit:** <...>

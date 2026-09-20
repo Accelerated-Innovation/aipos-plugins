@@ -214,6 +214,12 @@ is made **against**: the exact proposed commitment, assembled from what validati
 
 Assemble it; do not re-derive it. The Rules and scenarios already exist — reference them.
 
+Assembling this package closes the scope-and-handoff gap only. It does not establish
+that the problem is real, the solution works or delivery is feasible. Carry a supplied
+GO as the requester's recommendation; an evidence identifier whose contents you have
+not read is a reference, not a new validation finding. Keep that limit in the closing
+"what this retires" statement as well as the evidence header.
+
 ### What it carries
 
 **Selected behavior, by qualified reference.** Every selected Rule and scenario as
