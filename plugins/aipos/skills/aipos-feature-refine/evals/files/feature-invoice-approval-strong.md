@@ -94,6 +94,10 @@ evidence applies.
 
 - The $10,000 threshold is fixed for this release; configurable thresholds
   are a later feature.
+- Each invoice already has a finance manager assigned to receive its approval
+  task. That assignment controls notification only; any finance manager may
+  approve or reject under the stated role restriction. Choosing the task owner
+  is outside this feature.
 
 ## Out of scope
 
