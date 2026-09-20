@@ -568,7 +568,7 @@
       "skills/aipos-synthetic-data/scripts/requirements.txt": "f2cca4ff0bc3f93548e0e341b2df6a2cab8d15df5b17d55b66a1d3973ae650e4",
       "skills/aipos-feature-refine/SKILL.md": "4e10838c4185e151bd23efbd7ba6b28a51d4c6cb17fcb600fac3f2da5f6a50f6",
       "skills/aipos-feature-refine/evals/evals.json": "920164c908376792f5070769144aa17b59d99c6973c36525740cdf763b4dea0c",
-      "skills/aipos-feature-refine/evals/files/feature-invoice-approval-strong.md": "a8d6604f06edbd41165de92a568c9935deb3394a82bd6881b8e18e8bfd9b2910",
+      "skills/aipos-feature-refine/evals/files/feature-invoice-approval-strong.md": "9f21b6831c46a34258adade0ecc9b9375814109f3e1842ee15c6b50964c9ff88",
       "skills/aipos-feature-refine/evals/files/feature-agent-built-stock-adjustments.md": "0ffe5fc5f93ccec2199c0d85d8d20dada4b807bd218a6eb4c162177e7e3f1f1f",
       "skills/aipos-feature-refine/evals/files/feature-ai-summary-missing-evals.md": "47a079f131eefc512c6156fd3f63af6cd7a17384b84dde1dceb58704cf9cf3f7",
       "skills/aipos-feature-refine/evals/files/feature-bulk-export-weak.md": "2f24dc24bb4b8eec7e2f1bd6cf71cd8ac3166aa8382ec7ebd114269a53763e26",
@@ -584,7 +584,7 @@
       "skills/aipos-feature-refine/references/example-mapping-facilitator.md": "e5ea0991baf2666c8fa876f755d1b0725aadaaf42ec676875b2814eb779748b8",
       "skills/aipos-feature-refine/scripts/change_package.py": "16d16e5f9d8533a3d289160490615b0474d645570e6a8c207500919c18c23a6a",
       "skills/aipos-rapid-validation/README.md": "feca74d54c100f53a38b81bfc0c5d43b42443592a2772eb2808b21e1610c8eab",
-      "skills/aipos-rapid-validation/SKILL.md": "3bdeb5e4e1a012fec22636701c77da186beb0d277b32f2fa6f02a0141ded453b",
+      "skills/aipos-rapid-validation/SKILL.md": "87326ed1aa1aea05a12883e32e71b4c759d9309b9ddd3e35d5ffe7866a2d80e6",
       "skills/aipos-rapid-validation/evals/evals.json": "10d83542655fa2e8445e1d8a3b84ed11e5fbdbb07cd1cb9431ffc45e9c445925",
       "skills/aipos-rapid-validation/evals/files/exploration-decision-budget-spent.md": "033ef56c16d9817fab7fa0639f88a0dc45b9a9001d15c4c43e8e1d252540cba7",
       "skills/aipos-rapid-validation/evals/files/pillar2-exit-support-response.md": "b977797a88efd2f1d029db8378fff3bb267148947612132f85976ad2b55373bb",
@@ -617,7 +617,8 @@
       "skills/aipos-epic-create/references/metrics-and-evaluation.md": "dcbcefc4cd220ed11afb8768b471bb599f74e04e99617acd3dcff88d51216c21",
       "skills/aipos-epic-create/references/tracker-adapters.md": "9e281bf42937eda96556688d77982b62ee30e20f8a8c1c15e1af3a1ef53ca970"
     },
-    "profile": "/private/tmp/aipos-pe-evals/install-final-v2/config",
+    "profile": "/private/tmp/aipos-pe-evals/install-release-candidate/config",
+    "tested_commit": "767398a22728299a88407dc05b8bb26566894a2e",
     "note": "Fresh isolated local-marketplace installation; does not change real user settings or prove a GitHub publication."
   },
   "validation": {
