@@ -517,15 +517,15 @@ The user authorized push, PR creation, and paid model evaluations without a spen
 
 Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
 
-### Follow-up implementation slices
+### Plugin-evaluation follow-ups (PE1–PE5)
 
 | Slice | Scope | Completion evidence |
 |---|---|---|
-| E1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
-| E2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
-| E3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
-| E4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
-| E5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
+| PE1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
+| PE2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
+| PE3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
+| PE4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
+| PE5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
 
 
 ## Live verification and PR handoff
@@ -541,12 +541,12 @@ The user authorized push, PR creation, and paid model evaluations without a spen
 
 Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
 
-### Follow-up implementation slices
+### Plugin-evaluation follow-ups (PE1–PE5)
 
 | Slice | Scope | Completion evidence |
 |---|---|---|
-| E1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
-| E2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
-| E3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
-| E4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
-| E5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
+| PE1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
+| PE2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
+| PE3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
+| PE4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
+| PE5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
