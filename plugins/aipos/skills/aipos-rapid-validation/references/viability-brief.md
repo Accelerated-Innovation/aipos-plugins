@@ -21,8 +21,8 @@ skill can produce, because it travels further than the person who wrote it and g
 by people who never saw the evidence.
 
 If the honest answer is *we don't know enough to decide*, that is a legitimate output.
-Write **revise**, name the one or two things that would settle it, and say how long they'd
-take. That is a better outcome than a manufactured go.
+Write **revise** and name the one or two things that would settle it. If useful, propose
+an explicitly unagreed effort estimate; leave unknown dates and budgets unknown.
 
 ## The three questions
 
@@ -41,7 +41,8 @@ evidence, say so in the same voice — an empty cell is information.
 
 ```markdown
 # Viability brief — <opportunity>
-## Validation Decision: **GO / NO-GO / REVISE**
+## Validation Decision recommendation: **GO / NO-GO / REVISE**
+**Authority:** <recommendation only; cite an actual recorded decision separately if supplied>
 
 <One paragraph. The decision, the single most important reason for it, and the biggest
 risk being accepted by making it. Someone should be able to read only this and act
@@ -52,7 +53,7 @@ exceeded it, by how much and why that was the right call.>
 
 ## Evidence base
 <the evidence-base header from evidence-intake.md>
-**Mandate cost:** none — the brief is the decision; the ledger below is the reconciliation
+**Mandate cost:** none — the brief records the recommendation; the ledger below is the reconciliation
 
 **Validation work completed:**
 | Artifact | Done | Result | Budget used |
@@ -117,19 +118,35 @@ stub was run and the feature is model-based, say so — it is a material gap in 
 for itself. Say what changed and why.>
 
 ## Handoff to Build-to-Earn
-<When the decision is GO, this section is superseded by the **commitment package** (see the
-skill's "The commitment package"): the exact selected behavior by qualified reference, bound to
-an immutable revision, with exclusions and the unresolved register. Naming inputs was the right
-output when specs were born after the decision; the decision now binds a selection, so the
-selection has to exist for the decision to be about anything.
+<Choose the applicable branch; do not replace a GO package with a list of discovery inputs.>
 
-For a REVISE, or where behavior has not been drafted yet, name the inputs as below — that is
-still the honest output when there is nothing yet to reference.>
-- **Problem statement:** <one line, ready to be specified>
-- **MVP scope:** as above
-- **Evaluation criteria to be derived from:** <the stub's dimensions and thresholds>
-- **Guardrail requirements to be derived from:** <the safety cases and boundary findings>
-- **Known architecture and data constraints:** <from the spike>
+### GO — proposed commitment package
+**State:** prepared — not approved
+**Opportunity / decision thread / evidence refs:** <supplied references; unknown if absent>
+**Selected Rules:** <source/feature#rule:slug, each selected Rule>
+**Selected scenarios:** <source/feature#scenario:slug, each selected scenario>
+**Immutable source revision:** <supplied commit SHA; unknown if absent>
+**Exclusions and reasons:** <considered behavior not selected, including prototype-only behavior>
+**Unresolved register:** <each unknown · blocking or not blocking · reason · what would settle it>
+**Contradictions / unverified claims:** <carry both without promoting them to facts or policy>
+**Commitment readiness:** <not ready while binding fields or behavior-changing decisions are missing>
+**Authority and next action:** Prepared means the package is assembled; awaiting decision
+means it is before the accountable person; approved requires a recorded, authenticated
+decision binding this exact version and selection. <State which applies and the next step;
+never infer submission or approval from this recommendation.>
+
+<If selection or revision is absent: say this handoff is incomplete and not ready for
+commitment. Keep those fields unknown. Route to `aipos-feature-create` opportunity mode
+then `aipos-feature-refine` to draft and refine behavior before assembling the binding
+package and seeking the human decision. Do not invent identifiers or a revision.>
+
+### Supporting inputs / NO-GO or REVISE handoff
+- **Problem statement:** <reference, or one line if no source owns it>
+- **MVP scope:** <the selection above, or proposed scope awaiting authoring>
+- **Evaluation criteria:** <known dimensions and thresholds, gaps left unknown>
+- **Guardrail requirements:** <supported safety cases and boundary findings>
+- **Architecture and data constraints:** <supported spike findings>
+<These inputs support authoring or further validation; they do not bind a commitment.>
 
 ## If NO-GO or REVISE
 **What we learned that was worth the cost:** <...>
@@ -164,7 +181,8 @@ Remind the PM once:
 > signal strength — so the discovery engine picks it up and the next person doesn't redo
 > this work.
 
-Offer to write it back to the tracker. Do it only on explicit approval.
+Offer to write it back unless already declined or explicitly authorized for this artifact
+and destination. A prepared write-back entry is not evidence of a recorded decision.
 
 **If there was an Exploration Decision, close its loop too.** The mandate came out of a
 planning session; the next session's gap analysis reads funnel signals, and an explored
@@ -180,6 +198,6 @@ Evidence:              <the artifacts, by filename, attached or linked to the op
 Next:                  <Pillar 3 handoff | what would have to be true to revisit>
 ```
 
-Same rules as every write: prompt every time, write only on an explicit yes, and where the
+Same rules as every write: respect the user's existing authorization or refusal; where the
 skill cannot write to that door, hand the PM the exact text and the exact destination. See
 `references/record-writeback.md`, "The decision record".

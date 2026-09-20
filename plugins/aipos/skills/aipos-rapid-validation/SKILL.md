@@ -168,7 +168,7 @@ End every artifact the same way:
    for findings from work that has run), what has actually been used, what remains of the
    budget and horizon, and — if either is now exhausted — that the viability brief is the
    next artifact unless the PM chooses to exceed.
-3. **Prompt to save it to the record.** Every artifact, every time. Read
+3. **Identify the record destination and save status.** Read
    `references/record-writeback.md` and follow it — it covers the three pieces (attachment,
    index comment, to-do), which artifacts warrant a to-do and which do not, the naming
    convention for re-runs, and the fact that you cannot create attachments and must hand
@@ -178,9 +178,11 @@ End every artifact the same way:
    future destination without asking again. Otherwise offer the concrete save
    once. Write only within explicit authorization for that artifact and destination;
    do not treat approval of its content as approval of a system-of-record write.
-4. **Name the next artifact.** Validation is a sequence, not a menu visit. When the viability
-   brief is written and the evidence supports committing, the next artifact is the **commitment
-   package** — see below — and after that a human decision this skill does not make.
+4. **Name the next artifact.** For a GO recommendation with existing behavior, include the
+   **commitment package** in the viability handoff using `references/viability-brief.md`.
+   With no selected behavior or immutable revision, explicitly mark the handoff incomplete
+   and not ready for commitment, and route to authoring/refinement first. The recommendation
+   never substitutes for the human decision.
 
    **When the evidence is strong enough that a commitment is in view — before the Validation
    Decision, not after it — the next artifact is the behavior itself.** Say so and hand off:
