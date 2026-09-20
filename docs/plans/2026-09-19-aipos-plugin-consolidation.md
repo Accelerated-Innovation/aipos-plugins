@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-19
 
-**Status:** Implemented and pushed in draft PR #31. Live routing and native artifact checks pass; coaching findings and remaining integration evidence keep release acceptance open. Nothing merged or published.
+**Status (2026-09-20):** Consolidation PR #31 and label-clarification PR #32 are merged. PE1–PE5 changes are in [draft PR #33](https://github.com/Accelerated-Innovation/govkit-plugins/pull/33); implementation and release review are recorded below and in the [follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md). This does not reopen the completed cross-repository E1–E5 pilot. No new tag or publication is authorized by this status line.
 
 **Direction:** One `aipos` plugin, eleven focused `aipos-*` skills, explicit AIPOS pillar workflows.
 
@@ -506,7 +506,7 @@ Entries below are chronological. Earlier budget/PR statements describe the initi
 
 ## Live verification and PR handoff
 
-The user authorized push, PR creation, and paid model evaluations without a spend cap. Implementation is in [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). The tested source is `a1e2522`; this final evidence update does not change the plugin.
+**Historical September 19 handoff:** The user authorized push, PR creation, and paid model evaluations without a spend cap. The following results describe source `a1e2522` from [PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31), merged September 20 as `73d24ae`. [PR #32](https://github.com/Accelerated-Innovation/govkit-plugins/pull/32) subsequently clarified PE labels and merged as `c622ec4`. The historical outstanding items below are superseded by the PE follow-up record; historical measurements remain unchanged.
 
 - Catalog comparison: **147/159 baseline**, **159/159 candidate** under the same Sonnet 5 evaluator, three repetitions, all 53 cases. All 102 critical candidate trials pass. The descriptions in the evaluated snapshot match the final source.
 - Native selection: **6/6**, with eleven AIPOS skills and seventeen observed built-in competitors. Four isolated native workflow artifact checks also pass; no supplied source file was changed.
@@ -517,7 +517,7 @@ The user authorized push, PR creation, and paid model evaluations without a spen
 
 Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
 
-### Plugin-evaluation follow-ups (PE1–PE5)
+### Plugin-evaluation follow-ups (PE1–PE5) — September 20 implementation
 
 | Slice | Scope | Completion evidence |
 |---|---|---|
@@ -527,26 +527,26 @@ Increment 02 and the live rename comparison in 08 are now complete. Increments 0
 | PE4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
 | PE5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
 
+The implementation uses focused commits for fixtures, conversation execution,
+rubric adjudication, discovery coaching, feature handoffs, and metrics/schema
+reporting. The [follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md)
+is the current evidence ledger; its JSON companions preserve all repetitions,
+input fingerprints, runtime checks, and earlier failures. Release readiness is a
+separate judgment from finishing these implementation slices.
 
-## Live verification and PR handoff
+### Current slice status (September 20)
 
-The user authorized push, PR creation, and paid model evaluations without a spend cap. Implementation is in [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). The tested source is `a1e2522`; this final evidence update does not change the plugin.
-
-- Catalog comparison: **147/159 baseline**, **159/159 candidate** under the same Sonnet 5 evaluator, three repetitions, all 53 cases. All 102 critical candidate trials pass. The descriptions in the evaluated snapshot match the final source.
-- Native selection: **6/6**, with eleven AIPOS skills and seventeen observed built-in competitors. Four isolated native workflow artifact checks also pass; no supplied source file was changed.
-- Coaching: **87/135 passed**, **48 failed**, across all 45 runnable cases with three repetitions. Four subject-truncated trials count as failures, including two favorable judge verdicts; no new model calls were used for that deterministic correction. Three original metrics fixture cases remain unrun. The [full report](../evaluations/2026-09-19-aipos-live-evaluation.md) preserves case-level results, errors, limits, and fixture conflicts.
-
-- Addressed demonstrated metrics/token and map-assessment ambiguities, persistent batch mode, and unsupported journey placements; the report records every retest outcome. Corrected the judge's missing fixture/turn context, deterministic invalid-route handling, and recorded larger streaming judge budgets for truncation recovery.
-- Offline suite: **415 passed, 5 skipped**. Hosted manifest and pytest checks pass at the tested source. `origin/main` remains the recorded baseline. No merge, publication, tracker mutation, or real-user plugin replacement occurred.
-
-Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
-
-### Plugin-evaluation follow-ups (PE1–PE5)
-
-| Slice | Scope | Completion evidence |
+| Slice | Status | Actual evidence / remaining work |
 |---|---|---|
-| PE1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
-| PE2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
-| PE3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
-| PE4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
-| PE5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
+| PE1 | Complete | Corrected synthetic policy and rubric ambiguities; final matched baseline 106/141; negative controls preserved |
+| PE2 | Complete | Authored conversations, stage-aware judging, budget controls, fingerprint-safe regrades; 427 offline passes and 5 fixture skips overall |
+| PE3 | Implemented, acceptance open | Ten skills revised; final comparison 122/141 versus 106/141. Nineteen strict failures remain, including substantive evidence/scope/handoff misses |
+| PE4 | Complete within recorded scope | Three runtime metrics cases; actual MCP planning (three final rehearsals), HTTPS authority and token transition, browser inspection. Production/concurrency/application-conformance claims excluded |
+| PE5 | Review performed, release acceptance open | Upstream PRs and source checked; fresh 1.0.1 install; hosted checks pass. Draft PR #33 is unmerged and unpublished; PE3 findings prevent sign-off |
+
+The next work remains inside **PE3**: complete the GO-to-commitment handoff,
+keep observed evidence distinct from inference and unknown quantities, avoid an
+acceptance scenario without a stated Rule, and preserve required validation in
+release scope. Retest those changes with matched inputs and retain failures.
+**PE5** closes only after those findings are reconciled and the actual release
+action is authorized. These are not new or reopened historical E1–E5 slices.
