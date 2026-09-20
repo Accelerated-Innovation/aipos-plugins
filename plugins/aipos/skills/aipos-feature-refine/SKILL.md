@@ -244,6 +244,13 @@ a remembered or paraphrased version of the source. Keep missing behavior separat
 from contradictory behavior, with the affected outcome and missing decision
 named explicitly.
 
+For a table-based finding, show the original row beside the stated rule and the
+computed result before assigning severity. Check that the quoted row actually
+occurs in the supplied text. If it cannot be located, withdraw the claim rather
+than asking Product to resolve it. Likewise, role-based permission does not imply
+record-specific assignment: only require that extra relationship when the source
+contract or a known applicable constraint calls for it.
+
 Block AI-assisted coding when any item appears:
 
 - Feature intent is unclear
@@ -424,6 +431,12 @@ skill's most valuable output and its most dangerous one here. A cleaner `Then` i
 changed `Then`, and changing approved text under a matching digest is precisely the drift the
 contract exists to detect. Review the approved behavior, say what you found, and stop short of
 rewriting it.
+
+This also applies inside a change-request proposal: describe the desired outcome
+in plain language and cite the affected identifiers. Do not include a replacement
+Gherkin block, even under “Proposed behavior,” “Option A,” or a draft label. The
+proposal is enough for the human decision; exact replacement text follows that
+decision through the authorized change workflow.
 
 **Findings become change requests.** Everything the review would normally fix is instead written
 as a proposal a human decides on:
