@@ -157,6 +157,12 @@ CLAIMS_JUDGE_SYSTEM = """\
 You grade one response from a Claude Code *skill* — an instruction document that coaches a \
 Product Manager — against a numbered list of claims written by the skill's author.
 
+For a conditional claim ("if X, then Y"), require Y only when X occurs.
+If X does not occur, mark the claim met and explain that its condition was not
+triggered; do not demand that the response introduce X. Judge substantive
+reasoning by meaning. Literal field/identifier/output-format requirements still
+require the stated form.
+
 **Grade each claim independently.** Return one verdict per claim, in order, using its number. \
 Do not form an overall impression and distribute it across the claims: a response can satisfy \
 eight claims and fail the ninth, and saying so is the entire point of grading them separately.
@@ -308,6 +314,9 @@ def build_judge_request(case: dict, response_text: str, *, user_input: str | Non
         rubric = f"<rubric>\n{case['expected_output']}\n</rubric>"
     return (
         JUDGE_INPUT_CONTRACT + "\n"
+        + (f"<evaluation-stage>{case['evaluation_stage']}</evaluation-stage>\n"
+           if case.get("evaluation_stage") else "")
+        +
         f"<user-request>\n{user_input if user_input is not None else case['prompt']}\n</user-request>\n\n"
         f"{rubric}\n\n"
         f"<response-to-grade>\n{response_text}\n</response-to-grade>"
@@ -349,7 +358,40 @@ def grade_claims(verdicts: list[dict], claims: list[str]) -> tuple[bool, float, 
     return not missed, round(hit / len(claims), 3) if claims else 0.0, missed
 
 
-def join_turns(turns: list[str]) -> str:
+def case_follow_ups(case: dict, args) -> list[str]:
+    """Use authored user replies, including [] for an intake-only case.
+
+    Legacy cases retain the command-line turn count and bare Proceed protocol.
+    An explicit CLI count cannot silently change a scripted case's stage.
+    """
+    count = getattr(args, "turns", None)
+    if "follow_ups" in case:
+        replies = case["follow_ups"]
+        if not isinstance(replies, list) or any(
+            not isinstance(reply, str) or not reply.strip() for reply in replies
+        ):
+            raise ValueError(f"{case['name']}: follow_ups must be a list of nonempty user replies")
+        if count is not None and count != len(replies) + 1:
+            raise ValueError(f"{case['name']}: --turns conflicts with the scripted conversation")
+        return list(replies)
+    count = DEFAULT_TURNS if count is None else count
+    if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+        raise ValueError("turns must be a positive integer")
+    return [PROCEED_NUDGE] * (count - 1)
+
+
+def conversation_turns(answers: list[str], follow_ups: list[str]) -> list[dict]:
+    if len(follow_ups) != len(answers) - 1:
+        raise ValueError("user replies must match the actual assistant turns")
+    conversation = []
+    for i, answer in enumerate(answers):
+        if i:
+            conversation.append({"role": "user", "content": follow_ups[i - 1]})
+        conversation.append({"role": "assistant", "content": answer})
+    return conversation
+
+
+def join_turns(turns: list[str], follow_ups: list[str] | None = None) -> str:
     """What the judge grades: everything the skill said, in order.
 
     The artifact may arrive in turn 2 while the reasoning justifying it was in
@@ -357,13 +399,10 @@ def join_turns(turns: list[str]) -> str:
     turn is passed through unchanged — harness scaffolding must not leak into
     what the rubric is matched against.
     """
+    follow_ups = [PROCEED_NUDGE] * (len(turns) - 1) if follow_ups is None else follow_ups
+    conversation = conversation_turns(turns, follow_ups)
     if len(turns) == 1:
         return turns[0]
-    conversation = []
-    for i, answer in enumerate(turns):
-        if i:
-            conversation.append({"role": "user", "content": PROCEED_NUDGE})
-        conversation.append({"role": "assistant", "content": answer})
     return json.dumps(conversation, ensure_ascii=False)
 
 
@@ -380,14 +419,22 @@ def input_digest(skill_dir: pathlib.Path, case: dict, args) -> str:
     make this harness worse than useless for the one job it has.
     """
     system, user = build_subject_request(skill_dir, case)
+    follow_ups = case_follow_ups(case, args)
     h = hashlib.sha256()
     judge_contract = (CLAIMS_JUDGE_SYSTEM + json.dumps(CLAIMS_VERDICT_SCHEMA, sort_keys=True)
                       if case_claims(case) else JUDGE_SYSTEM)
     for part in (system, user, case["expected_output"], "|".join(case_claims(case) or []),
                  judge_contract, JUDGE_INPUT_CONTRACT, args.model, args.judge_model,
-                 f"turns={getattr(args, 'turns', DEFAULT_TURNS)}", PROCEED_NUDGE):
+                 f"turns={len(follow_ups) + 1}", PROCEED_NUDGE):
         h.update(part.encode("utf-8"))
         h.update(b"\x00")
+    if "follow_ups" in case or case.get("evaluation_stage"):
+        h.update(json.dumps({"follow_ups": follow_ups,
+                             "evaluation_stage": case.get("evaluation_stage")},
+                            sort_keys=True).encode("utf-8") + b"\x00")
+    subject_max_tokens = getattr(args, "subject_max_tokens", SUBJECT_MAX_TOKENS)
+    if subject_max_tokens != 16000:
+        h.update(f"subject_max_tokens={subject_max_tokens}\x00".encode("utf-8"))
     # Existing fingerprints used a fixed 16,000-token judge ceiling. Preserve
     # those requests' identity, but never reuse a grade at a different ceiling.
     judge_max_tokens = getattr(args, "judge_max_tokens", JUDGE_MAX_TOKENS)
@@ -501,15 +548,14 @@ def reusable_subject(source, skill_dir, case, rep, args):
         raise ValueError("source skill or fixture changed; run a fresh subject")
     conversation = trace[2:-2]
     answers = [t["content"] for t in conversation if t.get("role") == "assistant"]
-    expected = []
-    for i, answer in enumerate(answers):
-        if i:
-            expected.append({"role": "user", "content": PROCEED_NUDGE})
-        expected.append({"role": "assistant", "content": answer})
-    if (conversation != expected or len(answers) != args.turns
-            or row.get("turns") != args.turns
+    follow_ups = case_follow_ups(case, args)
+    turns = len(follow_ups) + 1
+    expected = conversation_turns(answers, follow_ups)
+    if (conversation != expected or len(answers) != turns
+            or row.get("turns") != turns
             or not served_model_matches(args.model, row.get("model", ""))
-            or len(row.get("stop_reasons", [])) != args.turns):
+            or len(row.get("stop_reasons", [])) != turns
+            or row.get("subject_max_tokens", 16000) != getattr(args, "subject_max_tokens", SUBJECT_MAX_TOKENS)):
         raise ValueError("source conversation/model/configuration does not match")
     return answers, row
 
@@ -557,6 +603,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
     system, user = build_subject_request(skill_dir, case)
     pid, started = case["name"], time.monotonic()
     judge_max_tokens = getattr(args, "judge_max_tokens", JUDGE_MAX_TOKENS)
+    subject_max_tokens = getattr(args, "subject_max_tokens", SUBJECT_MAX_TOKENS)
+    follow_ups = case_follow_ups(case, args)
+    turns = len(follow_ups) + 1
 
     async def fail(cls: str, detail: str, **extra) -> None:
         append_row(paths["errors"], {
@@ -587,10 +636,10 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                     stop_reasons = reused["stop_reasons"]
                     subject_model = reused["model"]
 
-                for turn in range(0 if reused else args.turns):
+                for turn in range(0 if reused else turns):
                     subject, retries = await call_with_backoff(
-                        lambda: client.messages.create(
-                            model=args.model, max_tokens=SUBJECT_MAX_TOKENS,
+                        lambda: judge_completion(client,
+                            model=args.model, max_tokens=subject_max_tokens,
                             system=[{"type": "text", "text": system,
                                      "cache_control": {"type": "ephemeral"}}],
                             messages=messages,
@@ -614,17 +663,17 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
                         subject_usage[k] += usage_of(subject)[k]
                     stop_reasons.append(subject.stop_reason)
                     answers.append(text_of(subject))
-                    if turn + 1 >= args.turns:
+                    if turn + 1 >= turns:
                         break
                     # The PM says "proceed". Everything the skill produced so
                     # far stays in context, so a second turn continues the
                     # conversation rather than restarting it.
                     messages = messages + [
                         {"role": "assistant", "content": subject.content},
-                        {"role": "user", "content": PROCEED_NUDGE},
+                        {"role": "user", "content": follow_ups[turn]},
                     ]
 
-                answer = join_turns(answers)
+                answer = join_turns(answers, follow_ups)
                 # Any truncated turn makes the graded transcript incomplete,
                 # whichever turn it was.
                 truncated = "max_tokens" in stop_reasons
@@ -696,9 +745,7 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         json.dumps([
             {"role": "system", "content": f"[{skill_dir.name}/SKILL.md]\n\n{system}"},
             {"role": "user", "content": user},
-            *[t for i, a in enumerate(answers) for t in (
-                ({"role": "user", "content": PROCEED_NUDGE},) if i else ()
-            ) + ({"role": "assistant", "content": a},)],
+            *conversation_turns(answers, follow_ups),
             {"role": "system", "content": "[judge rubric — exactly what was sent]\n\n"
              + ("\n".join(f"{i + 1}. {c}" for i, c in enumerate(case_claims(case)))
                 if case_claims(case) else case["expected_output"])},
@@ -719,6 +766,9 @@ async def run_case(client, skill_dir, case, rep, args, sem, paths) -> None:
         "missed": verdict["missed"],
         "latency_s": round(time.monotonic() - started, 2),
         "turns": len(answers),
+        "follow_ups": follow_ups,
+        "evaluation_stage": case.get("evaluation_stage"),
+        "subject_max_tokens": subject_max_tokens,
         "model": subject_model, "usage": subject_usage,
         "reused_subject": ({"variant": args.regrade_from,
                             "input_digest": reused["input_digest"],
@@ -770,6 +820,13 @@ async def main_async(args) -> int:
             print(f"no case matching {args.case!r}", file=sys.stderr)
             return 2
 
+    try:
+        for case in cases:
+            case_follow_ups(case, args)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
     out = pathlib.Path(args.out) / args.skill / args.variant
     paths = {"results": out / "results.jsonl", "errors": out / "errors.jsonl",
              "traces": out / "traces"}
@@ -788,7 +845,8 @@ async def main_async(args) -> int:
     prefix_chars, case_chars, n = estimate(skill_dir, [c for c, _m in runnable])
     print(f"{args.skill}: {n} runnable case(s) x {args.reps} rep(s)"
           + (f", {len(skipped)} skipped" if skipped else ""))
-    print(f"  subject {args.model} x{args.turns} turn(s) | judge {args.judge_model}")
+    turn_counts = sorted({len(case_follow_ups(c, args)) + 1 for c, _m in runnable})
+    print(f"  subject {args.model}, assistant turn counts {turn_counts} | judge {args.judge_model}")
     print(f"  ~{prefix_chars // 4:,} token skill package (cached after the first case)"
           f" + ~{case_chars // 4:,} tokens of case input across {n} case(s)")
     print(f"  output -> {out}")
@@ -873,13 +931,13 @@ def main() -> int:
                    help="judge model; keep it different from --model")
     p.add_argument("--judge-max-tokens", type=int, default=JUDGE_MAX_TOKENS,
                    help="judge output ceiling; raise for recorded judge-truncated errors")
+    p.add_argument("--subject-max-tokens", type=int, default=SUBJECT_MAX_TOKENS,
+                   help="subject output ceiling; part of the recorded input fingerprint")
     p.add_argument("--variant", default="baseline", help="baseline | v1 | v2 ...")
     p.add_argument("--regrade-from", help="reuse matching subject traces from this variant; call only the judge")
     p.add_argument("--reps", type=int, default=1, help="repetitions per case")
-    p.add_argument("--turns", type=int, default=DEFAULT_TURNS,
-                   help=f"subject turns per case (default {DEFAULT_TURNS}); after the first, "
-                        f"the harness replies {PROCEED_NUDGE!r} as the skills' own Proceed "
-                        f"protocol expects")
+    p.add_argument("--turns", type=int, default=None,
+                   help=f"legacy-case turns (default {DEFAULT_TURNS}); must agree with any scripted follow_ups")
     p.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
     p.add_argument("--timeout-s", type=float, default=DEFAULT_CASE_TIMEOUT_S)
     p.add_argument("--out", default=str(DEFAULT_OUT))
@@ -889,10 +947,12 @@ def main() -> int:
         p.error("--skill is required (or --list)")
     if args.regrade_from == args.variant:
         p.error("--regrade-from must differ from --variant to preserve source evidence")
-    if args.turns < 1:
+    if args.turns is not None and args.turns < 1:
         p.error("--turns must be at least 1")
     if args.judge_max_tokens < 1:
         p.error("--judge-max-tokens must be at least 1")
+    if args.subject_max_tokens < 1:
+        p.error("--subject-max-tokens must be at least 1")
     if args.reps < 1:
         p.error("--reps must be at least 1; 0 would make an eval 'succeed' without a single call")
     if args.concurrency < 1:

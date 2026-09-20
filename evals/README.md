@@ -11,9 +11,8 @@ would pass while the tool silently broke."*
 
 ## Running one
 
-**Python 3.10+ is required** — the Anthropic SDK needs it, and pip's failure on an older
-interpreter is a wall of version numbers that never says so. The deterministic suite has no such
-floor.
+**Python 3.11+ is required** for live runs (`asyncio.timeout` and the Anthropic SDK).
+The deterministic suite does not need the SDK and also supports older Python versions.
 
 ```bash
 python -m pip install -r requirements-evals.txt
@@ -31,23 +30,31 @@ skill.
 Credentials resolve the usual way: `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN`, or an
 `ant auth login` profile. You do not need to pass a key.
 
-## Turns
+## Conversation stages and output budgets
 
-**The default is two.** These skills are designed to pause and ask; graded on the first message
-alone, a legitimate clarifying question reads as a missing deliverable. After the first turn the
-harness replies `proceed` — the bare word the skills' own Proceed protocol documents as
-confirmation — and everything said so far stays in context, so the second turn continues the
-conversation rather than restarting it. All assistant turns are graded together, with their role boundaries and the intervening
-user follow-up preserved. The judge also receives the supplied fixture content,
-so it can distinguish provided facts from invented ones.
+Cases can declare `follow_ups` and `evaluation_stage`:
 
-Measured on `aipos-rapid-validation`: moving from one turn to two took the four cases from
-0.29 / 0.20 / 0.86 / 0.88 to 0.50 / 0.86 / 0.87 / 1.00. **No case got worse** — one turn was
-measuring a transcript nobody has.
+```json
+{
+  "follow_ups": ["The primary user is an adjuster. Draft with unknown thresholds marked TBD."],
+  "evaluation_stage": "Draft after persona confirmation, before any file or tracker write."
+}
+```
 
-`--turns 1` grades the first message only, which is the right setting for a skill that should
-deliver immediately. The turn count is part of the input fingerprint, so changing it re-runs
-rather than reusing a grade that meant something else.
+An empty reply list means one assistant turn. Each authored reply is sent verbatim
+between assistant turns; the judge sees those role boundaries, the fixtures, and
+the intended stage. All shipped cases declare their stage. An intake-only case
+must not be graded as though it had completed a full interview.
+
+Legacy cases without `follow_ups` retain two turns with a bare `proceed` by default.
+`--turns` can change that legacy count; it cannot contradict a scripted case's
+count. Invalid scripts fail before model calls. Replies and stage are fingerprinted,
+so changing them cannot silently reuse a grade.
+
+The default subject ceiling is 16,000 tokens. Set `--subject-max-tokens 32000`
+and `--judge-max-tokens 32000` for longer packages; larger ceilings use streaming.
+A truncated subject remains unaccepted even when its judge verdict is favorable.
+Both budgets are recorded, and budget changes invalidate cached comparisons.
 
 ## How a case is graded
 
@@ -78,6 +85,18 @@ Some cases need inputs it cannot supply. The three original `aipos-metrics-emit`
 governed repository at `/tmp/testrepo` and expect tools to inspect it; this runner has neither.
 
 The newer completeness-versus-token coaching case has self-contained inputs and can run.
+
+For runtime metrics, build and exercise a real disposable git repository locally:
+
+```bash
+python evals/runtime_metrics.py --out /tmp/aipos-metrics-new-run
+```
+
+The output directory must not already exist. The check runs the bundled emitter,
+verifies scores, counts, AI-assisted PR detection, absence of planted identifiers,
+and absence of a readiness token. It does not call a model or send events anywhere.
+A native skill run against that fixture is separate evidence: inspect both tool
+calls and written artifacts, including the limits of sharing/readiness claims.
 
 Those runtime-dependent cases are **skipped with the reason printed**, not run and recorded as failures:
 
