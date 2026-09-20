@@ -73,7 +73,7 @@ result, the artifact is not finished.
 
 ## Step 1 — Pick the artifact
 
-Open with the menu. Most PMs know what they want; show it and let them choose.
+If the PM named an artifact, select it and proceed. Otherwise open with the menu; do not ask them to repeat a choice already supplied.
 
 > Which validation artifact do you want to build?
 >
@@ -123,6 +123,19 @@ planning issued one), and the provenance convention every artifact uses.
 **Evidence is optional input, never a prerequisite.** Plenty of real validation starts from
 a hunch. What is not acceptable is an artifact that *looks* evidence-backed when it is not.
 Mark every claim, and say in one line at the top what the evidence base actually was.
+Preserve a source's own uncertainty: a lead's estimate remains `[I]` or `[A]`,
+even when it appears in a document containing observed `[E]` facts. Keep those
+labels beside the values wherever reused in a table, hypothesis, or conclusion.
+Ask only for unanswered facts; evidence and mandate questions already answered
+in the request do not need another round. With neither, explain once that the
+interviews and problem sizing will establish the evidence; a finished guide
+alone does not establish that the problem is real.
+
+Keep study-design proposals separate from source facts and adopted decisions.
+A proposed sample, date, or pass criterion carries `[A]`, an explicit proposal
+label, and the decision still needed before the study runs. Unknown inputs may
+stay blank. Never backfill a plausible number to complete the template, nor
+present a suggested criterion as the team's agreed threshold.
 
 ## Step 3 — Build it
 
@@ -145,8 +158,10 @@ template, and quality bar.
 
 End every artifact the same way:
 
-1. **Deliver the file.** These are working documents — write them out, don't just print
-   them into the conversation.
+1. **Deliver the artifact in the requested form.** Write a working file when that
+   is authorized and file tools exist. If the PM requests an inline draft, deliver
+   it there. Without tools, give the complete content and proposed filename;
+   never claim it was saved.
 2. **Say what it retires and what it doesn't.** One or two lines: which of the three
    Validation Decision questions this moves, and what remains unevidenced.
    Then one line against the mandate: what this artifact plans to consume (or consumed,
@@ -159,9 +174,10 @@ End every artifact the same way:
    convention for re-runs, and the fact that you cannot create attachments and must hand
    that step to the PM by filename.
 
-   **Prompt every time; write only on an explicit yes.** Never write to a system of record
-   unprompted, and never treat an earlier "sounds good" as standing approval for a later
-   write.
+   If the PM already declined saving, acknowledge that choice and identify the
+   future destination without asking again. Otherwise offer the concrete save
+   once. Write only within explicit authorization for that artifact and destination;
+   do not treat approval of its content as approval of a system-of-record write.
 4. **Name the next artifact.** Validation is a sequence, not a menu visit. When the viability
    brief is written and the evidence supports committing, the next artifact is the **commitment
    package** — see below — and after that a human decision this skill does not make.

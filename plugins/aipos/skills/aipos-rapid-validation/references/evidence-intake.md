@@ -5,7 +5,7 @@ before writing anything that implies knowledge.
 
 ## The three paths
 
-Ask once, plainly:
+If the request has not already answered it, ask once:
 
 > Do you have evidence to work from — an Aha! record or similar, notes and transcripts you
 > can share, or are we starting from your read of the situation?
@@ -80,7 +80,7 @@ evidence-base header has to say plainly that this rests on the PM's judgment alo
 
 ## The exploration mandate
 
-Separately from the evidence, ask once whether this validation has a mandate:
+Separately from the evidence, ask once whether this validation has a mandate, unless already stated:
 
 > Is this under an Exploration Decision from planning? If so, paste the log entry or name
 > the record. If not, we'll work unbounded and say so.

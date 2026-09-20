@@ -75,7 +75,32 @@ Every claim in every artifact carries the AIPOS provenance convention:
 - `[I]` — inferred: a reasonable reading of `[E]` material, stated as inference
 - `[A]` — assumption: not in the graph; named so the session can challenge it
 
-A missing number becomes a marked assumption, never a plausible-looking figure.
+Before composing the pack, make a read-coverage ledger. Carry the same status
+into the agenda, log, and calibration; an unknown cannot become zero later.
+
+| Requested fact | What establishes it | Without that observation |
+|---|---|---|
+| Delivery links | Returned link records and their total | Unknown |
+| Exploration already underway | Explicit exploration records/status | Unknown; empty delivery links do not answer this |
+| Proposed population | Explicit lifecycle states in a complete applicable inventory | Unknown; matching ranked/inventory counts do not answer this |
+| Owner, budget, horizon, capacity | Returned fields or attributed user decisions | Unknown `[A]`, not unowned, zero, or unlimited |
+| Source independence and fitness | Evidence descriptors establishing them | Unassessed; different IDs or names alone do not establish independence |
+
+An attention gap requires all its predicates. When exploration or Proposed state
+is unknown, say **possible attention gap `[I]`; exploration/Proposed state unknown**
+in every place it is mentioned. Never write “zero recorded exploration,”
+“unexplored,” or “unowned” merely because the available read lacks those fields.
+
+Evidence grades are judgments `[I]`, grounded in cited `[E]` observations. Do not
+reverse-engineer the ranking model or infer grade from score components, including
+identical components across records; the server owns its ranking. Disclose missing
+fitness descriptors separately from what they might say if available.
+
+In calibration, list the tools actually used and observed errors/limits. Do not
+estimate call totals or latency from memory; omit them unless measured. Optional
+tools absent from the connected catalog are unavailable, not unused by choice.
+Conclude with what **this run** did: it recorded no decisions. That says nothing
+about decisions that may already exist beyond the available reads.
 
 ## The five moves
 
