@@ -5,7 +5,7 @@ before writing anything that implies knowledge.
 
 ## The three paths
 
-Ask once, plainly:
+If the request has not already answered it, ask once:
 
 > Do you have evidence to work from — an Aha! record or similar, notes and transcripts you
 > can share, or are we starting from your read of the situation?
@@ -80,7 +80,7 @@ evidence-base header has to say plainly that this rests on the PM's judgment alo
 
 ## The exploration mandate
 
-Separately from the evidence, ask once whether this validation has a mandate:
+Separately from the evidence, ask once whether this validation has a mandate, unless already stated:
 
 > Is this under an Exploration Decision from planning? If so, paste the log entry or name
 > the record. If not, we'll work unbounded and say so.
@@ -144,13 +144,27 @@ thirteen customer calls, and six weeks later nobody can tell which they're holdi
 
 | Marker | Meaning |
 |---|---|
-| `[E]` | **Evidence-backed** — traceable to a named source you actually read |
-| `[I]` | **Inferred** — reasoned from evidence, but nobody said it |
-| `[A]` | **Assumption** — the PM's judgment or yours, untested |
+| `[E]` | **Evidence-backed** — an observation or report supported by a named source you actually read, within that source's limits |
+| `[I]` | **Inferred** — an interpretation or extrapolation, yours or an attributed source's; the underlying observation does not establish it |
+| `[A]` | **Assumption** — an untested premise, estimate, or proposed choice, whoever supplied it |
 
 Mark at the claim level, not the section level. Inside one paragraph a sized market may be
 `[E]` while the adoption rate applied to it is `[A]` — and that distinction is the whole
 value of the estimate.
+
+Attribute the source **and** classify the claim. A lead's notes can establish observed
+task durations `[E]`; the lead's explanation of the cause is
+still `[I]`, and their unmeasured weekly cost estimate is `[A]`. A citation establishes
+that someone made a claim, not that the claim is true. Keep reported estimates labelled
+as estimates; never turn them into measured savings. Keep unknown quantities unknown in
+the artifact body, calculations and closing recommendation, not just the header.
+
+Put each quantitative claim's supplied source identifier in the same sentence or
+table row as the value and its provenance marker. For example, `[E] (source: <id>,
+as reported in the supplied summary)` distinguishes a supported summary from an
+independent read of the underlying record. A list of evidence IDs elsewhere is not
+that mapping. Preserve it when repeating the value; never invent an ID where none
+was supplied — use the source's actual name or describe the provenance limit.
 
 Do not mark decorative or structural text. Mark claims someone could act on or be wrong
 about.
@@ -162,10 +176,10 @@ reader should see.
 
 ```markdown
 ## Evidence base
-**Source:** <Aha! OPP-5 (13 refs, read-only) | 6 interview transcripts | PM interview only>
+**Source:** <record and access limits | supplied interview transcripts | PM interview only>
 **What's backed:** <the problem statement, the persona set>
 **What isn't:** <the urgency claim, every number in the sizing>
-**Mandate:** <OPP-5 explore · owner J. Diaz · budget 5 interviews + 1 spike (2d) · decided 2026-09-30 · horizon 2026-10-15 · used 2/5 interviews, 0/1 spike · plans 3 interviews | none declared [A]>
+**Mandate:** <decision ref · owner · agreed budget and units · decision date · horizon · actual use · proposed consumption | none declared [A]>
 Claims below are marked [E] evidence-backed, [I] inferred, [A] assumption.
 ```
 

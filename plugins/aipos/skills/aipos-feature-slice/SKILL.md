@@ -140,9 +140,22 @@ it is not when you do.
 
 ### Step 3: Recommend a slice per scenario
 
-Apply the MoSCoW mapping from the rubric. The MVP test is strict: *can the feature fundamentally function without this scenario?* If yes, it is not `@mvp`. Give a one-line rationale per recommendation, citing the rubric's Gherkin indicators (happy path, error pathway, third-party integration, …).
+First identify the selected user journey and its obligations in the stated Rules, NFRs
+and prerequisites. Then apply MoSCoW to the remaining optional scope. The MVP test is:
+*can the user complete the selected outcome while honoring those obligations without
+this scenario?* Give a one-line rationale tied to the supplied contract.
 
-**Never defer risk-critical behavior on the strength of a tag category alone.** "Error pathway", "edge case" and "permission" are indicators of where a scenario usually lands, not a licence to postpone. A scenario that guards authorization, privacy, safety, regulatory compliance, financial correctness or data loss is judged on the consequence of shipping without it — and that consequence often puts an "edge case" squarely in the MVP. When a recommendation defers such a scenario, say what shipping without it risks and make the PM accept it explicitly rather than letting a category do the deferring silently.
+An ordinary business cutoff, validation boundary or refusal path can be required even
+when no safety or compliance risk is involved. "Happy path", "error" and "edge case"
+do not decide release priority. Include the controls for the behavior selected, or
+propose removing the dependent capability/changing its Rule for a human scope decision.
+Accepting risk alone does not make a release comply with an unchanged Rule. For committed
+behavior, route an intended scope change through refinement and the commitment workflow.
+
+When the user asks to defer a required scenario, make the alternative explicit in the
+recommendation: name the Rule or dependent capability that would have to change before
+that deferral could describe a valid release. An invitation to “override” the slice must
+not imply that the original Rule can stay in force while its required behavior is omitted.
 
 ### Step 4: Check the selection is actually shippable
 
@@ -151,11 +164,12 @@ each of which produces a finding rather than a silent fix:
 
 **The journey completes.** Walk the selected scenarios end to end as a user would. If the
 selection stops partway — a request that can be submitted but not resolved, an approval that can
-be granted but not acted on — the slice is a layer, not a release. Name the missing step.
+be granted but not acted on — the slice is a layer, not a release. Name the missing step. Judge against the supplied journey: do not invent an alternative payment, export, or operations process to make a stated optional enhancement seem required. If the existing selection completes the outcome without it, explain that directly.
 
-**Selected behavior carries its obligations.** Including a scenario commits what it cannot safely
-run without: the authorization it assumes, the recovery path for the failure it can hit, the
-audit record it must leave. Check two places, because an obligation lives in whichever the author
+**Selected behavior carries its obligations.** Include what makes the stated contract true:
+business validation and boundaries, required authorization, recovery and audit behavior.
+Use obligations supported by the input, not imagined dependencies for optional enhancements.
+Check two places, because an obligation lives in whichever the author
 used:
 
 - **The `Rule:` each selected scenario sits under.** A Rule's obligation is not satisfied by
@@ -192,7 +206,7 @@ Naming the gap is the finding; inventing the reference destroys it.
 Two things must be surfaced before the PM decides:
 
 - **Large scenarios on the critical path.** A Large `@mvp` scenario means the smallest shippable version contains the riskiest work. Propose a split, or make the PM accept the risk explicitly.
-- **Any Large scenario.** Per the rubric, 8–9 points means "consider slicing this scenario down further." Propose concrete splits using the rubric's split patterns, with draft Gherkin. After a split, re-size the pieces — splits should land Small or Medium, and a split that doesn't shrink anything is not a split.
+- **Any Large scenario.** Per the rubric, 8–9 points means "consider slicing this scenario down further." Propose concrete splits using the rubric's split patterns, with untagged draft Gherkin. Put recommended releases in the separate recommendation table, not in tag lines or tag comments inside the draft; release tags wait for Step 7. After a split, re-size the pieces — splits should land Small or Medium, and a split that doesn't shrink anything is not a split.
 
 **A split must preserve business meaning.** Restructuring is the only thing a split may change. Every piece has to carry across:
 
@@ -262,6 +276,11 @@ artifact back in would have made Step 2 optional in name only.
 Step 7 adds the tagged Gherkin and the copy-ready tracker field updates; Step 8 follows the write-back protocol.
 
 ## Batch mode (non-interactive corpus sizing)
+
+The complete assistant message must parse as one JSON object. Do not put it in
+a Markdown fence or add an introduction, explanation, or trailing question.
+This output contract persists on a bare “proceed”; only a user request to leave
+batch mode changes it. Report judgments only; the computation script owns sums.
 
 `aipos-feature-map` (or a script) calls this when a corpus needs size badges. Same rules as refine's batch mode: skip every pause, emit a single raw JSON object and nothing else, one feature per invocation — batching degrades every verdict. Batch mode **never writes to a tracker** and never applies tags; it sizes and recommends, and the caller renders recommendations as recommendations.
 

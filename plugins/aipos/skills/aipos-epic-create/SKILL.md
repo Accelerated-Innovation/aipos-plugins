@@ -122,7 +122,15 @@ If a reference is unavailable, continue from this file and say which rules you a
 
 Treat **"proceed", "continue", "looks good", "approved", "yes", "go"** as confirmation of the most recent summary — continue without restating it. Where options were presented, accept the option name, its number, or **"default"** (the recommended path).
 
-Only pause when ambiguity genuinely exists, or when the next step is a write.
+Advance from the latest answer; do not repeat intake already answered. If the PM
+asks for a draft with gaps, assemble the requested sections now with explicit
+unknowns and provisional status. Do not make missing baselines, targets, or
+metadata prevent that draft, and do not present it as a completed governed epic.
+Ask the next unanswered decision after the draft. A one-question interview is a
+pacing default, not a reason to ignore an explicit request to draft or address
+several named decisions together.
+
+Pause for a genuinely blocking ambiguity or an unauthorized write.
 
 **The one exception:** a bare "proceed" never authorizes creating or modifying a tracker record. That needs the explicit, destination-named confirmation in `references/tracker-adapters.md`, every time.
 
@@ -160,7 +168,8 @@ For updates, **touch only the named sections.** Read the rest for context, and i
 
 ## Step 1 — Core metadata
 
-Ask in sequence, one at a time:
+Read the supplied brief first and reuse its title, owner, dates, category, and other
+answered fields. Ask only for missing decisions, in sequence and one at a time:
 
 1. A short, outcome-focused working title
 2. The target release or timeframe
@@ -169,7 +178,7 @@ Ask in sequence, one at a time:
 
 Titles are worth one push: *"Claims triage improvements"* names an area, not an outcome. *"Cut adjuster time-to-first-action from 9 hours to under 2"* names one. Offer a reframe once, accept the PM's answer.
 
-Summarize the four, then proceed unless corrected.
+Ask only the current metadata question; do not append separate baseline/target questions to the title question. Summarize the four once available, then proceed unless corrected.
 
 ## Step 2 — The problem statement
 
@@ -201,7 +210,7 @@ Map to known objectives where the workspace exposes them. Where alignment is ass
 
 > What measurable outcomes define success? Aim for three to five, each with a target.
 
-Apply the quality bar in `references/metrics-and-evaluation.md`: every metric needs a **baseline**, a **target**, and an **observation method**. Push for quantification, once per metric. If the baseline genuinely isn't known, record it as a gap and say so in the epic — "we don't measure this yet" is a real finding, and often the first thing the epic should fix.
+Apply the quality bar in `references/metrics-and-evaluation.md`: every metric needs a **baseline**, a **target**, and an **observation method**. Push for quantification, once per metric. A user-supplied estimate is acceptable when labelled as an estimate, never as a measured baseline. If the baseline genuinely isn't known, record it as a gap and say so in the epic — "we don't measure this yet" is a real finding, and often the first thing the epic should fix.
 
 Three to five is the guidance. Twelve metrics means nobody knows which one matters.
 
@@ -224,7 +233,14 @@ Produce the structured criteria per `references/metrics-and-evaluation.md`. Ever
 
 Organize into **qualitative** (interviews, shadowing, support themes) and **quantitative** (analytics, incident counts, cycle times). Record what each source actually establishes, and its date — evidence ages, and an eighteen-month-old analytics snapshot is a different claim from last week's.
 
-Where a stated impact in Step 2 has no evidence behind it, say so plainly and mark it an assumption. Do not quietly downgrade it; the gap is the finding.
+For each material problem or impact claim, distinguish the affected role, measured
+consequence, and supporting source. Name a missing source against that claim;
+a generic “evidence is weak” elsewhere is not enough. Preserve the brief's
+provenance labels: observations remain dated evidence, inferences remain
+inferences, and assumptions remain assumptions. Carry forward material numeric
+assumptions (including costs) with their labels even when the corresponding
+acceptance threshold is still TBD. Never upgrade them into measurements or
+drop them because they are not yet verified.
 
 **GenAI mode:** also ask what data or past failures should inform evaluation. Prior incidents make the best golden test cases.
 

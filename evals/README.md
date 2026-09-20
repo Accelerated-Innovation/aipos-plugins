@@ -11,9 +11,8 @@ would pass while the tool silently broke."*
 
 ## Running one
 
-**Python 3.10+ is required** — the Anthropic SDK needs it, and pip's failure on an older
-interpreter is a wall of version numbers that never says so. The deterministic suite has no such
-floor.
+**Python 3.11+ is required** for live runs (`asyncio.timeout` and the Anthropic SDK).
+The deterministic suite does not need the SDK and also supports older Python versions.
 
 ```bash
 python -m pip install -r requirements-evals.txt
@@ -31,23 +30,31 @@ skill.
 Credentials resolve the usual way: `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN`, or an
 `ant auth login` profile. You do not need to pass a key.
 
-## Turns
+## Conversation stages and output budgets
 
-**The default is two.** These skills are designed to pause and ask; graded on the first message
-alone, a legitimate clarifying question reads as a missing deliverable. After the first turn the
-harness replies `proceed` — the bare word the skills' own Proceed protocol documents as
-confirmation — and everything said so far stays in context, so the second turn continues the
-conversation rather than restarting it. All assistant turns are graded together, with their role boundaries and the intervening
-user follow-up preserved. The judge also receives the supplied fixture content,
-so it can distinguish provided facts from invented ones.
+Cases can declare `follow_ups` and `evaluation_stage`:
 
-Measured on `aipos-rapid-validation`: moving from one turn to two took the four cases from
-0.29 / 0.20 / 0.86 / 0.88 to 0.50 / 0.86 / 0.87 / 1.00. **No case got worse** — one turn was
-measuring a transcript nobody has.
+```json
+{
+  "follow_ups": ["The primary user is an adjuster. Draft with unknown thresholds marked TBD."],
+  "evaluation_stage": "Draft after persona confirmation, before any file or tracker write."
+}
+```
 
-`--turns 1` grades the first message only, which is the right setting for a skill that should
-deliver immediately. The turn count is part of the input fingerprint, so changing it re-runs
-rather than reusing a grade that meant something else.
+An empty reply list means one assistant turn. Each authored reply is sent verbatim
+between assistant turns; the judge sees those role boundaries, the fixtures, and
+the intended stage. All shipped cases declare their stage. An intake-only case
+must not be graded as though it had completed a full interview.
+
+Legacy cases without `follow_ups` retain two turns with a bare `proceed` by default.
+`--turns` can change that legacy count; it cannot contradict a scripted case's
+count. Invalid scripts fail before model calls. Replies and stage are fingerprinted,
+so changing them cannot silently reuse a grade.
+
+The default subject ceiling is 16,000 tokens. Set `--subject-max-tokens 32000`
+and `--judge-max-tokens 32000` for longer packages; larger ceilings use streaming.
+A truncated subject remains unaccepted even when its judge verdict is favorable.
+Both budgets are recorded, and budget changes invalidate cached comparisons.
 
 ## How a case is graded
 
@@ -79,6 +86,18 @@ governed repository at `/tmp/testrepo` and expect tools to inspect it; this runn
 
 The newer completeness-versus-token coaching case has self-contained inputs and can run.
 
+For runtime metrics, build and exercise a real disposable git repository locally:
+
+```bash
+python evals/runtime_metrics.py --out /tmp/aipos-metrics-new-run
+```
+
+The output directory must not already exist. The check runs the bundled emitter,
+verifies scores, counts, AI-assisted PR detection, absence of planted identifiers,
+and absence of a readiness token. It does not call a model or send events anywhere.
+A native skill run against that fixture is separate evidence: inspect both tool
+calls and written artifacts, including the limits of sharing/readiness claims.
+
 Those runtime-dependent cases are **skipped with the reason printed**, not run and recorded as failures:
 
 ```
@@ -98,6 +117,67 @@ invalidated.
 
 Without that, editing a `SKILL.md` and re-running would skip every case and present the old
 grade as current — which would make the harness worse than useless for the one job it has.
+
+## Separate substantive acceptance assessment
+
+[`substantive-acceptance.json`](substantive-acceptance.json) records the 29 case-specific
+claims used to close PR #33's remaining substantive findings. Version 1 was frozen before
+coaching edits at `f3419ce`. Version 2 corrects one demonstrated evaluator error: finding
+missing payment/audit coverage is a valid shippability finding, not a failure to declare
+the journey complete. The file records that revision; baseline and candidate subjects
+are regraded under the same correction, and original verdicts remain in the report.
+Version 3 accepts equivalent explanations that prototype behavior lacks an adopted
+policy, and requires quantitative attribution when a finding is repeated without
+forcing reference-only handoffs to copy the finding. It likewise regrades the same
+baseline and candidate subjects and preserves the original judgments.
+Version 4 accepts a named, reasoned **not-selected/pending-human-decision** item as
+outside the proposed commitment; the skill need not imply a permanent product exclusion.
+Silent omission or inclusion in committed scope still fails.
+It is a second assessment,
+not a replacement for the full rubric. Preserve the full-rubric results and grade the
+**same subjects** with `--regrade-from`; never reroll a failed answer to get a pass.
+The runner verifies the subject package, fixtures, conversation and model before reuse.
+An incomplete or mismatched transcript cannot supply acceptance evidence.
+
+For a new candidate, run each affected skill with the ordinary full cases first:
+
+```bash
+python evals/run_evals.py --skill aipos-feature-create --variant closure-full \
+  --model claude-opus-5 --judge-model claude-sonnet-5 \
+  --subject-max-tokens 32000 --judge-max-tokens 32000 --reps 3 --execute
+```
+
+Repeat for `aipos-feature-slice` and `aipos-rapid-validation`. To apply the frozen
+claims without editing the source cases, create a disposable assessment copy:
+
+```bash
+EVAL_SNAPSHOT=$(mktemp -d)
+cp -R plugins evals "$EVAL_SNAPSHOT/"
+python - "$EVAL_SNAPSHOT" <<'PY'
+import json, pathlib, sys
+snapshot = pathlib.Path(sys.argv[1])
+profile = json.loads((snapshot / 'evals/substantive-acceptance.json').read_text())
+claims = {(c['skill'], c['case_id']): c for c in profile['cases']}
+for path in (snapshot / 'plugins').glob('*/skills/*/evals/evals.json'):
+    data = json.loads(path.read_text())
+    for case in data['evals']:
+        rule = claims.get((path.parent.parent.name, case['id']))
+        if rule:
+            assert rule['case_name'] == case['name']
+            case['claims'] = rule['claims']
+            case['expected_output'] = '\n'.join(rule['claims'])
+    path.write_text(json.dumps(data, indent=2) + '\n')
+PY
+python "$EVAL_SNAPSHOT/evals/run_evals.py" --skill aipos-feature-create \
+  --variant closure-substantive --regrade-from closure-full \
+  --out "$PWD/.claude/hillclimb" --model claude-opus-5 --judge-model claude-sonnet-5 \
+  --subject-max-tokens 32000 --judge-max-tokens 32000 --reps 3 --execute
+```
+
+Repeat that last command for the other two skills. Report both assessments, every
+repetition and any transport/truncation errors. Compare against the baseline under
+the same frozen claims. A changed substantive requirement needs a documented rubric
+revision and matched regrade; it must not silently erase a failed result.
 
 ## What a real run cost
 

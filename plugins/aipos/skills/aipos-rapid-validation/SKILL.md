@@ -73,7 +73,7 @@ result, the artifact is not finished.
 
 ## Step 1 — Pick the artifact
 
-Open with the menu. Most PMs know what they want; show it and let them choose.
+If the PM named an artifact, select it and proceed. Otherwise open with the menu; do not ask them to repeat a choice already supplied.
 
 > Which validation artifact do you want to build?
 >
@@ -123,6 +123,21 @@ planning issued one), and the provenance convention every artifact uses.
 **Evidence is optional input, never a prerequisite.** Plenty of real validation starts from
 a hunch. What is not acceptable is an artifact that *looks* evidence-backed when it is not.
 Mark every claim, and say in one line at the top what the evidence base actually was.
+Preserve a source's own uncertainty: a lead's estimate remains `[I]` or `[A]`,
+even when it appears in a document containing observed `[E]` facts. Keep those
+labels and the supplied source identifiers beside the values wherever reused in a
+table, hypothesis, or conclusion. A general evidence-ID list does not map a source
+to an individual claim.
+Ask only for unanswered facts; evidence and mandate questions already answered
+in the request do not need another round. With neither, explain once that the
+interviews and problem sizing will establish the evidence; a finished guide
+alone does not establish that the problem is real.
+
+Keep study-design proposals separate from source facts and adopted decisions.
+A proposed sample, date, or pass criterion carries `[A]`, an explicit proposal
+label, and the decision still needed before the study runs. Unknown inputs may
+stay blank. Never backfill a plausible number to complete the template, nor
+present a suggested criterion as the team's agreed threshold.
 
 ## Step 3 — Build it
 
@@ -145,26 +160,33 @@ template, and quality bar.
 
 End every artifact the same way:
 
-1. **Deliver the file.** These are working documents — write them out, don't just print
-   them into the conversation.
+1. **Deliver the artifact in the requested form.** Write a working file when that
+   is authorized and file tools exist. If the PM requests an inline draft, deliver
+   it there. Without tools, give the complete content and proposed filename;
+   never claim it was saved.
 2. **Say what it retires and what it doesn't.** One or two lines: which of the three
    Validation Decision questions this moves, and what remains unevidenced.
    Then one line against the mandate: what this artifact plans to consume (or consumed,
    for findings from work that has run), what has actually been used, what remains of the
    budget and horizon, and — if either is now exhausted — that the viability brief is the
    next artifact unless the PM chooses to exceed.
-3. **Prompt to save it to the record.** Every artifact, every time. Read
+3. **Identify the record destination and save status.** Read
    `references/record-writeback.md` and follow it — it covers the three pieces (attachment,
    index comment, to-do), which artifacts warrant a to-do and which do not, the naming
    convention for re-runs, and the fact that you cannot create attachments and must hand
    that step to the PM by filename.
 
-   **Prompt every time; write only on an explicit yes.** Never write to a system of record
-   unprompted, and never treat an earlier "sounds good" as standing approval for a later
-   write.
-4. **Name the next artifact.** Validation is a sequence, not a menu visit. When the viability
-   brief is written and the evidence supports committing, the next artifact is the **commitment
-   package** — see below — and after that a human decision this skill does not make.
+   If the PM already declined saving, acknowledge that choice and identify the
+   future destination without asking again. Otherwise offer the concrete save
+   once. Write only within explicit authorization for that artifact and destination;
+   do not treat approval of its content as approval of a system-of-record write.
+   A decision-record destination requires a supplied or verified mandate; do not
+   infer an Exploration Decision from GO or from preparing this handoff.
+4. **Name the next artifact.** For a GO recommendation with existing behavior, include the
+   **commitment package** in the viability handoff using `references/viability-brief.md`.
+   With no selected behavior or immutable revision, explicitly mark the handoff incomplete
+   and not ready for commitment, and route to authoring/refinement first. The recommendation
+   never substitutes for the human decision.
 
    **When the evidence is strong enough that a commitment is in view — before the Validation
    Decision, not after it — the next artifact is the behavior itself.** Say so and hand off:
@@ -196,6 +218,12 @@ is made **against**: the exact proposed commitment, assembled from what validati
 
 Assemble it; do not re-derive it. The Rules and scenarios already exist — reference them.
 
+Assembling this package closes the scope-and-handoff gap only. It does not establish
+that the problem is real, the solution works or delivery is feasible. Carry a supplied
+GO as the requester's recommendation; an evidence identifier whose contents you have
+not read is a reference, not a new validation finding. Keep that limit in the closing
+"what this retires" statement as well as the evidence header.
+
 ### What it carries
 
 **Selected behavior, by qualified reference.** Every selected Rule and scenario as
@@ -207,8 +235,9 @@ scenarios" is not a commitment, it is a description of one.
 **The immutable source revision** the selection resolves against — a commit SHA, never a branch
 name. A commitment bound to a moving pointer can change without anyone deciding to change it.
 
-**The opportunity and evidence, by reference.** `PDG-OPP-…`, the decision thread, the evidence
-ids. Reference them; do not restate the business case. A copied business case is a second
+**The opportunity and evidence, by reference.** Copy the supplied opportunity,
+decision-thread and evidence identifiers exactly; do not add a prefix, normalize a
+namespace or infer a different record key. Reference them; do not restate the business case. A copied business case is a second
 editable copy that drifts from the first, invisibly, because both look authoritative.
 
 **Exclusions, each with a reason.** Behavior considered and not committed. An exclusion with a
@@ -234,6 +263,12 @@ Every open question, each marked **blocking** or **not blocking**, with the reas
 Say which each is and why. "There are open questions" is not the finding; *which ones would
 change the commitment* is.
 
+When asked whether the package is ready to commit, answer that question directly.
+If blocking items remain, say **not ready for commitment**, even when the package
+has been assembled and labelled prepared. That is an assessment of the recorded
+gaps, not an approval decision. Do not replace it with “that call isn't mine”;
+the accountable person's authority does not remove the need to report blockers.
+
 **Never invent a value to clear the register.** Not a threshold, not a date, not a session count
 — and not a number lifted from a prototype, which was chosen to make a demo work, not to be the
 policy.
@@ -250,7 +285,10 @@ policy.
 assembling a package is not committing to one. Say so plainly when asked — including when the
 question assumes otherwise, which is the moment it matters.
 
-Label the output **prepared**. No badge, status line or summary may read as approval. Where the
+Label the output **prepared**. Do not also call it **awaiting decision** unless its
+placement before the accountable person is established. Explain subsequent states
+conditionally: submission would make it awaiting decision; a recorded authenticated
+decision would make it approved. No badge, status line or summary may read as approval. Where the
 authoritative decision service is unavailable, that is a limitation to report, never grounds for
 treating the package as approved in the meantime. Pillar 3 is blocked on the decision, not on
 the package being finished.

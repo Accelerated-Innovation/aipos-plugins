@@ -218,7 +218,7 @@ def test_subject_and_judge_default_to_different_models(runner):
 # ------------------------------------------------------------------ staleness
 
 class _Args:
-    def __init__(self, model="claude-opus-5", judge_model="claude-sonnet-5", turns=2):
+    def __init__(self, model="claude-opus-5", judge_model="claude-sonnet-5", turns=None):
         self.model, self.judge_model, self.turns = model, judge_model, turns
 
 
@@ -310,6 +310,7 @@ def test_the_turn_count_changes_the_input_digest(runner):
     skill_dir = runner.discover_skills()["aipos-rapid-validation"]
     case = runner.load_cases(skill_dir)[0]
 
+    case = {k: v for k, v in case.items() if k not in ("follow_ups", "evaluation_stage")}
     one = runner.input_digest(skill_dir, case, _Args(turns=1))
     two = runner.input_digest(skill_dir, case, _Args(turns=2))
 
@@ -394,7 +395,7 @@ def test_cached_results_still_report_failure_without_model_calls(runner, tmp_pat
     case = runner.load_cases(skill)[0]
     args = SimpleNamespace(list=False, skill=name, case=case["name"],
                            out=str(tmp_path), variant="cached", model="subject",
-                           judge_model="judge", turns=2, reps=1, execute=True)
+                           judge_model="judge", turns=None, reps=1, execute=True)
     runner.append_row(tmp_path / name / "cached" / "results.jsonl", {
         "prompt_id": case["name"], "rep": 0, "status": status, "passed": passed,
         "input_digest": runner.input_digest(skill, case, args),
@@ -411,7 +412,7 @@ def test_regrading_reuses_only_matching_actual_subject_inputs(runner, tmp_path):
         {"role": "system", "content": f"[{skill.name}/SKILL.md]\n\n{system}"},
         {"role": "user", "content": user},
         {"role": "assistant", "content": "First answer"},
-        {"role": "user", "content": runner.PROCEED_NUDGE},
+        {"role": "user", "content": case["follow_ups"][0]},
         {"role": "assistant", "content": "Second answer"},
         {"role": "system", "content": "[judge rubric]"},
         {"role": "assistant", "content": "old judgment"},
@@ -562,3 +563,106 @@ def test_the_reasoning_for_a_met_claim_is_kept(runner):
 
     assert "cites the qualified reference" in kept
     assert "no revision recorded" in kept
+
+
+def test_scripted_replies_and_stage_are_judged_and_fingerprinted(runner):
+    skill = runner.discover_skills()['aipos-feature-create']
+    case = dict(runner.load_cases(skill)[0], follow_ups=['Primary user: adjuster.'],
+                evaluation_stage='Draft after persona confirmation')
+    args = _Args()
+    before = runner.input_digest(skill, case, args)
+    conversation = runner.join_turns(['Who uses it?', 'Draft'], runner.case_follow_ups(case, args))
+    request = runner.build_judge_request(case, conversation)
+    assert json.loads(conversation)[1] == {'role': 'user', 'content': 'Primary user: adjuster.'}
+    assert 'Draft after persona confirmation' in request
+    case['follow_ups'] = ['Primary user: supervisor.']
+    assert runner.input_digest(skill, case, args) != before
+    case['follow_ups'] = ['Primary user: adjuster.']
+    case['evaluation_stage'] = 'Intake only'
+    assert runner.input_digest(skill, case, args) != before
+
+
+@pytest.mark.parametrize('replies', ['proceed', [None], [''], ['   ']])
+def test_invalid_scripted_replies_fail_before_calls(runner, replies):
+    with pytest.raises(ValueError, match='follow_ups'):
+        runner.case_follow_ups({'name': 'probe', 'follow_ups': replies}, _Args())
+
+
+def test_intake_stops_at_one_turn_and_cli_cannot_change_its_stage(runner):
+    case = {'name': 'intake', 'follow_ups': []}
+    assert runner.case_follow_ups(case, _Args()) == []
+    with pytest.raises(ValueError, match='conflicts'):
+        runner.case_follow_ups(case, _Args(turns=2))
+    assert runner.case_follow_ups({'name': 'legacy'}, _Args()) == ['proceed']
+
+
+def test_subject_budget_changes_invalidate_prior_results(runner):
+    skill = runner.discover_skills()['aipos-feature-create']
+    case = runner.load_cases(skill)[0]
+    args = _Args()
+    before = runner.input_digest(skill, case, args)
+    args.subject_max_tokens = 32000
+    assert runner.input_digest(skill, case, args) != before
+
+
+def test_conversation_cannot_hide_a_missing_user_reply(runner):
+    with pytest.raises(ValueError, match='actual assistant turns'):
+        runner.join_turns(['First', 'Second'], [])
+
+
+@pytest.mark.parametrize('replies', [[], ['Primary user: adjuster.', 'Draft with those facts.']])
+def test_execution_sends_authored_replies_and_preserves_them_in_trace(runner, tmp_path, monkeypatch, replies):
+    """A scripted interview must send exactly its replies, without an extra proceed."""
+    import asyncio
+    import copy
+    from contextlib import asynccontextmanager
+    from types import SimpleNamespace
+
+    @asynccontextmanager
+    async def timeout(_seconds):
+        yield
+
+    # The offline suite also supports Python 3.9; this test exercises dialogue,
+    # not asyncio's timeout implementation or the optional provider SDK.
+    monkeypatch.setattr(asyncio, 'timeout', timeout, raising=False)
+    monkeypatch.setitem(sys.modules, 'anthropic', SimpleNamespace(APIStatusError=type('APIStatusError', (Exception,), {})))
+    requests = []
+    verdict = {'passed': True, 'score': 1.0, 'met': ['script followed'], 'missed': [], 'reasoning': 'complete'}
+
+    async def completion(_client, **request):
+        requests.append(copy.deepcopy(request))
+        body = json.dumps(verdict) if request['model'] == 'judge' else f'Answer {len(requests)}'
+        return SimpleNamespace(model=request['model'], stop_reason='end_turn',
+                               content=[SimpleNamespace(type='text', text=body)],
+                               usage=SimpleNamespace(input_tokens=2, output_tokens=3))
+
+    async def once(fn, **_kwargs):
+        return await fn(), 0
+
+    monkeypatch.setattr(runner, 'judge_completion', completion)
+    monkeypatch.setattr(runner, 'call_with_backoff', once)
+    skill = runner.discover_skills()['aipos-feature-create']
+    case = dict(runner.load_cases(skill)[0], follow_ups=replies, evaluation_stage='Authored stage')
+    args = SimpleNamespace(model='subject', judge_model='judge', turns=None,
+                           timeout_s=10, variant='offline', subject_max_tokens=32000,
+                           judge_max_tokens=16000)
+    args._digests = {runner.case_key(case, 0): runner.input_digest(skill, case, args)}
+    paths = {'results': tmp_path / 'results.jsonl', 'errors': tmp_path / 'errors.jsonl',
+             'traces': tmp_path / 'traces'}
+    async def execute():
+        await runner.run_case(None, skill, case, 0, args, asyncio.Semaphore(1), paths)
+
+    asyncio.run(execute())
+    subjects = requests[:-1]
+    assert len(subjects) == len(replies) + 1
+    assert [m['content'] for m in subjects[-1]['messages'][2::2]] == replies
+    assert all(r['max_tokens'] == 32000 for r in subjects)
+    judge_input = requests[-1]['messages'][0]['content']
+    assert 'Authored stage' in judge_input
+    assert all(reply in judge_input for reply in replies)
+    trace = json.loads((paths['traces'] / f'{runner.case_key(case, 0)}.json').read_text())
+    assert [t['content'] for t in trace[3:-2] if t['role'] == 'user'] == replies
+    result = runner.read_rows(paths['results'])[0]
+    assert result['passed'] is True
+    assert result['usage']['output_tokens'] == 3 * (len(replies) + 1)
+    assert result['follow_ups'] == replies

@@ -1,0 +1,2218 @@
+{
+  "configuration": {
+    "client": "Claude Code",
+    "subject_model": "claude-sonnet-5",
+    "inputs": "Synthetic, read-only, isolated profiles; three final prompts, one execution each.",
+    "notes": [
+      "Each final prompt selects its expected owner skill; only read-only tools are allowed. Earlier duplicate skill invocation is retained in history.",
+      "The native session reads development-source references; final installed runtime files were independently hash-checked against the same source.",
+      "Text-only three-repetition cohorts remain the separate matched comparison."
+    ]
+  },
+  "final": [
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 5,
+      "case": "opportunity-mode-drafts-without-epic-story-or-estimate",
+      "exit": 0,
+      "trace_sha256": "d1a8a75a0388a63667a63e67096834e6f8478ced924f69bfca24f44fbf05d57c",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01RL2krLgVHzkRHVZX2Umgq1",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-feature-create",
+            "args": "files/opportunity-support-response.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_016VosKimgtqUGyNBBFM91dA",
+          "name": "Glob",
+          "input": {
+            "pattern": "plugins/aipos/references/*.md",
+            "path": "/Users/marty/repos/govkit-plugins"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_0176f4cjZbdoL44U5rAoYxGb",
+          "name": "Glob",
+          "input": {
+            "pattern": "plugins/aipos/skills/aipos-feature-create/references/*.md",
+            "path": "/Users/marty/repos/govkit-plugins"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01Eph4baP8ohasjQfLdWvNdV",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/references/gherkin-authoring-standard.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01FABKJaHcAQcneP4qGzhaiQ",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/references/spec-identifiers.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01GvL2z4ZHpacc12XTaCyPiF",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/feature-template.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_013okSHnxu9S2x9D8rwJD5mX",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/gherkin-tagging.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01PWxyJ3qWcXnwRdZJGqBAB4",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/tracker-adapters.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 174567,
+        "stop_reason": "end_turn",
+        "session_id": "fe899052-63e4-45fa-9284-5bf63fe9e8fc",
+        "total_cost_usd": 0.3246983,
+        "usage": {
+          "input_tokens": 8,
+          "cache_creation_input_tokens": 54279,
+          "cache_read_input_tokens": 85659,
+          "output_tokens": 17040,
+          "output_tokens_details": {
+            "thinking_tokens": 11715
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 54279
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 16155,
+              "cache_read_input_tokens": 31693,
+              "cache_creation_input_tokens": 29480,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 29480,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1393,
+            "outputTokens": 12,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.0014529999999999999,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 8,
+            "outputTokens": 17040,
+            "cacheReadInputTokens": 85659,
+            "cacheCreationInputTokens": 54279,
+            "webSearchRequests": 0,
+            "costUSD": 0.32324529999999996,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 11715,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 10,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "I'll work through this as **Opportunity mode** \u2014 no epic, no tracker record exists for PDG-OPP-4471, so Draft 0 comes straight from the evidence and conversations in the file, referencing the opportunity rather than restating its business case.\n\nThis also involves model-generated behavior (the evidence-retrieval agent drafting/supporting responses), so **GenAI mode is on**. One explicit check before drafting further: **agentic behavior \u2014 yes or no?** (Does the evidence-retrieval agent act autonomously \u2014 multi-step tool use, orchestration, agent-to-agent handoffs \u2014 or is it a single-shot retrieval call?) I don't have your answer, so I'm leaving `multi_agent` unset in `eval_criteria.yaml` and listing it as an open gap rather than guessing.\n\nA few things worth flagging before the draft itself:\n\n- **The prototype's auto-send-on-high-confidence behavior directly contradicts the stated outcome** (\"without a draft ever leaving the product unapproved\"). I have not written it into any Rule or scenario \u2014 it's a prototype artifact, not a decision, and it's called out explicitly in Out of Scope and the unresolved register.\n- **No delivery-phase tag (`@mvp`/`@v1`/`@v2`) is assigned.** Nothing here has been through story-mapping or slicing, so tagging one in would be a guess dressed as a decision. Scenarios are reported as undecided on that axis.\n- **PDG-EV-2213 (team lead, throughput cost) is a live contradiction, not resolved evidence** \u2014 it's carried into the unresolved register rather than smoothed over.\n\nPer instructions for this session I'm not writing files or touching a tracker \u2014 here's the full Draft 0 package inline, copy-ready for you to place wherever you keep specs.\n\n---\n\n## `feature_source.md`\n\n```markdown\n# Evidence-Backed Response Approval\n\n| | |\n|---|---|\n| **Key** | support-response-approval (slug \u2014 no tracker key exists) |\n| **Source** | markdown (PDG opportunity file; no tracker record) |\n| **Epic** | \u2014 (none exists; none planned, per opportunity record) |\n| **Release** | undecided \u2014 no slice/story-mapping has happened yet |\n| **Type** | undecided |\n| **Owner** | undecided |\n| **Primary persona** | Support representative |\n| **GenAI** | yes |\n| **Status** | Draft 0 \u2014 not yet refined |\n\n## Source references\n\nopportunity_ref: PDG-OPP-4471\ndecision_thread_ref: PDG-THREAD-4471-a\noutcome_ref: PDG-OPP-4471 \u2014 \"A support representative can answer a customer with an\nevidence-backed response they have explicitly approved, without a draft ever leaving the\nproduct unapproved.\"\n\n## Functional scope\n\n- Assemble supporting evidence for a drafted customer response before the representative\n  reviews it.\n- Present the drafted response and its supporting evidence together for representative\n  review.\n- Require explicit representative approval before any response reaches the customer.\n- Send the customer exactly the text the representative approved.\n- Record which representative approved a response, and when.\n\n## Out of scope\n\n- **Automatic sending at any confidence level.** The clickable prototype sends\n  automatically when the evidence-retrieval agent's confidence is high. Nobody has decided\n  whether that should ship, and it conflicts with the stated outcome (\"without a draft ever\n  leaving the product unapproved\"). It stays out until that conflict is resolved \u2014 see\n  Open questions.\n- **Defining what \"enough\" evidence means, or what happens below that bar.** Nobody has\n  proposed a number or a fallback behavior.\n- **Approval-record retention period.** Compliance has said attributability matters but not\n  named a duration.\n- **Any queue-routing or staffing change** to offset the throughput cost raised by the\n  high-volume team lead (PDG-EV-2213). That evidence contradicts the explore direction and\n  is unresolved, not dismissed.\n\n## Dependencies\n\n- An evidence-retrieval capability able to query whatever sources a response needs to be\n  evidence-backed. Sources and integration owner are not yet named.\n- Compliance sign-off on retention duration and attribution requirements before this can\n  clear a readiness review.\n\n## Produces\n\n- response-approval-record\n\n## Consumes\n\n- customer-conversation-context\n\n## Key user flows\n\n1. Standard approval \u2014 representative receives a drafted response with assembled evidence,\n   reviews it, approves it, and it sends to the customer.\n2. Edit-then-approve \u2014 representative edits the draft before approving; the edited text is\n   what sends.\n3. Withheld approval \u2014 representative has not yet approved; the response stays unsent.\n\n## Definition of Done\n\n- [ ] All acceptance criteria scenarios pass\n- [ ] Automated tests written and passing in CI\n- [ ] NFR thresholds verified with evidence\n- [ ] Code reviewed and merged\n- [ ] Security checks completed\n- [ ] Performance checks completed\n- [ ] GenAI evaluation thresholds met \u2014 **blocked**: no evidence-sufficiency threshold exists yet (see Open questions)\n- [ ] Privacy mitigations implemented\n- [ ] Documentation updated\n\n## Privacy impact\n\n**Data processed:** Customer conversation/account data used to generate and evidence a\nresponse. Exact categories are not specified in the source material \u2014 this is a gap, not an\nassumption.\n**Lawful basis / purpose:** Not stated.\n**Retention:** Not stated (see Open questions \u2014 same gap as the approval-record retention).\n**Access:** Not stated \u2014 who besides the responding representative can see assembled\nevidence and drafts is undecided.\n**Mitigations:** Not yet defined. No `@nfr-privacy` scenario is included in\n`acceptance.feature` because no access-control policy has been stated to illustrate \u2014\nadding one would mean inventing a permission model.\n**Residual risk:** Unassessed pending the above.\n\n## Open questions and gaps\n\n- **Auto-send on high confidence.** The prototype does this; the stated outcome says drafts\n  never leave unapproved. This is a direct conflict and needs an explicit decision, not a\n  quiet resolution in either direction.\n- **Evidence-sufficiency threshold.** Nobody has proposed a number for what \"enough\"\n  evidence means.\n- **Insufficient-evidence behavior.** Nobody has said what happens when the retrieval agent\n  can't find enough evidence \u2014 block send, route to a supervisor, allow send without\n  evidence, something else.\n- **Approval-record retention duration.** Compliance says approvals must be attributable\n  afterward but hasn't named how long records must be kept.\n- **Access control over assembled evidence and drafts.** Not addressed at all in the source\n  material.\n- **PDG-EV-2213 (throughput cost).** A high-volume team lead's evidence contradicts the\n  approval-step direction. Recorded and unresolved \u2014 this Draft 0 does not attempt to\n  reconcile it, but a refinement conversation should not proceed as if it doesn't exist.\n- **`multi_agent` flag.** Not yet answered by the PM (see `eval_criteria.yaml`).\n- **Post-approval mutation.** If the draft's content could change between approval and\n  send (e.g., a retry re-runs retrieval), what happens? Not addressed \u2014 this is exactly the\n  scenario PDG-EV-2201's re-checking behavior suggests reps are worried about, but no policy\n  exists yet to write a scenario against.\n```\n\n---\n\n## `acceptance.feature`\n\n```gherkin\n@feature\nFeature: Evidence-Backed Response Approval\n\n  As a support representative\n  I want to review an evidence-backed draft and explicitly approve it\n  So that the answer that reaches the customer is the one I meant to send\n\n  @rule:response-requires-explicit-approval\n  Rule: A drafted response is not sent to the customer until the representative has explicitly approved it\n\n    @functional @genai @scenario:approved-response-is-sent\n    Scenario: An approved response is sent to the customer\n      Given a support representative has a drafted response with supporting evidence assembled\n      When the representative approves the response\n      Then the response is sent to the customer\n\n    @edge-case @scenario:unapproved-draft-is-not-sent\n    Scenario: A drafted response is not sent while approval is pending\n      Given a support representative has a drafted response with supporting evidence assembled\n      When the representative has not yet approved the response\n      Then the response is not sent to the customer\n      And the response remains in an awaiting-approval state\n\n  @rule:sent-version-matches-approved-version\n  Rule: The text sent to the customer is exactly the text the representative approved\n\n    @functional @genai @scenario:sent-text-matches-approved-text\n    Scenario: The customer receives exactly the approved text\n      Given a support representative has approved a specific response text\n      When the response sends\n      Then the customer receives that exact text\n\n  @rule:evidence-assembled-before-approval\n  Rule: Before a representative can approve a response, an evidence-retrieval agent assembles supporting material for them to review\n\n    @functional @genai @scenario:evidence-assembled-for-representative-review\n    Scenario: Supporting evidence is assembled and presented before approval is possible\n      Given a customer question has been drafted into a response\n      When the evidence-retrieval agent processes the draft\n      Then supporting evidence is presented to the representative alongside the draft\n      And the representative can only approve after reviewing that evidence\n\n  @rule:approval-is-attributable\n  Rule: Every approval is attributable to the representative who gave it\n\n    @functional @nfr-compliance @scenario:approval-record-names-representative\n    Scenario: The approval record names who approved and when\n      Given a support representative approves a response\n      When the approval is recorded\n      Then the record names the approving representative\n      And the record includes the time of approval\n```\n\n**Coverage summary:** 5 scenarios \u00b7 0 delivery-phase tags (slice/release not yet confirmed \u2014 reported as undecided, not defaulted) \u00b7 4 `@functional`, 1 `@edge-case`, 3 `@genai`, 1 `@nfr-compliance`.\n\n**Deliberately not in this file:** insufficient-evidence handling, the evidence-sufficiency threshold, retention duration, and auto-send behavior \u2014 each is an undecided policy or missing parameter of an undecided outcome, not a supported scenario. They're in the unresolved register above.\n\n---\n\n## `nfrs.md`\n\n```markdown\n# Non-Functional Requirements \u2014 Evidence-Backed Response Approval\n\n| ID | Dimension | Requirement | Threshold | Evidence | Owner | Gap |\n|---|---|---|---|---|---|---|\n| N1 | Performance | Evidence assembly and draft presentation complete within the representative's response workflow | \u2014 | \u2014 | \u2014 | No latency target stated |\n| N2 | Security | Only the assigned representative (and any authorized reviewer) can view a draft and its evidence before send | \u2014 | \u2014 | \u2014 | No access-control policy stated |\n| N3 | Privacy | Customer conversation/account data used in evidence retrieval is handled per data-protection requirements | \u2014 | \u2014 | \u2014 | Data categories, lawful basis, and mitigations not specified (see Privacy impact) |\n| N4 | Reliability | Behavior when the evidence-retrieval agent is unavailable or times out | \u2014 | \u2014 | \u2014 | No fallback policy stated |\n| N5 | Observability | Every approval and every send is logged with representative identity and timestamp | Not applicable | \u2014 | \u2014 | Not applicable |\n| N6 | Accessibility | Not applicable | Not applicable | \u2014 | \u2014 | Not applicable \u2014 no UI behavior specified yet |\n| N7 | Data quality | Evidence assembled must be sufficient to support the drafted response | \u2014 | \u2014 | \u2014 | No sufficiency threshold or measurement method stated |\n| N8 | Compliance | Approval records are retained for audit and attribution | \u2014 | \u2014 | \u2014 | Retention duration not specified by compliance |\n| N9 | Cost | Token/compute cost of evidence-retrieval and drafting per response | \u2014 | \u2014 | \u2014 | Not stated |\n| N10 | Supportability | Ownership of evidence sources and retrieval agent maintenance | \u2014 | \u2014 | \u2014 | Not stated |\n\n**GenAI-specific, not yet resolved:** latency budget for the retrieval+draft step, model/vendor\nconstraints, evaluation cadence for evidence-sufficiency quality. None have a stated number \u2014\nsee `eval_criteria.yaml`.\n```\n\n---\n\n## `eval_criteria.yaml`\n\n```yaml\nmode: llm\n# multi_agent: not set \u2014 PM has not yet given an explicit yes/no answer to the\n# agentic-behavior question. Do not infer it from \"evidence-retrieval agent\" wording.\n\nevaluation_criteria: &criteria []\n# Empty deliberately. No quality Rule with a stated threshold exists yet \u2014 nobody has\n# proposed a number for what \"enough\" evidence means, or a method for measuring it.\n# Populating this now would fabricate a threshold nobody chose.\n\nllm_evaluation:\n  criteria: *criteria\n\nunit_tests:\n  enforce_FIRST: true\n\ncode_quality:\n  enforce_virtues: true\n```\n\n---\n\nThis is Draft 0 \u2014 unreviewed. Given how many decisions are still open (auto-send conflict, evidence-sufficiency threshold, retention, access control, and the unresolved throughput contradiction), the most useful next step is running this through **`aipos-feature-refine`** to work those gaps with Product, QA, and Engineering before anything here is treated as approved.",
+        "ttft_ms": 1281,
+        "type": "result",
+        "duration_ms": 173568,
+        "uuid": "6ae1d321-a961-4561-86b2-ed92449a68f3",
+        "ttft_stream_ms": 983,
+        "time_to_request_ms": 21,
+        "first_content_frame_ms": 983,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v5",
+      "review": "Manual response/fixture review plus direct inspection of actual tool calls; not a new matched API repetition.",
+      "checks": [
+        {
+          "check": "Expected skill selected; only allowed read-only tools invoked.",
+          "passed": true
+        },
+        {
+          "check": "Opportunity and decision-thread identifiers are referenced; the canonical outcome is linked rather than copied into an editable outcome/summary.",
+          "passed": true
+        },
+        {
+          "check": "Supported Rules and stable scenario identifiers are present; undecided insufficient-evidence behavior is outside acceptance Gherkin.",
+          "passed": true
+        },
+        {
+          "check": "Prototype automatic-send behavior remains excluded/proposed; contradictory PDG-EV-2213 and unknown thresholds/agentic status remain open.",
+          "passed": true
+        },
+        {
+          "check": "The response is an inline Draft 0, with no approval or write claim.",
+          "passed": true
+        }
+      ],
+      "skill_invocations": 1
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 7,
+      "case": "administrative-cutoff-is-part-of-the-selected-contract",
+      "exit": 0,
+      "trace_sha256": "1824dacb8dbd9040943db140120f6da185bd7ade7bf7a9b7f4af2a140523ec42",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01GcmhCLk4Dottsicdjgjprx",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-feature-slice",
+            "args": "Recommend the smallest release (MVP) for an appointment feature with the following rules and scenarios (no sizing or file writes needed):\n\nRule booking-window: routine appointments may be booked only at least 24 hours ahead. This is an administrative policy, not a clinical safety measure.\nScenarios:\n- book-open-slot: succeeds at 48 hours\n- refuse-late-booking: refuses at 12 hours\n- booking-at-cutoff: accepts at exactly 24 hours\n\nRule own-appointments-only:\n- other-patient-record-denied: prevents viewing someone else's appointment\n\nOptional behavior:\n- send an SMS reminder\n- choose a custom calendar color\n\nAll identifiers are provisional and no commitment exists.\n\nQuestion to answer: Can the late-booking refusal (refuse-late-booking) wait for V1 because it's just an error path?"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 41868,
+        "stop_reason": "end_turn",
+        "session_id": "fa7ca61b-c8d4-4814-a4f4-2f3baa15171a",
+        "total_cost_usd": 0.08623310000000001,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 17529,
+          "cache_read_input_tokens": 22583,
+          "output_tokens": 3672,
+          "output_tokens_details": {
+            "thinking_tokens": 2193
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 17529
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 3251,
+              "cache_read_input_tokens": 15689,
+              "cache_creation_input_tokens": 8734,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 8734,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1101,
+            "outputTokens": 13,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001166,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 4,
+            "outputTokens": 3672,
+            "cacheReadInputTokens": 22583,
+            "cacheCreationInputTokens": 17529,
+            "webSearchRequests": 0,
+            "costUSD": 0.0850671,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 2193,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 3,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "Recommended slice, using the feature-slice rubric's MoSCoW test (*can the user complete the selected outcome while honoring the stated obligations without this scenario?*). Sizing was skipped per your instruction, and no files were written.\n\n## Selection\n\n| # | Scenario | Recommended slice | Why |\n|---|---|---|---|\n| 1 | book-open-slot | **MVP** | The core booking journey \u2014 cannot ship \"book an appointment\" without it. |\n| 2 | refuse-late-booking | **MVP** | Proves the booking-window Rule's constraint. Without it, the Rule is stated but unenforced/unverified in this release \u2014 see below. |\n| 3 | booking-at-cutoff | **MVP** | The Rule says \"at least 24 hours\" (inclusive). This is the only scenario that proves the boundary is `>=` and not `>` \u2014 a classic off-by-one risk if deferred. |\n| 4 | other-patient-record-denied | **MVP** | Authorization control for own-appointments-only. If viewing appointments ships, the access restriction that rule requires ships with it. |\n| 5 | SMS reminder | V2 | Explicitly optional behavior, not tied to either Rule's obligations. |\n| 6 | Custom calendar color | V2 | Explicitly optional, cosmetic, no dependency on either Rule. |\n\n## Shippability\n\n- **Journey** \u2014 Booking an open slot completes end to end with #1; viewing an appointment completes with the owner check in #4. No missing step identified.\n- **Obligations** \u2014 Rule booking-window is not satisfied by #1 alone: the Rule's contract (\"only \u226524h ahead\") is *asserted* by #2 and #3, not by the happy path. Selecting #1 without #2/#3 ships a feature that *claims* a cutoff but never proves the system actually enforces it.\n- **Prerequisites** \u2014 None named; no cross-feature dependency was stated for these scenarios.\n\n## Decisions needed\n\n1. Confirm #1\u2013#4 as MVP, #5\u2013#6 as V2 (uncommitted \u2014 a V2 tag here is not a queue position or a promise).\n2. If SMS reminder or calendar color should instead be V1, say so explicitly \u2014 nothing about them requires it.\n\n---\n\n### Direct answer: can refuse-late-booking wait for V1?\n\n**No, not while the Rule stands as written.** \"Just an error path\" is a tag-category judgment, not a scope one \u2014 the skill explicitly rules this out: *\"happy path,\" \"error,\" and \"edge case\" do not decide release priority.\"* The Rule booking-window says appointments may be booked **only** at \u226524h ahead. That's an administrative policy, not a technicality, and refuse-late-booking is the scenario that proves the policy is actually enforced, not merely documented. Shipping book-open-slot without it means the release contains a rule with no verified control behind it \u2014 attempting to book at 12h would be undefined behavior in production.\n\nThe only way this legitimately becomes V1 is if the Rule itself changes for the MVP release \u2014 e.g., \"the 24-hour cutoff does not apply until V1\" \u2014 which is a Rule change, not a tag move, and needs an explicit human scope decision, not an override of the slice recommendation. If you want to take that path, say so and I'll frame it as a Rule amendment for your sign-off rather than a deferred scenario.",
+        "ttft_ms": 2091,
+        "type": "result",
+        "duration_ms": 41032,
+        "uuid": "10435eed-c4f2-4747-81eb-85fd0e9fbfa9",
+        "ttft_stream_ms": 1225,
+        "time_to_request_ms": 25,
+        "first_content_frame_ms": 1225,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-final",
+      "review": "Manual response/fixture review plus direct inspection of actual tool calls; not a new matched API repetition.",
+      "checks": [
+        {
+          "check": "Expected skill selected; only allowed read-only tools invoked.",
+          "passed": true
+        },
+        {
+          "check": "Success, refusal, exact cutoff and ownership authorization remain in the proposed MVP.",
+          "passed": true
+        },
+        {
+          "check": "Deferring the cutoff explicitly requires changing the Rule through a human scope decision.",
+          "passed": true
+        },
+        {
+          "check": "SMS and calendar colors remain optional; no fabricated dependency or complexity forecast.",
+          "passed": true
+        },
+        {
+          "check": "Recommendations remain unapplied; no write or approval claim.",
+          "passed": true
+        }
+      ],
+      "skill_invocations": 1
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 12,
+      "case": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "exit": 0,
+      "trace_sha256": "399b063b34aa39788c099cb565ba1b6afdbde4d6616be0c53464248dee3e1371",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_012LC5DvAhoJ7g1pQCTYDgfz",
+          "name": "Read",
+          "input": {
+            "file_path": "/private/tmp/aipos-pe3-close/install-v7/config/projects/-private-tmp-aipos-pe3-close-native-smoke-v7-aipos-rapid-validation/memory/MEMORY.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01PvDBonyjDoZcMdKB6tTArR",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "Prepare final commitment handoff (inline, do not write files) for OPP-72. Recommendation: GO. Source: billing-app/receipt-export at revision 4db1753283069db6382f21ef33c79c28e3a664ef. Selected rule: admins-export-own-account (account admins may export receipts from their own account only). Scenarios: own-account-export (success) and other-account-export-denied (refusal). Evidence: EV-72, do not reproduce a business case. Exclude scenario scheduled-export (prototype-only, not selected). No open behavior/constraint questions; storage index is an implementation choice, not a constraint. No approval has been recorded and this chat cannot record one."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_014K2yBQPq2DGyBQEX9GP7xB",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/viability-brief.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01EgbDq2Zh9vqqyjDFZdy8EZ",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/record-writeback.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 30968,
+        "stop_reason": "end_turn",
+        "session_id": "145638ae-3696-480b-833a-f0f213cb9d06",
+        "total_cost_usd": 0.0913387,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 22335,
+          "cache_read_input_tokens": 45391,
+          "output_tokens": 2520,
+          "output_tokens_details": {
+            "thinking_tokens": 1070
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 22335
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 1804,
+              "cache_read_input_tokens": 22803,
+              "cache_creation_input_tokens": 6426,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 6426,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1121,
+            "outputTokens": 18,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001211,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 6,
+            "outputTokens": 2520,
+            "cacheReadInputTokens": 45391,
+            "cacheCreationInputTokens": 22335,
+            "webSearchRequests": 0,
+            "costUSD": 0.0901277,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 1070,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 6,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "## OPP-72 \u2014 Commitment package (prepared, not approved)\n\n**Validation Decision recommendation:** GO\n**Authority:** recommendation only, as supplied \u2014 no recorded approval exists, and this session has no path to record one.\n\n---\n\n**Opportunity / evidence refs:** OPP-72 \u00b7 EV-72 (referenced, not reproduced \u2014 contents not re-derived here)\n\n**Immutable source revision:** `billing-app/receipt-export` @ `4db1753283069db6382f21ef33c79c28e3a664ef`\n\n**Selected Rule:**\n- `billing-app/receipt-export#rule:admins-export-own-account` \u2014 account admins may export receipts from their own account only\n\n**Selected scenarios:**\n- `billing-app/receipt-export#scenario:own-account-export` \u2014 success path\n- `billing-app/receipt-export#scenario:other-account-export-denied` \u2014 refusal path\n\n**Exclusions and reasons:**\n- `billing-app/receipt-export#scenario:scheduled-export` \u2014 prototype-only; not selected by anyone during validation. Excluded, not overlooked.\n\n**Unresolved register:**\n- Storage index (implementation detail) \u2014 **not blocking**. It doesn't change the included behavior, an expected outcome, or a constraint; it's an internal choice inside implementation discretion.\n- No other open items reported.\n\n**Contradictions / unverified claims:** none supplied for this handoff.\n\n**Commitment readiness:** No blocking gaps in the register above \u2014 the selection, revision, and evidence reference are all present. That makes this package internally ready for a decision to be made against. It is **not itself a decision**.\n\n**Authority and next action:** State is **prepared** \u2014 assembled and internally consistent. It becomes *awaiting decision* only once it's placed before the accountable person, and *approved* only once a decision is recorded through the authoritative interface, binding this exact selection and revision. Neither has happened. Nothing here should be read as, or represented as, that approval.\n\n---\n\n**What this package retires:** the scope-and-handoff gap only \u2014 it fixes exactly what is being committed to and at what revision. It does not itself establish that the problem is real, that the solution works, or that delivery is feasible; those calls rest on EV-72 and whatever else informed the GO, which I haven't reproduced or re-validated here.\n\nPer your instructions, I'm not writing this anywhere, attaching it to a tracker, or treating it as recorded \u2014 it exists only in this reply, and the approval step still requires the accountable person acting through the actual decision system.",
+        "ttft_ms": 2140,
+        "type": "result",
+        "duration_ms": 30076,
+        "uuid": "a7125727-ce88-4615-a0b2-8f42afa51822",
+        "ttft_stream_ms": 1154,
+        "time_to_request_ms": 40,
+        "first_content_frame_ms": 1154,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v7",
+      "review": "Manual response/fixture review plus direct inspection of actual tool calls; not a new matched API repetition.",
+      "checks": [
+        {
+          "check": "Expected skill selected; only allowed read-only tools invoked.",
+          "passed": true
+        },
+        {
+          "check": "OPP-72 and EV-72 stay exact; all qualified selected behavior, exact revision and prototype exclusion are retained.",
+          "passed": true
+        },
+        {
+          "check": "Storage-index choice is nonblocking; no unsupported policy or approval is invented.",
+          "passed": true
+        },
+        {
+          "check": "Current status is prepared; awaiting decision and approved are explained as conditional later transitions.",
+          "passed": true
+        },
+        {
+          "check": "The supplied GO is attributed; scope assembly does not claim evidence was independently read or the solution validated.",
+          "passed": true
+        },
+        {
+          "check": "No planning mandate or Exploration Decision is invented for the no-mandate handoff.",
+          "passed": true
+        },
+        {
+          "check": "The artifact is inline and unapproved, with no external write claim.",
+          "passed": true
+        }
+      ],
+      "skill_invocations": 1
+    }
+  ],
+  "history": [
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 5,
+      "case": "opportunity-mode-drafts-without-epic-story-or-estimate",
+      "exit": 0,
+      "trace_sha256": "ce7123008e08fd08f4c8e2a90a14384cdcdbbd45fe8dd2ac5a5696fb84995cb6",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_017iGaDZAxSL926LonCtJ5cp",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-feature-create",
+            "args": "files/opportunity-support-response.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_014WyZt5Yy6DB7G9LuFSkBoh",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/references/gherkin-authoring-standard.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01JSNAJ1k3cQFtAkGfbQ59VX",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/references/spec-identifiers.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01Tyd4UYgMSYH8hJK7Do3TwH",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/feature-template.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01JN1fWEwZraajAtRFfyqSch",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/gherkin-tagging.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01HXpUzYe82ZBt88RmR5nG6C",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/tracker-adapters.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 154912,
+        "stop_reason": "end_turn",
+        "session_id": "be6c5e07-658d-4998-b9c4-cab3cd03f3de",
+        "total_cost_usd": 0.2928267,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 53427,
+          "cache_read_input_tokens": 53846,
+          "output_tokens": 14702,
+          "output_tokens_details": {
+            "thinking_tokens": 10039
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 53427
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 14025,
+              "cache_read_input_tokens": 30871,
+              "cache_creation_input_tokens": 29450,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 29450,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1393,
+            "outputTokens": 13,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.0014579999999999999,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 6,
+            "outputTokens": 14702,
+            "cacheReadInputTokens": 53846,
+            "cacheCreationInputTokens": 53427,
+            "webSearchRequests": 0,
+            "costUSD": 0.2913687,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 10039,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 8,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "Working from the opportunity \u2014 no epic, no tracker record, evidence and a prototype exist. I'll draft the Rules and scenarios the evidence actually supports, mark what's still undecided, and reference PDG-OPP-4471 rather than restating its business case.\n\nThis also involves GenAI behavior (the evidence-retrieval agent), so I'm carrying evaluation requirements as gaps rather than inventing thresholds.\n\n**One explicit check before the eval criteria file:** agentic behavior \u2014 yes or no? Will this feature use AI agents that act autonomously (planning, multi-step tool use, orchestration of multiple agents, or agent-to-agent handoffs), as opposed to no AI or a single-shot AI call? The opportunity doesn't say, so I'm leaving `multi_agent` unset below and listing this as an open gap rather than guessing from the prototype's behavior.\n\nEverything below is Draft 0 \u2014 unreviewed, for `aipos-feature-refine` to work from next.\n\n---\n\n```markdown\n# Representative approval of evidence-backed responses\n\n| | |\n|---|---|\n| **Key** | support-response-approval (slug \u2014 no tracker key exists) |\n| **Source** | markdown / none |\n| **Epic** | \u2014 (no epic exists or is planned, per PDG-OPP-4471) |\n| **Release** | Not yet sliced \u2014 this is a 2-week explore, not a committed delivery slice |\n| **Type** | Feature |\n| **Owner** | \u2014 (not named) |\n| **Primary persona** | Support representative |\n| **GenAI** | Yes \u2014 an evidence-retrieval agent assembles supporting material |\n| **Status** | Draft 0 \u2014 not yet refined |\n\n## Source references\n\n- opportunity_ref: PDG-OPP-4471\n- decision_thread_ref: PDG-THREAD-4471-a\n- outcome_ref: PDG-OPP-4471 \u00a7 \"Outcome being pursued\"\n\n## Functional scope\n\n- A representative reviews an assembled draft response, together with the supporting evidence the retrieval agent found for it, before it can be sent.\n- The response is not sent to the customer until the representative gives explicit approval.\n- Every send is attributable afterwards to the specific approval that authorized it.\n\n## Out of scope\n\n- **Automatic sending without explicit approval.** The clickable prototype sends automatically when the retrieval agent's confidence is high \u2014 this directly contradicts the stated outcome (\"without a draft ever leaving the product unapproved\"), and nobody has decided to keep it. Excluded from this draft pending that decision (see Open questions).\n- **Editing the assembled draft before approving.** Not addressed by any evidence or conversation \u2014 unknown whether the representative can only approve/withhold, or can also edit. Deferred pending a decision.\n- **Retrieval-agent internals** (how it searches, ranks, or selects evidence) \u2014 this feature covers what the representative sees and does with the output, not how the agent produces it.\n- **The high-volume queue's throughput concern (PDG-EV-2213)** \u2014 recorded as contradicting evidence, not resolved here. Whether approval becomes mandatory for every queue or only some queues is an open product question.\n\n## Dependencies\n\n- **Evidence-retrieval agent** \u2014 assembles the supporting material this feature displays. Its own behavior (search strategy, ranking, what counts as \"confidence\") is a separate component with no spec of its own yet. If it is not ready, this feature has nothing to display.\n- **Compliance's record-keeping requirement** \u2014 attributability is expected, but the compliance lead has not given a retention period; see Open questions.\n\n## Produces\n\n- approved-response \u2014 the exact content a representative approved, ready to send.\n- approval-record \u2014 who approved, what exact content, and when.\n\n## Consumes\n\n- retrieved-evidence-set \u2014 the supporting material assembled by the evidence-retrieval agent for one draft response.\n\n## Key user flows\n\n1. Review and approve \u2014 representative opens a draft response with its assembled evidence, checks it, approves it, and it sends.\n2. Response withheld \u2014 representative has not yet approved; the response stays unsent.\n\n## Definition of Done\n\n- [ ] All acceptance criteria scenarios pass\n- [ ] Automated tests written and passing in CI\n- [ ] NFR thresholds verified with evidence\n- [ ] Code reviewed and merged\n- [ ] Performance checks completed\n- [ ] GenAI evaluation thresholds met\n- [ ] Privacy mitigations implemented \u2014 *conditional on the open privacy question below*\n- [ ] Documentation updated\n\n## Privacy impact\n\n**Open \u2014 not yet answered.** Support responses and the evidence retrieved to support them plausibly contain customer account details or other personal data, but nobody has confirmed this or scoped what's processed. Ask directly: does the draft response, or the evidence assembled for it, contain personal or sensitive customer data? If yes, this needs a Data processed / Retention / Access / Mitigations write-up and `@nfr-privacy` scenario coverage before this draft is refinement-ready \u2014 neither exists yet.\n\n## Open questions and gaps\n\n- **Auto-send on high confidence** contradicts the stated outcome. The prototype does it because it was quicker to build, not because anyone decided it should ship. Blocks commitment \u2014 resolving it either removes the behavior or changes the outcome statement itself.\n- **\"Enough evidence\" has no definition.** Nobody has said what the retrieval agent does, or what the representative sees, when it can't find sufficient supporting material. Blocks commitment \u2014 affects whether `@rule:evidence-assembled-for-review` has a meaningful failure path at all.\n- **Approval record retention period is unstated.** The compliance lead confirmed attributability is needed but not for how long. Blocks the Compliance NFR threshold below.\n- **Edit-before-approve is undecided.** Can the representative modify the draft, or only approve/withhold it as assembled? Changes the scope of the approval-required rule if yes.\n- **PDG-EV-2213 (throughput objection) is unresolved and contradicts the explore direction.** No metric exists to reconcile \"adds an approval step\" against \"costs throughput.\" Recorded, not decided.\n- **Privacy scope is unconfirmed** \u2014 see Privacy impact above.\n- **Agentic-behavior question is unanswered** \u2014 see the note above this package. `multi_agent` is left unset in `eval_criteria.yaml` rather than inferred from the prototype.\n```\n\n```gherkin\n@feature\nFeature: Representative approval of evidence-backed responses\n\n  As a support representative\n  I want to approve an evidence-backed response before it is sent\n  So that I never need to re-check or correct an answer after it has already reached the customer\n\n  @rule:approval-required-before-send\n  Rule: A response is not sent to the customer until the representative has explicitly approved it\n\n    @functional @scenario:response-sent-after-approval\n    Scenario: Representative approves the assembled response\n      Given a representative has an assembled draft response with supporting evidence for review\n      When the representative approves the response\n      Then the response is sent to the customer\n      And the sent content matches exactly what the representative approved\n\n    @functional @scenario:response-withheld-without-approval\n    Scenario: Response is not sent until approval is given\n      Given a representative has an assembled draft response with supporting evidence awaiting review\n      When the representative has not yet approved the response\n      Then the response is not sent to the customer\n\n  @rule:evidence-assembled-for-review\n  Rule: The evidence-retrieval agent assembles supporting material for the representative to review as part of approval\n\n    @genai @functional @scenario:evidence-visible-for-review\n    Scenario: Assembled supporting evidence is visible before approval\n      Given the evidence-retrieval agent has assembled supporting material for a draft response\n      When the representative opens the response for review\n      Then the representative can see the supporting material alongside the draft response text\n\n    # No scenario for \"insufficient evidence found\" \u2014 nobody has decided what happens.\n    # See Open questions in feature_source.md; this stays an unresolved product\n    # decision, not a placeholder scenario.\n\n  @rule:approval-attributable\n  Rule: Every send is attributable afterwards to the approval that authorized it\n\n    @functional @nfr-compliance @scenario:approval-recorded-with-attribution\n    Scenario: Approval is recorded with who, what, and when\n      Given a representative approves a response\n      When the approval is recorded\n      Then the approval record names the approving representative\n      And the approval record captures the exact content that was approved\n      And the approval record captures the time of approval\n```\n\n**Tag coverage:** 4 scenarios \u00b7 delivery-phase **undecided for all 4** (no MVP/V1/V2 slice has been confirmed \u2014 this is still an explore, not a committed release) \u00b7 3 `@functional`, 1 `@genai`, 1 `@nfr-compliance`. Every scenario has exactly one classification tag or more and zero delivery-phase tags by design; report the slice as a gap rather than defaulting to `@mvp`.\n\n```markdown\n# Non-Functional Requirements \u2014 Representative approval of evidence-backed responses\n\n| ID | Dimension | Requirement | Threshold | Evidence | Owner | Gap |\n|---|---|---|---|---|---|---|\n| N1 | Performance | Evidence assembly and display completes within the representative's review flow | | | | No target given |\n| N2 | Security | Not applicable \u2014 no evidence of a distinct access-control requirement beyond existing support-tool auth | \u2014 | \u2014 | \u2014 | |\n| N3 | Privacy | Draft responses and retrieved evidence may contain customer personal data | | | | Whether this feature processes personal data is unconfirmed \u2014 see Privacy impact |\n| N4 | Reliability | Behavior when the retrieval agent is unavailable or returns no results | | | | Undecided \u2014 tied to the \"enough evidence\" open question |\n| N5 | Observability | Every sent response's approval, and the evidence it was approved against, is logged | | Audit log | | Log retention/format not specified |\n| N6 | Accessibility | Not applicable \u2014 no evidence identifies an accessibility requirement | \u2014 | \u2014 | \u2014 | |\n| N7 | Data quality | Retrieval sufficiency (\"enough evidence\") for a response to be reviewable | | | | No definition of \"enough\" exists |\n| N8 | Compliance | Approval records are retained for audit and attribution | | | | Retention period not given by compliance lead |\n| N9 | Cost | Token/compute cost per assembled response | | | | No target given |\n| N10 | Supportability | Not applicable \u2014 no evidence identifies a supportability requirement | \u2014 | \u2014 | \u2014 | |\n| N11 | Latency (GenAI) | Perceived time from opening a response to evidence being visible | | | | No target given |\n| N12 | Model/vendor constraints (GenAI) | Which model(s) may power the retrieval agent, data residency | | | | Not stated |\n| N13 | Evaluation cadence (GenAI) | How often retrieval quality is re-evaluated | | | | Not stated |\n```\n\n```yaml\nmode: llm\n# multi_agent: \u2014 left unset. The PM has not yet answered the agentic-behavior\n# question above. Do not infer from the prototype's auto-send behavior.\n\nevaluation_criteria: &criteria\n  - id: E1\n    type: retrieval-sufficiency\n    rule_link: \"@rule:evidence-assembled-for-review\"\n    method: \"TBD \u2014 no scorer, judge, or metric chosen yet\"\n    tool: TBD\n    data_source: TBD\n    pass_threshold: \"TBD \u2014 no definition of 'enough evidence' has been decided\"\n    evidence: TBD\n    owner: TBD\n    gate: TBD\n\nllm_evaluation:\n  criteria: *criteria\n\nunit_tests:\n  enforce_FIRST: true\n\ncode_quality:\n  enforce_virtues: true\n```\n\n---\n\nThis is Draft 0 \u2014 six real unknowns are named above rather than filled in, on purpose. The two that would change included behavior most (auto-send on confidence, and what happens on insufficient evidence) are exactly what a refinement conversation with `aipos-feature-refine` needs to resolve before this goes further. I haven't written anything to disk or a tracker \u2014 this is all inline for you to take into that review.",
+        "ttft_ms": 1472,
+        "type": "result",
+        "duration_ms": 154226,
+        "uuid": "03caf704-c4e7-4629-9c18-4d0cf14277a3",
+        "ttft_stream_ms": 1154,
+        "time_to_request_ms": 21,
+        "first_content_frame_ms": 1154,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-final",
+      "finding": "Superseded native evidence retained; not counted as a final trial."
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 12,
+      "case": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "exit": 0,
+      "trace_sha256": "9031eb88f1c1be18ce29bf1f1a62ef4eccd700976abdd8cd74a7e85169c71d1a",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01ND6cQ1zK23NaVmK8soudxK",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "Prepare final commitment handoff for OPP-72. Recommendation: GO. Source: billing-app/receipt-export @ 4db1753283069db6382f21ef33c79c28e3a664ef. Selected rule: admins-export-own-account (account admins may export receipts from their own account only). Scenarios: own-account-export, other-account-export-denied. Evidence: EV-72 (reference only, do not reproduce business case). Excluded: scenario:scheduled-export (prototype-only, not selected). No open behavior/constraint questions; storage index is an implementation choice, not a spec gap. No approval has been recorded and this chat cannot record one. Deliver inline only \u2014 do not write files or contact external systems."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01Bw2XfeWeAUmGUpMTDi6AZr",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/viability-brief.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01Gcqky29B88qj8jJp2sL6Ly",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/evidence-intake.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 44831,
+        "stop_reason": "end_turn",
+        "session_id": "6d8db611-0ee9-4028-b244-e68519cd22e6",
+        "total_cost_usd": 0.1055695,
+        "usage": {
+          "input_tokens": 8,
+          "cache_creation_input_tokens": 24239,
+          "cache_read_input_tokens": 71500,
+          "output_tokens": 2945,
+          "output_tokens_details": {
+            "thinking_tokens": 1516
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 24239
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 1939,
+              "cache_read_input_tokens": 26477,
+              "cache_creation_input_tokens": 4656,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 4656,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1121,
+            "outputTokens": 17,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001206,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 8,
+            "outputTokens": 2945,
+            "cacheReadInputTokens": 71500,
+            "cacheCreationInputTokens": 24239,
+            "webSearchRequests": 0,
+            "costUSD": 0.1043635,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 1516,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 5,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "## Commitment handoff \u2014 OPP-72\n\n**State: prepared \u2014 not approved.** This assembles the package for the accountable person's decision; it does not itself record one, and this chat has no path to an authenticated decision interface. No approval is recorded.\n\n---\n\n### GO \u2014 proposed commitment package\n\n**Opportunity / evidence refs:** OPP-72 \u00b7 EV-72 (referenced only \u2014 business case not reproduced here)\n\n**Immutable source revision:** `billing-app/receipt-export@4db1753283069db6382f21ef33c79c28e3a664ef`\n\n**Selected Rule:**\n- `billing-app/receipt-export#rule:admins-export-own-account` \u2014 account admins may export receipts from their own account only\n\n**Selected scenarios:**\n- `billing-app/receipt-export#scenario:own-account-export`\n- `billing-app/receipt-export#scenario:other-account-export-denied`\n\n**Exclusions and reasons:**\n- `billing-app/receipt-export#scenario:scheduled-export` \u2014 prototype-only; not selected by anyone during validation. Excluded, not overlooked.\n\n**Unresolved register:**\n- Storage index choice \u2014 **not blocking**. Reported as an implementation detail inside engineering discretion; it doesn't change the Rule, either scenario's expected outcome, or any constraint.\n- No other open behavior or constraint questions were reported for this selection.\n\n*(These two \"no open questions\" / \"index is implementation-only\" statements are carried as reported by the requester \u2014 I have not independently re-read the source feature file at this revision to verify them.)*\n\n**Contradictions / unverified claims:** None supplied for this package.\n\n**Commitment readiness:** No blocking items are on the register \u2014 nothing here would change included behavior, an expected outcome, or a constraint. The package is internally consistent and ready to place before the accountable person.\n\n**Authority and next action:** Prepared means assembled and consistent \u2014 that's all this status certifies. Submitting it would make it *awaiting decision*; a recorded, authenticated decision binding this exact selection and revision would make it *approved*. Neither has happened. I cannot record that decision here.\n\n---\n\n**What this retires / what remains:** This closes the \"will the proposed solution actually solve it\" and scope questions for OPP-72 \u2014 the exact behavior and its boundary (permit vs. deny) are fixed to a named revision. It doesn't retire the approval step itself: that's a human action through the governed decision interface, not something this handoff can substitute for.\n\n**Next action:** take this package to the accountable approver through your team's authenticated decision interface. Once decided, record the outcome against OPP-72/EV-72 so Pillar 3 can pick it up \u2014 that write is outside what I can do from here.",
+        "ttft_ms": 2423,
+        "type": "result",
+        "duration_ms": 44084,
+        "uuid": "ce529adf-0591-4a82-9f24-b5044a5e2b99",
+        "ttft_stream_ms": 896,
+        "time_to_request_ms": 41,
+        "first_content_frame_ms": 896,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-final",
+      "finding": "Preserved identifiers and states but incorrectly said package assembly retired the solution-validation question."
+    },
+    {
+      "skill": "aipos-feature-create",
+      "case_id": 5,
+      "case": "opportunity-mode-drafts-without-epic-story-or-estimate",
+      "exit": 0,
+      "trace_sha256": "3c479d1268d28e2c7df05d9e2f558b6e6c44576c4cf6cfb03d55b1094198b218",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01E5ZG3NvapXaHrjNNnPhMVx",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-feature-create",
+            "args": "files/opportunity-support-response.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01D9HwXggwi4hfXNSdNjSQCj",
+          "name": "Glob",
+          "input": {
+            "pattern": "**/aipos/**/references/*.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01RXd6BN2fR9Aj3U7tWJphm3",
+          "name": "Glob",
+          "input": {
+            "pattern": "**/aipos-feature-create/**"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_016cWy83oCvvTzVBF4p7kjxr",
+          "name": "Glob",
+          "input": {
+            "pattern": "/Users/marty/repos/govkit-plugins/plugins/aipos/**/*.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01VFXpehULchtZevwTTEuKhe",
+          "name": "Glob",
+          "input": {
+            "pattern": "/Users/marty/repos/govkit-plugins/**/*.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_014kgtWnLMRPb9xX6xc3vooM",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/references/gherkin-authoring-standard.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01NLxa3yDGoDUrVce9XgYBSN",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/references/spec-identifiers.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_012wLzKC5ANk8YjHafwA7SrA",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/feature-template.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01RU9n6djPvAUGFM7AvbKFjM",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/gherkin-tagging.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_012UZ2ex9mg6q6W7posvPokV",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-feature-create/references/tracker-adapters.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 183036,
+        "stop_reason": "end_turn",
+        "session_id": "cdedfe71-036e-4db8-bf2e-f405c1c113d6",
+        "total_cost_usd": 0.3528163,
+        "usage": {
+          "input_tokens": 10,
+          "cache_creation_input_tokens": 61137,
+          "cache_read_input_tokens": 123729,
+          "output_tokens": 17374,
+          "output_tokens_details": {
+            "thinking_tokens": 11415
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 61137
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 16299,
+              "cache_read_input_tokens": 39036,
+              "cache_creation_input_tokens": 28995,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 28995,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1393,
+            "outputTokens": 15,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001468,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 10,
+            "outputTokens": 17374,
+            "cacheReadInputTokens": 123729,
+            "cacheCreationInputTokens": 61137,
+            "webSearchRequests": 0,
+            "costUSD": 0.35134830000000006,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 11415,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 12,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "Working from the opportunity \u2014 no epic and no tracker record exist, so this is **Opportunity mode**: I'll draft Rules and scenarios the evidence actually supports, mark what nobody has decided yet, and reference PDG-OPP-4471 / PDG-THREAD-4471-a rather than restating the business case. The evidence-retrieval agent and prototype behavior put this in **GenAI mode**.\n\nOne explicit check before the draft: **agentic behavior \u2014 yes or no?** Nothing in the opportunity says whether the evidence-retrieval agent plans, chains multiple tool calls, or hands off to another agent, versus a single retrieval call. I'm leaving `multi_agent` unset below rather than guessing \u2014 it's listed as an open gap.\n\nPer the constraints on this session, nothing below has been written to a file or tracker \u2014 this is the copy-ready Draft 0 for you to place wherever it belongs.\n\n---\n\n## `features/response-approval/feature_source.md`\n\n```markdown\n# Evidence-Backed Response Approval\n\n| | |\n|---|---|\n| **Key** | response-approval |\n| **Source** | none \u2014 opportunity-driven, no tracker record |\n| **Epic** | \u2014 (no epic exists or is planned) |\n| **Opportunity** | PDG-OPP-4471 |\n| **Decision thread** | PDG-THREAD-4471-a |\n| **Release** | not yet sliced |\n| **Type** | not yet assigned |\n| **Owner** | not yet assigned |\n| **Primary persona** | Support representative |\n| **GenAI** | yes |\n| **Status** | Draft 0 \u2014 not yet refined |\n\n## Outcome\n\nReference: PDG-OPP-4471 \u2014 \"A support representative can answer a customer with an\nevidence-backed response they have explicitly approved, without a draft ever leaving the\nproduct unapproved.\"\n\n## Summary\n\nA support representative drafts a response to a customer inquiry. An evidence-retrieval\nagent assembles supporting material for that response. The representative reviews the\nresponse and its evidence, and the response is sent only once the representative has\nexplicitly approved it \u2014 and only in the exact form they approved.\n\n## Functional scope\n\n- Assemble supporting evidence for a drafted customer response.\n- Present the drafted response and its supporting evidence to the representative for review.\n- Require the representative's explicit approval before any response is sent.\n- Send exactly the version of the response the representative approved.\n- Record each approval with attribution to the approving representative and a timestamp.\n\n## Out of scope\n\n- Automatically sending a response without representative approval, at any confidence\n  level. The prototype does this by default; nobody has decided it should ship this way \u2014\n  see Open questions.\n- Defining what counts as \"sufficient\" evidence, or what happens when the retrieval agent\n  can't reach it \u2014 undecided, see Open questions.\n- Approval-record retention duration and the access-control model for approval records and\n  underlying conversation content \u2014 undecided, see Open questions.\n- Any change to queue tooling or staffing in response to the throughput objection in\n  PDG-EV-2213. That is a separate, unresolved tension this feature does not settle.\n\n## Dependencies\n\n- The evidence-retrieval agent / underlying knowledge source must be reachable for Rule\n  `evidence-assembled-for-review` to hold at all. No fallback is defined if it is not.\n- Rule `approval-is-attributable` depends on compliance confirming a retention period;\n  currently only the existence of the requirement is confirmed, not its terms.\n\n## Produces\n\n- `approved-response` \u2014 the response version the representative explicitly approved, in the\n  exact form sent to the customer.\n- `approval-record` \u2014 the attribution record naming the approving representative, a\n  timestamp, and the approved response version.\n\n## Consumes\n\n- `customer-inquiry` \u2014 the inbound message the response answers.\n\n## Key user flows\n\n1. Approve as drafted \u2014 inquiry received \u2192 evidence assembled \u2192 representative reviews\n   response and evidence \u2192 representative approves \u2192 response sent as approved.\n2. Edit then approve \u2014 inquiry received \u2192 evidence assembled \u2192 representative edits the\n   draft \u2192 representative approves the edited version \u2192 edited response sent.\n3. Insufficient evidence \u2014 inquiry received \u2192 retrieval agent cannot assemble sufficient\n   evidence \u2192 **behavior undecided** (see Open questions).\n\n## Definition of Done\n\n- [ ] All acceptance criteria scenarios pass\n- [ ] Automated tests written and passing in CI\n- [ ] NFR thresholds verified with evidence\n- [ ] Code reviewed and merged\n- [ ] Security checks completed \u2014 approval is an authorization action\n- [ ] GenAI evaluation thresholds met \u2014 evidence-retrieval behavior\n- [ ] Privacy mitigations implemented \u2014 customer conversation content is processed\n- [ ] Documentation updated\n\n## Privacy impact\n\n**Data processed:** customer inquiry content, drafted and sent response text, representative\nidentity, approval timestamps.\n**Lawful basis / purpose:** responding to the customer's own support inquiry. Not otherwise\nconfirmed with compliance/legal beyond that.\n**Retention:** `<TBD \u2014 compliance has said approvals must be attributable \"afterwards\" but\nhas not given a duration>`\n**Access:** `<TBD \u2014 no access-control model has been stated for approval records or the\nunderlying conversation content>`\n**Mitigations:**\n- `<TBD \u2014 pending the access and retention decisions above>`\n**Residual risk:** Unassessed until retention and access are decided.\n\n## Open questions and gaps\n\n1. **What happens when the retrieval agent cannot find sufficient evidence?** No behavior is\n   decided. This is a core path with unknown behavior \u2014 blocks commitment.\n2. **What does \"enough\" evidence mean?** No threshold, confidence score, or coverage measure\n   has been proposed. Blocks `evidence-assembled-for-review` and any evaluation criteria for\n   it \u2014 blocks commitment.\n3. **How long must approval records be retained, and who may access them and the underlying\n   conversation?** Compliance raised attributability but not duration or access. Blocks the\n   Privacy and Compliance NFRs and the readiness gate's named privacy blocker.\n4. **Should the prototype's automatic-send-on-high-confidence behavior ship?** Explicitly\n   undecided, and it directly contradicts the stated outcome (\"without a draft ever leaving\n   the product unapproved\"). The only working demo currently does the thing the outcome says\n   should never happen \u2014 blocks commitment until resolved one way or the other.\n5. **PDG-EV-2213 is unresolved and unaddressed.** A high-volume team lead says any approval\n   step costs throughput, directly opposing this feature's direction. Nothing in the\n   opportunity says how (or whether) that's been reconciled \u2014 flagging as a live\n   contradiction, not a settled trade-off.\n6. **Is the evidence-retrieval agent single-shot or agentic?** Asked explicitly this round;\n   not yet answered. `multi_agent` is left unset in `eval_criteria.yaml` pending an answer.\n7. **No owner is named** for the feature or for any NFR row below.\n8. **GenAI cost, latency, and model/vendor constraints are entirely unset.**\n9. **No permission model exists** for who may approve a given response (self only? a\n   supervisor override?) \u2014 needed to complete `@nfr-security` coverage.\n```\n\n---\n\n## `features/response-approval/acceptance.feature`\n\n```gherkin\n@feature\nFeature: Evidence-Backed Response Approval\n\n  As a support representative\n  I want to review an evidence-backed draft response and explicitly approve it\n  So that I never have to re-check, after sending, whether the version that went out\n  was the one I meant to send (PDG-EV-2201, PDG-EV-2208)\n\n  Background:\n    Given a customer has submitted an inquiry to a support representative\n\n  @rule:no-send-without-explicit-approval\n  Rule: A response is not sent to the customer until the representative has explicitly approved it\n\n    Background:\n      Given the representative has drafted a response to the inquiry\n      And the evidence-retrieval agent has assembled supporting evidence for the drafted response\n\n    @mvp @functional @scenario:representative-approves-before-send\n    Scenario: Representative approves and the response is sent as approved\n      Given the representative has reviewed the drafted response and its supporting evidence\n      When the representative explicitly approves the response\n      Then the response is sent to the customer\n      And the response sent matches the version the representative approved\n\n    @mvp @functional @scenario:unapproved-response-not-sent\n    Scenario: No approval means no send\n      Given the representative has not yet approved the drafted response\n      When the representative leaves the review step without approving\n      Then the response is not sent to the customer\n      And the draft remains pending representative approval\n\n    @mvp @functional @scenario:representative-edits-before-approval\n    Scenario: Editing the draft before approving sends the edited version\n      Given the representative has edited the drafted response after reviewing the evidence\n      When the representative approves the edited response\n      Then the response sent to the customer is the edited version the representative approved\n\n  @rule:evidence-assembled-for-review\n  Rule: The evidence-retrieval agent assembles supporting evidence before a response can be approved\n\n    @mvp @genai @functional @scenario:evidence-assembled-for-representative-review\n    Scenario: Supporting evidence is presented before approval is possible\n      Given a customer inquiry that requires an evidence-backed response\n      When the evidence-retrieval agent processes the inquiry\n      Then supporting evidence is assembled and presented to the representative\n      And the representative cannot approve the response before the evidence is presented\n\n    @genai @edge-case @scenario:insufficient-evidence-response\n    Scenario: Retrieval agent cannot find sufficient evidence\n      Given a customer inquiry for which the evidence-retrieval agent cannot assemble evidence\n      meeting <TBD \u2014 no definition of \"sufficient\" evidence exists>\n      When the representative reaches the review step\n      Then <TBD \u2014 behavior when evidence is insufficient has not been decided>\n\n  @rule:approval-is-attributable\n  Rule: Every approval is attributable to the representative who gave it\n\n    @mvp @functional @nfr-compliance @scenario:approval-recorded-with-attribution\n    Scenario: Approval is recorded with attribution\n      Given a representative has approved a response\n      When the approval is recorded\n      Then the approval record identifies the approving representative\n      And the approval record includes a timestamp and the exact response version approved\n```\n\n**Coverage summary:** 6 scenarios \u00b7 5 `@mvp`, 1 **undecided** (`insufficient-evidence-response` \u2014 no behavior exists to tag) \u00b7 4 `@functional`, 2 `@genai`, 1 `@nfr-compliance`, 1 `@edge-case`. `insufficient-evidence-response` carries an unresolved `<TBD>` placeholder and is **not ready for execution** \u2014 it exists to expose the gap, not to be automated as written.\n\n---\n\n## `features/response-approval/nfrs.md`\n\n```markdown\n# Non-Functional Requirements \u2014 Evidence-Backed Response Approval\n\n| ID | Dimension | Requirement | Threshold | Evidence | Owner | Gap |\n|---|---|---|---|---|---|---|\n| N1 | Performance | Evidence assembly should not add material delay to the representative's response time | \u2014 | \u2014 | Unassigned | No threshold proposed |\n| N2 | Security | Only an authorized representative may approve a given response | \u2014 | \u2014 | Unassigned | No permission model stated (who besides the drafting rep, if anyone, may approve) |\n| N3 | Privacy | Customer conversation content and representative identity are protected in the approval flow | \u2014 | \u2014 | Unassigned | Retention and access model undecided |\n| N4 | Reliability | Defined fallback when the evidence-retrieval agent is unavailable or times out | \u2014 | \u2014 | Unassigned | No fallback behavior decided |\n| N5 | Observability | Approval and send actions are logged for attributability | \u2014 | \u2014 | Unassigned | Log retention period tied to N3/compliance decision |\n| N6 | Accessibility | Not raised in the evidence | n/a | \u2014 | \u2014 | No explicit target given; default conformance assumed |\n| N7 | Data quality | Evidence presented to the representative is sourced from an approved knowledge source | \u2014 | \u2014 | Unassigned | \"Sufficient evidence\" has no definition (see Rule `evidence-assembled-for-review`) |\n| N8 | Compliance | Approvals are retained and attributable per compliance's stated need | \u2014 | \u2014 | Unassigned | Retention duration not given |\n| N9 | Cost | Per-response cost of invoking the evidence-retrieval agent | \u2014 | \u2014 | Unassigned | Not discussed |\n| N10 | Supportability | Ownership of the retrieval agent and its knowledge sources | \u2014 | \u2014 | Unassigned | Not discussed; also unresolved against PDG-EV-2213's throughput objection |\n| N11 | Latency (GenAI) | Representative-perceived wait for evidence assembly | \u2014 | \u2014 | Unassigned | No target given |\n| N12 | Token cost (GenAI) | Cost per retrieval call or per period | \u2014 | \u2014 | Unassigned | Not discussed |\n| N13 | Model/vendor constraints (GenAI) | Which models/vendors are permitted; data residency | \u2014 | \u2014 | Unassigned | Not discussed |\n| N14 | Evaluation cadence (GenAI) | How often evidence-sufficiency evaluation runs | \u2014 | \u2014 | Unassigned | No evaluation set or cadence defined |\n```\n\nTen core areas walked; six of ten (Performance, Security, Privacy, Reliability, Observability, Data quality, Compliance, Cost, Supportability) have applicable but unmeasured requirements, and Accessibility is marked not-applicable-by-default since the evidence never raises it. No NFR has an owner yet \u2014 that's an open item, not a silent gap.\n\n---\n\n## `features/response-approval/eval_criteria.yaml`\n\n```yaml\nmode: llm                # evidence-retrieval is model-generated behavior at runtime\n# multi_agent: left unset \u2014 the agentic-behavior question has not been answered yet (see Open question 6)\n\nevaluation_criteria: &criteria []\n  # No entry populated. The only candidate quality rule \u2014 \"sufficient evidence\" under\n  # @rule:evidence-assembled-for-review \u2014 has no stated definition, method, or threshold.\n  # Populating this list would fabricate a policy nobody has stated. See feature_source.md\n  # Open questions 1-2.\n\nllm_evaluation:\n  criteria: *criteria\n\nunit_tests:\n  enforce_FIRST: true\n\ncode_quality:\n  enforce_virtues: true\n```\n\n---\n\nThis is Draft 0 \u2014 unreviewed by definition, and it's carrying nine open questions on purpose rather than papering over them, including one that directly contradicts the current prototype (auto-send on high confidence vs. \"never leaves unapproved\") and one live, unresolved stakeholder objection (PDG-EV-2213). Next step is `aipos-feature-refine` \u2014 a 3 Amigos pass on this should focus first on questions 1, 2, and 4, since those three block almost everything else in the package.",
+        "ttft_ms": 1580,
+        "type": "result",
+        "duration_ms": 182063,
+        "uuid": "52c20134-81e3-4ad9-bd7e-852e6e17344c",
+        "ttft_stream_ms": 927,
+        "time_to_request_ms": 21,
+        "first_content_frame_ms": 928,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v1",
+      "finding": "Copied the canonical outcome and retained an undecided behavioral scenario in acceptance Gherkin."
+    },
+    {
+      "skill": "aipos-feature-slice",
+      "case_id": 7,
+      "case": "administrative-cutoff-is-part-of-the-selected-contract",
+      "exit": 0,
+      "trace_sha256": "32b780d5f56d4fcb2760f46abc50b1b4df6af3fc7aa12a87c9b70abda351872f",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01S97bUxu1zLcdBQ3iJ62UJM",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-feature-slice",
+            "args": "Recommend smallest release for appointment booking feature. Scenarios: book-open-slot (routine appointment booking at 48h, succeeds), refuse-late-booking (booking at 12h, refused per booking-window rule \u2014 administrative policy, not clinical safety), booking-at-cutoff (booking at exactly 24h boundary, accepted). Rule own-appointments-only: other-patient-record-denied (prevents viewing another patient's appointment). Optional/non-committed: SMS reminder, custom calendar color. All identifiers provisional, no commitment. Question to answer: can refuse-late-booking be deferred to V1 as \"just an error path\"?"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 18103,
+        "stop_reason": "end_turn",
+        "session_id": "9670bbc7-8d0b-4ca4-98e2-b846f1a3296e",
+        "total_cost_usd": 0.0639387,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 17291,
+          "cache_read_input_tokens": 22586,
+          "output_tokens": 1502,
+          "output_tokens_details": {
+            "thinking_tokens": 30
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 17291
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 1153,
+              "cache_read_input_tokens": 15692,
+              "cache_creation_input_tokens": 8493,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 8493,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1101,
+            "outputTokens": 13,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001166,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 4,
+            "outputTokens": 1502,
+            "cacheReadInputTokens": 22586,
+            "cacheCreationInputTokens": 17291,
+            "webSearchRequests": 0,
+            "costUSD": 0.0627727,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 30,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 3,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "# Release Selection \u2014 Appointment Booking\n\n## Selection\n| # | Scenario | Recommended slice | Why |\n|---|---|---|---|\n| 1 | book-open-slot | @mvp | Core journey \u2014 the user must be able to book a routine appointment at all. |\n| 2 | refuse-late-booking | @mvp | Proves the booking-window Rule's refusal branch; without it, the 24h cutoff is unenforced, not just untested. |\n| 3 | booking-at-cutoff | @mvp | Proves the boundary of the same Rule (exactly 24h accepted); a cutoff rule isn't verified by only one side of it. |\n| 4 | other-patient-record-denied | @mvp | Own-appointments-only is an authorization control on the same booking/viewing capability being shipped \u2014 required obligation, not an enhancement. |\n| 5 | SMS reminder | @v2 | Explicitly optional; no stated dependency from the booking journey. |\n| 6 | Custom calendar color | @v2 | Explicitly optional cosmetic preference; no dependency from the booking journey. |\n\n## Shippability\n- **Journey** \u2014 Completes end to end: a patient can book an open slot, is refused if too late, is accepted exactly at the cutoff, and cannot view another patient's appointment. No missing step.\n- **Obligations** \u2014 The `booking-window` Rule requires both its accept and refuse behavior to be considered proven; selecting book-open-slot and booking-at-cutoff without refuse-late-booking would leave the refusal side of the Rule unverified. The `own-appointments-only` Rule requires its denial scenario for the same reason. Both are included above \u2014 None outstanding.\n- **Prerequisites** \u2014 None named in the input. If patient identity/authentication is owned by another feature, that dependency isn't stated here and should be confirmed with the PM rather than assumed.\n\n## Risk flags\n- None from sizing (sizing was not run for this request).\n- **refuse-late-booking recommended for deferral would be a risk-critical omission**: shipping book-open-slot and booking-at-cutoff without it means the 24-hour cutoff has no enforced floor \u2014 any request under 24h would presumably succeed by default, silently nullifying the stated administrative policy.\n\n## Decisions needed\n1. Confirm all four scenarios (book-open-slot, refuse-late-booking, booking-at-cutoff, other-patient-record-denied) as @mvp.\n2. Confirm SMS reminder and custom calendar color as @v2 (uncommitted, not a queue position).\n3. Confirm no cross-feature prerequisite (e.g., patient auth) is missing from this selection.\n\n---\n\n**On your question \u2014 can refuse-late-booking wait for V1 as \"just an error path\"?**\n\nNo. It's not a stylistic error path \u2014 it's the half of the `booking-window` Rule that actually enforces the cutoff. Without it, `book-open-slot` and `booking-at-cutoff` only prove the accept side; nothing in the MVP would prove late requests are ever rejected. Per the slicing rubric, \"happy path / error / edge case\" labels don't decide release priority \u2014 obligation coverage does. This holds even though the rule is administrative rather than clinical/safety: the skill's guidance is explicit that an ordinary business cutoff can be required with no safety risk involved. I'd keep it in the smallest release.\n\nThis is a recommendation, not a decision \u2014 let me know if you want to override it or proceed to tag the spec.",
+        "ttft_ms": 1346,
+        "type": "result",
+        "duration_ms": 17406,
+        "uuid": "625da40b-ff10-4f3f-ad1c-cbccadf01ee0",
+        "ttft_stream_ms": 939,
+        "time_to_request_ms": 18,
+        "first_content_frame_ms": 939,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v1",
+      "finding": "Kept required controls but invited an override without explicitly requiring a Rule/scope change."
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 12,
+      "case": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "exit": 0,
+      "trace_sha256": "bac80927e8cc9559ac8b00418846ae1463cf5f4c8be12a6aedc8457f09bb4571",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_016Yyq3RWHafByJoxbxeuyWv",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "Prepare the final commitment handoff for OPP-72. Recommendation: GO. Source: billing-app/receipt-export at revision 4db1753283069db6382f21ef33c79c28e3a664ef. Selected rule: admins-export-own-account (account admins may export receipts from their own account only). Scenarios: own-account-export (success), other-account-export-denied (refusal). Evidence: EV-72 (do not reproduce the business case). Exclude scheduled-export scenario (prototype-only, not selected). No open behavior/constraint questions; storage index is an implementation choice, not a constraint. No approval has been recorded and this chat cannot record one. Deliver inline; do not write files or contact external systems."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01KWHmy4d4ebDd4DsyKH2362",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/viability-brief.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 28692,
+        "stop_reason": "end_turn",
+        "session_id": "38437f88-bd12-4674-a342-625a8315825b",
+        "total_cost_usd": 0.07981170000000001,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 19363,
+          "cache_read_input_tokens": 44856,
+          "output_tokens": 2122,
+          "output_tokens_details": {
+            "thinking_tokens": 830
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 19363
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 1656,
+              "cache_read_input_tokens": 22268,
+              "cache_creation_input_tokens": 3989,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 3989,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1121,
+            "outputTokens": 16,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001201,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 6,
+            "outputTokens": 2122,
+            "cacheReadInputTokens": 44856,
+            "cacheCreationInputTokens": 19363,
+            "webSearchRequests": 0,
+            "costUSD": 0.0786107,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 830,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 4,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "## Commitment handoff \u2014 OPP-72\n\n**State: prepared \u2014 not approved.** This is a proposed commitment package, assembled from selected behavior and existing evidence. No approval has been recorded, and I cannot record one here \u2014 that requires the accountable person acting through the authoritative decision interface.\n\n---\n\n### GO \u2014 proposed commitment package\n\n**Opportunity / evidence refs:** PDG-OPP-72 \u00b7 EV-72 (business case not reproduced here \u2014 see EV-72)\n\n**Immutable source revision:** `billing-app/receipt-export@4db1753283069db6382f21ef33c79c28e3a664ef`\n\n**Selected Rule:**\n- `billing-app/receipt-export#rule:admins-export-own-account` \u2014 account admins may export receipts from their own account only\n\n**Selected scenarios:**\n- `billing-app/receipt-export#scenario:own-account-export` \u2014 success path\n- `billing-app/receipt-export#scenario:other-account-export-denied` \u2014 refusal path\n\n**Exclusions and reasons:**\n- `billing-app/receipt-export#scenario:scheduled-export` \u2014 excluded. Prototype-only; never selected for commitment.\n\n**Unresolved register:**\n- None blocking. No open behavior or constraint questions remain against the selected Rule and scenarios.\n- Storage index choice \u2014 **not blocking**. Internal implementation detail inside engineering's declared discretion; it does not change committed behavior, expected outcomes, or a constraint.\n\n**Contradictions / unverified claims:** None carried forward.\n\n**Commitment readiness:** All binding fields present (source revision, qualified Rule/scenario references, exclusion with reason). No blocking unresolved items. The package itself is ready to place before the accountable person \u2014 this is distinct from the decision being recorded.\n\n**Authority and next action:** Prepared only. This package is awaiting decision \u2014 it has not been placed before, or acted on by, the accountable person in this conversation, and no approval exists yet. The next action is for that person to record a decision through the authoritative interface, binding this exact source revision and selection. I will not infer or assert that submission or approval occurred.\n\n---\n\n**What this retires / doesn't:** This closes the \"what exactly are we committing to\" gap for OPP-72 \u2014 scope is now a concrete, versioned selection rather than a category. It does not retire the approval step itself; that remains outside this chat's reach.\n\n**Record destination:** The natural next write is the Validation Decision entry against PDG-OPP-72 (decision: go, this package, EV-72) \u2014 but that write goes through the governed record, not this chat, and only once the human decision is actually made. I'm not writing anything externally now, per your instruction.",
+        "ttft_ms": 1966,
+        "type": "result",
+        "duration_ms": 27051,
+        "uuid": "e05a83e9-6bba-41c5-8018-27b315534f25",
+        "ttft_stream_ms": 1272,
+        "time_to_request_ms": 48,
+        "first_content_frame_ms": 1272,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v1",
+      "finding": "Changed OPP-72 to PDG-OPP-72 and described an unsubmitted prepared package as awaiting decision."
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 12,
+      "case": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "exit": 0,
+      "trace_sha256": "c59821df1e6e2b96c00990cc74ec7a85afd7edf5b52d4dd0d82bdb76b34609b2",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01D11ARnQ3Pd64XwcGTrpWfu",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "Prepare final commitment handoff (inline only, no external writes) for OPP-72. Recommendation: GO. Source: billing-app/receipt-export at revision 4db1753283069db6382f21ef33c79c28e3a664ef. Selected rule: admins-export-own-account (account admins may export receipts from their own account only). Scenarios: own-account-export, other-account-export-denied. Exclude scenario:scheduled-export (prototype-only, not selected). Evidence: EV-72, do not reproduce the business case. No open behavior/constraint questions; storage index is an implementation choice, not a spec gap. No approval has been recorded and this chat cannot record one."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01UQ39AyeciwRSB5GmdCNS6R",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/viability-brief.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01N97xDjCVba6eb1MxDkfwwh",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/evidence-intake.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_019NRWoVg2k1dmhbpaqj8Dpa",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/record-writeback.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01PSoLFvHjZCBeLAJFU7Z71c",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "acknowledge-only: producing final inline output now, no further intake needed \u2014 all required facts were supplied in the original request (source, revision, rule, scenarios, exclusion+reason, evidence ref, no open questions, no approval, no external write)."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 34301,
+        "stop_reason": "end_turn",
+        "session_id": "77a3601f-146f-4c68-922c-5efc93ea0f91",
+        "total_cost_usd": 0.1359457,
+        "usage": {
+          "input_tokens": 12,
+          "cache_creation_input_tokens": 33349,
+          "cache_read_input_tokens": 136591,
+          "output_tokens": 2403,
+          "output_tokens_details": {
+            "thinking_tokens": 741
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 33349
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 874,
+              "cache_read_input_tokens": 33722,
+              "cache_creation_input_tokens": 6521,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 6521,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1121,
+            "outputTokens": 16,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001201,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 12,
+            "outputTokens": 2403,
+            "cacheReadInputTokens": 136591,
+            "cacheCreationInputTokens": 33349,
+            "webSearchRequests": 0,
+            "costUSD": 0.1347447,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 741,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 9,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "# Commitment package \u2014 OPP-72\n\n**State: prepared \u2014 not approved.** No decision has been recorded, and this chat cannot record one.\n\n---\n\n## Evidence base\n**Source:** EV-72, referenced only \u2014 its contents are not reproduced here\n**What's backed:** not assessed in this handoff; assembling this package does not itself validate the problem, solution, or feasibility\n**What isn't:** everything not explicitly carried below\n**Mandate:** none declared [A]\n**Recommendation carried:** **GO**, supplied by the requester \u2014 not independently derived or re-verified here\n\n---\n\n## Selected behavior\n- `billing-app/receipt-export#rule:admins-export-own-account`\n- `billing-app/receipt-export#scenario:own-account-export`\n- `billing-app/receipt-export#scenario:other-account-export-denied`\n\n## Immutable source revision\n`4db1753283069db6382f21ef33c79c28e3a664ef`\n\n## Opportunity / evidence references\n- **Opportunity:** OPP-72\n- **Evidence:** EV-72\n\n## Exclusions and reasons\n| Excluded | Reason |\n|---|---|\n| `billing-app/receipt-export#scenario:scheduled-export` | Prototype-only; never selected for commitment |\n\n## Contradictions / unverified claims\nNone supplied.\n\n## Unresolved register\n| Item | Blocking? | Reason |\n|---|---|---|\n| Storage index choice | Not blocking | Internal implementation discretion \u2014 doesn't change committed behavior or outcomes |\n\nNo blocking items were reported, and none surfaced in assembling this package.\n\n## Commitment readiness\n**Ready for commitment** on the record as supplied: qualified selection, immutable revision, and evidence/opportunity references are all present, and the unresolved register carries no blocking items.\n\n## Authority and next action\nThis package is **prepared**, not approved. It would become **awaiting decision** once placed before the accountable person, and **approved** only once a decision is recorded through the authoritative interface, binding this exact selection and revision. Nothing here should be read as that decision, and no write to any external record was made.\n\n---\n\n**What this package retires:** the scope-and-handoff gap only \u2014 it states exactly what would be committed and against what revision. It does not itself establish that the problem is real, the solution works, or delivery is feasible; that judgment rests on EV-72 and the accountable decision-maker, neither of which this handoff re-derives.\n\nSince no approval mechanism is available in this chat and none was requested, there's nothing further for me to do here \u2014 the package stands ready for whoever holds decision authority to review and record.",
+        "ttft_ms": 1771,
+        "type": "result",
+        "duration_ms": 33554,
+        "uuid": "0d0fca06-fc12-44e0-9282-8f84417e0f4a",
+        "ttft_stream_ms": 1062,
+        "time_to_request_ms": 36,
+        "first_content_frame_ms": 1062,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v4",
+      "finding": "Superseded native evidence retained; not counted as a final trial."
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 12,
+      "case": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "exit": 0,
+      "trace_sha256": "6d8b02f6ecd2b2c07670b355160578790c47bf69ef3e1d3535e3acd3670628aa",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01DoMJynRavMJxLD1a2BatkB",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "Prepare final commitment handoff (inline, no external writes) for OPP-72. Recommendation: GO. Source: billing-app/receipt-export @ revision 4db1753283069db6382f21ef33c79c28e3a664ef. Selected rule: admins-export-own-account (account admins may export receipts from their own account only), scenarios: own-account-export (success), other-account-export-denied (refusal). Evidence: EV-72, no business case reproduction. Excluded: scheduled-export (prototype-only, not selected). No open behavior/constraint questions; storage index is an implementation detail. No approval has been recorded and this chat cannot record one."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01KSAbLh6madszTaYNfFMkVB",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/viability-brief.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_014EXdSsFLHrwCcma4qpHfHe",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/record-writeback.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 37555,
+        "stop_reason": "end_turn",
+        "session_id": "9c9abb27-8fd1-43fa-9128-f4bd26d48209",
+        "total_cost_usd": 0.0945539,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 21895,
+          "cache_read_input_tokens": 45117,
+          "output_tokens": 2957,
+          "output_tokens_details": {
+            "thinking_tokens": 1500
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 21895
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 2372,
+              "cache_read_input_tokens": 22529,
+              "cache_creation_input_tokens": 6260,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 6260,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1121,
+            "outputTokens": 18,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001211,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 6,
+            "outputTokens": 2957,
+            "cacheReadInputTokens": 45117,
+            "cacheCreationInputTokens": 21895,
+            "webSearchRequests": 0,
+            "costUSD": 0.0933429,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 1500,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 5,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "# Commitment Handoff \u2014 OPP-72\n\n**Validation Decision recommendation: GO** *(carried as supplied \u2014 this handoff does not itself validate the problem, solution, or feasibility)*\n\n---\n\n## Proposed commitment package\n\n**State:** prepared \u2014 not approved. No approval has been recorded, and this conversation cannot record one.\n\n**Opportunity / evidence refs:** OPP-72 \u00b7 EV-72 *(copied as supplied; business case not reproduced here \u2014 see those records for it)*\n\n**Source / immutable revision:** `billing-app/receipt-export` @ `4db1753283069db6382f21ef33c79c28e3a664ef`\n\n**Selected Rule:**\n- `billing-app/receipt-export#rule:admins-export-own-account` \u2014 account admins may export receipts from their own account only\n\n**Selected scenarios:**\n- `billing-app/receipt-export#scenario:own-account-export` \u2014 success path\n- `billing-app/receipt-export#scenario:other-account-export-denied` \u2014 refusal path\n\n**Exclusions and reasons:**\n- `billing-app/receipt-export#scenario:scheduled-export` \u2014 excluded; prototype-only, never selected for this commitment\n\n**Unresolved register:**\n| Item | Blocking? | Reason |\n|---|---|---|\n| Storage index used for the audit/export record | Not blocking | Implementation choice within discretion \u2014 does not change committed behavior, expected outcomes, or a constraint |\n\nNo open behavior or constraint questions remain against the selected Rule and scenarios.\n\n**Contradictions / unverified claims:** None supplied for this handoff.\n\n**Commitment readiness:** No blocking gaps remain in the package as assembled \u2014 selection, revision, and evidence references are all present. This makes it ready to place before the accountable person; it does **not** make it approved.\n\n**Authority and next action:** This package is **prepared** only. Placing it before the accountable person would make it *awaiting decision*; a recorded, authenticated decision binding this exact selection and revision would make it *approved*. Neither has happened, and nothing in this exchange can cause either to happen.\n\n---\n\n**What this retires:** the scope-and-handoff gap only \u2014 an exact, qualified selection of Rule and scenarios bound to an immutable revision, with exclusions and the one open item classified. It does not independently confirm the problem is real, the solution works, or delivery is feasible; that judgment rests with the accountable person and whatever evidence backs EV-72.\n\n**Save/write-back:** Per your instruction, nothing here has been written externally. The normal destinations would be: this package attached to OPP-72, an index comment summarizing it, and \u2014 since an Exploration Decision governed this validation \u2014 an entry in the decision record citing EV-72, the GO recommendation, and this exact commitment scope. Say the word if you want the exact text for any of those; none of it is filed.",
+        "ttft_ms": 1588,
+        "type": "result",
+        "duration_ms": 36712,
+        "uuid": "942f3551-dd04-4156-a699-078d0e4f56b7",
+        "ttft_stream_ms": 1209,
+        "time_to_request_ms": 35,
+        "first_content_frame_ms": 1209,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-smoke-v6",
+      "finding": "Correct package and source/authority limits, but the closing falsely asserted that an Exploration Decision governed validation despite no supplied mandate."
+    },
+    {
+      "skill": "aipos-rapid-validation",
+      "case_id": 8,
+      "case": "unverified-claims-and-contradicting-evidence-are-recorded-not-resolved",
+      "exit": 0,
+      "trace_sha256": "8815d9d4ef50ec0f03f0c7a9e0351bf177f0af659804ce770b4caca5aa9700bb",
+      "tool_calls": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01J86bg1xGDZXFDHpPe5y8Wr",
+          "name": "Skill",
+          "input": {
+            "skill": "aipos:aipos-rapid-validation",
+            "args": "Assemble a commitment package / close-out pack for PDG-OPP-4471 (support response approval), from the attached close-out notes. Include the full evidence base behind the recommendation."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01EmNYy6C9viBb7crutAB1iD",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/evidence-intake.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01B2ncFbRTVVRhEjHAycc86t",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/viability-brief.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_01FyHs7mPANKrWH6wKMfw8qM",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/marty/repos/govkit-plugins/plugins/aipos/skills/aipos-rapid-validation/references/record-writeback.md"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "result": {
+        "duration_api_ms": 144326,
+        "stop_reason": "end_turn",
+        "session_id": "3e0939fd-3db6-42ce-a42c-69572d640f8d",
+        "total_cost_usd": 0.21563210000000002,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 26931,
+          "cache_read_input_tokens": 46453,
+          "output_tokens": 13718,
+          "output_tokens_details": {
+            "thinking_tokens": 8033
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 26931
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 13084,
+              "cache_read_input_tokens": 23064,
+              "cache_creation_input_tokens": 10761,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 10761,
+                "ephemeral_1h_input_tokens": 0
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": 1737,
+            "outputTokens": 17,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0,
+            "webSearchRequests": 0,
+            "costUSD": 0.001822,
+            "contextWindow": 200000,
+            "maxOutputTokens": 32000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-4-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          },
+          "claude-sonnet-5": {
+            "inputTokens": 6,
+            "outputTokens": 13718,
+            "cacheReadInputTokens": 46453,
+            "cacheCreationInputTokens": 26931,
+            "webSearchRequests": 0,
+            "costUSD": 0.2138101,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 64000,
+            "thinkingTokens": 8033,
+            "canonicalModel": "claude-sonnet-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": 6,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "This is a GenAI-involved solution (retrieval agent, confidence-based auto-send, an evidence-sufficiency judgment call), so I'll fold in an evaluation angle rather than treating \"reps could complete the flow\" as proof the system behaves correctly. Here's the assembled viability brief and commitment package, built from the attached close-out pack only \u2014 I haven't read the underlying interview transcripts, telemetry, or spike artifacts behind PDG-EV-2201/2208/2213, only the summary in this document.\n\n---\n\n# Viability brief \u2014 PDG-OPP-4471: Support response approval\n\n## Validation Decision recommendation: **GO \u2014 narrowed scope**\n**Authority:** recommendation only; no recorded decision supplied.\n\nCommitting the manual approval-gate and read-only-retrieval behavior is supported by real, measured evidence of the problem (reps re-checking sent answers, a 14% same-rep correction rate) and a feasibility spike showing no new service is needed. The biggest risk being accepted: two drafted scenarios \u2014 automatic send at a confidence threshold, and bulk-approve for high-volume queues \u2014 are **not** evidence-backed at the specific values drafted, and the PM's own readout note flags the threshold question as needing an owner before commit. I'm recommending those two be excluded from this commitment round rather than folded in by default. Against the mandate: 11 of 12 interview-hours and 18 of 21 days used \u2014 essentially exhausted, which is exactly why this is the right moment for the call rather than another artifact.\n\n---\n\n## Evidence base\n**Source:** the attached close-out pack only (artifacts table, evidence-ID references, verbatim readout notes, drafted Gherkin). Evidence refs PDG-EV-2201, PDG-EV-2208, PDG-EV-2213 are read-only from here \u2014 I have the summarized finding for each, not the underlying transcripts or telemetry export.\n**What's backed:** the re-check behavior (7/9 reps), the 14% correction rate, the feasibility fit into the existing message store \u2014 each as reported in this document.\n**What isn't:** the 0.8 auto-send confidence threshold (a prototype value, not a policy decision), the 7-year retention requirement (single unattributed remark, no evidence ID), the evidence-sufficiency dimensions (drafted, not defined with thresholds or tested).\n**Mandate:** PDG-OPP-4471 \u00b7 owner Priya N. \u00b7 budget 3 weeks / 12 interview-hours \u00b7 decision date unknown [A] \u00b7 horizon 2026-10-31 \u00b7 used 11/12 interview-hours, 18/21 days.\n**Mandate cost:** none \u2014 this brief records the recommendation; the ledger below is the reconciliation.\n\nClaims below are marked [E] evidence-backed, [I] inferred, [A] assumption.\n\n**Validation work completed:**\n| Artifact | Done | Result | Budget used |\n|---|---|---|---|\n| Interview guide (9 sessions) | 2026-09-22 | 7/9 reps re-read sent answers to confirm the sent version matched what they approved [E] (PDG-EV-2201, as reported here) | part of 11/12 interview-hours |\n| Problem sizing | 2026-09-25 | 14% of outbound responses followed within 30 min by a same-rep correction, from tooling telemetry [E] (PDG-EV-2208, as reported here) | not itemized separately |\n| Visual prototype | 2026-10-02 | Clickable approve-then-send flow; also auto-sends when retrieval-agent confidence > 0.8 [E \u2014 the prototype behavior itself; the 0.8 value is [A], a demo choice, not a validated threshold] | not itemized |\n| Feasibility spike | 2026-10-08 | Approval state + audit record fit the existing message store; no new service needed [E, as reported here] | part of 18/21 days |\n| Eval stub | 2026-10-09 | Evidence sufficiency is a judged call, not deterministic; dimensions drafted (coverage, recency, source agreement) but not defined with thresholds or tested [A] | not itemized |\n| **Against the mandate** | | | **used 11/12 interview-hours, 18/21 days \u00b7 horizon 2026-10-31: not yet reached as of the close-out date** |\n\nThe eval stub is a definition, not a measurement \u2014 no evidence-sufficiency judgment has actually been scored against real cases. That's a real gap on question 2, not a formality.\n\n---\n\n## 1. Is the problem real and worth solving?\n**Answer:** yes \u00b7 **Confidence:** high\n\nTwo independent signals agree: reps self-report re-checking sent answers (7 of 9 interviewed) [E], and telemetry independently shows 14% of responses get a same-rep correction within 30 minutes [E]. One qualitative and one behavioral measure pointing the same direction is a stronger basis than either alone.\n\n**What would change this:** if the 14% figure turns out to concentrate in one queue rather than being broad-based, the sizing of \"worth solving\" would need revisiting.\n\n## 2. Will the proposed solution actually solve it?\n**Answer:** partly \u00b7 **Confidence:** medium\n\nThe core approve-before-send flow directly answers the interview finding \u2014 it gives reps the checkpoint they were already manually recreating. That part is well supported. The two extensions drafted alongside it are not: the auto-send-on-high-confidence path has no validated threshold (0.8 was a prototype convenience, and the PM flagged this explicitly \u2014 see readout below), and the insufficient-evidence-routing scenario depends on an evidence-sufficiency judgment that is only drafted, not measured. Task completion in the prototype isn't evidence that the auto-send path produces correct sends at any given confidence level \u2014 that requires the eval stub to actually run.\n\n**What would change this:** an owner and an agreed threshold for auto-send, plus a scored eval run against the drafted dimensions.\n\n## 3. Is it feasible and economic within acceptable constraints?\n**Answer:** yes, with one open reconciliation \u00b7 **Confidence:** medium-high\n\nThe spike found approval state and audit records fit the existing message store \u2014 no new service. That's a clean result. It's unclear, though, whether that spike considered the 7-year retention requirement raised in the readout, since that requirement surfaced after the spike (09-30 readout vs. 10-08 spike... actually the readout is dated 09-30, before the 10-08 spike, so it should have been in scope \u2014 but the spike write-up doesn't mention retention at all). That's worth closing before treating feasibility as fully settled.\n\n**What would change this:** confirmation that the existing message store's retention characteristics actually meet 7 years, from someone who owns that requirement.\n\n---\n\n## Gap and risk log\n| # | Gap or risk | Impact if wrong | Status | Owner |\n|---|---|---|---|---|\n| 1 | Auto-send confidence threshold (0.8) is a prototype value, not agreed policy | Could send unapproved responses at a rate nobody signed off on | Open | unassigned \u2014 flagged by Priya, 09-30 |\n| 2 | Evidence-sufficiency judgment (coverage/recency/source agreement) is drafted, not scored | The routing scenario that depends on it can't be verified as correct, only as \"runs\" | Open | unassigned |\n| 3 | 7-year retention requirement is a single unattributed remark, not reconciled against the spike | Audit record design could be wrong for compliance | Open | unassigned (\"someone from the platform side\") |\n| 4 | Billing queue team lead says a mandatory approval step would be turned off (PDG-EV-2213) | A blanket approval rule may be rejected by at least one high-volume persona | Open \u2014 accepted for excluded scope, unresolved for bulk-approve-queue | unassigned |\n\n---\n\n## Output quality summary\nNo eval run has happened. The stub only names the dimensions (coverage, recency, source agreement) and states that sufficiency is a judged call rather than deterministic \u2014 that's a definition, not a result. For a GO that includes any evidence-sufficiency-dependent behavior, running that eval is a prerequisite, not a nice-to-have.\n\n## Recommended MVP scope\n**In:** `FEATURE-response-approval` \u2014 `unapproved-response-blocked`, `unauthorized-approver-rejected`, `editing-invalidates-prior-approval`, `failed-sending-shows-recoverable-state`; `FEATURE-evidence-retrieval` \u2014 `retrieval-agent-cannot-send`, `insufficient-evidence-routes-to-person` (contingent on gap #2 above being closed before this scenario is treated as verifiable).\n**Out:** `automatic-send-on-high-confidence`, `bulk-approve-queue` \u2014 both drafted during validation but not evidenced at a specific, agreed operating point.\n**Why this line:** the interview and telemetry evidence supports \"a human checks before send,\" not any particular automation threshold or bulk-approval mechanism. Committing those now would bind the org to a number (0.8) chosen to make a demo work, and to a mechanism (bulk-approve) that hasn't been tested against the one stakeholder who explicitly said they'd disable a mandatory approval step.\n\n## Handoff to Build-to-Earn\n\n### GO \u2014 proposed commitment package\n**State:** prepared \u2014 not approved\n\n**Opportunity / evidence refs:** PDG-OPP-4471 \u00b7 PDG-EV-2201 \u00b7 PDG-EV-2208 \u00b7 PDG-EV-2213 (copied as given; no decision-thread ref supplied)\n\n**Selected Rules:**\n- `support-app/FEATURE-response-approval#rule:only-approved-current-version-may-send`\n- `support-app/FEATURE-evidence-retrieval#rule:retrieval-is-read-only`\n\n**Selected scenarios:**\n- `support-app/FEATURE-response-approval#scenario:unapproved-response-blocked`\n- `support-app/FEATURE-response-approval#scenario:unauthorized-approver-rejected`\n- `support-app/FEATURE-response-approval#scenario:editing-invalidates-prior-approval`\n- `support-app/FEATURE-response-approval#scenario:failed-sending-shows-recoverable-state`\n- `support-app/FEATURE-evidence-retrieval#scenario:retrieval-agent-cannot-send`\n- `support-app/FEATURE-evidence-retrieval#scenario:insufficient-evidence-routes-to-person`\n\n**Immutable source revision:** `1f0c9a6d3b5e27184c0a9f2d6b8e4713a5c9d0f2`\n\n**Exclusions and reasons:**\n- `support-app/FEATURE-response-approval#scenario:automatic-send-on-high-confidence` \u2014 the 0.8 threshold is a prototype implementation value, not an agreed policy; the PM explicitly flagged (09-30) that this needs an owner before commit.\n- `support-app/FEATURE-response-approval#scenario:bulk-approve-queue` \u2014 not tested against the throughput objection raised by the billing-queue team lead (PDG-EV-2213); no evidence that bulk approval resolves or was even evaluated for that concern.\n\n**Unresolved register:**\n| # | Item | Blocking? | Reason | What would settle it |\n|---|---|---|---|---|\n| 1 | Auto-send threshold and its owner | Blocking (for the excluded scenario only) | PM's own readout names this as needed before commit; 0.8 is a demo value | Named owner agrees a threshold, backed by measured precision/recall at that threshold |\n| 2 | Evidence-sufficiency judgment thresholds | Blocking for `insufficient-evidence-routes-to-person` | Dimensions drafted but not scored; sufficiency is stated to be a judged call | Run the eval stub against real cases, agree pass criteria |\n| 3 | 7-year retention requirement | Not blocking for the selected scope as scoped, but blocking before treating feasibility as fully settled | Single unattributed remark, not reconciled with the spike's message-store finding | Named platform owner confirms retention characteristics of the existing store |\n| 4 | Billing-queue throughput objection | Blocking only for `bulk-approve-queue` (already excluded) | Direct stakeholder statement they'd disable a mandatory approval step | Test the excluded scenario with that queue before reconsidering it |\n| 5 | Which store backs the audit record | Not blocking | Internal implementation choice; spike already confirmed it fits the existing store | N/A |\n\n**Contradictions / unverified claims:**\n- PDG-EV-2213 (team lead, billing queue) directly contradicts a blanket approval-required rule for high-volume queues. Carried as unresolved, not argued away \u2014 it's why `bulk-approve-queue` is excluded rather than included with a caveat.\n- The 7-year retention requirement is unverified: attributed only to \"someone from the platform side\" in a readout note, no evidence ID, no name.\n- The 0.8 confidence value is a prototype artifact, not a decision \u2014 carried in the drafted scenario name but not as a committed number.\n\n**Commitment readiness:** not ready for commitment as a full package \u2014 items 1 and 2 above are blocking for the scenarios they touch. The 6 scenarios listed under \"Selected\" are not blocked by an open item and could be committed on their own; `automatic-send-on-high-confidence` and `bulk-approve-queue` should stay excluded until items 1 and 4 are resolved, at which point they'd need to return to `aipos-feature-refine` before being added to any future commitment.\n\n**Authority and next action:** this package is prepared, not submitted and not approved. It becomes awaiting decision once placed before an accountable person, and approved only through a recorded, authenticated decision binding this exact selection and revision. I have not submitted it anywhere.\n\n### Supporting inputs (for the excluded scenarios, if pursued later)\n- **Evaluation criteria:** coverage, recency, source-agreement dimensions exist; thresholds do not (`aipos-feature-refine` or `aipos-rapid-validation` artifact 6 territory).\n- **Guardrail requirements:** none beyond \"read-only retrieval agent,\" already in scope above.\n- **Architecture and data constraints:** existing message store confirmed sufficient for the core scope; retention gap noted above applies here too.\n\n**What this package retires:** the scope-and-handoff gap for the 6 selected scenarios only \u2014 it does not itself establish that the problem is real, the solution works, or delivery is feasible; those are the findings in sections 1\u20133 above, carried by reference, not re-derived here.\n\n---\n\n## After this brief\n\nIf you want the two excluded scenarios pursued rather than dropped, the next step for them is `aipos-feature-refine` \u2014 working the threshold-owner and throughput questions until they're no longer open, then bringing them back for a future commitment round, not folding them into this one by default.\n\nFor record-keeping: I haven't written or attached anything \u2014 per your instructions I'm not touching files or trackers. If you want this on the record, the pieces would be an attachment (e.g. `pdg-opp-4471-viability-brief.md`) plus an index comment on PDG-OPP-4471, and \u2014 since there's an Exploration Decision behind this \u2014 a closing entry on that decision record noting `go (narrowed) \u00b7 confidence medium \u00b7 budget used 11/12 interview-hours, 18/21 days \u00b7 horizon 2026-10-31 not yet reached`. Say the word if you want the exact comment/entry text spelled out for you to paste in.",
+        "ttft_ms": 2069,
+        "type": "result",
+        "duration_ms": 143803,
+        "uuid": "15a39d28-d1ca-460e-b146-f7405dbe97c7",
+        "ttft_stream_ms": 1052,
+        "time_to_request_ms": 88,
+        "first_content_frame_ms": 1052,
+        "queued_turn_count": 0,
+        "result_index": 0
+      },
+      "variant": "native-source-v6",
+      "finding": "Supplemental native attribution check on the citation revision: the 14% telemetry value is explicitly mapped to PDG-EV-2208 in the evidence table; original source records are not claimed as read. Later source changes concern mandate write-back."
+    }
+  ],
+  "final_installation": {
+    "source_commit": "0000375fdf358797011855ea66671e5774f171a1",
+    "client_version": "2.1.274 (Claude Code)",
+    "isolated_profile": "/private/tmp/aipos-pe3-close/install-v7/config",
+    "plugin_list": [
+      {
+        "id": "aipos@aipos",
+        "version": "1.0.1",
+        "scope": "user",
+        "enabled": true,
+        "installPath": "/private/tmp/aipos-pe3-close/install-v7/config/plugins/cache/aipos/aipos/1.0.1",
+        "installedAt": "2026-09-20T14:45:10.268Z",
+        "lastUpdated": "2026-09-20T14:45:10.268Z"
+      }
+    ],
+    "skill_count": 11,
+    "source_files_match": true,
+    "files": [
+      {
+        "path": ".claude-plugin/plugin.json",
+        "sha256": "3fc928732e7ac9ff56e9a8fba7c6d63a2400a70c59cd93626c234d0bff6bd5ae"
+      },
+      {
+        "path": "README.md",
+        "sha256": "d764cfb7aa8f4015486d3d57cc76a3076331f2d3759e04ef63dba69d6d989087"
+      },
+      {
+        "path": "references/gherkin-authoring-standard.md",
+        "sha256": "1e7691ec4bc00e037c47d5f7a3c145c471d9549e55cca249b23a7759e2e94c8d"
+      },
+      {
+        "path": "references/spec-identifiers.md",
+        "sha256": "ea44fc3946a2684035463b6f266eab7b95bf73f14f51ff5c2517a6d824bd1870"
+      },
+      {
+        "path": "references/workflow-source.md",
+        "sha256": "2de80ef002a365c9aafd4a5bd8922f6adbea5bd61be4315c419615e0f09f8568"
+      },
+      {
+        "path": "skills/aipos-epic-create/SKILL.md",
+        "sha256": "27c4e122a0656fea6faee1a4d5b3687888606aa9582271804853c22a5229caa1"
+      },
+      {
+        "path": "skills/aipos-epic-create/references/epic-template.md",
+        "sha256": "504a4daf6fb9039d6c99fab41f780ee1ac4adb0b05f8a815d6e7482e6e2dcb29"
+      },
+      {
+        "path": "skills/aipos-epic-create/references/metrics-and-evaluation.md",
+        "sha256": "dcbcefc4cd220ed11afb8768b471bb599f74e04e99617acd3dcff88d51216c21"
+      },
+      {
+        "path": "skills/aipos-epic-create/references/problem-framing.md",
+        "sha256": "a209fddb5b68c7c53f7dc38d038b46a31968c29ca7dbb7ccc5376c3ea0857791"
+      },
+      {
+        "path": "skills/aipos-epic-create/references/tracker-adapters.md",
+        "sha256": "9e281bf42937eda96556688d77982b62ee30e20f8a8c1c15e1af3a1ef53ca970"
+      },
+      {
+        "path": "skills/aipos-feature-create/SKILL.md",
+        "sha256": "23fc18df53451c01b744f16b62638ed9738be232ef2d100887b53321156bc551"
+      },
+      {
+        "path": "skills/aipos-feature-create/references/feature-template.md",
+        "sha256": "fde7430229b9033e9b4d1d66f3a64ce8598f780eff47bafe5fa1bffc7eb508a9"
+      },
+      {
+        "path": "skills/aipos-feature-create/references/gherkin-tagging.md",
+        "sha256": "1a73ad2953fa4f3dc2d62315aa6feb29d5af04afd315977faaf511e02857fa62"
+      },
+      {
+        "path": "skills/aipos-feature-create/references/story-mapping.md",
+        "sha256": "7e09a7afcdbd9b3a90dfa48112e0745561d2211dfebd28e036556ae30903b250"
+      },
+      {
+        "path": "skills/aipos-feature-create/references/tracker-adapters.md",
+        "sha256": "f41d9e5fbe62c1f71826992e05548111f1321706e8ac066ffb933a143d30f62a"
+      },
+      {
+        "path": "skills/aipos-feature-map/SKILL.md",
+        "sha256": "da03c658ae6140fab308a788f2f0a94054d28e6db7d906ce6fa4369a8ccecebd"
+      },
+      {
+        "path": "skills/aipos-feature-map/references/ingestion-contract.md",
+        "sha256": "e758ff3165409b72f4857e3ec9913e437489079b3e1f27902ca778274d8b41e8"
+      },
+      {
+        "path": "skills/aipos-feature-map/references/rendering.md",
+        "sha256": "88be507f0b164c688f20a25b2b4e98d0aef7faeec86b1929b2ff8f1ce34dc684"
+      },
+      {
+        "path": "skills/aipos-feature-map/references/scoring.md",
+        "sha256": "29d4bbd289c096894bd2a13f67e213821ebcf5f01f424b629036867c6203c62f"
+      },
+      {
+        "path": "skills/aipos-feature-map/scripts/render_map.py",
+        "sha256": "119d0c52284e9f43465a513146812427d91a70164ec2ddac5bead054abe5019c"
+      },
+      {
+        "path": "skills/aipos-feature-map/scripts/repo_ingest.py",
+        "sha256": "5698191cb4d363c8bd0da75587e0d237b30cb260efdce8f1784e6499ee5e9dcb"
+      },
+      {
+        "path": "skills/aipos-feature-map/scripts/requirements.txt",
+        "sha256": "16e50ac166570d4ecb5f3b37789986867134361e0b665a2a10d6d6bd8e640b9c"
+      },
+      {
+        "path": "skills/aipos-feature-map/scripts/verify_scores.py",
+        "sha256": "91aa2a1432552456e0551b58d9d45e538ebd04a0f02db237f2f07c7b6ce944ac"
+      },
+      {
+        "path": "skills/aipos-feature-map/scripts/workflow_resolve.py",
+        "sha256": "92f550bb00e7e0475a67cdf9dde334ca9c245d9692ba6f99cf248e0789554e92"
+      },
+      {
+        "path": "skills/aipos-feature-readiness/SKILL.md",
+        "sha256": "4d96dafc3dafd6e969c2108e98637b20e913f36c57e88d321d24af474f4d5765"
+      },
+      {
+        "path": "skills/aipos-feature-readiness/references/govkit-readiness-rubric.md",
+        "sha256": "4537b815d457d838120b720cab8f940ce8bc16cfc6c8be1255530536bc1eeeab"
+      },
+      {
+        "path": "skills/aipos-feature-readiness/scripts/readiness_state.py",
+        "sha256": "bd4c9b55488348cfab5f56342d762733dfd4909cf6c8aeaf3463962087178548"
+      },
+      {
+        "path": "skills/aipos-feature-refine/SKILL.md",
+        "sha256": "4e10838c4185e151bd23efbd7ba6b28a51d4c6cb17fcb600fac3f2da5f6a50f6"
+      },
+      {
+        "path": "skills/aipos-feature-refine/references/example-mapping-facilitator.md",
+        "sha256": "e5ea0991baf2666c8fa876f755d1b0725aadaaf42ec676875b2814eb779748b8"
+      },
+      {
+        "path": "skills/aipos-feature-refine/references/gherkin-quality-rubric.md",
+        "sha256": "6d80c1f2d3714db28e0db71e770690b38055c71bd30f9569e00e913ed44f73cb"
+      },
+      {
+        "path": "skills/aipos-feature-refine/references/pm-review-checklist.md",
+        "sha256": "c0c03466d2f6aa08865d181826a927c494a36b5061e7c716c15570c9fe7d5484"
+      },
+      {
+        "path": "skills/aipos-feature-refine/references/qa-evidence-checklist.md",
+        "sha256": "49a49baa6ed00ea3483711a5b06f4c7c1f9156d822d38b56bb47228d35d95ee7"
+      },
+      {
+        "path": "skills/aipos-feature-refine/scripts/change_package.py",
+        "sha256": "16d16e5f9d8533a3d289160490615b0474d645570e6a8c207500919c18c23a6a"
+      },
+      {
+        "path": "skills/aipos-feature-slice/SKILL.md",
+        "sha256": "a10924092aa97f79caceb7b87252dc43995d7cc5e67b064706091f45b4c001bf"
+      },
+      {
+        "path": "skills/aipos-feature-slice/references/slicing-rubric.md",
+        "sha256": "542948f07c2a574ed4f9a44be12e0b7277c3c192868bdecbd2d6e8450318af44"
+      },
+      {
+        "path": "skills/aipos-feature-slice/references/tracker-writeback.md",
+        "sha256": "c9c394ea4b78ec80cfd2b2ebc3d5d977f4cf766557819222d695e52a401b79a5"
+      },
+      {
+        "path": "skills/aipos-feature-slice/scripts/compute_size.py",
+        "sha256": "a6f307420343aba47665e37d231a3832e2738ddef84b2f2bab7ef49716fd3f7e"
+      },
+      {
+        "path": "skills/aipos-metrics-emit/SKILL.md",
+        "sha256": "d04e98e510ad0a98f060d78079fdf06cc29547a57df7efd43b1d425ff5931fad"
+      },
+      {
+        "path": "skills/aipos-metrics-emit/references/event_schema.md",
+        "sha256": "d0e1ab5c9f3e123e589412f53d1eb47cde05159ff600b7593ba8112298de1aa0"
+      },
+      {
+        "path": "skills/aipos-metrics-emit/scripts/emit_metrics.py",
+        "sha256": "6d5b044def4fe7cc72fc2a293436b64aeb0ff47db1083d539d7c505a0616a768"
+      },
+      {
+        "path": "skills/aipos-metrics-emit/scripts/requirements.txt",
+        "sha256": "0aec104ab67f779220484cf43e73e2aba9464f16365b47754efec488552fbcb3"
+      },
+      {
+        "path": "skills/aipos-quarterly-planning/SKILL.md",
+        "sha256": "d9d57b56d91f689b366aa048114a70d3e9d30d9e64d80b92840fe3390cbee8ef"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/README.md",
+        "sha256": "feca74d54c100f53a38b81bfc0c5d43b42443592a2772eb2808b21e1610c8eab"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/SKILL.md",
+        "sha256": "8e9e898672b5352bb4056af4ba01ca7abd112d159690f6604a5e0306f42181b5"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/demand-test.md",
+        "sha256": "fbc9002e54f7a841c86319099505281a0c725f3e860bf469b747585b871cffff"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/eval-stub-brief.md",
+        "sha256": "128f1ba54f613254d395c7902d2f9015baab67ffb48b56f7c425299d55273119"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/evidence-intake.md",
+        "sha256": "6cf50342c4d5b126340412a601b8b10a04465beccc4137bdefd4779e916c8746"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/feasibility-spike.md",
+        "sha256": "3c3f476802e2befb64a06501dcc0be97b697f394f081ec395c5123cb162ecb77"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/interview-guide.md",
+        "sha256": "85de7918df1b5d2f53c919f869942935e33b4a8869ce900a0bffb5826b9dd6e7"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/problem-sizing.md",
+        "sha256": "a4bc87e5992140dbd2a6b2fc16dba396d0516bd3ec85ab19e2c7b1998e77f2b3"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/record-writeback.md",
+        "sha256": "c3765dda732afa11540bac9f71fa3880e0c350a272a248f4c9f175c4609e413d"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/viability-brief.md",
+        "sha256": "9572d880f4122b1cedbfefa24945ad91b4355e37438ad7e9923da664aef95bcb"
+      },
+      {
+        "path": "skills/aipos-rapid-validation/references/visual-prototype.md",
+        "sha256": "35c0f058730e37b9ee62c888224b2ac12d481925c5e0250a5d1e69736a6fb172"
+      },
+      {
+        "path": "skills/aipos-synthetic-data/SKILL.md",
+        "sha256": "5b5aa147190553b8d7f485619734446757b9c31f8cf9c9959e9b3bef79e669ef"
+      },
+      {
+        "path": "skills/aipos-synthetic-data/references/faker-patterns.md",
+        "sha256": "ad07bd5236cf25027e404f4c3f4ee410217f6eef2005feb2ddd5ba23a6047d4e"
+      },
+      {
+        "path": "skills/aipos-synthetic-data/scripts/generator_template.py",
+        "sha256": "3e603db26ed99ae2d271c925ba30cd1463e1bbee7b42a74ede09071a5480af22"
+      },
+      {
+        "path": "skills/aipos-synthetic-data/scripts/requirements.txt",
+        "sha256": "f2cca4ff0bc3f93548e0e341b2df6a2cab8d15df5b17d55b66a1d3973ae650e4"
+      },
+      {
+        "path": "skills/aipos-workflow-map/SKILL.md",
+        "sha256": "08da7dfd092e995b3caacb4a8895c0c5ba54d0b7b4f63581cf2830ad749cce82"
+      }
+    ]
+  }
+}

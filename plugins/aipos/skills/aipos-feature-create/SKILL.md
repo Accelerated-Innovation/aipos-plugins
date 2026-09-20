@@ -216,9 +216,13 @@ Switch on GenAI mode when you see model-generated behavior, in either mode.
 
 When detected, say once:
 
-> This involves GenAI behavior, so I'll include evaluation scenarios and evaluation NFRs. Tell me if you'd rather not.
+> This involves GenAI behavior, so I'll carry the stated evaluation requirements and flag any missing quality policy or thresholds. Tell me if you'd rather not.
 
-Proceed in GenAI mode unless the PM explicitly disables it. GenAI mode changes three things: Gherkin gains `@genai` and `@evaluation` scenarios (`references/gherkin-tagging.md`), NFRs gain the evaluation categories (`references/feature-template.md`), and the package gains a draft `eval_criteria.yaml`.
+Proceed in GenAI mode unless the PM explicitly disables it. Tag supported model behavior
+`@genai`; derive `@evaluation` scenarios only from stated quality Rules or applicable
+inherited criteria (`references/gherkin-tagging.md`). Review evaluation NFR categories
+and produce a draft `eval_criteria.yaml` (`references/feature-template.md`). Missing
+quality policy is a gap to resolve, not permission to invent acceptance behavior.
 
 **The agentic-behavior question.** Once GenAI mode is on, ask the PM explicitly, once — the same question `aipos-feature-refine` asks at its checkpoint:
 
@@ -250,13 +254,19 @@ and the rationale live in the PDG and have an owner there. Copying the business 
 feature package creates a second editable copy that drifts from the first, and the drift is
 invisible because both look authoritative.
 
-Pull through only what the *behavior* needs: the outcome being pursued, the affected parties,
-and the constraints the evidence implies.
+Pull through only what the *behavior* needs: a feature-local observable outcome,
+the affected parties, and the constraints the evidence implies. Reference the
+opportunity's existing outcome where that already expresses the result; do not
+add a second editable business-case section. Rule-to-evidence tables carry source
+references and the inference made, not copies of interview counts or telemetry
+findings maintained in the PDG.
 
 ### Step O2 — Name the outcome and the actors
 
-One sentence on the outcome this behavior is meant to produce, and who is involved. If the PDG
-carries personas, use them; if not, a role name is a real answer. **Do not invent a named
+Use `outcome_ref` when the opportunity already owns the outcome. Add a feature-local
+observable effect only if it is distinct; do not copy or paraphrase the canonical outcome
+into another editable Outcome, Summary or business-case section. Name who is involved.
+If the PDG carries personas, use them; if not, a role name is a real answer. **Do not invent a named
 persona with invented goals** — the point is grounding, and a fabricated persona is the opposite.
 
 ### Step O3 — Derive the Rules from the evidence
@@ -272,6 +282,11 @@ exists.
 stated, sitting in a Draft 0, is read downstream as a decision somebody made. "The PM has not
 said what happens above the limit" is a finding; an invented limit is a fabrication.
 
+Evidence of a problem can motivate a policy proposal without establishing that policy.
+A Rule described as inferred, unconfirmed or awaiting a product choice stays in the
+unresolved register, outside acceptance Gherkin. Draft the supported portion now;
+missing policy does not require withholding the whole Draft 0.
+
 Ask each rule's **boundary** — a threshold, window, limit or count is where the business most
 often disagrees with itself. If the boundary is unknown, it goes in the unresolved register with
 the number left blank, not filled in with something plausible.
@@ -279,8 +294,19 @@ the number left blank, not filled in with something plausible.
 ### Step O4 — Draft scenarios against the Rules
 
 Per `../../references/gherkin-authoring-standard.md`, with `@scenario:<slug>` identifiers.
-Every scenario illustrates a stated Rule. A scenario no Rule explains means a Rule is missing —
-surface it; do not write the Rule to justify the scenario.
+Every scenario illustrates a stated Rule. If no stated Rule explains it, keep the proposed
+policy or test idea in the unresolved register, outside `acceptance.feature`. A warning,
+TBD threshold or unrelated parent Rule does not make an unsupported scenario valid.
+For an opportunity Draft 0, keep incomplete scenario candidates in the unresolved
+register alongside their Rule, source and missing decision/parameter. The acceptance
+file contains only scenarios whose policy and expected outcome are established; it
+does not contain placeholder scenarios. This changes where the unknown is recorded,
+not whether the draft can proceed. Preserve the stated Rule and the coverage gap.
+
+Check the inference behind each `Then`: could a different behavior also satisfy the
+source Rule? If so, choosing between those behaviors is a product decision, not an
+illustrating example. Do not choose a lifecycle transition, permission or recovery
+policy merely because it would be a plausible way to enforce the Rule.
 
 Where behavior comes from a **prototype**, say so and treat it as a proposal. A prototype
 demonstrating something is not a decision to build it, and behavior that reaches a spec because
@@ -402,19 +428,21 @@ Identify the primary persona, then propose **4–7 left-to-right user activities
 
 > Here's the proposed workflow backbone. I'll proceed unless you'd like adjustments.
 
-Refine only if asked.
+Keep the backbone centered on the primary persona's path to the outcome. Show other actors at the handoff they support, rather than adding their separate administrative journeys to the backbone. Refine only if asked.
 
 ### Step E3 — Propose horizontal slices
 
 > Now the smallest end-to-end slice that delivers measurable value.
 
-Propose an MVP slice, and optionally V1 and V2. **When an epic package exists, start from its confirmed Initial Scope / MVP** — propose slices as a refinement of that scope, not a rederivation, and flag any divergence from it explicitly. Every slice must span multiple backbone stages, deliver a usable outcome, and tie to a stated success metric. A slice that touches one stage is a layer, not a slice — rework it.
+Propose an MVP slice, and optionally V1 and V2. **When an epic package exists, start from its confirmed Initial Scope / MVP** — propose slices as a refinement of that scope, not a rederivation, and flag any divergence from it explicitly. Every slice must span multiple backbone stages, deliver a usable outcome, and tie to a stated success metric. A slice that touches one stage is a layer, not a slice — rework it. If a later
+idea has no supported outcome or metric, keep it in open questions rather than
+presenting it as a defined V1/V2 slice. Do not invent a metric to complete it.
 
 ### Step E4 — Propose feature candidates
 
 A numbered list. Each candidate carries a short action-oriented name, a **one-line scope boundary** stating what it owns, and its slice.
 
-Coach toward clear boundaries, durable responsibilities, minimal overlap, and no vertical capability-only features.
+Every listed candidate, including deferred candidates, needs the same ownership boundary; a blocked/status note does not replace what it owns and does not own. Coach toward clear boundaries, durable responsibilities, minimal overlap, and no vertical capability-only features.
 
 ### Step E5 — Integrity checks
 
@@ -437,7 +465,18 @@ Allow per-feature overrides.
 
 **Recommend creating the MVP slice's stubs now and deferring V1/V2.** Stubs for features two slices out are inventory: they age, they get renamed, and their presence invites premature work. Offer the deferral as the default; the PM can override and create the full set — their call, one line, no argument.
 
-Confirm the **whole set in one preview**, then create one stub per confirmed entry with: name, epic link, release, type, owner, and a one-sentence description.
+Present the **whole set now** as a table with exactly the six stub fields:
+name, epic link, release, type, owner, and a one-sentence description. Reuse
+confirmed candidates and defaults; show an unresolved value as a gap rather
+than inventing it or asking the user to approve an unseen table.
+
+If tracker tools are absent, say so and deliver that same copy-ready table;
+do not ask the user to establish tool availability or imply a write happened.
+If a tracker create remains possible and is not already authorized for this
+exact preview and destination, state the permanent-key/deletion limitation
+from `references/tracker-adapters.md` and ask one explicit question covering
+the whole set. Resolve missing required values before that final approval.
+An authorization already covering the reviewed set persists; do not ask again.
 
 Stubs carry **nothing else**. No acceptance criteria, no NFRs, no Definition of Done, no privacy text — those are Feature mode's job, and a stub padded with unreviewed detail is worse than an empty one because it looks finished.
 
@@ -517,10 +556,10 @@ Generate complete, syntactically valid Gherkin per `../../references/gherkin-aut
 
 Four things from the standard are worth stating here because they are what the gates check first:
 
-- **Every scenario illustrates a stated rule, establishes a meaningful context and one trigger, and asserts observable outcomes.** Several related outcomes of one trigger are fine.
+- **Every scenario illustrates a stated rule, establishes a meaningful context and one trigger, and asserts observable outcomes.** Several related outcomes of one trigger are fine. Without a supporting Rule, keep the proposal in the unresolved register, outside accepted Gherkin; merely flagging the missing Rule is insufficient.
 - **Every scenario is independently executable.** Never write "the invoice from the previous scenario"; put the state in this scenario's own `Given`.
 - **Cover the boundary, the negative path, permissions and exceptions where they matter — then stop.** An exhaustive combinatorial catalog drives readers away from the document, which costs more understanding than the extra cases buy. Use `Scenario Outline` for real data variation of one behavior.
-- **Mark what is derived.** You may derive illustrating examples from a confirmed rule; say in the summary that the values are proposed for confirmation. You may not invent a policy, a threshold, a permission model, or anyone's approval. Unresolved decisions stay visible as `<TBD — …>` placeholders plus an open question, and a scenario carrying one is never reported as ready for execution.
+- **Mark what is derived.** You may derive illustrating examples from a confirmed rule; say in the summary that the values are proposed for confirmation. You may not invent a policy, a threshold, a permission model, or anyone's approval. A missing parameter of a stated outcome may be `<TBD — …>` plus an open question, making the scenario non-executable. An undecided outcome or inferred policy stays outside acceptance Gherkin in the unresolved register.
 
 **Assign tags automatically.** Derive the delivery-phase tag from the feature's slice and the classification tags from each scenario's behavior. Do not make the PM pick tags. Ask only when the feature's slice is unclear, a scenario spans delivery phases, or the intent genuinely cannot be classified.
 
@@ -530,9 +569,21 @@ Run the validation checks in `references/gherkin-tagging.md` and fix what fails 
 
 ### Step F8 — Non-functional requirements
 
+Inherit a constraint's applicability together with its threshold. A control
+triggered by external sharing stays conditional when external sharing is excluded;
+do not enforce it against internal use in Gherkin or YAML merely to populate an
+evaluation table. Retain the original criterion, trigger, threshold, and scope
+status, with the future workflow that must activate it. Check that the narrative,
+scenarios, NFR table, and evaluation file all express the same applicability.
+
 Walk the **same ten areas the gates review** — Performance · Security · Privacy · Reliability · Observability · Accessibility · Data quality · Compliance · Cost · Supportability — into the `nfrs.md` table from `references/feature-template.md`. Most features need constraints in three to five of them; walk all ten and record "not applicable" silently for the rest rather than skipping the walk. (Scalability concerns land under Performance or Reliability.) These are `aipos-feature-refine` Step 7's and `aipos-feature-readiness` dimension 7's exact categories — a gap you leave here is a finding there.
 
 In GenAI mode also capture: latency constraints, token cost expectations, model and vendor constraints, observability requirements, and evaluation cadence.
+
+Before presenting the assembled package, reconcile the final NFR table against
+all ten categories. Keep an applicable row, an explicit not-applicable entry,
+or an unresolved gap for each; an earlier draft's row does not count if it was
+dropped from the final artifact. Do not claim “ten areas covered” without that check.
 
 Every NFR row carries an **owner** — the person or role who will produce its evidence. The gates score on it, and an unowned NFR is never measured.
 
@@ -588,8 +639,11 @@ Epic mode delivers:
 ## Defaults
 Release · Type · Owner
 
-## Ready to create
-<numbered final list, with destination named>
+## Stub preview
+| Name | Epic | Release | Type | Owner | Description |
+|---|---|---|---|---|---|
+
+<destination and tool availability; the one outstanding whole-set decision, if any>
 ````
 
 Feature mode delivers the feature package from `references/feature-template.md`: `feature_source.md` (stories, description, DoD, privacy), `acceptance.feature`, `nfrs.md`, and in GenAI mode `eval_criteria.yaml`.
@@ -601,7 +655,7 @@ Do not:
 - Create or modify any record without the explicit, destination-named confirmation — a bare "proceed" never covers a write
 - Create multiple features without confirming the whole set in one preview first
 - Invent personas, success metrics, evidence, quotes, thresholds, or evaluation numbers
-- Invent business rules, or write a scenario no stated rule explains without surfacing the missing rule
+- Invent business rules, or put a scenario no stated rule explains into `acceptance.feature`, even with a warning
 - Write a scenario that depends on another scenario having run first
 - Present a derived example as a confirmed requirement, or an unresolved placeholder as ready for execution
 - Switch on GenAI mode because a coding agent is building the feature

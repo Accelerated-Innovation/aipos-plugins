@@ -94,7 +94,12 @@ Create `/features/<work-item-id>/test_data/generate_test_data.py`, starting from
 - **Self-describing**: `--help` works; header comment names the work item, seed, and faker version.
 - **Format writers**: CSV, JSONL, SQL insert emitters included; use only the ones this feature needs.
 
-Every record carries a `synthetic` marker appropriate to the format (a `_synthetic: true` field, a CSV column, or a SQL comment header) so a stray file can never be mistaken for real data.
+Label the output synthetic without changing its data contract. For a closed or
+explicit user schema, keep the records to exactly those fields; put the synthetic
+marker in the manifest, filename, sidecar, or a format-supported comment outside
+the records. An extra `_synthetic` field or CSV column is allowed only when the
+schema permits it or the user approves that extension. Never add a business rule
+or record field just to satisfy a labeling convention.
 
 ### 5. Run, verify, and write the manifest
 

@@ -1,7 +1,7 @@
 # 1 — Interview guide
 
 **Retires:** *Is the problem real and worth solving?*
-**Produces:** a guide someone can run 5–8 times next week without you in the room.
+**Produces:** a guide someone can run independently once the recruiting plan is agreed.
 
 Interviews are the cheapest evidence in the system and the easiest to run badly. A guide
 that makes people agree with the PM produces confident, worthless data — and it is
@@ -36,9 +36,13 @@ One question at a time.
 3. **What would you do differently if you're wrong?** This is the decision rule. If the
    answer is "carry on anyway", say so kindly and ask whether the interviews are worth
    running at all.
-4. **How many, and by when?** Five to eight is the working default — enough for patterns,
-   few enough to run in a week. More than a dozen before a first synthesis is usually
-   avoidance.
+4. **How many, and by when?** Use the supplied sample, timing and mandate. If these are
+   undecided, leave them unknown in the draft. Offer a sample plan only as an explicitly
+   unadopted proposal; a template default is not a research decision or a mandate.
+
+The guide can be drafted while sample size, dates, owner and decision thresholds are
+unknown. List what must be settled before running it. Proposed agenda timings below are
+facilitation suggestions, not evidence of an agreed interview budget.
 
 ## Output template
 
@@ -60,7 +64,7 @@ We believe <specific, falsifiable claim about a behaviour or cost>. [E/I/A]
 ## Who we're talking to
 - **Target:** <role, context, and what makes them relevant>
 - **Screener:** <2–3 qualifying questions with in/out criteria>
-- **Target n:** <number> · **By:** <date>
+- **Target n:** <agreed number / unknown / unadopted proposal> · **By:** <agreed date / unknown>
 <If Target n exceeds the interviews budgeted, or By falls past the horizon, say so here and
 name what drops first — sessions, or questions — rather than quietly overrunning.>
 
@@ -123,5 +127,8 @@ Before handing it over, check:
 - No question contains the solution, except in the reaction section.
 - The hypothesis is falsifiable — you can state the sentence that would break it.
 - The decision rule has a real "no" branch.
+- Unknown sample, dates, owner, thresholds, baseline costs and volumes remain unknown in
+  the body and closing handoff. The guide contains questions to gather evidence, not
+  invented answers or claims that interviews have already run.
 - It fits the stated time budget when read aloud. Guides that overrun get truncated in the
   room, and it's always the magnitude questions that get cut.

@@ -68,7 +68,9 @@ A bare "proceed" does not request a script run, files, or an invented audit.
 - **Spec completeness score** is the leading quality counterweight (Pair 4).
   100 means the existing completeness rubric is satisfied. It does not issue a
   Development Token, verify product authority, or prove tests passed. Always show
-  `completeness.components`. A newly ready package may legitimately lack later
+  `completeness.components`. Use “spec-complete” or “metric inputs incomplete”
+  in tables and conclusions; do not relabel those states “gate-ready,” even
+  with a parenthetical qualification. A newly ready package may legitimately lack later
   platform artifacts such as `plan.md`; explain the lifecycle stage rather than
   treating every score below 100 as a pre-coding blocker.
 - A feature with `thresholds_met: false` or null FIRST/Virtue scores is not a
@@ -85,6 +87,9 @@ A bare "proceed" does not request a script run, files, or an invented audit.
 **"Which packages have incomplete metric inputs?"** — run the script, filter
 snapshots where `completeness.score < 100`, and present the feature, score,
 missing components, and emitted events path. Label this a completeness audit.
+Use that same label in the final conclusion: “N packages have incomplete metric
+inputs.” Even if the user's shorthand was “gate-ready,” reserve readiness wording
+for the separate handoff; do not repeat it as a synonym for completeness.
 
 **"Which features are ready to code?"** — use `aipos-feature-readiness` for an
 execution decision, or `aipos-feature-map` for an advisory corpus view. If the
@@ -95,6 +100,10 @@ metric completeness or execution readiness. Do not substitute one for the other.
 `--validate`, save NDJSON, report event counts per type and the validation
 summary.
 
-**"Is this output safe to share outside the org?"** — run `--validate`, then
-grep the NDJSON for anything org-identifying; the only identity-adjacent content
-should be git author fields inside standard git metadata. Report findings.
+**"Is this output safe to share outside the org?"** — run `--validate` and
+inspect the emitted values for supplied identifiers, URLs, and other identifying
+content. Schema validation checks allowed fields, not whether arbitrary strings
+in those fields reveal context. Report the checks performed and what was found;
+absence of the tested identifiers is not blanket sharing approval. Git author
+metadata is an input to rework calculation, not an allowed employee-identity
+export. Do not send events to an aggregator unless that transfer is requested.

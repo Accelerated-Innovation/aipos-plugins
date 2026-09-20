@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-19
 
-**Status:** Implemented and pushed in draft PR #31. Live routing and native artifact checks pass; coaching findings and remaining integration evidence keep release acceptance open. Nothing merged or published.
+**Status (2026-09-20):** Consolidation PR #31 and label-clarification PR #32 are merged. PE1–PE5 changes are in [draft PR #33](https://github.com/Accelerated-Innovation/govkit-plugins/pull/33); implementation and release review are recorded below and in the [follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md). This does not reopen the completed cross-repository E1–E5 pilot. No new tag or publication is authorized by this status line.
 
 **Direction:** One `aipos` plugin, eleven focused `aipos-*` skills, explicit AIPOS pillar workflows.
 
@@ -506,7 +506,7 @@ Entries below are chronological. Earlier budget/PR statements describe the initi
 
 ## Live verification and PR handoff
 
-The user authorized push, PR creation, and paid model evaluations without a spend cap. Implementation is in [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). The tested source is `a1e2522`; this final evidence update does not change the plugin.
+**Historical September 19 handoff:** The user authorized push, PR creation, and paid model evaluations without a spend cap. The following results describe source `a1e2522` from [PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31), merged September 20 as `73d24ae`. [PR #32](https://github.com/Accelerated-Innovation/govkit-plugins/pull/32) subsequently clarified PE labels and merged as `c622ec4`. The historical outstanding items below are superseded by the PE follow-up record; historical measurements remain unchanged.
 
 - Catalog comparison: **147/159 baseline**, **159/159 candidate** under the same Sonnet 5 evaluator, three repetitions, all 53 cases. All 102 critical candidate trials pass. The descriptions in the evaluated snapshot match the final source.
 - Native selection: **6/6**, with eleven AIPOS skills and seventeen observed built-in competitors. Four isolated native workflow artifact checks also pass; no supplied source file was changed.
@@ -517,7 +517,7 @@ The user authorized push, PR creation, and paid model evaluations without a spen
 
 Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
 
-### Plugin-evaluation follow-ups (PE1–PE5)
+### Plugin-evaluation follow-ups (PE1–PE5) — September 20 implementation
 
 | Slice | Scope | Completion evidence |
 |---|---|---|
@@ -527,26 +527,79 @@ Increment 02 and the live rename comparison in 08 are now complete. Increments 0
 | PE4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
 | PE5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
 
+The implementation uses focused commits for fixtures, conversation execution,
+rubric adjudication, discovery coaching, feature handoffs, and metrics/schema
+reporting. The [substantive closure report](../evaluations/2026-09-20-substantive-closure.md)
+is the current coaching ledger; the [prior follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md)
+retains the earlier comparison and integration evidence. Their JSON companions preserve
+all repetitions, input fingerprints, runtime checks, and earlier failures. Release
+readiness is a separate judgment from finishing these implementation slices.
 
-## Live verification and PR handoff
+### Current slice status (September 20)
 
-The user authorized push, PR creation, and paid model evaluations without a spend cap. Implementation is in [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). The tested source is `a1e2522`; this final evidence update does not change the plugin.
-
-- Catalog comparison: **147/159 baseline**, **159/159 candidate** under the same Sonnet 5 evaluator, three repetitions, all 53 cases. All 102 critical candidate trials pass. The descriptions in the evaluated snapshot match the final source.
-- Native selection: **6/6**, with eleven AIPOS skills and seventeen observed built-in competitors. Four isolated native workflow artifact checks also pass; no supplied source file was changed.
-- Coaching: **87/135 passed**, **48 failed**, across all 45 runnable cases with three repetitions. Four subject-truncated trials count as failures, including two favorable judge verdicts; no new model calls were used for that deterministic correction. Three original metrics fixture cases remain unrun. The [full report](../evaluations/2026-09-19-aipos-live-evaluation.md) preserves case-level results, errors, limits, and fixture conflicts.
-
-- Addressed demonstrated metrics/token and map-assessment ambiguities, persistent batch mode, and unsupported journey placements; the report records every retest outcome. Corrected the judge's missing fixture/turn context, deterministic invalid-route handling, and recorded larger streaming judge budgets for truncation recovery.
-- Offline suite: **415 passed, 5 skipped**. Hosted manifest and pytest checks pass at the tested source. `origin/main` remains the recorded baseline. No merge, publication, tracker mutation, or real-user plugin replacement occurred.
-
-Increment 02 and the live rename comparison in 08 are now complete. Increments 03–06, 12 and 13 remain partial because the complete coaching acceptance and required positive integration evidence are not established. Passing catalog routing does not erase those findings.
-
-### Plugin-evaluation follow-ups (PE1–PE5)
-
-| Slice | Scope | Completion evidence |
+| Slice | Status | Actual evidence / remaining work |
 |---|---|---|
-| PE1 — Fixture ground truth | Correct the stock threshold contradiction; complete or reclassify invoice approval fixtures; resolve external-sharing PII applicability. Keep originals/results identifiable. | Document each ground-truth choice; rerun all three repetitions of affected cases without teaching approval of contradictory behavior. |
-| PE2 — Conversation stages | Give long interviews case-specific user replies and stage expectations. Preserve no-fabrication and explicit authority boundaries. | Judge sees complete role/fixture context; each case measures the stage actually reached, with separate tool checks for writes. |
-| PE3 — Coaching misses | Address evidence/provenance tagging, stage-specific handoffs, unsupported study targets, slice completeness, and applicable output contracts in small skill-specific commits. | Fresh matched-input trials for each changed skill, all repetitions retained, with separate behavioral and evaluator failures. |
-| PE4 — Remaining integrations | Exercise the three metrics repository cases, positive live graph/authority paths, and browser rendering verification. | Real tool observations and inspected artifacts; no simulated live evidence or silent skips. |
-| PE5 — Release review | Reconcile open findings, recheck upstream/CI, and record the actual release candidate and rollout action. | No unresolved critical handoff; release action explicitly authorized. |
+| PE1 | Complete | Corrected synthetic policy and rubric ambiguities; final matched baseline 106/141; negative controls preserved |
+| PE2 | Complete | Authored conversations, stage-aware judging, budget controls, fingerprint-safe regrades; 427 offline passes and 5 fixture skips overall |
+| PE3 | Substantive acceptance complete; coaching polish open | Latest affected cohort: 81/87 → 87/87 substantive, 71/87 → 73/87 full rubric. Fourteen full-rubric misses remain documented; [closure report](../evaluations/2026-09-20-substantive-closure.md) records the matched criteria and original judgments |
+| PE4 | Complete within recorded scope | Three runtime metrics cases; actual MCP planning (three final rehearsals), HTTPS authority and token transition, browser inspection. Production/concurrency/application-conformance claims excluded |
+| PE5 | Release review complete; merge/publication pending | Final source and isolated 1.0.1 installation verified; three native handoffs pass. Draft PR #33 remains unmerged and unpublished; the review includes explicit nonblocking coaching follow-ups and evaluator adjudications |
+
+The four substantive **PE3** increments below are implemented and pass all 87
+substantive trials under the versioned acceptance profile. Full-rubric coaching
+polish remains tracked in the closure report. **PE5** release review is complete;
+merge/publication still requires the release decision. These are not new or
+reopened historical E1–E5 slices.
+
+### PE3 substantive closure — implementation increments
+
+Continue in PR #33; no new planning round is needed. The baseline for these fixes is
+the PR's existing candidate, `c2e3b8d`, not the pre-PR consolidation baseline.
+
+| Increment | Change | Acceptance evidence |
+|---|---|---|
+| Evidence and unknowns | Correct provenance definitions and remove adopted interview-template sample defaults; preserve unknown quantities throughout the artifact. | Existing discovery cases plus source-interpretation and unchosen-sample variations. |
+| GO handoff | Make the viability template produce the binding commitment fields or an explicitly incomplete authoring/refinement handoff; distinguish recommendation, preparation, submission and recorded approval. Honor existing no-save instructions. | Existing commitment cases plus supplied-selection and missing-selection GO variations. |
+| Grounded feature scenarios | Reference the source outcome; derive acceptance scenarios only from stated Rules; preserve real quality-policy coverage while keeping proposed policy outside acceptance Gherkin. | Existing authoring cases plus absent/present quality-policy variations. |
+| Complete release scope | Apply Rules/NFRs and prerequisites before optional scope prioritization; retain ordinary business validation as well as risk controls. Distinguish engineering stubs from shippable outcomes. | Existing slicing cases plus administrative-boundary and optional-enhancement variations. |
+
+Before coaching edits, freeze [substantive acceptance claims](../../evals/substantive-acceptance.json)
+for all 29 affected cases and add eight synthetic variations. Run three repetitions per case.
+Grade the same subject transcripts separately against the full rubric and substantive claims;
+retain both, including all failed revisions. Only the substantive profile decides closure of
+these findings; presentation misses remain visible and are not relabeled as full-rubric passes.
+All substantive claims must pass all three repetitions, with no source, scope, permission,
+authority or functional-output-contract regression. Missing/truncated trials do not count as passes.
+
+One existing slicing rubric is corrected before the comparison: a stubbed payment gateway
+is an engineering increment, not a shippable real-payment MVP under an unchanged payment
+contract. Regrade its existing baseline subjects under that correction rather than reporting
+a rubric change as coaching improvement. Retain the 40 original cases and the prior reports.
+
+After behavioral checks, rerun offline/structural validation, verify the final isolated
+installation, update this ledger and the PR evidence, and recheck hosted CI. Merge and
+publication remain separate release actions.
+
+**Evaluation adjudication during implementation:** the original substantive profile is
+preserved at `f3419ce`. Version 2 corrects only slicing case 4, claim 1: the supplied
+expense fixture lacks explicit successful-payment and audit-retention coverage, so a
+response that identifies those gaps must not be penalized for refusing to call the
+selection shippable. Regrade the same baseline and both candidate cohorts for that case;
+retain the original judgments. This changes the evaluator, not the skill's release bar.
+
+**Further source-verified adjudication:** profile version 3 clarifies two rapid-validation
+claims. “Prototype-only, not agreed policy” is a valid explanation of the missing product
+decision without requiring a particular aphorism. A reference-only handoff need not repeat
+the 14% telemetry finding; when it does repeat that finding, source attribution is still
+required. Apply both clarifications to the same baseline and candidate subjects and keep
+the original grades. The earlier candidate that repeated 14% without mapping it to its
+source remains a real failure; the later candidate that omitted the number is different.
+
+Profile version 4 clarifies the same distinction for scope: a scenario explicitly named
+as **not selected pending the human decision**, with its missing-validation reason,
+is outside the proposed commitment. The evaluator must not demand that the skill also
+declare it permanently excluded. Silent omission and committing it without evidence
+remain failures. Preserve the original judgment and apply the correction to matched
+baseline and candidate transcripts.
+
+**Closure evidence:** source `0000375fdf358797011855ea66671e5774f171a1`; 87/87 substantive trials, 73/87 full-rubric trials for the affected set; three final native checks; 427 offline passes and five fixture skips; all eleven skills and both manifests valid; fresh isolated installation with 58 matching runtime files. All candidate revisions and original evaluator failures remain in the [closure report and JSON](../evaluations/2026-09-20-substantive-closure.md).

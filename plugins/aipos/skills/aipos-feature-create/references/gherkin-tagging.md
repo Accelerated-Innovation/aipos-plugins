@@ -180,14 +180,19 @@ When derivation is ambiguous but the scenario is sound, pick the tag the scenari
 
 ## GenAI mode requirements
 
-When GenAI mode is active, the file must satisfy all of:
+In GenAI mode, classify the behavior supported by stated Rules:
 
-- At least one scenario tagged `@genai` — the model-generated behavior itself.
-- At least one scenario tagged `@evaluation` with a **measurable, threshold-based** outcome.
-- Any scenario where the model invokes an external tool or function tagged `@tool-use`.
-- Hallucination, groundedness, or unsafe-output validation tagged `@nfr-compliance` or `@safety`.
+- Tag model-generated behavior `@genai`.
+- A stated quality Rule or applicable inherited evaluation criterion gets a separate
+  `@evaluation` scenario with its supplied measurable outcome. Preserve its applicability.
+- Tag actual model tool use `@tool-use` and supported safety validation
+  `@nfr-compliance` or `@safety`.
 
-Generate these without prompting the PM. They are the difference between a GenAI feature that can be gated and one that ships on vibes.
+Derive tags automatically; never derive product policy from a required tag count.
+If no quality Rule exists, omit evaluation acceptance scenarios and carry the missing
+policy in the unresolved register. If a Rule exists but its threshold is missing,
+a TBD scenario under that Rule can expose the gap and must be marked non-executable.
+Neither case blocks delivery of an honest Draft 0; both leave a readiness gap.
 
 **Keep the two registers in separate scenarios.** A deterministic behavior check says what happens on one occasion; an aggregate evaluation says what a statistic does over a dataset. A scenario that asserts both is unfalsifiable, because a single run cannot decide it. This is the most common defect in GenAI Gherkin:
 
@@ -224,17 +229,17 @@ Run these before presenting Gherkin. Fix what fails — a missing tag is a defec
 3. Every scenario has **at least one** classification tag.
 4. No scenario is untagged by accident.
 5. No scenario carries two delivery-phase tags.
-6. GenAI mode: `@genai` present, `@evaluation` present, tool use tagged `@tool-use`, safety validation tagged `@nfr-compliance` or `@safety`.
+6. GenAI mode: supported model behavior tagged `@genai`; stated quality Rules covered by `@evaluation`; actual tool use tagged `@tool-use`; supported safety validation tagged `@nfr-compliance` or `@safety`. Missing quality policy remains an explicit gap, not an invented scenario to meet a tag count.
 7. Delivery tags are consistent with the feature's confirmed slice — an `@mvp` scenario in a V2 feature is either a mis-tag or a scoping error, and both are worth a line.
 8. Every `@evaluation` scenario asserts a threshold, or marks the threshold as an open gap.
 9. Every scenario has an observable outcome.
-10. Every scenario sits under the `Rule:` block it proves; a scenario no stated rule explains is a missing-rule gap to surface, not a formatting fix.
+10. Every scenario sits under the `Rule:` block it proves. A scenario no stated Rule explains stays outside `acceptance.feature` as an unresolved proposal; a warning or unrelated parent Rule cannot justify it.
 11. The file parses: `Feature:` header present, persona block present, `Rule:` blocks present, no orphaned steps. GovKit ingestion parses with the official Cucumber parser, so anything it rejects is genuinely invalid Gherkin, not a house-style quibble.
 12. No scenario depends on another scenario having run — each is independently executable.
 13. Every `Background:` is correctly scoped: a feature-level one is true for every scenario in the file; setup true for only one rule's scenarios sits in that rule's `Background:`.
 14. Every rule with a threshold, limit, window or count has an example **on** the boundary, not only either side of it.
 15. No scenario mixes a single-occasion assertion with an aggregate statistic over a dataset.
-16. Every scenario carrying an unresolved `<TBD — …>` placeholder is listed as not ready for execution.
+16. A TBD parameter of a stated outcome is listed as not ready for execution. If the outcome itself is undecided, remove that proposed scenario from `acceptance.feature` and retain the question in the unresolved register; a warning comment cannot turn an unknown policy into acceptance behavior.
 
 Correcting a tag needs no announcement. **Hiding the result does** — always present the full Gherkin plus a one-line coverage summary so the tagging is inspectable even though it was automatic:
 

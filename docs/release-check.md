@@ -1,45 +1,38 @@
-# AIPOS 1.0.0 candidate verification
+# AIPOS 1.0.1 candidate verification
 
-**Status:** Pushed to [draft PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31). Routing meets the acceptance target. Coaching has unresolved findings, so release sign-off remains open. No merge, tag, or publication has occurred.
+**Status:** PE1–PE5 changes are in [draft PR #33](https://github.com/Accelerated-Innovation/govkit-plugins/pull/33). Consolidation [PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31) and label-clarification [PR #32](https://github.com/Accelerated-Innovation/govkit-plugins/pull/32) are merged. This candidate has not been merged, tagged, or published. Substantive coaching acceptance is complete; the remaining full-rubric follow-ups and evaluator adjudications are recorded below. Merge/publication remains a separate decision.
 
-**Tested source:** `a1e2522` on `codex/aipos-plugin-consolidation`, plugin **1.0.0**. Subsequent evidence-only commits do not change plugin/evaluator inputs. Baseline: `9ec174d9a9d740fddb928f7367cf6e635d637499`.
+**Tested source:** `0000375fdf358797011855ea66671e5774f171a1` on `codex/plugin-evaluation-followups`, plugin **1.0.1**. The latest closure comparison starts at PR #33 candidate `c2e3b8d`; the earlier `c622ec4` comparison remains historical. Per-trial fingerprints, original/clarified judgments and installed-file hashes are committed in the evidence.
 
-One `aipos` plugin replaces `aipos-p1`, `aipos-p2`, and `govkit`, with eleven distinct `aipos-*` skills. Pillars remain the workflow model; `.govkit/` paths, execution contracts, event fields, scoring, and bundled script behavior are preserved.
+One `aipos` plugin contains eleven focused skills. Names and routing descriptions are unchanged from the accepted consolidation catalog. Pillars remain the workflow model; `.govkit/` paths, bundled script behavior, event contracts, and authority boundaries are preserved.
 
 ## Verification
 
 | Check | Actual result |
 |---|---|
-| Offline suite | **415 passed, 5 skipped**; skips are absent file-fixture directories |
-| Hosted PR checks | Both passed at the tested source; manifest CI uses Claude Code 2.1.199 |
-| Marketplace and manifest | Both validate; one entry, one plugin, eleven unique skill IDs, no aliases |
-| Live catalog routing | Original **147/159**; candidate **159/159**, including all 102 critical trials |
-| Installed-client selection | **6/6** with Claude Code 2.1.274 / Sonnet 5; observed catalog: eleven AIPOS plus seventeen built-in skills |
-| Live coaching | **87/135 passed**, **48 not accepted (including four subject truncations)**; 45 cases × three repetitions, Opus 5 subject / Sonnet 5 judge |
-| Runtime-dependent metrics cases | Three cases unrun in the text-only harness; not passes |
-| Native workflow artifact checks | **4/4**: prepared commitment, deliberately blocked readiness, rendered journey, unsubmitted change proposal |
-| Fresh isolated installation | Only `aipos@aipos` 1.0.0 enabled, eleven skills |
-| Early-plugin replacement | Three baseline plugins installed, removed, then replaced with AIPOS in a disposable profile |
-| Installed resources/scripts | Resource references resolve; seven checks across six scripts passed from a separate project |
-| Script preservation | All nine bundled scripts retain executable syntax after normalizing public names and docstrings |
-| Case retention | All forty original cases retained; 48 total cases across eleven skills |
+| Offline suite | **427 passed, 5 skipped**; absent file-fixture directories account for the skips |
+| Hosted checks | Pytest and manifest jobs are required on the final pushed PR head; see PR #33 checks |
+| Marketplace, plugin, skill structure | Both manifests and all eleven skills validate |
+| Latest matched coaching comparison | **81/87 → 87/87 substantive; 71/87 → 73/87 full rubric**, 29 affected cases × three repetitions; same subjects, versioned criteria, Opus 5 / Sonnet 5, 32,000-token ceilings |
+| Unchanged coaching evidence | 75/78 full-rubric passes, current fingerprints verified; combined full result **146/165 → 148/165**, with 17 full-rubric misses retained |
+| New installed-plugin coaching | **3/3** final native prompts pass inspected substantive checks; one execution each, actual read-only tool calls |
+| Routing | Historical **159/159**, all 102 critical trials; current catalog is byte-identical, so no new routing run claimed |
+| Native selection | Historical **6/6**; fresh 1.0.1 installation independently loads eleven skills |
+| Metrics fixture | All five deterministic checks pass; ten events, scores 100/15, trailer control, canaries absent, no readiness token |
+| Native metrics cases | **3/3**, with nine independent runtime checks each; inputs unchanged |
+| Live quarterly planning | **3/3** final controlled rehearsals through actual MCP; ten read calls each; unknown state stays unknown |
+| Authority pilot | **12/12 executed checks pass**; nine other pilot entries explicitly not run by that harness |
+| Authority → readiness | Actual current authority yields approved; actual invalidation plus fresh read yields blocked; local score/completeness are synthetic premises |
+| Browser | Actual map inspected: L1/L2/L3, handoff, canonical references, uncovered items, filter, diagnostics; zero console warnings/errors |
+| Fresh installation | One enabled `aipos@aipos` **1.0.1**, eleven skills, matching runtime source files, disposable profile |
+| Case retention | Forty original cases retained; **58 total = 55 text + 3 separately exercised runtime cases** |
 
-The [live evaluation report](evaluations/2026-09-19-aipos-live-evaluation.md) records the configurations, per-case outcomes, fixes, fixture conflicts, raw-evidence locations, and limitations. Its [JSON record](evaluations/2026-09-19-aipos-live-results.json) preserves per-repetition results and fingerprints. The higher judge budget used for two case families is recorded separately; earlier failures and infrastructure errors remain visible.
+The [substantive closure report](evaluations/2026-09-20-substantive-closure.md), [matched results](evaluations/2026-09-20-substantive-closure-results.json), and [native results](evaluations/2026-09-20-substantive-native-results.json) are the current coaching evidence. The prior [follow-up report](evaluations/2026-09-20-plugin-evaluation-followups.md) and [runtime JSON](evaluations/2026-09-20-plugin-runtime-results.json) retain the earlier comparison and PE4 integrations; those integrations were not rerun for instruction-only changes.
 
-## Installation and native evidence
+## Release disposition
 
-Initial installation checks at `ac867c9` used separate configurations under `/private/tmp/aipos-install-eq2hgh0f`; live native checks used `/private/tmp/aipos-live-evals/`. Later live checks resolved the local candidate source; per-skill fingerprints verify the final coaching inputs. Real user installations were not changed. Isolation follows the documented [`CLAUDE_CONFIG_DIR` setting](https://code.claude.com/docs/en/env-vars). The native client resolves this local marketplace to the candidate source; this is not a published GitHub release check.
+PE1, PE2 and scoped PE4 are complete. PE3 substantive acceptance is complete under the versioned profile, with all 87 trials passing. The affected full rubric still has 14 failed trials: coaching/detail omissions and documented evaluator interpretations. Three older presentation/coaching misses remain in unchanged skills. All are retained; this is not an all-rubrics-pass claim. PE5 review is complete, with merge and publication awaiting the release decision.
 
-The four native projects retained every supplied source file byte for byte. Readiness correctly blocked missing behavior/repo context and claimed no product approval. The change proposal is unsubmitted with `decision: null`, and its requested digest matches the proposed file bytes. The renderer produced HTML and reported uncovered behavior without a token. Browser visual QA and live authority-service integration remain unverified.
+Implementation and evaluation are not a claim that every coaching rubric passes. Text-only trials establish produced responses, not actual writes. Runtime checks use synthetic fixtures and real transports/services with in-memory stores; they do not establish durable production behavior or application conformance. The readiness integration supplies local review premises rather than running a complete native review. Browser coverage is one inspected viewport. Partial transport-failed calls have error records but no recoverable full trace/usage.
 
-Local installation evidence remains in `.claude/install-check-results.json`, `.claude/install-inventory.json`, and `.claude/request-assembly/`. Full model traces are gitignored and retained at the locations in the live report.
-
-## Remaining acceptance work
-
-1. Adjudicate and repair the conflicting positive-review fixtures, preserving rejection of actual contradictions and missing approval behavior.
-2. Add stage-aware evaluation interactions for longer interviews; distinguish unanswered facts from a completed artifact and verify real writes with tools.
-3. Address the remaining concrete coaching misses in focused increments and rerun the affected cases, retaining previous outcomes.
-4. Exercise the original metrics runtime cases and positive live graph/authority integrations before making claims about those capabilities. Complete browser verification of the generated map where required.
-5. Recheck upstream and CI at release review. Merge/publish only under the authorization for that action.
-
-The [plan](plans/2026-09-19-aipos-plugin-consolidation.md#live-verification-and-pr-handoff) tracks these slices. The [rollout guide](rollout.md) supplies the verified remove-old/install-new commands. Routing success is not a substitute for the remaining coaching and integration evidence.
+No tracker or aggregator transfer, real-user plugin change, production authority mutation, merge, tag, or publication was performed for this candidate. Temporary servers were stopped and their credentials removed. The [plan](plans/2026-09-19-aipos-plugin-consolidation.md#current-slice-status-september-20) records slice status; the [rollout guide](rollout.md) remains the installation procedure. Merge and publication require authorization for that action.

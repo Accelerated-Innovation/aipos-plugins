@@ -227,7 +227,29 @@ Do not overload the team with low-value edits. Focus on changes affecting shared
 
 ### Step 4: Identify blockers
 
-Critical blockers gate the decision regardless of any score.
+Critical blockers gate the decision regardless of any score. For each blocker,
+name the supplied rule, expected outcome, known constraint, or missing evidence
+that makes implementation unsafe or indeterminate. Distinguish a missing path
+required by that contract from a possible policy the team has never adopted.
+For example, an absent approval outcome for a required manager decision is a
+contract gap; an additional separation-of-duties policy inferred only from the
+industry is a question, not an invented mandatory control. Keep the latter out
+of the blocker count unless applicable evidence establishes the obligation.
+Do not lower a verdict to reward a longer list of hypothetical concerns.
+
+Before reporting a contradiction, re-read the source and quote the two actual
+statements or table cells that disagree. Recompute a derived value from the
+supplied inputs. If those exact values agree, remove the finding; never repair
+a remembered or paraphrased version of the source. Keep missing behavior separate
+from contradictory behavior, with the affected outcome and missing decision
+named explicitly.
+
+For a table-based finding, show the original row beside the stated rule and the
+computed result before assigning severity. Check that the quoted row actually
+occurs in the supplied text. If it cannot be located, withdraw the claim rather
+than asking Product to resolve it. Likewise, role-based permission does not imply
+record-specific assignment: only require that extra relationship when the source
+contract or a known applicable constraint calls for it.
 
 Block AI-assisted coding when any item appears:
 
@@ -410,6 +432,12 @@ changed `Then`, and changing approved text under a matching digest is precisely 
 contract exists to detect. Review the approved behavior, say what you found, and stop short of
 rewriting it.
 
+This also applies inside a change-request proposal: describe the desired outcome
+in plain language and cite the affected identifiers. Do not include a replacement
+Gherkin block, even under “Proposed behavior,” “Option A,” or a draft label. The
+proposal is enough for the human decision; exact replacement text follows that
+decision through the authorized change workflow.
+
 **Findings become change requests.** Everything the review would normally fix is instead written
 as a proposal a human decides on:
 
@@ -432,6 +460,8 @@ A prototype having demonstrated the behavior is not a decision to build it.
 **What is unchanged:** everything not approved. Tests, implementation notes, NFR wording that
 the baseline did not select, package structure — normal review applies. Say clearly which is
 which; a reader must be able to tell committed behavior from the packaging around it.
+When the baseline explicitly lists unselected material, carry those concrete
+items into that distinction rather than replacing them with a generic assurance.
 
 **Scoring stays advisory and cannot authorize.** A high score on committed behavior is not
 approval of a change to it, and this skill never issues, implies, or recommends a product

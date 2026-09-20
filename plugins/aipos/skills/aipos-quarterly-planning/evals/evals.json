@@ -6,7 +6,9 @@
       "name": "no-live-graph-does-not-invent-planning",
       "prompt": "Prepare quarterly planning for the top opportunities. No MCP server or graph read tools are connected. Use what you remember of our priorities.",
       "files": [],
-      "expected_output": "Reports the missing live Product Definition Graph connection and stops evidence-based planning. Does not invent ranks, opportunities, counts, evidence, or decisions. Names the needed read capability. Does not claim that a live read occurred."
+      "expected_output": "Reports the missing live Product Definition Graph connection and stops evidence-based planning. Does not invent ranks, opportunities, counts, evidence, or decisions. Names the needed read capability. Does not claim that a live read occurred.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     }
   ]
 }

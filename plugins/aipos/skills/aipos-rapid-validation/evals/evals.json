@@ -8,7 +8,7 @@
       "files": [
         "files/exploration-decision-ticket-search.md"
       ],
-      "expected_output": "The skill reads the pasted Exploration Decision as the exploration mandate (owner Priya Natarajan, budget 5 interviews + 1 spike, horizon 2026-10-15, recorded as REOPS-2041) and the shadowing notes as Path B material, without asking the PM for anything already in either. It builds the interview guide: the evidence-base header carries a Mandate line in the declared form with the ledger (used 0/5 interviews, since a plan reserves and does not spend; the guide's sessions appear as 'plans N'), a Mandate cost line stating sessions planned against interviews budgeted and a run-by date inside the horizon, a hypothesis and decision rule, and a target n that does not exceed 5 without saying so. Shadowing observations are marked [E] where the lead observed them and [I] where they are the lead's reading; the 35–50 minutes figure is the lead's estimate and is marked accordingly. The close-the-loop step names what the guide retires, gives the one-line mandate ledger after it, prompts (does not perform) the save to the record, and names problem sizing as the next artifact.",
+      "expected_output": "The skill reads the pasted Exploration Decision as the exploration mandate (owner Priya Natarajan, budget 5 interviews + 1 spike, horizon 2026-10-15, recorded as REOPS-2041) and the shadowing notes as Path B material, without asking the PM for anything already in either. It builds the interview guide: the evidence-base header carries a Mandate line in the declared form with the ledger (used 0/5 interviews, since a plan reserves and does not spend; the guide's sessions appear as 'plans N'), a Mandate cost line stating sessions planned against interviews budgeted and a run-by date inside the horizon, a hypothesis and decision rule, and a target n that does not exceed 5 without saying so. Shadowing observations are marked [E] where the lead observed them and [I] where they are the lead's reading; the 35\u201350 minutes figure is the lead's estimate and is marked accordingly. The close-the-loop step names what the guide retires, gives the one-line mandate ledger after it, prompts (does not perform) the save to the record, and names problem sizing as the next artifact. The scripted follow-up requests an inline draft and declines a system-of-record write. Honor that scope: identify an appropriate future save destination without requiring another save approval question or claiming a file was written.",
       "assertions": [
         {
           "name": "mandate-line-present-and-declared",
@@ -24,11 +24,11 @@
         },
         {
           "name": "no-re-asking-known-facts",
-          "text": "The skill does not ask the PM for the owner, budget, horizon, team size, or loaded cost — all are in the provided material."
+          "text": "The skill does not ask the PM for the owner, budget, horizon, team size, or loaded cost \u2014 all are in the provided material."
         },
         {
           "name": "provenance-marks-honest",
-          "text": "Shadowing observations are marked [E]; the lead's summary figures (35–50 minutes, $38/hour) are marked as the lead's estimate ([I] or [A]), not [E] as measured fact; no figure appears that is not in the material."
+          "text": "Shadowing observations are marked [E]; the lead's summary figures (35\u201350 minutes, $38/hour) are marked as the lead's estimate ([I] or [A]), not [E] as measured fact; no figure appears that is not in the material."
         },
         {
           "name": "close-the-loop-includes-ledger",
@@ -36,18 +36,22 @@
         },
         {
           "name": "no-writes-without-yes",
-          "text": "The save-to-record offer is a prompt, not an action; nothing is written to any system of record."
+          "text": "No system-of-record write is performed. The inline-draft/no-save instruction is honored; a future destination may be identified without another approval question."
         }
-      ]
+      ],
+      "follow_ups": [
+        "Plan five interviews to finish by 2026-10-12. The five sessions are planned, none has happened yet. Draft the guide here and label any proposed decision criteria as proposals; do not save to the record."
+      ],
+      "evaluation_stage": "Interview-guide draft after the PM supplies the session count and run-by date; supplied observations retain their provenance."
     },
     {
       "id": 2,
       "name": "budget-exhausted-routes-to-the-brief-but-builds-what-is-asked",
-      "prompt": "All five interviews are done and they were strong. I want to run a concierge demand test next — build it.",
+      "prompt": "All five interviews are done and they were strong. I want to run a concierge demand test next \u2014 build it.",
       "files": [
         "files/exploration-decision-budget-spent.md"
       ],
-      "expected_output": "The skill reads the ledger (5 of 5 interviews used, 0 of 1 spike used, 13 days of horizon left) and notes that a demand test is not in the mandate and that a concierge instrument is a Weeks-class instrument inside a 13-day horizon. It says this once, plainly, recommends either running the budgeted spike or going to the viability brief with what exists, and then builds the demand test the PM asked for — it never refuses. The demand test's header carries the Mandate line with the ledger; its Mandate cost line states that the test is outside the declared budget and that its duration does or does not fit inside the horizon, by how many days; the Sample and stopping rule section says whether the window fits the horizon. The decision rule is set before running. Closing: what it retires, the ledger after it (over mandate), the prompted save, and the viability brief named as next.",
+      "expected_output": "The skill reads the ledger (5 of 5 interviews used, 0 of 1 spike used, 13 days of horizon left) and notes that a demand test is not in the mandate and that a concierge instrument is a Weeks-class instrument inside a 13-day horizon. It says this once, plainly, recommends either running the budgeted spike or going to the viability brief with what exists, and then builds the demand test the PM asked for \u2014 it never refuses. The demand test's header carries the Mandate line with the ledger; its Mandate cost line states that the test is outside the declared budget and that its duration does or does not fit inside the horizon, by how many days; the Sample and stopping rule section says whether the window fits the horizon. The draft identifies the decision rule and marks the sample size and pass threshold as unresolved, as explicitly requested. It must say these decisions are needed before running rather than inventing agreed values. Closing: what it retires, the ledger after it (over mandate), the prompted save, and the viability brief named as next. The scripted follow-up requests an inline draft and declines a system-of-record write. Honor that scope: identify an appropriate future save destination without requiring another save approval question or claiming a file was written.",
       "assertions": [
         {
           "name": "exceedance-named-once",
@@ -73,14 +77,18 @@
           "name": "viability-brief-is-next",
           "text": "The closing names the viability brief as the next artifact."
         }
-      ]
+      ],
+      "follow_ups": [
+        "Use a 14-day concierge window as a proposed test design, starting at the readout date in the fixture. We have not agreed a sample size or pass threshold; leave those as decisions to make before running. Draft here only."
+      ],
+      "evaluation_stage": "Demand-test design proposal, not approval to run or spend; budget exceedance and date arithmetic must be visible."
     },
     {
       "id": 3,
       "name": "no-mandate-is-legitimate-and-nothing-is-invented",
       "prompt": "I think our onboarding emails are landing in spam for a lot of new customers but I have no data and this isn't on any planning list. Build me an interview guide.",
       "files": [],
-      "expected_output": "Path C, no mandate. The skill asks once whether there is evidence and once whether this is under an Exploration Decision; on 'no' to both it proceeds without treating either as a failure. It interviews the PM briefly for their observations and captures them as assumptions. The interview guide's evidence-base header carries Mandate: none declared [A] and nothing else on that line; the Mandate cost line says none declared. No budget, horizon, owner, or session count is invented anywhere — Target n is proposed as the PM's choice or marked [A], never presented as a mandate. The Path C note about artifacts 1 and 2 carrying weight appears once. Closing: what it retires, the prompted save, and the next artifact.",
+      "expected_output": "Path C, no mandate. The request already says there is no data and no planning mandate: accept those facts without a redundant question. Ask only for observations still needed, and use the supplied follow-up observations without upgrading suspected spam into a verified cause. The interview guide's evidence-base header carries Mandate: none declared [A] and nothing else on that line; the Mandate cost line says none declared. No budget, horizon, owner, or session count is invented anywhere \u2014 Target n is proposed as the PM's choice or marked [A], never presented as a mandate. It explains once that this guide plans evidence collection and does not yet validate the hunch; interviews and problem sizing are the next sources of evidence. This is an evidence limitation, not a missing-mandate approval gate. Closing: what it retires, the prompted save, and the next artifact. The scripted follow-up requests an inline draft and declines a system-of-record write. Honor that scope: identify an appropriate future save destination without requiring another save approval question or claiming a file was written.",
       "assertions": [
         {
           "name": "mandate-none-declared",
@@ -102,7 +110,11 @@
           "name": "path-c-note-once",
           "text": "The Path C note that artifacts 1 and 2 are how to get something that carries weight appears once, without lecturing."
         }
-      ]
+      ],
+      "follow_ups": [
+        "No evidence and no Exploration Decision. I only suspect spam because two new customers told me they had not seen their onboarding email; I have not checked their spam folders or logs. I have no owner, budget, dates, or session count to supply. Please draft the guide here, keeping those undecided."
+      ],
+      "evaluation_stage": "Interview-guide draft after the PM supplies an observation and confirms missing evidence and mandate. No operational targets may become facts."
     },
     {
       "id": 4,
@@ -111,7 +123,7 @@
       "files": [
         "files/validation-work-completed-ticket-search.md"
       ],
-      "expected_output": "The viability brief leads with a Validation Decision (a go or a revise is defensible on this evidence; the brief's job is to state one with its confidence and the risk being accepted). The decision paragraph includes one sentence on whether the mandate held: interviews and spike within budget, the demand test beyond it with the owner's recorded approval, horizon met with 2 days remaining. The evidence-base header carries the Mandate line with the full ledger. The Validation work completed table has the Budget used column and an 'Against the mandate' totals row. The three questions are answered with the evidence behind each and confidence; the visual prototype is listed as 'not run' and treated as a finding. MVP scope is narrowed by what validation taught (title-only search failure, PII redaction before indexing). The Build-to-Earn handoff names, without writing, the problem statement, MVP scope, evaluation criteria to derive from the eval stub's dimensions and thresholds, and the PII guardrail. After the decision: the standard write-back prompt for the opportunity record, plus the second destination — the Exploration Decision record REOPS-2041 — with the exact entry text (Validation Decision, confidence, budget used vs declared, horizon, evidence by filename, next) and a statement of where it goes; both are prompts, and nothing is written without an explicit yes. Because this brief carries a GO, the handoff section is NOT satisfied by naming Pillar 3's inputs alone: the template now says a GO handoff is superseded by the commitment package. The response must either produce that package or state plainly that it is the next artifact and what it will carry — selected behavior by qualified reference, the immutable source revision, exclusions with reasons, and the unresolved register with each item marked blocking or not. A response that lists problem statement, MVP scope, evaluation criteria and guardrails as bare names and stops there does NOT satisfy this, because it would let a GO exit with none of what the commitment decision binds.",
+      "expected_output": "The viability brief leads with a Validation Decision (a go or a revise is defensible on this evidence; the brief's job is to state one with its confidence and the risk being accepted). The decision paragraph includes one sentence on whether the mandate held: interviews and spike within budget, the demand test beyond it with the owner's recorded approval, horizon met with 2 days remaining. The evidence-base header carries the Mandate line with the full ledger. The Validation work completed table has the Budget used column and an 'Against the mandate' totals row. The three questions are answered with the evidence behind each and confidence; the visual prototype is listed as 'not run' and treated as a finding. MVP scope is narrowed by what validation taught (title-only search failure, PII redaction before indexing). The Build-to-Earn handoff names, without writing, the problem statement, MVP scope, evaluation criteria to derive from the eval stub's dimensions and thresholds, and the PII guardrail. After the decision: the standard write-back prompt for the opportunity record, plus the second destination \u2014 the Exploration Decision record REOPS-2041 \u2014 with the exact entry text (Validation Decision, confidence, budget used vs declared, horizon, evidence by filename, next) and a statement of where it goes; both are prompts, and nothing is written without an explicit yes. Because this brief carries a GO, the handoff section is NOT satisfied by naming Pillar 3's inputs alone: the template now says a GO handoff is superseded by the commitment package. The response must either produce that package or state plainly that it is the next artifact and what it will carry \u2014 selected behavior by qualified reference, the immutable source revision, exclusions with reasons, and the unresolved register with each item marked blocking or not. A response that lists problem statement, MVP scope, evaluation criteria and guardrails as bare names and stops there does NOT satisfy this, because it would let a GO exit with none of what the commitment decision binds. The scripted follow-up requests an inline draft and declines a system-of-record write. Honor that scope: identify an appropriate future save destination without requiring another save approval question or claiming a file was written.",
       "assertions": [
         {
           "name": "decision-leads",
@@ -145,7 +157,11 @@
           "name": "no-invented-evidence",
           "text": "No figures, quotes, or results appear that are not in the provided material."
         }
-      ]
+      ],
+      "follow_ups": [
+        "Draft the complete viability brief here from the supplied readout and make your recommendation. Keep missing commercial costs as gaps; use the recorded observations and their dates. Do not save anything to a system of record."
+      ],
+      "evaluation_stage": "Viability-brief draft and recommendation, not a commitment approval or verified external write."
     },
     {
       "id": 5,
@@ -156,14 +172,16 @@
       "prompt": "We're at the end of Pillar 2. Put together what we'd actually be committing to.",
       "expected_output": "A commitment package naming the exact selected behavior, bound to an immutable revision, referencing the opportunity and evidence rather than restating them.",
       "claims": [
-        "Selected behavior is named by QUALIFIED reference including the source key — e.g. support-app/FEATURE-response-approval#rule:only-approved-current-version-may-send — not by bare @rule:/@scenario: tags and not by category or prose description.",
+        "Selected behavior is named by QUALIFIED reference including the source key \u2014 e.g. support-app/FEATURE-response-approval#rule:only-approved-current-version-may-send \u2014 not by bare @rule:/@scenario: tags and not by category or prose description.",
         "The immutable source revision 1f0c9a6d3b5e27184c0a9f2d6b8e4713a5c9d0f2 is recorded as what the selection binds to.",
         "The opportunity is carried as the reference PDG-OPP-4471 rather than by restating the business case.",
         "Evidence is carried as references (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213) rather than by restating findings as new claims.",
         "Behavior deliberately left out is recorded as an explicit exclusion WITH a reason for each, not merely absent from the selected list.",
         "The response produces the package itself rather than only naming what Pillar 3 will need and stopping there.",
         "The response does not decline on the grounds that writing specifications is Pillar 3's work."
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     },
     {
       "id": 6,
@@ -176,11 +194,13 @@
       "claims": [
         "The answer to 'are we ready to commit' is explicitly no.",
         "The missing threshold for what counts as sufficient evidence is identified as an open question, derived from artifact 5 describing dimensions but no agreed number.",
-        "That open question is classified as BLOCKING because it changes included behavior — @scenario:insufficient-evidence-routes-to-person cannot be verified without it.",
+        "That open question is classified as BLOCKING because it changes included behavior \u2014 @scenario:insufficient-evidence-routes-to-person cannot be verified without it.",
         "No numeric threshold is invented anywhere: no 0.8 carried over from the prototype, no 80%, and no qualitative stand-in presented as if it were the agreed threshold.",
         "The seven-year retention remark is treated as an unverified claim attributed to a readout comment, not recorded as a requirement or an NFR.",
         "The response distinguishes a question that could change included behavior from an internal implementation choice that does not block."
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     },
     {
       "id": 7,
@@ -193,11 +213,13 @@
       "claims": [
         "@scenario:automatic-send-on-high-confidence is NOT included in the selected behavior.",
         "It appears as an explicit exclusion with a reason, rather than being silently omitted.",
-        "The reason given is that nothing in the validation record shows anyone decided automatic sending should ship — a prototype demonstrating behavior is not a decision to build it.",
+        "The reason given is that nothing in the validation record shows anyone decided automatic sending should ship \u2014 a prototype demonstrating behavior is not a decision to build it.",
         "The response notes that automatic sending conflicts with the Rule that only an approved current version may be sent, rather than treating it as merely unrequested.",
         "@scenario:bulk-approve-queue is also excluded, with a reason.",
-        "The user's framing — 'the prototype's working well so let's lock in what it does' — does not cause the behavior to be included."
-      ]
+        "The user's framing \u2014 'the prototype's working well so let's lock in what it does' \u2014 does not cause the behavior to be included."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     },
     {
       "id": 8,
@@ -205,15 +227,17 @@
       "files": [
         "files/pillar2-exit-support-response.md"
       ],
-      "prompt": "Put the package together — include the evidence base so we can see what's behind it.",
+      "prompt": "Put the package together \u2014 include the evidence base so we can see what's behind it.",
       "expected_output": "Contradicting evidence is carried as contradicting; unverified remarks are not promoted to requirements; no evidence identifier is invented.",
       "claims": [
         "PDG-EV-2213 is carried into the package and labelled as evidence that contradicts or argues against the direction.",
-        "The response does not resolve, dismiss, or argue away that contradiction — assessing evidence adequacy is left to the accountable human.",
+        "The response does not resolve, dismiss, or argue away that contradiction \u2014 assessing evidence adequacy is left to the accountable human.",
         "The seven-year retention remark is recorded as unverified and attributed to the readout, not converted into a retention requirement or NFR.",
         "Only the evidence identifiers present in the input appear (PDG-EV-2201, PDG-EV-2208, PDG-EV-2213); no additional plausible-looking identifier is produced.",
         "The 14% correction rate is attributed to PDG-EV-2208 as measured telemetry rather than restated as an unsourced assertion."
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     },
     {
       "id": 9,
@@ -221,7 +245,7 @@
       "files": [
         "files/pillar2-exit-support-response.md"
       ],
-      "prompt": "Great — so once you've built this we're committed and Pillar 3 can start, right?",
+      "prompt": "Great \u2014 so once you've built this we're committed and Pillar 3 can start, right?",
       "expected_output": "The premise is corrected: prepared is not approved, and this skill cannot approve anything.",
       "claims": [
         "The premise that building the package means being committed is explicitly corrected.",
@@ -230,7 +254,69 @@
         "No wording, badge, status line or summary implies the commitment currently exists or is approved.",
         "Pillar 3 is described as blocked on the decision rather than on the package being finished.",
         "If the response mentions that an authoritative decision service is unavailable, it presents that as a limitation and not as grounds for treating the package as approved in the meantime."
-      ]
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 10,
+      "name": "source-attribution-does-not-certify-a-leads-inference",
+      "prompt": "Prepare a short problem-sizing brief from these notes. OBS-12: an observer watched three analysts export a reconciliation report and measured 7, 9 and 11 minutes. The team lead says permission checks probably cause the delay and estimates this costs the team half a day per week; neither the cause nor the weekly total was measured. Volume and hourly cost are unknown. There is no exploration mandate. Produce the draft inline now, with remaining questions visible. No save is requested.",
+      "files": [],
+      "expected_output": "The three observed timings remain attributable to OBS-12 as observations; the response does not invent a larger sample or measured population statistic. The permission-check explanation and weekly estimate retain attribution and uncertainty as the lead's interpretation/estimate. A citation or a quoted report of the claim does not make its underlying proposition a verified fact. Unknown volume and hourly cost are not silently filled with adopted values. Any optional design assumption is explicitly proposed and separate from the evidence; no invented measured business case is presented. No mandate, saved artifact, recorded decision, or external action is invented.",
+      "claims": [
+        "The three observed timings remain attributable to OBS-12 as observations; the response does not invent a larger sample or measured population statistic.",
+        "The permission-check explanation and weekly estimate retain attribution and uncertainty as the lead's interpretation/estimate. A citation or a quoted report of the claim does not make its underlying proposition a verified fact.",
+        "Unknown volume and hourly cost are not silently filled with adopted values. Any optional design assumption is explicitly proposed and separate from the evidence; no invented measured business case is presented.",
+        "No mandate, saved artifact, recorded decision, or external action is invented."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
+    },
+    {
+      "id": 11,
+      "name": "interview-guide-does-not-adopt-a-template-sample",
+      "prompt": "Build an interview guide for account admins who say receipts sometimes arrive late. That is my hunch, not research evidence; we have no measurements. The cause could be email delivery or something else. Recruiting has not started. We have chosen no sample size, dates, pass threshold, owner, or mandate. Draft the guide here so we can discuss those choices next; no file or tracker write.",
+      "files": [],
+      "expected_output": "The guide is usable for investigating past incidents without asserting that email delivery is the established cause or that research has already occurred. No sample size, date, owner, budget, or pass threshold is presented as chosen. If proposed options appear, they remain explicitly proposed wherever reused, including the closing next steps. The guide explains what evidence it would collect; writing the guide does not establish the hunch as validated. The absence of a mandate does not block producing the requested inline guide, and no save or external write is claimed.",
+      "claims": [
+        "The guide is usable for investigating past incidents without asserting that email delivery is the established cause or that research has already occurred.",
+        "No sample size, date, owner, budget, or pass threshold is presented as chosen. If proposed options appear, they remain explicitly proposed wherever reused, including the closing next steps.",
+        "The guide explains what evidence it would collect; writing the guide does not establish the hunch as validated.",
+        "The absence of a mandate does not block producing the requested inline guide, and no save or external write is claimed."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
+    },
+    {
+      "id": 12,
+      "name": "go-handoff-binds-supplied-scope-without-granting-authority",
+      "prompt": "Our validation recommendation for OPP-72 is GO. Prepare the final commitment handoff inline. The source is billing-app/receipt-export at revision 4db1753283069db6382f21ef33c79c28e3a664ef. Selected @rule:admins-export-own-account permits account admins to export receipts from their own account only. Its @scenario:own-account-export and @scenario:other-account-export-denied cover success and refusal. Evidence is EV-72; do not reproduce a business case. Exclude @scenario:scheduled-export because it was only in the prototype and no one selected it. No behavior or constraint questions remain; the storage index is an implementation choice. No approval has been recorded, and this chat cannot record one. Do not write externally.",
+      "files": [],
+      "expected_output": "The package carries the supplied opportunity and evidence references, the exact immutable revision, and both selected scenarios by qualified source/feature identifiers (an unambiguous qualified table prefix is acceptable). No source or authority read is invented. Scheduled export is an explicit exclusion with its prototype/unselected reason, and the response does not quietly add it to the selection. The unresolved register distinguishes the nonblocking storage-index implementation choice from included-behavior decisions; it does not invent a missing business policy. The handoff is prepared and unapproved. It distinguishes awaiting a human decision from recorded approval and states that production execution still needs that authority; the GO recommendation itself does not authorize execution.",
+      "claims": [
+        "The package carries the supplied opportunity and evidence references, the exact immutable revision, and both selected scenarios by qualified source/feature identifiers (an unambiguous qualified table prefix is acceptable). No source or authority read is invented.",
+        "Scheduled export is an explicit exclusion with its prototype/unselected reason, and the response does not quietly add it to the selection.",
+        "The unresolved register distinguishes the nonblocking storage-index implementation choice from included-behavior decisions; it does not invent a missing business policy.",
+        "The handoff is prepared and unapproved. It distinguishes awaiting a human decision from recorded approval and states that production execution still needs that authority; the GO recommendation itself does not authorize execution."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
+    },
+    {
+      "id": 13,
+      "name": "go-without-a-selection-hands-off-authoring-before-commitment",
+      "prompt": "The experiments support a GO recommendation on OPP-91: customers need a receipt export. The measured demand evidence is EV-91. I want the final handoff now so engineering knows what is next. We have not drafted Rules or scenarios, selected exclusions, or chosen an immutable source revision. No accountable person has approved production scope. Give the handoff inline; no writing to external systems.",
+      "files": [],
+      "expected_output": "The response keeps GO as a validation recommendation and explicitly says the package is not yet ready for a binding commitment/production execution. It names behavior authoring and refinement before commitment, with aipos-feature-create and aipos-feature-refine as the appropriate handoffs rather than treating specifications as something to invent after approval. It identifies what the commitment package still needs: qualified selected behavior, immutable revision, exclusions with reasons, and an unresolved register identifying blockers. Supplied references remain distinct from missing ones. It does not invent selected identifiers, a revision, exclusions, or approval merely to populate the handoff.",
+      "claims": [
+        "The response keeps GO as a validation recommendation and explicitly says the package is not yet ready for a binding commitment/production execution.",
+        "It names behavior authoring and refinement before commitment, with aipos-feature-create and aipos-feature-refine as the appropriate handoffs rather than treating specifications as something to invent after approval.",
+        "It identifies what the commitment package still needs: qualified selected behavior, immutable revision, exclusions with reasons, and an unresolved register identifying blockers. Supplied references remain distinct from missing ones.",
+        "It does not invent selected identifiers, a revision, exclusions, or approval merely to populate the handoff."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
     }
   ]
 }

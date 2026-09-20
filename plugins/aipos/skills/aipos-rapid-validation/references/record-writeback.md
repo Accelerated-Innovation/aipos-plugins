@@ -1,12 +1,12 @@
 # Record write-back
 
-Every artifact ends with an offer to put it on the tracker record. This exists because the
-artifact's job is not to be read once in a chat window — it is to be findable six weeks later
-by someone who wasn't in the conversation.
+Identify where the artifact belongs so it can be found later. Offer the concrete save
+once unless the user has already declined or explicitly authorized it for that artifact
+and destination. Respect an inline-only request: give the future destination without
+asking again or implying a save happened.
 
-**Prompt every time. Write only on an explicit yes.** Never write to a system of record
-unprompted, and never treat a general "sounds good" earlier in the session as standing
-approval for a later write.
+Write only within explicit authorization. Approval of the content alone is not approval
+to write to a system of record; authorization for that actual write persists in the session.
 
 ## The three pieces
 
@@ -62,7 +62,7 @@ The test: *does this artifact end with someone needing to do something specific?
 | 4 Demand test | Yes | Launch the test, with the stop date |
 | 5 Feasibility spike | Yes | The spike itself, timeboxed |
 | 6 Eval stub & brief | Usually not | It is a definition others consume |
-| 7 Viability brief | No | It *is* the decision — a to-do here is a decision nobody made |
+| 7 Viability brief | No by default | It records the recommendation for an accountable decision; do not imply that drafting it records approval |
 
 Write the to-do body as the actions themselves, ordered by how much each moves the result,
 not as a description of the artifact.
@@ -89,12 +89,18 @@ governed door Pillar 1 named in the decision log's `Record via` line. The opport
 the artifacts; the decision record gets the outcome — the Validation Decision, its
 confidence, the budget used against the budget declared, and the evidence by filename.
 
+Use that second destination only when a mandate or Exploration Decision is actually
+supplied or verified. A GO recommendation, opportunity ID or completed handoff does not
+establish that planning issued one. If none is known, keep the decision-record route
+conditional or omit it; never close with "since an Exploration Decision governed this"
+merely because this is a Pillar 2 artifact. Do not invent a decision reference or door.
+
 This is what lets the next planning session see that what it funded came back with an
 answer. Offer it in the same prompt as the three pieces above, as a fourth item, only for
 the viability brief. Name the destination exactly (the ref, the door). If the door is not
 something the skill can write through — most are not — hand the PM the entry text verbatim
-and say where it goes. An entry the PM pastes is a closed loop; an entry the skill
-describes is not.
+and say where it goes. Copy-ready text prepares the handoff; only an observed write or a
+confirmed authoritative record establishes that the loop was closed.
 
 Name it like the artifacts: `<record>-validation-decision.md`, dated on re-runs.
 

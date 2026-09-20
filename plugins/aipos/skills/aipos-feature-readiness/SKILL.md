@@ -129,6 +129,14 @@ that is half the question; the other half — **is this exact scope approved,
 and does that approval still hold** — lives in the decision service and
 cannot be read from the repository at all.
 
+Keep the source of that state explicit. A user's hypothetical, pasted example,
+or earlier report is supplied context, not a fresh service read. Explain what
+would follow from it without inventing a fetch, timestamp, or verification.
+For an actual token, record the authoritative response and check time that
+support the exact commitment/baseline binding before setting verified flags.
+`scripts/readiness_state.py` consumes those observations; it does not fetch or
+validate the authority service itself.
+
 So the token is a **derived execution-readiness record that references the
 product approval**, never a substitute for one. Five states, and they are
 not a ladder:

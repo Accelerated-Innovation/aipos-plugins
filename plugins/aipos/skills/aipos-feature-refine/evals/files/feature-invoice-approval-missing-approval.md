@@ -27,29 +27,6 @@ Feature: Invoice approval routing
       Then the invoice status is "Pending manager approval"
       And the assigned finance manager receives an approval task
 
-    @mvp @functional @scenario:manager-approves-invoice
-    Scenario: Manager approves a high-value invoice
-      Given an invoice for $12,500 is pending manager approval
-      When a finance manager approves the invoice
-      Then the invoice status is "Approved"
-      And payment is scheduled
-      And the approval is recorded in the audit log with the manager's identity
-
-    @mvp @security @scenario:non-manager-approval-refused
-    Scenario: An analyst cannot approve a high-value invoice
-      Given an invoice for $12,500 is pending manager approval
-      When a finance analyst attempts to approve the invoice
-      Then approval is refused with an authorization error
-      And the invoice remains "Pending manager approval"
-      And no payment is scheduled
-
-    @mvp @functional @scenario:rejection-reason-required
-    Scenario: A manager cannot reject an invoice without a reason
-      Given an invoice for $15,000 is pending manager approval
-      When the finance manager rejects the invoice without a reason
-      Then the rejection is refused with a reason-required error
-      And the invoice remains "Pending manager approval"
-
     Scenario: Manager rejects a high-value invoice with a reason
       Given an invoice for $15,000 is pending manager approval
       When the finance manager rejects the invoice with reason "Duplicate of INV-2210"
@@ -94,13 +71,8 @@ evidence applies.
 
 - The $10,000 threshold is fixed for this release; configurable thresholds
   are a later feature.
-- Each invoice already has a finance manager assigned to receive its approval
-  task. That assignment controls notification only; any finance manager may
-  approve or reject under the stated role restriction. Choosing the task owner
-  is outside this feature.
 
 ## Out of scope
 
 - Multi-currency invoices
 - Delegated approval when a manager is out of office
-- Additional separation-of-duties policies beyond the stated finance-manager role restriction; none are asserted by this fixture
