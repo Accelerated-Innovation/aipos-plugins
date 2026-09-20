@@ -54,8 +54,10 @@ Stubs get the directory and a `feature_source.md` containing only the stub field
 > in sync with them. Omitting them is not an incomplete package; requiring them would
 > reintroduce the prerequisite the opportunity route exists to remove.
 >
-> What replaces them: the one-sentence **outcome** from Step O2, the **Rules** from O3, and the
-> **opportunity reference** rather than a persona narrative.
+> What replaces them: the feature-local **outcome** from Step O2, the **Rules** from O3,
+> and the **opportunity reference**. The outcome describes observable user behavior
+> this package enables. Do not copy the opportunity's investment rationale, strategic
+> benefit, or business-case paragraph into an Outcome or Summary section; link to it.
 
 
 As a <primary persona>, I need <capability> so that <outcome>.

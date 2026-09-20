@@ -102,6 +102,11 @@ question nobody has answered.
 Inside each activity, the human / system / agent collaboration. The part worth the effort is the
 **handoff** — `{"from": ..., "to": ...}` — because work changing hands is where most real defects
 live, and a map that leaves it implied by adjacency hides exactly that.
+Walk every actor change in the supplied journey, including the initial human
+delegation to an agent and the later human approval passed to a sending system.
+Record each supported transfer explicitly with declared actor IDs; neither
+adjacent activities nor a step's actor field records the transfer by itself.
+Do not add a transfer that the walkthrough does not establish.
 
 ### Step 5 — Reference the behavior
 
@@ -160,7 +165,11 @@ Where the corpus does exist, report both halves of what the resolver returns:
   actually need and the one no diagram ever gives them: an unreferenced scenario is behavior the
   map implies does not exist.
 
-Uncovered behavior is a finding, **not an error**. A Rule may legitimately belong to a journey
+Uncovered behavior is a finding, **not an error**. Keep its classification
+provisional: the source proves it was not referenced, not whether the product
+journey is defective. State “possible gap in this journey” or “possibly another
+journey,” with the evidence and decision needed, rather than declaring either
+conclusion as established. A Rule may legitimately belong to a journey
 this workflow does not describe. Say which case you think it is and let the user decide — and do
 not silently attach an orphan scenario to the nearest plausible step to make the number go down.
 

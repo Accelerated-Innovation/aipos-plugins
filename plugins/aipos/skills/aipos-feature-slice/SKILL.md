@@ -151,7 +151,7 @@ each of which produces a finding rather than a silent fix:
 
 **The journey completes.** Walk the selected scenarios end to end as a user would. If the
 selection stops partway — a request that can be submitted but not resolved, an approval that can
-be granted but not acted on — the slice is a layer, not a release. Name the missing step.
+be granted but not acted on — the slice is a layer, not a release. Name the missing step. Judge against the supplied journey: do not invent an alternative payment, export, or operations process to make a stated optional enhancement seem required. If the existing selection completes the outcome without it, explain that directly.
 
 **Selected behavior carries its obligations.** Including a scenario commits what it cannot safely
 run without: the authorization it assumes, the recovery path for the failure it can hit, the
@@ -192,7 +192,7 @@ Naming the gap is the finding; inventing the reference destroys it.
 Two things must be surfaced before the PM decides:
 
 - **Large scenarios on the critical path.** A Large `@mvp` scenario means the smallest shippable version contains the riskiest work. Propose a split, or make the PM accept the risk explicitly.
-- **Any Large scenario.** Per the rubric, 8–9 points means "consider slicing this scenario down further." Propose concrete splits using the rubric's split patterns, with draft Gherkin. After a split, re-size the pieces — splits should land Small or Medium, and a split that doesn't shrink anything is not a split.
+- **Any Large scenario.** Per the rubric, 8–9 points means "consider slicing this scenario down further." Propose concrete splits using the rubric's split patterns, with untagged draft Gherkin. Put recommended releases in the separate recommendation table, not in tag lines or tag comments inside the draft; release tags wait for Step 7. After a split, re-size the pieces — splits should land Small or Medium, and a split that doesn't shrink anything is not a split.
 
 **A split must preserve business meaning.** Restructuring is the only thing a split may change. Every piece has to carry across:
 
@@ -262,6 +262,11 @@ artifact back in would have made Step 2 optional in name only.
 Step 7 adds the tagged Gherkin and the copy-ready tracker field updates; Step 8 follows the write-back protocol.
 
 ## Batch mode (non-interactive corpus sizing)
+
+The complete assistant message must parse as one JSON object. Do not put it in
+a Markdown fence or add an introduction, explanation, or trailing question.
+This output contract persists on a bare “proceed”; only a user request to leave
+batch mode changes it. Report judgments only; the computation script owns sums.
 
 `aipos-feature-map` (or a script) calls this when a corpus needs size badges. Same rules as refine's batch mode: skip every pause, emit a single raw JSON object and nothing else, one feature per invocation — batching degrades every verdict. Batch mode **never writes to a tracker** and never applies tags; it sizes and recommends, and the caller renders recommendations as recommendations.
 
