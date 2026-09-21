@@ -13,12 +13,13 @@ and hands off when the requested work changes.
 In a terminal with Claude Code installed:
 
 ```bash
-claude plugin marketplace add Accelerated-Innovation/govkit-plugins
+claude plugin marketplace add Accelerated-Innovation/aipos-plugins
 claude plugin install aipos@aipos
 ```
 
-The marketplace and plugin are both named `aipos`; the repository remains
-`govkit-plugins`. Start a new Claude Code session after installation. For an early
+The marketplace and plugin are both named `aipos`, in the `aipos-plugins`
+repository (renamed from `govkit-plugins`; the old URL redirects). Start a new
+Claude Code session after installation. For an early
 installation of `aipos-p1`, `aipos-p2`, or `govkit`, follow the short
 [replacement instructions](docs/rollout.md).
 
