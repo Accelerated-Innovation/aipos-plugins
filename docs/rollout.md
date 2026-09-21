@@ -1,14 +1,15 @@
 # Install or replace the initial AIPOS plugins
 
 The new package is `aipos@aipos`, containing all eleven `aipos-*` skills. The
-repository and marketplace source remain `Accelerated-Innovation/govkit-plugins`.
+repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
+(renamed from `govkit-plugins`; the old URL redirects).
 These commands apply once the consolidated candidate has been released to that
 source. See the [release record](release-check.md) for current verification status.
 
 ## New installation
 
 ```bash
-claude plugin marketplace add Accelerated-Innovation/govkit-plugins
+claude plugin marketplace add Accelerated-Innovation/aipos-plugins
 claude plugin install aipos@aipos
 claude plugin list
 claude plugin details aipos@aipos
