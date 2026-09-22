@@ -89,6 +89,7 @@ A record of exactly what the graph returned, so every `[E]` can be checked again
 ```json
 {
   "kind": "opportunity-engine",           // or "pm-interview" (no graph; no [E] possible)
+  "server": "opportunity-engine",         // the tool prefix read from; a mock server banners the render
   "schema_version": 1,                    // any other value: stop — do not guess the shape
   "problem_id": "…", "title": "…", "composite_score": 0.82,
   "components": { "evidence_strength": …, "revenue_impact": …, "persona_breadth": …,
@@ -130,8 +131,9 @@ Copy values as returned. `occurred_at: null` means **date unknown**, never old.
 
 ### `panels.hypothesis` and `panels.metrics` — Hypothesis & Expected Outcomes
 
-`hypothesis`: decision fields `if`, `then`, `without`; `outcomes[]` lists ≤3 metric ids, one of
-them the primary.
+`hypothesis`: decision fields `if`, `then`, `without` — each carries its own subject ("we suggest
+the right category at intake"); the render supplies only the words *If*, *then*, *without*.
+`outcomes[]` lists ≤3 metric ids, one of them the primary.
 
 Each metric:
 

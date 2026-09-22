@@ -1,0 +1,28 @@
+{
+  "_about": "Accelerated Innovation brand tokens for the canvas render. Swap this file to theme a client canvas; the renderer reads nothing else for colour or type.",
+  "font_family": "Poppins, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+  "colors": {
+    "ink": "#1a1a1a",
+    "paper": "#ffffff",
+    "page": "#f2f2f2",
+    "dark": "#19004f",
+    "primary": "#5865e7",
+    "accent": "#821db0",
+    "highlight": "#0abeef",
+    "blue": "#1a4b84",
+    "red": "#af1e44",
+    "green": "#6fa113",
+    "yellow": "#d1b70d",
+    "muted": "#5b5870"
+  },
+  "header_gradient": "linear-gradient(35deg, #0abeef 0%, #5865e7 45%, #19004f 100%)",
+  "sticky": {
+    "evidence": "#e6f8fd",
+    "outcome": "#eef0fd",
+    "assumption": "#fbf6d9",
+    "risk": "#f8e4ea",
+    "mitigation": "#eef5e1",
+    "option": "#ffffff"
+  },
+  "wordmark": "Accelerated Innovation"
+}

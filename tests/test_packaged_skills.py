@@ -27,7 +27,7 @@ def resources(skill):
 
 def test_unique_skills_have_matching_frontmatter_and_resolvable_resources():
     paths = skill_paths()
-    assert len(paths) == 11
+    assert len(paths) == 12
     for name, path in paths.items():
         front = yaml.safe_load((path / "SKILL.md").read_text().split("---", 2)[1])
         assert front["name"] == name

@@ -748,6 +748,90 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "solution-canvas-workshop",
+      "prompt": "We're running a solution design workshop on the ticket triage problem. Facilitate the canvas with the room.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-solution-design",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "solution-blueprint",
+      "prompt": "Put together the one-page Solution Blueprint for this initiative so we can align before anyone builds.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-solution-design",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "solution-canvas-resume",
+      "prompt": "Reopen our solution design canvas, refresh it from the graph, and close the gaps we left in the workshop.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-solution-design",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "canvas-pilot-experiment",
+      "prompt": "Our solution design canvas says to pilot option A with two teams for four weeks. Design that experiment and its decision rule.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "canvas-to-epic",
+      "prompt": "Turn the problem statement and success metrics from our solution design canvas into an epic.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-epic-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "heldout-solution-canvas",
+      "prompt": "Help the room lay out the problem, the evidence, a few solution options and the risks on one page for the duplicate invoices opportunity.",
+      "context": "",
+      "critical": false,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-solution-design",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }
