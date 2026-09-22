@@ -335,6 +335,7 @@ Always:
 | Skill | Owns | Relationship |
 |---|---|---|
 | `aipos-rapid-validation` | Experiments and evidence | Supplies evidence and a viability brief when available. Reuse that evidence for an explicitly requested epic; an epic may also support work in progress. Label unevidenced claims and do not imply the epic approves investment |
+| `aipos-solution-design` | The one-page Solution Design canvas | Shares the problem-framing and metrics references. A canvas's panel-1 statement and panel-3 metrics can seed this epic — carry their provenance marks and GAPs across unchanged |
 | `aipos-feature-create` | Story mapping and Draft 0 authoring | Consumes this epic. This skill's field names are that skill's `epic:` input contract; personas and evaluation criteria are inherited wholesale |
 | `aipos-feature-refine` | Spec quality | Two levels down. Epic-level evaluation criteria are what refine checks feature specs against |
 | `aipos-feature-map` | The corpus view | Renders the features derived from this epic (it ingests feature packages, not the epic itself); reading its weak spots against this epic's success metrics is the human's move, and this epic is where those metrics live |

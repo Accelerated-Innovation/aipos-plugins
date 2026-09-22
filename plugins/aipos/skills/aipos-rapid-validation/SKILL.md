@@ -23,6 +23,11 @@ evidence feeding that decision. A PM who collects six beautiful artifacts and ne
 the call has not completed Pillar 2. Whenever you finish an artifact, point at the
 decision it serves and say what is still unevidenced.
 
+A Solution Design canvas (`aipos-solution-design`) often arrives first: its panel-6 plan
+is the experiment to design here, its evidence GAPs are the first things to measure, and
+its recommendation maps Proceed / Pivot / Park to GO / REVISE / NO-GO. Read its
+`canvas.json` as Path B evidence, keeping its provenance marks.
+
 An explicit request for an epic or program brief belongs to `aipos-epic-create`;
 new production Rules and acceptance criteria belong to `aipos-feature-create`.
 Use this skill for the experiment and evidence decision, even when the user calls

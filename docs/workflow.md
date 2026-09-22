@@ -1,12 +1,14 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All eleven skills live in the `aipos`
+The pillars describe a product lifecycle. All twelve skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
 ```mermaid
 flowchart TD
-    P["P1: Live evidence → exploration decision draft"] --> V["P2: Experiments and evidence"]
+    P["P1: Live evidence → exploration decision draft"] --> SD["P2: Solution Design canvas"]
+    SD --> V["P2: Experiments and evidence"]
+    P --> V
     V --> B["Create and refine behavior"]
     B <--> J["Define journey and handoffs"]
     B --> S["Select shippable scope"]
@@ -26,6 +28,7 @@ can run wherever their inputs exist.
 | Requested action | Owner | Output and handoff |
 |---|---|---|
 | Allocate research attention using the live graph | `aipos-quarterly-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
+| Facilitate a one-page Solution Design canvas for one problem | `aipos-solution-design` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
 | Test an opportunity or summarize experiment evidence | `aipos-rapid-validation` | Experiment artifacts and viability brief; delegates behavior definition and prepares the exact commitment package |
 | Create an epic or initiative brief | `aipos-epic-create` | Optional planning artifact; can hand off decomposition to feature-create |
 | Author new acceptance criteria or materialize an approved baseline | `aipos-feature-create` | Canonical Rules, scenarios, and feature package; new drafts go to refine, approved baselines retain their behavior unchanged |
@@ -39,6 +42,16 @@ can run wherever their inputs exist.
 
 Detailed instructions and prerequisites remain in the
 [skill catalog](../plugins/aipos/README.md).
+
+## The Solution Design canvas
+
+A canvas is often the first P2 artifact for an explored problem: one page — problem,
+evidence, hypothesis, options, assumptions and risks, validation and recommendation —
+agreed with the team before experiments start. Its facts come only from the Product
+Definition Graph; what the graph lacks becomes a GAP with a ReOps to-do, and its
+numbers are computed by the verifier rather than typed. Proceed is unavailable until
+the primary metric's baseline is graph-backed. The canvas recommends; the accountable
+owner decides. Rapid validation then runs the plan the canvas names.
 
 ## Progressive definition during P2
 
@@ -90,4 +103,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these eleven skills.
+outside these twelve skills.

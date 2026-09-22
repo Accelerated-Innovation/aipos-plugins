@@ -1,6 +1,6 @@
 # AIPOS
 
-Eleven focused skills supporting Continuous Discovery (P1), Rapid Validation (P2),
+Twelve focused skills supporting Continuous Discovery (P1), Rapid Validation (P2),
 and Accelerated Development (P3) in one installation: `aipos@aipos`.
 
 ## Skill catalog
@@ -10,6 +10,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 | Skill | Use it for | Main boundary |
 |---|---|---|
 | [aipos-quarterly-planning](skills/aipos-quarterly-planning/SKILL.md) | P1: evidence review, research gaps, exploration decision drafts | Requires live graph reads; does not record authoritative decisions |
+| [aipos-solution-design](skills/aipos-solution-design/SKILL.md) | P2: a one-page Solution Design canvas, live in a workshop or with a PM, rendered as an image | Facts from the graph, decisions from the PM; recommends to a named owner, never decides |
 | [aipos-rapid-validation](skills/aipos-rapid-validation/SKILL.md) | P2: experiments, evidence, viability briefs, commitment preparation | Delegates canonical behavior authoring; prepares rather than grants approval |
 | [aipos-epic-create](skills/aipos-epic-create/SKILL.md) | Optional P2/P3 support: an explicitly requested epic or initiative | An epic is not a prerequisite for feature work |
 | [aipos-feature-create](skills/aipos-feature-create/SKILL.md) | P2: new Rules, scenarios, and packages; P3: faithful baseline materialization | Draft 0 needs review; does not implement application code |
@@ -27,6 +28,11 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 - Quarterly planning requires a live Product Definition Graph read connection.
   Equivalent MCP reads can provide opportunities, problems, lineage, evidence,
   linked work, and evidence text. Without it the skill reports what is missing.
+- Solution design reads the same graph when it is connected and falls back to the PM's
+  account when it is not (the canvas says so, and Proceed stays unavailable). Its verifier
+  and renderer use the standard library; PDF and PNG output need a headless Chrome or
+  Chromium (HTML is always produced). A mock read server with synthetic data lives in
+  `evals/mock_pdg/` for development and evaluation.
 - Validation can start with pasted evidence or a hunch. A P1 mandate is optional;
   when present its owner, budget, and horizon carry through the work.
 - Tracker connectors are needed only for tracker reads or explicitly requested

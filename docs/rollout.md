@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all eleven `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all twelve `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 These commands apply once the consolidated candidate has been released to that
@@ -38,7 +38,7 @@ that is where an old plugin was installed. Remove old entries at every scope in
 which they remain enabled; do not retain old and new packages together.
 
 Check that only `aipos@aipos` is enabled for this marketplace and its inventory
-contains eleven skills. Start a new session. Existing `.govkit/` artifacts and
+contains twelve skills. Start a new session. Existing `.govkit/` artifacts and
 feature packages need no conversion. There are no compatibility aliases or
 migration scripts.
 
