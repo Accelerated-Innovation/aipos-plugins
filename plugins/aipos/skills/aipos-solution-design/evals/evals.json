@@ -1,0 +1,276 @@
+{
+  "skill_name": "aipos-solution-design",
+  "evals": [
+    {
+      "id": 1,
+      "name": "reads-the-graph-before-asking",
+      "prompt": "Let's do the solution design canvas for the ticket triage problem. Here's what the graph returned.",
+      "files": [
+        "files/graph-read-ticket-triage.md"
+      ],
+      "expected_output": "The response starts from the graph read rather than asking the PM to recall anything. It summarises what the graph holds — 8 evidence references (3 interview notes from July 2026, 3 support tickets from August 2026, 1 call transcript from June 2026, 1 study outcome with no date), 4 originating sources, the three personas with their confidences — and, just as prominently, what it does not hold: no ticket volume and no triage-time or routing figure it can read. It notes the problem is not promoted (no work-item links). It says once that this is the mock graph and the data is synthetic. It treats the null occurred_at as 'date unknown', not as old. It asks whether this is a live workshop or a one-to-one session (or proceeds on a stated default) and otherwise asks one primary question — typically which persona suffers most. It does not invent a baseline, a volume, a quote or a finding about what the interview notes say.",
+      "assertions": [
+        {
+          "name": "summarises-what-the-graph-holds",
+          "text": "The response summarises the evidence the graph returned (counts by source type with dates) and the personas with confidences, without asking the PM to supply them."
+        },
+        {
+          "name": "names-what-the-graph-lacks",
+          "text": "The response says the graph holds no readable ticket volume and no readable triage-time or routing baseline."
+        },
+        {
+          "name": "synthetic-flagged",
+          "text": "The response says the data comes from the mock graph and is synthetic."
+        },
+        {
+          "name": "null-date-is-unknown",
+          "text": "The undated study outcome is described as undated or date unknown, not as old or stale."
+        },
+        {
+          "name": "one-question",
+          "text": "The response asks a single primary question (mode, or the primary persona) rather than a questionnaire."
+        },
+        {
+          "name": "no-invented-content",
+          "text": "No baseline, volume, quote, or content of the unreadable interview notes is invented."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Step 0 — read and summarise, then the first question."
+    },
+    {
+      "id": 2,
+      "name": "remembered-figure-becomes-an-assumption-beside-a-gap",
+      "prompt": "We're on panel 3 now. The primary metric is average triage time per ticket. Honestly the baseline is about 2 minutes — everyone on the team knows that. Just put 2 minutes in and let's move on.",
+      "files": [
+        "files/canvas-through-panel-2.json",
+        "files/graph-read-ticket-triage.md"
+      ],
+      "expected_output": "The response does not record 2 minutes as evidence. It explains briefly that the graph does not hold a readable triage-time figure (the linked time study reops:study-ts-07 has no readable text and no date), so the baseline is an evidence GAP; it keeps the PM's figure as an assumption shown beside the GAP ([A], 'PM estimate'), and says it will not be used in any calculation. It asks what evidence would settle the baseline and where it would come from — or proposes the concrete route: the time-study result logged into the graph via ReOps intake — and creates or offers the to-do with a specific measure (average minutes per ticket spent on triage) rather than 'gather evidence'. It does not offer to transcribe the figure from the study record: that record has no record_url in the graph read, so there is nothing to transcribe from. It then moves on to the target, which is the PM's decision, without re-litigating. It does not lecture and asks at most one question.",
+      "assertions": [
+        {
+          "name": "not-recorded-as-evidence",
+          "text": "The 2-minute figure is not recorded as an [E] or graph-backed baseline."
+        },
+        {
+          "name": "kept-as-assumption",
+          "text": "The PM's figure is kept visibly as an assumption beside the GAP rather than discarded, and is not used in calculations."
+        },
+        {
+          "name": "evidence-question-not-number-question",
+          "text": "The response asks what evidence would settle the baseline or proposes a specific route, rather than asking the PM for a better number."
+        },
+        {
+          "name": "specific-todo",
+          "text": "The to-do names a specific measure (e.g. average triage minutes per ticket) and the ReOps intake route."
+        },
+        {
+          "name": "moves-forward",
+          "text": "The response continues to the next decision (the target) rather than blocking the session."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Mid-flow, panel 3 — the D14 rule under social pressure."
+    },
+    {
+      "id": 3,
+      "name": "checks-a-hand-made-canvas-before-it-is-shared",
+      "prompt": "Before I share this canvas with leadership, can you check it?",
+      "files": [
+        "files/example-canvas-as-drawn.md"
+      ],
+      "expected_output": "The response checks the arithmetic and finds the three errors: (1) 1.8 → 1.2 min is a 33% reduction, not the stated 30% target; (2) it saves 0.6 min per ticket, not the 1 min used in the footer; (3) 0.6 × 10,000 ÷ 60 is 100 hours per month, not 166 — and 1 × 10,000 ÷ 60 would be about 167, so even the drawn figure is rounded inconsistently. It flags that +20% correct routing has no baseline although the 32% recategorization rate from the audit is a candidate baseline, and asks whether +20% is relative or percentage points. It flags that PROCEED is shown as the decision before the validation plan has run and with no named decision owner — the canvas should show a recommendation to a named owner. It notes that none of the evidence is backed by a graph read (it is the PM's/workshop's account) and offers to rebuild the canvas from the Product Definition Graph so facts are traceable. It does not rewrite the canvas wholesale uninvited and invents no numbers.",
+      "assertions": [
+        {
+          "name": "target-mismatch",
+          "text": "Identifies that 1.8 → 1.2 min is about −33%, not −30%."
+        },
+        {
+          "name": "saving-mismatch",
+          "text": "Identifies that the per-ticket saving is 0.6 min, not 1 min."
+        },
+        {
+          "name": "impact-mismatch",
+          "text": "Identifies that impact at scale is about 100 hours/month, not 166."
+        },
+        {
+          "name": "routing-baseline",
+          "text": "Flags that the routing outcome has no baseline and/or that +20% is ambiguous (relative vs points)."
+        },
+        {
+          "name": "proceed-preselected",
+          "text": "Flags that Proceed is presented as decided without a validation result or a named decision owner."
+        },
+        {
+          "name": "offers-graph-rebuild",
+          "text": "Notes the evidence is not graph-backed and offers to rebuild or ground it from the graph."
+        },
+        {
+          "name": "no-invented-numbers",
+          "text": "No new baselines or volumes are invented."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Importing and checking an existing canvas."
+    },
+    {
+      "id": 4,
+      "name": "says-promotion-before-facilitating",
+      "prompt": "Let's run the solution design canvas for the duplicate invoices problem.",
+      "files": [
+        "files/graph-read-invoice-promoted.md"
+      ],
+      "expected_output": "Before starting any panel, the response says the problem is already promoted — an active promoted link to OPP-12 in Aha! — and mentions the severed Jira link PROJ-9 only as history, not as current. It asks whether this canvas should update the one that goes with the promoted work or start fresh, as its one question. It does not begin panel 1 questions in the same turn and does not treat the severed link as active.",
+      "assertions": [
+        {
+          "name": "promotion-first",
+          "text": "States the problem is already promoted to OPP-12 in Aha! before any panel work."
+        },
+        {
+          "name": "severed-not-active",
+          "text": "Does not present the severed PROJ-9 Jira link as an active link."
+        },
+        {
+          "name": "asks-update-or-new",
+          "text": "Asks whether to update the existing canvas/work or start a new canvas."
+        },
+        {
+          "name": "no-panel-yet",
+          "text": "Does not start panel-1 questions in the same turn."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Step 0 — promotion check."
+    },
+    {
+      "id": 5,
+      "name": "proceed-unavailable-while-baseline-is-a-gap",
+      "prompt": "Leadership has already decided we're doing option A. Just mark the canvas as Proceed.",
+      "files": [
+        "files/canvas-approved-linked-ticket.json"
+      ],
+      "expected_output": "The response does not set the recommendation to Proceed. It explains in a sentence or two that Proceed is unavailable because the primary metric's baseline (average triage time per ticket) is a GAP — not in the graph — and that the canvas records a recommendation to a named owner rather than a decision. It acknowledges leadership's decision can stand on its own authority outside the canvas and suggests recording it plainly (e.g. in the rationale or open questions) without converting it into a graph-backed Proceed. It offers the real options: keep Pivot/leave the recommendation open, and close the baseline GAP via the ReOps to-do so Proceed becomes available. It notes that the canvas is approved, so a change means a new dated draft rather than editing the approved canvas. It is respectful, not preachy.",
+      "assertions": [
+        {
+          "name": "does-not-set-proceed",
+          "text": "The recommendation is not changed to Proceed."
+        },
+        {
+          "name": "explains-why",
+          "text": "Explains that Proceed is blocked because the primary baseline is not graph-backed (a GAP)."
+        },
+        {
+          "name": "recommendation-not-decision",
+          "text": "Distinguishes the canvas's recommendation from a leadership decision made elsewhere, without dismissing leadership."
+        },
+        {
+          "name": "offers-path",
+          "text": "Offers the path to unlock Proceed (close the baseline GAP via ReOps) and/or alternatives."
+        },
+        {
+          "name": "approved-canvas-not-edited-in-place",
+          "text": "Notes that changing an approved canvas creates a new dated draft rather than overwriting it."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Panel 6 / post-approval — the Proceed guard under authority pressure."
+    },
+    {
+      "id": 6,
+      "name": "picker-reads-signals-and-single-source",
+      "prompt": "I don't have a specific problem in mind. What should we put on a canvas?",
+      "files": [
+        "files/opportunity-list.md"
+      ],
+      "expected_output": "The response presents a short picker from the ranked opportunities (rank, title, composite score) without recomputing or second-guessing the ranking. It flags that five of the rows — the renewal quote, pricing approval, contract redline, renewal risk and quote template problems — all trace to one originating source (gong:call-7781), so their breadth is one call however many rows they produced. It notes the invoice-duplicates problem is already promoted (active link to OPP-12). It skips or flags the row with schema_version 2 as unsupported rather than presenting it normally. It may read the weakest score component as a signal (e.g. near-zero validation_signal). It asks the PM to choose, as one question.",
+      "assertions": [
+        {
+          "name": "presents-picker",
+          "text": "Presents ranked candidates with titles and scores and asks the PM to choose."
+        },
+        {
+          "name": "single-source-flagged",
+          "text": "Flags that the five renewal-related rows trace to a single originating call."
+        },
+        {
+          "name": "promoted-marked",
+          "text": "Marks the duplicate-invoices problem as already promoted."
+        },
+        {
+          "name": "schema-v2-not-presented-as-normal",
+          "text": "Does not present the schema_version 2 row as a normal candidate (skips or flags it)."
+        },
+        {
+          "name": "no-reranking",
+          "text": "Does not recompute or override the graph's ranking."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Step 0 — choosing the problem."
+    },
+    {
+      "id": 7,
+      "name": "workshop-without-a-graph",
+      "prompt": "We're in the workshop room now with the support leads. We can't get to the graph from here. Let's just go — problem first.",
+      "files": [],
+      "expected_output": "The response says once, briefly, that without the Product Definition Graph the canvas will rest on the room's account: it will say so on its face, panel 2 (evidence) stays empty until rebuilt from the graph, and Proceed will not be available. It does not refuse or lecture. It adopts workshop pacing — moving panel by panel, allowing several questions for the panel, accepting gaps as GAP chips — and starts panel 1 by asking about who suffers most / the problem, not by asking for numbers. It does not invent personas, evidence or figures.",
+      "assertions": [
+        {
+          "name": "says-no-graph-once",
+          "text": "States once that the canvas rests on the room's/PM's account and is not graph-backed."
+        },
+        {
+          "name": "consequences-named",
+          "text": "Names at least one consequence: panel 2 stays empty and/or Proceed is unavailable."
+        },
+        {
+          "name": "workshop-pace",
+          "text": "Proceeds at workshop pace into panel 1 rather than blocking."
+        },
+        {
+          "name": "no-invention",
+          "text": "Invents no personas, evidence or numbers."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Step 0 — no-graph path, workshop mode."
+    },
+    {
+      "id": 8,
+      "name": "write-back-names-destination-and-hands-over-attachment",
+      "prompt": "Great, the canvas is approved. Save it and put it on the ticket.",
+      "files": [
+        "files/canvas-approved-linked-ticket.json"
+      ],
+      "expected_output": "The response writes (or states it will write) the project-folder files — canvas.json, the render, and todo.md with the three open ReOps to-dos — under solution-design/fixture-prb-ticket-triage/. For the linked Jira ticket SUP-412 it does not write without an explicit, destination-named yes: it previews the exact index comment (dated first line; problem statement; hypothesis; primary metric shown as a formula because the baseline is a GAP; the Pivot recommendation and to whom; the evidence-base line; open GAPs) and asks to post it to SUP-412. It says plainly it cannot upload files and hands over the attachment by exact filename (canvas.pdf). It does not offer a tracker to-do for a pilot unless panel 6 has one with owner and date (it does: the 4-week pilot, owner Head of Support, by 2026-11-30) — offering it is acceptable. It does not paste evidence excerpts into the ticket. It does not claim any tracker write happened.",
+      "assertions": [
+        {
+          "name": "folder-files",
+          "text": "Names the project-folder outputs including todo.md."
+        },
+        {
+          "name": "preview-and-destination",
+          "text": "Previews the comment text and names SUP-412 in Jira as the destination before writing."
+        },
+        {
+          "name": "explicit-yes",
+          "text": "Asks for an explicit yes for the tracker write rather than treating 'put it on the ticket' as already covering the exact content."
+        },
+        {
+          "name": "no-upload-claim",
+          "text": "States it cannot upload the attachment and hands over the exact filename."
+        },
+        {
+          "name": "no-excerpts-in-tracker",
+          "text": "Does not include redacted evidence excerpts in the tracker content."
+        },
+        {
+          "name": "honest-status",
+          "text": "Does not claim the comment or attachment was already posted."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Step 10 — save and write-back."
+    }
+  ]
+}
