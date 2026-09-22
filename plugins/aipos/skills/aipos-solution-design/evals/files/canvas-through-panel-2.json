@@ -1,0 +1,307 @@
+{
+  "canvas_version": 1,
+  "mode": "coach",
+  "stage": "draft",
+  "gaps_accepted": false,
+  "genai": false,
+  "title": {
+    "kind": "decision",
+    "status": "confirmed",
+    "value": "Customer Support Ticket Triage"
+  },
+  "goal": {
+    "kind": "decision",
+    "status": "confirmed",
+    "value": "Reduce triage time and improve first-contact routing"
+  },
+  "source": {
+    "kind": "opportunity-engine",
+    "schema_version": 1,
+    "problem_id": "fixture:prb-ticket-triage",
+    "title": "[SYNTHETIC] Support tickets arrive uncategorized and are routed to the wrong team",
+    "composite_score": 0.82,
+    "components": {
+      "evidence_strength": 0.71,
+      "revenue_impact": 0.38,
+      "persona_breadth": 0.55,
+      "recency": 0.88,
+      "validation_signal": 0.05
+    },
+    "personas": [
+      {
+        "name": "Support Agent",
+        "confidence": 0.91
+      },
+      {
+        "name": "Support Team Lead",
+        "confidence": 0.74
+      },
+      {
+        "name": "Enterprise Admin",
+        "confidence": 0.52
+      }
+    ],
+    "evidence_refs": [
+      {
+        "provenance_reference": "reops:int-0412",
+        "source_system": "reops",
+        "source_type": "interview_note",
+        "occurred_at": "2026-07-08T15:00:00Z",
+        "record_url": "https://fixture.invalid/reops/int-0412"
+      },
+      {
+        "provenance_reference": "reops:int-0415",
+        "source_system": "reops",
+        "source_type": "interview_note",
+        "occurred_at": "2026-07-09T14:30:00Z",
+        "record_url": "https://fixture.invalid/reops/int-0415"
+      },
+      {
+        "provenance_reference": "reops:int-0419",
+        "source_system": "reops",
+        "source_type": "interview_note",
+        "occurred_at": "2026-07-14T16:00:00Z",
+        "record_url": "https://fixture.invalid/reops/int-0419"
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88121",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "occurred_at": "2026-08-02T09:12:00Z",
+        "record_url": "https://fixture.invalid/zendesk/tkt-88121"
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88340",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "occurred_at": "2026-08-05T11:40:00Z",
+        "record_url": "https://fixture.invalid/zendesk/tkt-88340"
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88417",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "occurred_at": "2026-08-06T08:05:00Z",
+        "record_url": "https://fixture.invalid/zendesk/tkt-88417"
+      },
+      {
+        "provenance_reference": "gong:call-5530",
+        "source_system": "gong",
+        "source_type": "call_transcript",
+        "occurred_at": "2026-06-18T17:00:00Z",
+        "record_url": "https://fixture.invalid/gong/call-5530"
+      },
+      {
+        "provenance_reference": "reops:study-ts-07",
+        "source_system": "reops",
+        "source_type": "study_outcome",
+        "occurred_at": null,
+        "record_url": null
+      }
+    ],
+    "originating_sources": [
+      "reops:study-int-2026-07",
+      "zendesk:view-triage-audit-2026-08",
+      "gong:call-5530",
+      "reops:study-ts-07"
+    ],
+    "excerpts": [
+      {
+        "provenance_reference": "zendesk:tkt-88121",
+        "text": "[SYNTHETIC] Subject: Cannot access account. Customer can't log in to the portal. Category: Uncategorized. Reassigned Billing -> Account Access after 2 transfers.",
+        "anchored": true,
+        "redaction_applied": false
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88340",
+        "text": "[SYNTHETIC] Subject: Billing charge question. Question about subscription invoice. Category: Uncategorized. Recategorized to Billing by team lead on 2026-08-06.",
+        "anchored": true,
+        "redaction_applied": false
+      },
+      {
+        "provenance_reference": "gong:call-5530",
+        "text": "Speaker 2: [SYNTHETIC] Honestly it takes too long to get to the right team. We open a ticket, it bounces between [REDACTED] and billing twice before anyone owns it.",
+        "anchored": true,
+        "redaction_applied": true
+      }
+    ],
+    "work_items": [],
+    "promoted": false,
+    "read_at": "2026-09-22T18:00:00Z",
+    "server": "opportunity-engine-mock"
+  },
+  "panels": {
+    "problem": {
+      "personas": {
+        "primary": "Support Agent",
+        "others": [
+          "Support Team Lead",
+          "Enterprise Admin"
+        ],
+        "locked": true
+      },
+      "pain_points": [
+        {
+          "kind": "fact",
+          "status": "confirmed",
+          "value": "Tickets arrive uncategorized",
+          "mark": "E",
+          "refs": [
+            "zendesk:tkt-88121",
+            "zendesk:tkt-88340"
+          ]
+        },
+        {
+          "kind": "fact",
+          "status": "confirmed",
+          "value": "Tickets are reassigned between teams before anyone owns them",
+          "mark": "E",
+          "refs": [
+            "zendesk:tkt-88121",
+            "gong:call-5530"
+          ]
+        }
+      ],
+      "snapshot": [
+        {
+          "ref": "zendesk:tkt-88121",
+          "label": "Cannot access account — Uncategorized, 2 transfers",
+          "approved_for_canvas": true
+        },
+        {
+          "ref": "zendesk:tkt-88340",
+          "label": "Billing charge question — recategorized next day",
+          "approved_for_canvas": true
+        }
+      ],
+      "impact": [
+        {
+          "kind": "fact",
+          "status": "confirmed",
+          "value": "Customers wait while tickets bounce between teams",
+          "mark": "E",
+          "refs": [
+            "gong:call-5530"
+          ]
+        }
+      ],
+      "statement": {
+        "problem": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "support tickets arriving without a reliable category"
+        },
+        "affects": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "support agents first, and the customers and admins waiting on them"
+        },
+        "resulting_in": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "manual triage and reassignment before anyone owns the ticket (time cost not yet in the graph)"
+        },
+        "benefits": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "tickets reaching the right team first time, with less agent effort"
+        }
+      }
+    },
+    "evidence": {
+      "tiles": [
+        {
+          "label": "Agent interviews",
+          "refs": [
+            "reops:int-0412",
+            "reops:int-0415",
+            "reops:int-0419"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "Three interview notes from July 2026 are linked to this problem",
+            "mark": "E",
+            "refs": [
+              "reops:int-0412",
+              "reops:int-0415",
+              "reops:int-0419"
+            ]
+          }
+        },
+        {
+          "label": "Ticket records",
+          "refs": [
+            "zendesk:tkt-88121",
+            "zendesk:tkt-88340",
+            "zendesk:tkt-88417"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "Sampled tickets arrive Uncategorized and are reassigned after transfers",
+            "mark": "E",
+            "refs": [
+              "zendesk:tkt-88121",
+              "zendesk:tkt-88340"
+            ]
+          }
+        },
+        {
+          "label": "Time study",
+          "refs": [
+            "reops:study-ts-07"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "A time study outcome is linked; its result is not readable through the graph",
+            "mark": "E",
+            "refs": [
+              "reops:study-ts-07"
+            ]
+          }
+        },
+        {
+          "label": "Voice of customer",
+          "refs": [
+            "gong:call-5530"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "A customer describes tickets bouncing between teams",
+            "mark": "E",
+            "refs": [
+              "gong:call-5530"
+            ]
+          }
+        }
+      ],
+      "voice": {
+        "provenance_reference": "gong:call-5530",
+        "quote": "it takes too long to get to the right team",
+        "approved_for_canvas": true
+      }
+    },
+    "hypothesis": {},
+    "metrics": [],
+    "options": [],
+    "recommended_option": null,
+    "assumptions": [],
+    "risks": [],
+    "validation": {
+      "plan": [],
+      "recommendation": {
+        "decision": null
+      }
+    }
+  },
+  "footer": {},
+  "todos": [],
+  "open_questions": [
+    "Interview notes are linked but their content is not readable through the graph"
+  ],
+  "through_panel": 2,
+  "slug": "fixture-prb-ticket-triage"
+}

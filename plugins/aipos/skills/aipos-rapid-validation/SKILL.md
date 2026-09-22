@@ -1,6 +1,6 @@
 ---
 name: aipos-rapid-validation
-description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create."
+description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, pilots (including one a Solution Design canvas calls for), experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create and the canvas itself to solution-design."
 ---
 
 # Rapid Validation
@@ -22,6 +22,11 @@ Pillar 2's primary output is the **Validation Decision**. Every artifact in this
 evidence feeding that decision. A PM who collects six beautiful artifacts and never makes
 the call has not completed Pillar 2. Whenever you finish an artifact, point at the
 decision it serves and say what is still unevidenced.
+
+A Solution Design canvas (`aipos-solution-design`) often arrives first: its panel-6 plan
+is the experiment to design here, its evidence GAPs are the first things to measure, and
+its recommendation maps Proceed / Pivot / Park to GO / REVISE / NO-GO. Read its
+`canvas.json` as Path B evidence, keeping its provenance marks.
 
 An explicit request for an epic or program brief belongs to `aipos-epic-create`;
 new production Rules and acceptance criteria belong to `aipos-feature-create`.

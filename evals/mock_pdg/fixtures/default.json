@@ -1,0 +1,543 @@
+{
+  "_synthetic": "Every record in this file is SYNTHETIC fixture data for the mock opportunity-engine server. None of it is evidence. Shapes mirror discovery-engine src/engine/api/schemas.py (schema_version 1). '_case' keys document the edge case each record exists to exercise and are never served.",
+  "problems": [
+    {
+      "_case": "The ticket-triage example. Rich, recent, mixed sources; readable excerpts for two tickets and one call; one ticket with no text; reops records carry no readable text; a study outcome with null date and null url. No volume and no routing baseline anywhere in the graph.",
+      "problem_id": "fixture:prb-ticket-triage",
+      "title": "[SYNTHETIC] Support tickets arrive uncategorized and are routed to the wrong team",
+      "composite_score": 0.82,
+      "lineage_ref": "fixture:lin-ticket-triage",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Support Agent",
+          "confidence": 0.91
+        },
+        {
+          "name": "Support Team Lead",
+          "confidence": 0.74
+        },
+        {
+          "name": "Enterprise Admin",
+          "confidence": 0.52
+        }
+      ],
+      "originating_sources": [
+        "reops:study-int-2026-07",
+        "zendesk:view-triage-audit-2026-08",
+        "gong:call-5530",
+        "reops:study-ts-07"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "reops:int-0412",
+          "source_system": "reops",
+          "source_type": "interview_note",
+          "external_record_id": "int-0412",
+          "occurred_at": "2026-07-08T15:00:00Z",
+          "record_url": "https://fixture.invalid/reops/int-0412"
+        },
+        {
+          "provenance_reference": "reops:int-0415",
+          "source_system": "reops",
+          "source_type": "interview_note",
+          "external_record_id": "int-0415",
+          "occurred_at": "2026-07-09T14:30:00Z",
+          "record_url": "https://fixture.invalid/reops/int-0415"
+        },
+        {
+          "provenance_reference": "reops:int-0419",
+          "source_system": "reops",
+          "source_type": "interview_note",
+          "external_record_id": "int-0419",
+          "occurred_at": "2026-07-14T16:00:00Z",
+          "record_url": "https://fixture.invalid/reops/int-0419"
+        },
+        {
+          "provenance_reference": "zendesk:tkt-88121",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-88121",
+          "occurred_at": "2026-08-02T09:12:00Z",
+          "record_url": "https://fixture.invalid/zendesk/tkt-88121",
+          "excerpt": {
+            "text": "[SYNTHETIC] Subject: Cannot access account. Customer can't log in to the portal. Category: Uncategorized. Reassigned Billing -> Account Access after 2 transfers.",
+            "redaction_applied": false
+          }
+        },
+        {
+          "provenance_reference": "zendesk:tkt-88340",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-88340",
+          "occurred_at": "2026-08-05T11:40:00Z",
+          "record_url": "https://fixture.invalid/zendesk/tkt-88340",
+          "excerpt": {
+            "text": "[SYNTHETIC] Subject: Billing charge question. Question about subscription invoice. Category: Uncategorized. Recategorized to Billing by team lead on 2026-08-06.",
+            "redaction_applied": false
+          }
+        },
+        {
+          "provenance_reference": "zendesk:tkt-88417",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-88417",
+          "occurred_at": "2026-08-06T08:05:00Z",
+          "record_url": "https://fixture.invalid/zendesk/tkt-88417"
+        },
+        {
+          "provenance_reference": "gong:call-5530",
+          "source_system": "gong",
+          "source_type": "call_transcript",
+          "external_record_id": "call-5530",
+          "occurred_at": "2026-06-18T17:00:00Z",
+          "record_url": "https://fixture.invalid/gong/call-5530",
+          "excerpt": {
+            "text": "Speaker 2: [SYNTHETIC] Honestly it takes too long to get to the right team. We open a ticket, it bounces between [REDACTED] and billing twice before anyone owns it.",
+            "redaction_applied": true
+          }
+        },
+        {
+          "provenance_reference": "reops:study-ts-07",
+          "source_system": "reops",
+          "source_type": "study_outcome",
+          "external_record_id": "study-ts-07",
+          "occurred_at": null,
+          "record_url": null
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.71,
+          "revenue_impact": 0.38,
+          "persona_breadth": 0.55,
+          "recency": 0.88,
+          "validation_signal": 0.05
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "Already promoted: an active promoted Aha! link plus a severed Jira link. The skill must say so before facilitating.",
+      "problem_id": "fixture:prb-invoice-dup",
+      "title": "[SYNTHETIC] Duplicate vendor invoices reach payment before anyone notices",
+      "composite_score": 0.77,
+      "lineage_ref": "fixture:lin-invoice-dup",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "AP Clerk",
+          "confidence": 0.88
+        },
+        {
+          "name": "Controller",
+          "confidence": 0.61
+        }
+      ],
+      "originating_sources": [
+        "servicenow:queue-ap-2026",
+        "zendesk:view-vendor-2026"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "servicenow:INC-20931",
+          "source_system": "servicenow",
+          "source_type": "incident",
+          "external_record_id": "INC-20931",
+          "occurred_at": "2026-05-11T10:00:00Z",
+          "record_url": "https://fixture.invalid/servicenow/INC-20931"
+        },
+        {
+          "provenance_reference": "servicenow:INC-21007",
+          "source_system": "servicenow",
+          "source_type": "incident",
+          "external_record_id": "INC-21007",
+          "occurred_at": "2026-06-02T10:00:00Z",
+          "record_url": "https://fixture.invalid/servicenow/INC-21007"
+        },
+        {
+          "provenance_reference": "zendesk:tkt-80155",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-80155",
+          "occurred_at": "2026-06-20T13:00:00Z",
+          "record_url": "https://fixture.invalid/zendesk/tkt-80155",
+          "excerpt": {
+            "text": "[SYNTHETIC] Vendor says invoice 4471 was paid twice; second payment went out 9 days after the first.",
+            "redaction_applied": false
+          }
+        }
+      ],
+      "links": [
+        {
+          "link_id": "fixture:lnk-1",
+          "link_type": "promoted",
+          "target_system": "aha",
+          "target_type": "feature",
+          "external_record_id": "fixture-aha-7001",
+          "external_reference": "OPP-12",
+          "record_url": "https://fixture.invalid/aha/OPP-12",
+          "container_ref": null,
+          "linked_by": "fixture:subject-pm-1",
+          "linked_at": "2026-08-14T12:00:00+00:00",
+          "status": "active",
+          "outcome_emitted": false,
+          "schema_version": 1
+        },
+        {
+          "link_id": "fixture:lnk-2",
+          "link_type": "attached",
+          "target_system": "jira",
+          "target_type": "story",
+          "external_record_id": "fixture-jira-9",
+          "external_reference": "PROJ-9",
+          "record_url": "https://fixture.invalid/jira/PROJ-9",
+          "container_ref": "PROJ",
+          "linked_by": "fixture:subject-pm-1",
+          "linked_at": "2026-07-01T12:00:00+00:00",
+          "status": "severed",
+          "outcome_emitted": false,
+          "schema_version": 1
+        }
+      ],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.64,
+          "revenue_impact": 0.72,
+          "persona_breadth": 0.4,
+          "recency": 0.8,
+          "validation_signal": 0.3
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
+      "problem_id": "fixture:prb-renewal-quotes",
+      "title": "[SYNTHETIC] Renewal quotes take days to assemble",
+      "composite_score": 0.74,
+      "lineage_ref": "fixture:lin-renewal-quotes",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Account Executive",
+          "confidence": 0.8
+        }
+      ],
+      "originating_sources": [
+        "gong:call-7781"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "gong:call-7781",
+          "source_system": "gong",
+          "source_type": "call_transcript",
+          "external_record_id": "call-7781",
+          "occurred_at": "2026-08-27T15:00:00Z",
+          "record_url": "https://fixture.invalid/gong/call-7781",
+          "excerpt": {
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "redaction_applied": false
+          }
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.35,
+          "revenue_impact": 0.66,
+          "persona_breadth": 0.2,
+          "recency": 0.95,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
+      "problem_id": "fixture:prb-pricing-approvals",
+      "title": "[SYNTHETIC] Pricing exceptions need three approvals before a quote can go out",
+      "composite_score": 0.71,
+      "lineage_ref": "fixture:lin-pricing-approvals",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Deal Desk Analyst",
+          "confidence": 0.77
+        }
+      ],
+      "originating_sources": [
+        "gong:call-7781"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "gong:call-7781",
+          "source_system": "gong",
+          "source_type": "call_transcript",
+          "external_record_id": "call-7781",
+          "occurred_at": "2026-08-27T15:00:00Z",
+          "record_url": "https://fixture.invalid/gong/call-7781",
+          "excerpt": {
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "redaction_applied": false
+          }
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.35,
+          "revenue_impact": 0.66,
+          "persona_breadth": 0.2,
+          "recency": 0.95,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
+      "problem_id": "fixture:prb-redline-loss",
+      "title": "[SYNTHETIC] Contract redlines get lost between email threads",
+      "composite_score": 0.68,
+      "lineage_ref": "fixture:lin-redline-loss",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Legal Ops Specialist",
+          "confidence": 0.7
+        }
+      ],
+      "originating_sources": [
+        "gong:call-7781"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "gong:call-7781",
+          "source_system": "gong",
+          "source_type": "call_transcript",
+          "external_record_id": "call-7781",
+          "occurred_at": "2026-08-27T15:00:00Z",
+          "record_url": "https://fixture.invalid/gong/call-7781",
+          "excerpt": {
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "redaction_applied": false
+          }
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.35,
+          "revenue_impact": 0.66,
+          "persona_breadth": 0.2,
+          "recency": 0.95,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
+      "problem_id": "fixture:prb-renewal-risk",
+      "title": "[SYNTHETIC] Customer success cannot see renewal risk until it is too late",
+      "composite_score": 0.65,
+      "lineage_ref": "fixture:lin-renewal-risk",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Customer Success Manager",
+          "confidence": 0.73
+        }
+      ],
+      "originating_sources": [
+        "gong:call-7781"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "gong:call-7781",
+          "source_system": "gong",
+          "source_type": "call_transcript",
+          "external_record_id": "call-7781",
+          "occurred_at": "2026-08-27T15:00:00Z",
+          "record_url": "https://fixture.invalid/gong/call-7781",
+          "excerpt": {
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "redaction_applied": false
+          }
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.35,
+          "revenue_impact": 0.66,
+          "persona_breadth": 0.2,
+          "recency": 0.95,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
+      "problem_id": "fixture:prb-quote-templates",
+      "title": "[SYNTHETIC] Quote templates are out of date with current pricing",
+      "composite_score": 0.6,
+      "lineage_ref": "fixture:lin-quote-templates",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Account Executive",
+          "confidence": 0.66
+        }
+      ],
+      "originating_sources": [
+        "gong:call-7781"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "gong:call-7781",
+          "source_system": "gong",
+          "source_type": "call_transcript",
+          "external_record_id": "call-7781",
+          "occurred_at": "2026-08-27T15:00:00Z",
+          "record_url": "https://fixture.invalid/gong/call-7781",
+          "excerpt": {
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "redaction_applied": false
+          }
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.35,
+          "revenue_impact": 0.66,
+          "persona_breadth": 0.2,
+          "recency": 0.95,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "Aging evidence: 2022-2024 only, plus one null occurred_at (unknown, NOT old) and a null record_url.",
+      "problem_id": "fixture:prb-month-end",
+      "title": "[SYNTHETIC] Month-end reports require manual spreadsheet stitching",
+      "composite_score": 0.58,
+      "lineage_ref": "fixture:lin-month-end",
+      "schema_version": 1,
+      "personas": [
+        {
+          "name": "Financial Analyst",
+          "confidence": 0.83
+        }
+      ],
+      "originating_sources": [
+        "salesforce:case-set-2022",
+        "reops:study-2023-fin",
+        "zendesk:view-reporting"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "salesforce:5003x-2201",
+          "source_system": "salesforce",
+          "source_type": "case",
+          "external_record_id": "5003x-2201",
+          "occurred_at": "2022-11-03T10:00:00Z",
+          "record_url": "https://fixture.invalid/salesforce/5003x-2201"
+        },
+        {
+          "provenance_reference": "reops:int-0107",
+          "source_system": "reops",
+          "source_type": "interview_note",
+          "external_record_id": "int-0107",
+          "occurred_at": "2023-06-14T10:00:00Z",
+          "record_url": "https://fixture.invalid/reops/int-0107"
+        },
+        {
+          "provenance_reference": "zendesk:tkt-40211",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-40211",
+          "occurred_at": "2024-02-19T10:00:00Z",
+          "record_url": "https://fixture.invalid/zendesk/tkt-40211",
+          "excerpt": {
+            "text": "[SYNTHETIC] It takes our team two full days every month-end to stitch the exports together.",
+            "redaction_applied": false
+          }
+        },
+        {
+          "provenance_reference": "zendesk:tkt-40388",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-40388",
+          "occurred_at": null,
+          "record_url": null
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.52,
+          "revenue_impact": 0.44,
+          "persona_breadth": 0.15,
+          "recency": 0.12,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1"
+      }
+    },
+    {
+      "_case": "Future contract: schema_version 2 on the problem and its opportunity row. A consumer must stop, not guess.",
+      "problem_id": "fixture:prb-schema-next",
+      "title": "[SYNTHETIC] A problem served under a newer schema version",
+      "composite_score": 0.41,
+      "lineage_ref": "fixture:lin-schema-next",
+      "schema_version": 2,
+      "personas": [
+        {
+          "name": "Operations Manager",
+          "confidence": 0.5
+        }
+      ],
+      "originating_sources": [
+        "zendesk:view-ops"
+      ],
+      "evidence": [
+        {
+          "provenance_reference": "zendesk:tkt-99001",
+          "source_system": "zendesk",
+          "source_type": "support_ticket",
+          "external_record_id": "tkt-99001",
+          "occurred_at": "2026-09-01T10:00:00Z",
+          "record_url": "https://fixture.invalid/zendesk/tkt-99001",
+          "schema_version": 2
+        }
+      ],
+      "links": [],
+      "opportunity": {
+        "components": {
+          "evidence_strength": 0.2,
+          "revenue_impact": 0.2,
+          "persona_breadth": 0.1,
+          "recency": 0.9,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 1.0,
+        "weight_config_version": "fixture-weights-v1",
+        "schema_version": 2
+      }
+    }
+  ]
+}

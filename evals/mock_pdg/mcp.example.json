@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "opportunity-engine-mock": {
+      "command": "python3",
+      "args": ["evals/mock_pdg/server.py"],
+      "env": {}
+    }
+  }
+}

@@ -55,7 +55,7 @@ Three rules follow, and they are the reason this skill exists rather than a temp
 
 1. **Ask one primary question at a time.** Summarize after each major section, then default forward.
 2. **Never write into a record without explicit approval.** For updates, modify only the sections the PM asked for — an "improve the metrics" request is not permission to rewrite the problem statement.
-3. **Never let a solution into the User Problem(s) section.** This is the single most common epic defect and the hardest to reverse: once the solution is in the problem statement, every downstream feature inherits an unexamined assumption, and nobody ever revisits it. See `references/problem-framing.md`.
+3. **Never let a solution into the User Problem(s) section.** This is the single most common epic defect and the hardest to reverse: once the solution is in the problem statement, every downstream feature inherits an unexamined assumption, and nobody ever revisits it. See `../../references/problem-framing.md`.
 
 This skill is transparent about how it works. Its rubrics live in `references/` and are meant to be read — if the PM asks why their problem statement was pushed back on, show them the test it failed.
 
@@ -111,8 +111,8 @@ These field names are deliberate: they are the `epic:` input contract `aipos-fea
 
 | Reference | Use |
 |---|---|
-| `references/problem-framing.md` | The solution-in-problem test and reframing scripts, persona handling, impact quantification, benefits, the final problem statement, and evidence quality. Read before Step 2. |
-| `references/metrics-and-evaluation.md` | The success-metric quality bar, OKR alignment, and the full GenAI evaluation criteria model. Read before Step 4. |
+| `../../references/problem-framing.md` | The solution-in-problem test and reframing scripts, persona handling, impact quantification, benefits, the final problem statement, and evidence quality. Read before Step 2. |
+| `../../references/metrics-and-evaluation.md` | The success-metric quality bar, OKR alignment, and the full GenAI evaluation criteria model. Read before Step 4. |
 | `references/epic-template.md` | The epic package shape, every field's content rules, and the MVP scope, risks, and NFR templates. Read before writing anything. |
 | `references/tracker-adapters.md` | Repo package writer, create and update protocols, per-tracker adapters. Read before writing anywhere. |
 
@@ -182,7 +182,7 @@ Ask only the current metadata question; do not append separate baseline/target q
 
 ## Step 2 — The problem statement
 
-The core of the epic, worked through in five tasks per `references/problem-framing.md`:
+The core of the epic, worked through in five tasks per `../../references/problem-framing.md`:
 
 | Task | Question | Watch for |
 |---|---|---|
@@ -210,7 +210,7 @@ Map to known objectives where the workspace exposes them. Where alignment is ass
 
 > What measurable outcomes define success? Aim for three to five, each with a target.
 
-Apply the quality bar in `references/metrics-and-evaluation.md`: every metric needs a **baseline**, a **target**, and an **observation method**. Push for quantification, once per metric. A user-supplied estimate is acceptable when labelled as an estimate, never as a measured baseline. If the baseline genuinely isn't known, record it as a gap and say so in the epic — "we don't measure this yet" is a real finding, and often the first thing the epic should fix.
+Apply the quality bar in `../../references/metrics-and-evaluation.md`: every metric needs a **baseline**, a **target**, and an **observation method**. Push for quantification, once per metric. A user-supplied estimate is acceptable when labelled as an estimate, never as a measured baseline. If the baseline genuinely isn't known, record it as a gap and say so in the epic — "we don't measure this yet" is a real finding, and often the first thing the epic should fix.
 
 Three to five is the guidance. Twelve metrics means nobody knows which one matters.
 
@@ -225,7 +225,7 @@ Ask in sequence:
 3. Are there required golden test cases or edge scenarios?
 4. Should evaluation run continuously, or only pre-release?
 
-Produce the structured criteria per `references/metrics-and-evaluation.md`. Every criterion needs a method and a threshold; a criterion without a threshold is a topic, not a gate. Where the PM doesn't have a number, mark it `TBD` and list it as a gap — never supply one yourself.
+Produce the structured criteria per `../../references/metrics-and-evaluation.md`. Every criterion needs a method and a threshold; a criterion without a threshold is a topic, not a gate. Where the PM doesn't have a number, mark it `TBD` and list it as a gap — never supply one yourself.
 
 ## Step 5 — Evidence and insights
 
@@ -335,6 +335,7 @@ Always:
 | Skill | Owns | Relationship |
 |---|---|---|
 | `aipos-rapid-validation` | Experiments and evidence | Supplies evidence and a viability brief when available. Reuse that evidence for an explicitly requested epic; an epic may also support work in progress. Label unevidenced claims and do not imply the epic approves investment |
+| `aipos-solution-design` | The one-page Solution Design canvas | Shares the problem-framing and metrics references. A canvas's panel-1 statement and panel-3 metrics can seed this epic — carry their provenance marks and GAPs across unchanged |
 | `aipos-feature-create` | Story mapping and Draft 0 authoring | Consumes this epic. This skill's field names are that skill's `epic:` input contract; personas and evaluation criteria are inherited wholesale |
 | `aipos-feature-refine` | Spec quality | Two levels down. Epic-level evaluation criteria are what refine checks feature specs against |
 | `aipos-feature-map` | The corpus view | Renders the features derived from this epic (it ingests feature packages, not the epic itself); reading its weak spots against this epic's success metrics is the human's move, and this epic is where those metrics live |

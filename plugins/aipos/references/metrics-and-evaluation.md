@@ -1,6 +1,8 @@
 # Success Metrics and GenAI Evaluation Criteria
 
 > Metrics are what the epic will be judged by. Evaluation criteria are what every feature under it will be gated by. Both are contracts; write them like it.
+>
+> **Shared** by `aipos-epic-create` (epics) and `aipos-solution-design` (the Solution Design canvas). The canvas applies it with the exceptions its `panel-rubrics.md` names — chiefly that facts come from the Product Definition Graph, never from the PM.
 
 ## Contents
 

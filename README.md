@@ -4,7 +4,7 @@ One plugin for evidence-based discovery, rapid validation, and governed AI-assis
 delivery, from [Accelerated Innovation](https://acceleratedinnovation.com).
 
 AIPOS (AI Product Operating System) groups the work into pillars. The plugin keeps
-all eleven skills together because behavior authoring, review, journey definition,
+all twelve skills together because behavior authoring, review, journey definition,
 and scope selection support several pillars. Each skill owns a specific action
 and hands off when the requested work changes.
 
@@ -33,6 +33,7 @@ Describe the action and provide the relevant evidence or artifacts:
 | Request | Skill |
 |---|---|
 | “Review the live opportunity graph for next quarter's research choices.” | `aipos-quarterly-planning` |
+| “Run a solution design canvas for this opportunity with the team.” | `aipos-solution-design` |
 | “Design a demand test for this opportunity.” | `aipos-rapid-validation` |
 | “Draft acceptance criteria from these findings.” | `aipos-feature-create` |
 | “Review these existing criteria with Product, QA, and Engineering.” | `aipos-feature-refine` |
@@ -40,7 +41,7 @@ Describe the action and provide the relevant evidence or artifacts:
 | “Check this reviewed repo package before implementation.” | `aipos-feature-readiness` |
 
 See the [complete skill catalog and prerequisites](plugins/aipos/README.md) for
-journey authoring, dashboards, optional epics, synthetic data, and metrics.
+solution design canvases, journey authoring, dashboards, optional epics, synthetic data, and metrics.
 
 ## How the pillars connect
 
@@ -52,7 +53,7 @@ and delivery observation.
 
 An evidence-backed opportunity can go directly to Rules and scenarios. Epics,
 user stories, estimates, and a decision service are optional. Existing work can
-enter at the appropriate stage; this is not a compulsory sequence of eleven calls.
+enter at the appropriate stage; this is not a compulsory sequence of twelve calls.
 
 The [workflow guide](docs/workflow.md) explains ownership, handoffs, and examples.
 Product approval, local execution readiness, current authority, and implementation
