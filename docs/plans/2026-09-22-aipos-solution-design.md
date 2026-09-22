@@ -5,7 +5,7 @@
 `scripts/`, `evals/`); routing cases in `evals/routing`; the `Related` tables of `aipos-epic-create`
 and `aipos-rapid-validation`; plugin README.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status: increments 0–6 implemented on `feat/aipos-solution-design` and reviewed twice; routing cases added (part of 8).** `pytest tests` passes (542); routing dry run sees 12 skills. Model-graded evals (7) and README/ownership/version (9) remain. `claude plugin validate` not runnable in the build environment.
+**Status: all increments implemented on `feat/aipos-solution-design`; ready for one PR.** `pytest tests` passes (553); routing dry run sees 12 skills; eval cases dry-run wired. **Not run:** model-graded evals, live routing, `claude plugin validate` (CI runs it), and a live test against the engine (`docs/testing/solution-design-live-test.md`).
 
 ## Context
 
@@ -241,10 +241,10 @@ canvas can be resumed later in coach mode to close its gaps.
 | 4 | `SKILL.md` from `templates/skill-template` — purpose, lifecycle position, scope/handoffs, proceed protocol, guardrails, output format | [x] |
 | 5 | `references/opportunity-source.md` — OE adapter (signature detection, call order, excerpt cap, quote approval) + Path C fallback against the source contract | [x] |
 | 6 | `scripts/render_canvas.py`, `templates/canvas.html`, `brand.json`; `scripts/verify_canvas.py` for D4 arithmetic | [x] |
-| 7 | `evals/evals.json` + fixtures: solution-shaped problem; findings 1–3 (math/baseline); undated evidence; OE present vs absent; GenAI mode inherits criteria; PM declines write; **PM volunteers a remembered baseline → recorded as `[A]` assumption + GAP, not `[E]`; missing baseline → GAP + panel 5 assumption + panel 6 plan item + ReOps to-do; resume re-reads PDG and closes a now-filled GAP; Proceed blocked while primary baseline is a GAP;** workshop canvas with gaps renders `GAP` chips and resumes in coach mode; linked Jira item → named-attachment handoff, no claimed upload; **null `occurred_at` not treated as stale; 2022–2024 aging split; five ranked rows → one originating source; unknown `schema_version` stops cleanly** | [ ] |
+| 7 | `evals/evals.json` + fixtures: solution-shaped problem; findings 1–3 (math/baseline); undated evidence; OE present vs absent; GenAI mode inherits criteria; PM declines write; **PM volunteers a remembered baseline → recorded as `[A]` assumption + GAP, not `[E]`; missing baseline → GAP + panel 5 assumption + panel 6 plan item + ReOps to-do; resume re-reads PDG and closes a now-filled GAP; Proceed blocked while primary baseline is a GAP;** workshop canvas with gaps renders `GAP` chips and resumes in coach mode; linked Jira item → named-attachment handoff, no claimed upload; **null `occurred_at` not treated as stale; 2022–2024 aging split; five ranked rows → one originating source; unknown `schema_version` stops cleanly** | [x] eight cases; not yet executed |
 | 8 | Routing cases vs `aipos-epic-create` ("epic/initiative brief") and `aipos-rapid-validation` ("viability brief / prototype") | [~] six cases added; live run not done |
-| 8b | `references/record-writeback.md` pointer + folder writer (D12) | [ ] |
-| 9 | Update `Related` tables in epic-create and rapid-validation; README; plugin version bump | [ ] |
+| 8b | `references/record-writeback.md` pointer + folder writer (D12) | [x] |
+| 9 | Update `Related` tables in epic-create and rapid-validation; README; plugin version bump | [x] v1.1.0 |
 
 ## Lifecycle position
 
