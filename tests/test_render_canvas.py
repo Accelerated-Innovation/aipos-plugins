@@ -123,3 +123,20 @@ def test_cli_writes_html_without_a_browser(tmp_path):
     assert run.returncode == 0, run.stderr
     result = json.loads(run.stdout)
     assert result["written"] == ["canvas.html"] and (tmp_path / "canvas.html").is_file()
+
+
+def test_unapproved_quotes_and_records_are_withheld_from_drafts(rc):
+    canvas = load("triage-from-graph")
+    canvas["panels"]["evidence"]["voice"]["approved_for_canvas"] = False
+    canvas["panels"]["problem"]["snapshot"][0]["approved_for_canvas"] = False
+    page = text_of(render(rc, canvas))
+    assert "it takes too long to get to the right team" not in page
+    assert "Cannot access account" not in page
+    assert "Billing charge question" in page, "approved records still show"
+
+
+def test_a_draft_says_how_far_it_has_got(rc):
+    canvas = load("triage-from-graph")
+    canvas["through_panel"] = 3
+    report, _ = rc.load_verifier().verify(canvas)
+    assert ("draft", "DRAFT — through panel 3") in rc.banners(canvas, report)

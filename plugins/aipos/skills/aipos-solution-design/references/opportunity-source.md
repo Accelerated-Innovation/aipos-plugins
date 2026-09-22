@@ -76,8 +76,10 @@ For the chosen `problem_id`, in this order:
    source is one source; five ranked problems from one call is one call.
 5. **`get_evidence_text`** — only on demand, below.
 
-Check `schema_version` on every response. Anything other than `1`: stop and say the graph is
-serving a version this skill does not understand. Do not guess the shape.
+Check `schema_version` on every record: on `get_problem`, `get_lineage` and `get_work_item_links`
+it is on the response; on `list_evidence`, `list_problems` and `list_opportunities` it is on each item
+(the list wrapper has none). Anything other than `1` on the chosen problem or its evidence: stop and
+say the graph is serving a version this skill does not understand. Do not guess the shape.
 
 Summarise the read back to the PM before panel 1 — what the graph holds and, just as important,
 what it does not:
@@ -92,7 +94,8 @@ what it does not:
 `get_evidence_text` is a **person-adjacent disclosure**: the engine access-logs every call,
 including refused ones. Fetch an excerpt only when a panel needs exact words:
 
-- up to 3 records for panel 1's current-state snapshot, and
+- up to 3 records for panel 1's current-state snapshot — the same excerpts back panel 1's pain
+  points, so no separate fetch is needed for them — and
 - 1–2 for panel 2's quote.
 
 Default cap: **5 per canvas**. Pass `problem_id` so the excerpt is anchored on the problem.
@@ -141,13 +144,16 @@ Reopening a saved canvas starts with a fresh read — the graph may have moved s
 2. Report the delta in plain words: new evidence (with dates), removed evidence, persona changes,
    a new promotion. Evidence that disappeared from the graph can no longer back an `[E]` — the
    verifier will say which fields lost their footing.
-3. For each open evidence GAP, look at the new references. A GAP closes only when a graph record
-   carries the value:
-   - an excerpt that states it — quote the fragment, cite the reference; or
-   - a record the graph now links (a ReOps study outcome, say) whose value the PM reads from its
-     `record_url` — record it `[E]` citing that reference, with `note: "transcribed from
-     <record_url> on <date>"`. This is the one place a person keys a number in, and it is only
-     allowed because the graph holds the record it came from.
+3. For each open evidence GAP, look at the new references. A GAP closes when a graph record carries
+   the value — an excerpt that states it: quote the fragment, cite the reference, mark it `[E]`.
+
+**Transcribed values (`[T]`).** A record the graph links but can't show as text (a ReOps study
+outcome, say) may carry the value behind its `record_url`. The PM may read it from there — in any
+session, not just on resume — and it is recorded `[T]`, citing that reference, with `note: "read
+from <record_url> by <who> on <date>"`. This is the one place a person keys a number in. A `[T]`
+value is traceable and it computes, so the formulas resolve — but it is **not graph-backed**:
+Proceed stays unavailable until the graph itself carries the value. Close the GAP's to-do only if
+the PM agrees the transcription is enough; otherwise keep the to-do open to get it into the graph.
 4. Close the to-do for every GAP that filled, update `read_at`, run the verifier, and tell the PM
    which numbers resolved — the formula that became a figure is the news.
 
@@ -161,8 +167,9 @@ If no server matches the signature (or access fails), say once:
 
 Then run the facilitation with `source.kind: "pm-interview"`:
 
-- Facts come from the PM, recorded `[I]` with a `note` saying whose account it is. Anything the PM
+- Facts come from the PM, recorded `[I]` with a `note` saying whose account it is. These **are**
+  computed with — the arithmetic is still checked — but none is graph-backed. Anything the PM
   doesn't know is an evidence GAP with a ReOps to-do, exactly as on a graph canvas.
-- No quotes and no snapshot examples — there are no excerpts to take them from verbatim.
+- No quotes, no snapshot examples and no panel 2 — there are no excerpts to take them from verbatim.
 - Proceed is unavailable: nothing is graph-backed. Pivot and Park remain.
 - Once the graph is reachable, a resume rebuilds `source` from it and re-grounds each fact.

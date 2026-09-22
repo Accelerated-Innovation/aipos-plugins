@@ -43,7 +43,15 @@ EXCERPT_CAP = 5
 PCT_TOLERANCE = 0.5          # percentage points
 RESULT_TOLERANCE = 0.01      # 1% relative
 
-MARKS = {"E", "I", "A"}
+MARKS = {"E", "I", "T", "A"}
+FINAL_PANEL = 8          # 1–6 panels, 7 footer, 8 review: the canvas is complete
+
+
+def through(canvas: dict) -> int:
+    """How far the facilitation has got. Checks for later panels wait until they are reached,
+    so running the verifier after panel 1 does not report panel 6 as missing."""
+    value = canvas.get("through_panel", FINAL_PANEL)
+    return value if isinstance(value, int) and not isinstance(value, bool) else FINAL_PANEL
 STATUSES = {"confirmed", "provisional", "gap"}
 GAP_TYPES = {"evidence", "decision"}
 DECISIONS = {"proceed": "go", "pivot": "revise", "park": "no-go"}
@@ -117,7 +125,10 @@ def number(field: object) -> float | None:
 
 
 def graph_backed(field: object, graph_refs: set) -> bool:
-    """Evidence a decision may rest on: an [E] fact, or an [I] fact whose basis is graph refs."""
+    """Evidence a decision may rest on: an [E] fact, or an [I] fact whose basis is graph refs.
+
+    A transcribed [T] fact is not graph-backed: a person keyed it in from a record the graph
+    links. It is traceable and it computes, but Proceed waits for the graph to carry the value."""
     if not present(field) or field.get("kind") != "fact":
         return False
     refs = L(field.get("refs"))
@@ -165,40 +176,40 @@ def is_percent_unit(unit: object) -> bool:
 def positions(canvas: dict):
     """Every place the contract puts content, with the kind of field it must hold.
 
-    Yields (path, node, kind, required). Checking by position — not by discovering dicts that
+    Yields (path, node, kind, required, panel). Checking by position — not by discovering dicts that
     look like fields — is what stops a plain string or a status-less dict slipping past."""
     panels = D(canvas.get("panels"))
     problem, evidence = D(panels.get("problem")), D(panels.get("evidence"))
     hypothesis, validation = D(panels.get("hypothesis")), D(panels.get("validation"))
     footer = D(canvas.get("footer"))
-    yield "title", canvas.get("title"), "decision", True
-    yield "goal", canvas.get("goal"), "decision", True
+    yield "title", canvas.get("title"), "decision", True, 0
+    yield "goal", canvas.get("goal"), "decision", True, 0
     for i, node in enumerate(L(problem.get("pain_points"))):
-        yield f"panels.problem.pain_points[{i}]", node, "fact", True
+        yield f"panels.problem.pain_points[{i}]", node, "fact", True, 1
     for i, node in enumerate(L(problem.get("impact"))):
-        yield f"panels.problem.impact[{i}]", node, "fact", True
+        yield f"panels.problem.impact[{i}]", node, "fact", True, 1
     for key in ("problem", "affects", "resulting_in", "benefits"):
-        yield f"panels.problem.statement.{key}", D(problem.get("statement")).get(key), "decision", True
+        yield f"panels.problem.statement.{key}", D(problem.get("statement")).get(key), "decision", True, 1
     for i, tile in enumerate(L(evidence.get("tiles"))):
-        yield f"panels.evidence.tiles[{i}].finding", D(tile).get("finding"), "fact", True
+        yield f"panels.evidence.tiles[{i}].finding", D(tile).get("finding"), "fact", True, 2
     for key in ("if", "then", "without"):
-        yield f"panels.hypothesis.{key}", hypothesis.get(key), "decision", True
+        yield f"panels.hypothesis.{key}", hypothesis.get(key), "decision", True, 3
     for i, metric in enumerate(L(panels.get("metrics"))):
         metric = D(metric)
-        yield f"panels.metrics[{i}].baseline", metric.get("baseline"), "fact", True
-        yield f"panels.metrics[{i}].target", metric.get("target"), "decision", False
-        yield f"panels.metrics[{i}].target_change_pct", metric.get("target_change_pct"), "decision", False
-        yield f"panels.metrics[{i}].observation", metric.get("observation"), "decision", True
+        yield f"panels.metrics[{i}].baseline", metric.get("baseline"), "fact", True, 3
+        yield f"panels.metrics[{i}].target", metric.get("target"), "decision", False, 3
+        yield f"panels.metrics[{i}].target_change_pct", metric.get("target_change_pct"), "decision", False, 3
+        yield f"panels.metrics[{i}].observation", metric.get("observation"), "decision", True, 3
     for i, option in enumerate(L(panels.get("options"))):
-        yield f"panels.options[{i}].approach", D(option).get("approach"), "decision", True
+        yield f"panels.options[{i}].approach", D(option).get("approach"), "decision", True, 4
     for i, item in enumerate(L(validation.get("plan"))):
-        yield f"panels.validation.plan[{i}].owner", D(item).get("owner"), "decision", True
+        yield f"panels.validation.plan[{i}].owner", D(item).get("owner"), "decision", True, 6
     recommendation = D(validation.get("recommendation"))
     yield ("panels.validation.recommendation.owner", recommendation.get("owner"), "decision",
-           recommendation.get("decision") is not None)
-    yield "footer.success", footer.get("success"), "decision", True
+           recommendation.get("decision") is not None, 6)
+    yield "footer.success", footer.get("success"), "decision", True, 7
     if footer.get("scale") is not None:
-        yield "footer.scale.volume", D(footer.get("scale")).get("volume"), "fact", True
+        yield "footer.scale.volume", D(footer.get("scale")).get("volume"), "fact", True, 7
 
 
 NUMERIC_POSITIONS = re.compile(r"(baseline|target|target_change_pct|scale\.volume)$")
@@ -206,9 +217,10 @@ PROSE_POSITIONS = re.compile(r"^(title|goal|footer\.success|panels\.problem\.sta
 
 
 def check_positions(canvas: dict, report: Report) -> None:
-    for path, node, kind, required in positions(canvas):
+    reached = through(canvas)
+    for path, node, kind, required, panel_no in positions(canvas):
         if node is None:
-            if required:
+            if required and panel_no <= reached:
                 report.error("MISSING", path, f"a {kind} field is required here")
             continue
         if not is_field(node):
@@ -243,6 +255,12 @@ def check_top(canvas: dict, report: Report) -> None:
     for key in ("source", "panels", "footer"):
         if not isinstance(canvas.get(key), dict):
             report.error("MISSING", key, f"'{key}' object is required")
+    reached = canvas.get("through_panel", FINAL_PANEL)
+    if not isinstance(reached, int) or isinstance(reached, bool) or not 0 <= reached <= FINAL_PANEL:
+        report.error("MALFORMED", "through_panel", f"an integer 0–{FINAL_PANEL}")
+    elif canvas.get("stage") == "approved" and reached < FINAL_PANEL:
+        report.error("INCOMPLETE_AT_APPROVAL", "through_panel",
+                     "a canvas is approved only after review (through_panel 8)")
     for key in ("todos", "open_questions"):
         if key in canvas and not isinstance(canvas[key], list):
             report.error("MALFORMED", key, f"'{key}' is a list")
@@ -324,6 +342,11 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
                          "an assumption is not a fact: make this an evidence GAP and keep the "
                          "figure in 'assumed'")
             continue
+        if mark == "T":
+            if not refs or not f.get("note"):
+                report.error("T_WITHOUT_RECORD", path,
+                             "a transcribed [T] fact cites the graph record it was read from and "
+                             "notes who read it, from which record_url, when")
         missing = [r for r in refs if r not in graph_refs]
         if missing:
             report.error("REF_NOT_IN_GRAPH", path, f"references not returned by the graph read: {missing}")
@@ -341,6 +364,7 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
 
 def check_gap_wiring(canvas: dict, fields: list, report: Report) -> None:
     strict = canvas.get("mode") == "coach"
+    reached = through(canvas)
     panels = D(canvas.get("panels"))
     todos = {D(t).get("id"): D(t) for t in L(canvas.get("todos"))}
     assumptions = {D(a).get("id"): D(a) for a in L(panels.get("assumptions"))}
@@ -350,7 +374,7 @@ def check_gap_wiring(canvas: dict, fields: list, report: Report) -> None:
         if f.get("status") != "gap":
             continue
         if f.get("gap_type") == "decision":
-            if strict and not canvas.get("gaps_accepted"):
+            if strict and reached >= FINAL_PANEL and not canvas.get("gaps_accepted"):
                 report.error("DECISION_GAP", path,
                              "coach mode: an open decision blocks the final render unless the PM "
                              "accepts the remaining gaps")
@@ -362,11 +386,13 @@ def check_gap_wiring(canvas: dict, fields: list, report: Report) -> None:
         elif todo.get("intake_route") != "reops":
             report.warn("INTAKE_ROUTE", path, "evidence to-dos currently route through ReOps intake")
         named = [a for a in assumptions.values() if a.get("from_gap") == path]
-        if not named:
+        if not named and reached >= 5:
             report.either(strict, "GAP_WITHOUT_ASSUMPTION", path,
                           "an evidence GAP becomes a panel-5 assumption (from_gap == this path)")
-        for assumption in named:
-            if not [i for i in L(assumption.get("retired_by")) if i in plan]:
+        for assumption in named if reached >= 6 else []:
+            retiring = {i for i in L(assumption.get("retired_by")) if i in plan}
+            retiring |= {pid for pid, item in plan.items() if assumption.get("id") in L(item.get("retires"))}
+            if not retiring:
                 report.either(strict, "ASSUMPTION_NOT_RETIRED", f"assumption {assumption.get('id')}",
                               "the assumption is retired by a panel-6 validation plan item")
 
@@ -394,6 +420,8 @@ def compute_metrics(canvas: dict, report: Report) -> dict:
     out = {}
     metrics = [D(m) for m in L(panels.get("metrics"))]
     primaries = [m for m in metrics if m.get("primary")]
+    if through(canvas) < 3 and not metrics:
+        return out
     if len(primaries) != 1:
         report.error("PRIMARY_METRIC", "panels.metrics", "exactly one metric is primary")
     outcomes = L(D(panels.get("hypothesis")).get("outcomes"))
@@ -484,7 +512,8 @@ def compute_impact(canvas: dict, metrics: dict, report: Report) -> dict:
         return {}
     primary = next((D(m) for m in L(panels.get("metrics")) if D(m).get("primary")), None)
     entry = {"saving_per_unit": None, "result": None, "formula": None, "blocked_by": [],
-             "result_unit": scale.get("result_unit"), "volume_unit": scale.get("volume_unit")}
+             "result_unit": scale.get("result_unit"), "volume_unit": scale.get("volume_unit"),
+             "per_unit_factor": None}
     if primary is None:
         return entry
     if is_percent_unit(primary.get("unit")):
@@ -492,20 +521,31 @@ def compute_impact(canvas: dict, metrics: dict, report: Report) -> dict:
                      "impact at scale multiplies a per-unit saving by volume; the primary metric is "
                      "a percentage, so there is no per-unit saving to multiply")
         return entry
-    factor = scale.get("per_unit_factor", 1)
+    unit = str(primary.get("unit", "")).strip().lower()
+    result_unit = str(scale.get("result_unit", "")).strip().lower()
+    to_hours = "hour" in result_unit or result_unit.startswith("hr")
+    factor = scale.get("per_unit_factor")
+    if factor is None:
+        if unit in TO_HOURS and to_hours:
+            factor = TO_HOURS[unit]
+        else:
+            factor = 1
+            if unit and result_unit:
+                report.warn("FACTOR_ASSUMED", "footer.scale.per_unit_factor",
+                            f"no conversion given from {primary.get('unit')} to "
+                            f"{scale.get('result_unit')}; assuming 1")
     if not is_num(factor) or factor <= 0:
         report.error("FACTOR_INVALID", "footer.scale.per_unit_factor",
                      f"a positive number (e.g. 1/60 as 0.016666…), got {factor!r}")
         return entry
-    unit = str(primary.get("unit", "")).strip().lower()
-    result_unit = str(scale.get("result_unit", "")).strip().lower()
-    if unit in TO_HOURS and result_unit.startswith(("hour", "hr")):
+    if unit in TO_HOURS and to_hours:
         expected = TO_HOURS[unit]
         if abs(factor - expected) > 1e-9 * max(expected, 1):
             report.error("FACTOR_MISMATCH", "footer.scale.per_unit_factor",
                          f"{primary.get('unit')} → {scale.get('result_unit')} converts by "
                          f"{factor_text(expected).strip() or '× 1'}, not {factor_text(factor).strip() or '× 1'}")
 
+    entry["per_unit_factor"] = factor
     change = metrics.get(primary.get("id"), {})
     if change.get("change_abs") is not None:
         entry["saving_per_unit"] = round(abs(change["change_abs"]), 6)
@@ -628,10 +668,11 @@ def check_panels(canvas: dict, report: Report) -> None:
     if approved and not personas.get("locked"):
         report.error("PERSONAS_UNLOCKED", "panels.problem.personas", "personas are locked before approval")
 
+    reached = through(canvas)
     options = [D(o) for o in L(panels.get("options"))]
-    if not 2 <= len(options) <= 3:
+    if reached >= 4 and not 2 <= len(options) <= 3:
         report.either(strict, "OPTION_COUNT", "panels.options", "two or three genuinely different options")
-    for index, option in enumerate(options):
+    for index, option in enumerate(options if reached >= 4 else []):
         if not L(option.get("pros")) or not L(option.get("cons")):
             report.either(strict, "OPTION_TRADEOFFS", f"panels.options[{index}]",
                           "every option names at least one pro and one con")
@@ -652,10 +693,10 @@ def check_panels(canvas: dict, report: Report) -> None:
     if decision is not None and not present(recommendation.get("owner")):
         report.error("OWNER_MISSING", "panels.validation.recommendation.owner",
                      "a recommendation names who makes the decision")
-    if not L(canvas.get("open_questions")):
+    if reached >= FINAL_PANEL and not L(canvas.get("open_questions")):
         report.warn("NO_OPEN_QUESTIONS", "open_questions",
                     "an empty gaps list usually means the canvas was not examined hard enough")
-    if canvas.get("genai") and not L(D(panels.get("validation")).get("genai_criteria")):
+    if reached >= 6 and canvas.get("genai") and not L(D(panels.get("validation")).get("genai_criteria")):
         report.either(strict, "GENAI_CRITERIA", "panels.validation.genai_criteria",
                       "GenAI mode: panel 6 carries evaluation criteria that work under this "
                       "Initiative inherits")
@@ -681,7 +722,7 @@ def proceed_guard(canvas: dict, fields: list, graph_refs: set, report: Report) -
     for _, f in fields:
         if f.get("status") == "gap" and f.get("gap_type") in gaps:
             gaps[f["gap_type"]] += 1
-    return {"proceed_available": not blocked, "proceed_blocked_by": blocked,
+    return {"through_panel": through(canvas), "proceed_available": not blocked, "proceed_blocked_by": blocked,
             "aipos_decision": DECISIONS.get(decision), "gaps": gaps}
 
 

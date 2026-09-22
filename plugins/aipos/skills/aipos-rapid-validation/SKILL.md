@@ -1,6 +1,6 @@
 ---
 name: aipos-rapid-validation
-description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create."
+description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, pilots (including one a Solution Design canvas calls for), experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create and the canvas itself to solution-design."
 ---
 
 # Rapid Validation

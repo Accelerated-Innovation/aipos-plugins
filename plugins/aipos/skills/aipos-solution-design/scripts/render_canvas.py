@@ -137,6 +137,8 @@ def problem_panel(c: dict) -> str:
     impact = "".join(f"<li>{field_html(x)}</li>" for x in L(p.get("impact")))
     snaps = "".join(
         f'<div class="snap"><span class="ref">{esc(D(s).get("ref"))}</span>{esc(D(s).get("label"))}</div>'
+        if D(s).get("approved_for_canvas") else
+        '<div class="snap muted">A real record — shown once the PM approves it</div>'
         for s in L(p.get("snapshot")))
     st = D(p.get("statement"))
     statement = (f'The problem of {field_html(st.get("problem"))} affects {field_html(st.get("affects"))}, '
@@ -167,7 +169,9 @@ def evidence_panel(c: dict, computed: dict) -> str:
     voice = D(e.get("voice"))
     source = {D(r).get("provenance_reference"): D(r) for r in L(D(c.get("source")).get("evidence_refs"))}
     voice_html = ""
-    if voice.get("quote"):
+    if voice.get("quote") and not voice.get("approved_for_canvas"):
+        voice_html = '<blockquote class="muted">A quote is chosen — shown once the PM approves it</blockquote>'
+    elif voice.get("quote"):
         row = source.get(voice.get("provenance_reference"), {})
         attribution = f"{esc(str(row.get('source_type', 'source')).replace('_', ' '))}, {month(row.get('occurred_at'))}"
         voice_html = (f'<blockquote>“{esc(voice.get("quote"))}”<cite>{attribution} · '
@@ -318,7 +322,11 @@ def banners(c: dict, report) -> list[str]:
     if src.get("kind") == "pm-interview":
         out.append(("pm", "Built on the PM's account — not backed by the Product Definition Graph"))
     if c.get("stage") != "approved":
-        out.append(("draft", "DRAFT"))
+        reached = c.get("through_panel", 8)
+        label = "DRAFT" if reached == 8 else (
+            f"DRAFT — through panel {reached}" if isinstance(reached, int) and reached <= 6
+            else "DRAFT — footer done, not yet reviewed")
+        out.append(("draft", label))
     return out
 
 

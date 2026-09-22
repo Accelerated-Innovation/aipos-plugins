@@ -45,6 +45,11 @@ A precise to-do gets done; "go gather evidence" does not. Push once for precisio
 If the PM volunteers a figure anyway, keep it — as `assumed` with mark `[A]`, displayed beside the
 GAP, never computed with. Their knowledge is not thrown away, and the graph stays authoritative.
 
+One exception: if the value sits in a record the graph links but can't show as text, the PM may read
+it from that record's `record_url`. It is recorded `[T]` (transcribed) — it computes, but it does not
+unlock Proceed (`opportunity-source.md`, *Transcribed values*). Without a graph at all, the PM's
+account is the only source and is recorded `[I]` — see *No graph* in the same file.
+
 Decisions — wording, targets, options, owners, the plan, the recommendation — are the PM's, and
 this is where the coaching pushes hardest. Proposing a decision as a draft is fine and often
 helpful; mark it `provisional` until the PM confirms it. Nothing provisional can be approved.
@@ -69,8 +74,9 @@ and make it a GAP with a to-do. Canvas-specific additions:
 
 **Quality bar**
 
-- [ ] Pain points (1–3) are things the graph shows people struggling with, each `[E]` with refs.
-      Not features, not wishes.
+- [ ] Pain points (1–3) are things the graph shows people struggling with — from the problem's
+      title (`[I]`, the engine's extraction) or from excerpts read for the snapshot (`[E]`). Not
+      features, not wishes, not paraphrases of records nobody read.
 - [ ] The snapshot shows 2–3 **real** records the graph returned text for — anonymised, labelled
       in a few words each. Invented "example tickets" never appear, however illustrative.
 - [ ] Impact carries a number only where the graph holds one. "Tickets bounce between teams

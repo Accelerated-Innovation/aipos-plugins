@@ -50,6 +50,7 @@ the plan, the recommendation. The split is the whole contract:
 | Provenance mark | `E` or `I` (see below) | None; a mark on a decision is an error |
 | `[E]` | Cites `refs` the graph returned in this read | — |
 | `[I]` | Inferred from graph `refs`. A `note` alone is allowed only on a `pm-interview` canvas | — |
+| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value | — |
 | `[A]` | Never on a present fact — an assumption is a GAP with the figure in `assumed` | — |
 | Missing | `GAP · evidence` (always, for a fact), wired to a to-do | `GAP · decision` |
 
@@ -66,7 +67,11 @@ Rules:
   (e.g. a baseline typed `decision`) is an error. Numeric positions (baseline, target,
   target_change_pct, volume) hold numbers, not numeric strings.
 - **Graph-backed** means an `[E]` fact, or an `[I]` fact whose `refs` are all graph references.
-  Proceed rests only on a graph-backed primary baseline.
+  `[T]` is not graph-backed. Proceed rests only on a graph-backed primary baseline.
+- **On a `pm-interview` canvas** the PM's account is the only source: facts are `[I]` with a `note`
+  naming whose account, and they **are** computed with — the arithmetic is still checked — but
+  nothing is graph-backed, so Proceed is unavailable and the render says the canvas rests on the
+  PM's account. On a graph canvas, a figure the PM remembers is never computed with (`assumed`).
 
 ## Top level
 
@@ -76,6 +81,8 @@ Rules:
 | `mode` | `workshop` \| `coach` | Pacing and gap tolerance; same artifact either way |
 | `stage` | `draft` \| `approved` | `approved` = the PM approved the content (stage 1) |
 | `gaps_accepted` | bool | Coach mode: the PM explicitly accepts remaining decision GAPs |
+| `through_panel` | int 0–8 | How far facilitation has got (1–6 panels, 7 footer, 8 reviewed). Checks for later panels wait until they are reached; approval needs 8. Absent means 8 |
+| `slug` | string | The folder name, frozen at first save (see *Files and naming*) |
 | `genai` | bool | Same detection list as `aipos-epic-create` |
 | `aging_months` | int, optional | Default 18 |
 | `title`, `goal` | decision fields | Canvas header |
@@ -181,7 +188,7 @@ one pro and one con.
 |---|---|
 | `who_benefits[]` | persona / role names |
 | `success` | decision field — "success looks like" |
-| `scale` | `{ volume (fact field), volume_unit, result_unit, per_unit_factor }` — e.g. minutes→hours is `1/60` (a JSON number, 0.016666…). Impact at scale = primary-metric saving × volume × factor, **computed**. The factor is checked against the primary metric's unit when both are time units; a percentage primary metric has no per-unit saving and cannot be scaled. With a GAP input it renders as the formula (`GAP × GAP ÷ 60`), never a placeholder number |
+| `scale` | `{ volume (fact field), volume_unit, result_unit, per_unit_factor }` — `per_unit_factor` may be omitted when both units are time units (min → hours is derived as 1/60); otherwise give it as a JSON number. Impact at scale = primary-metric saving × volume × factor, **computed**. The factor is checked against the primary metric's unit when both are time units; a percentage primary metric has no per-unit saving and cannot be scaled. With a GAP input it renders as the formula (`GAP × GAP ÷ 60`), never a placeholder number |
 | `scale.stated_*` | Only when importing a hand-made canvas: stated figures the verifier checks against its own |
 
 ## To-dos
@@ -223,7 +230,12 @@ solution-design/<problem-slug>/
 
 `<problem-slug>` is the `problem_id` with `:` and `/` replaced by `-` (a colon is not a safe
 folder name on every OS). A `pm-interview` canvas has no `problem_id`; its slug is `pm-` plus the
-slugified title. A re-run that supersedes an approved canvas writes
+slugified working title at first save. The slug is recorded in `canvas.json` and **never changes**
+afterwards, even if the title does. `todo.md` is always written, whether or not a ticket is linked.
+
+**Paths inside the canvas** (`from_gap`, `todo.field`) use the verifier's syntax:
+`panels.metrics[0].baseline`, `panels.problem.impact[1]`, `footer.scale.volume`. They are indexes:
+after reordering a list, run the verifier — it names any path that no longer points at its GAP. A re-run that supersedes an approved canvas writes
 `canvas-<YYYY-MM-DD>.json` beside it, per rapid-validation's naming convention. An approved
 canvas is never overwritten.
 
@@ -232,10 +244,10 @@ canvas is never overwritten.
 The verifier never crashes: malformed input is reported as `MALFORMED` (or a more specific code).
 
 **Errors** (exit 1):
-- *Shape:* `MALFORMED` `CANVAS_VERSION` `MODE` `STAGE` `MISSING` `NOT_A_FIELD` `WRONG_KIND`
+- *Shape:* `MALFORMED` `CANVAS_VERSION` `MODE` `STAGE` `INCOMPLETE_AT_APPROVAL` `MISSING` `NOT_A_FIELD` `WRONG_KIND`
   `NOT_NUMERIC` `SOURCE_KIND` `SCHEMA_VERSION_UNSUPPORTED` `EXCERPT_NOT_IN_GRAPH`
 - *Provenance:* `FIELD_STATUS` `PROVISIONAL_AT_APPROVAL` `GAP_HAS_VALUE` `GAP_TYPE` `ASSUMED_MARK`
-  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `REF_NOT_IN_GRAPH`
+  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `T_WITHOUT_RECORD` `REF_NOT_IN_GRAPH`
   `I_WITHOUT_BASIS` `TODO_ORPHANED`
 - *Arithmetic:* `PRIMARY_METRIC` `TOO_MANY_OUTCOMES` `UNKNOWN_METRIC` `PRIMARY_NOT_OUTCOME`
   `NO_TARGET` `DIRECTION` `TARGET_INCONSISTENT` `OUT_OF_RANGE` `SAVING_INCONSISTENT`
@@ -250,4 +262,4 @@ The verifier never crashes: malformed input is reported as `MALFORMED` (or a mor
 
 **Warnings:** `INTAKE_ROUTE` `TODO_STALE` `TODO_ORDER` `ZERO_BASELINE` `EVIDENCE_AGING`
 `ALL_EVIDENCE_AGING` `SINGLE_SOURCE` `DUPLICATE_REF` `EXCERPT_CAP` `SPEAKER_UNSOURCED`
-`PERSONA_NOT_IN_GRAPH` `RISK_UNMITIGATED` `NUMBER_IN_PROSE` `NO_OPEN_QUESTIONS`
+`PERSONA_NOT_IN_GRAPH` `RISK_UNMITIGATED` `NUMBER_IN_PROSE` `NO_OPEN_QUESTIONS` `FACTOR_ASSUMED`

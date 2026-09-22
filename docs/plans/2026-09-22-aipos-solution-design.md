@@ -5,7 +5,7 @@
 `scripts/`, `evals/`); routing cases in `evals/routing`; the `Related` tables of `aipos-epic-create`
 and `aipos-rapid-validation`; plugin README.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status: increments 0–2 implemented on `feat/aipos-solution-design`, reviewed, awaiting checkpoint.** `pytest tests` passes (509). No SKILL.md yet, so the skill is not discoverable; model-graded evals not run.
+**Status: increments 0–6 implemented on `feat/aipos-solution-design` and reviewed twice; routing cases added (part of 8).** `pytest tests` passes (542); routing dry run sees 12 skills. Model-graded evals (7) and README/ownership/version (9) remain. `claude plugin validate` not runnable in the build environment.
 
 ## Context
 
@@ -237,12 +237,12 @@ canvas can be resumed later in coach mode to close its gaps.
 | 0 | `evals/mock_pdg/server.py` + `fixtures/default.json` + `mcp.example.json` — seven tools, shapes copied from `discovery-engine/src/engine/api/schemas.py`, synthetic data, edge cases, optional access log; `tests/test_mock_pdg.py` pins every field set | [x] |
 | 1 | `references/canvas-schema.md` + `scripts/verify_canvas.py` (no separate JSON Schema: it would add a non-stdlib dependency and a second source of truth — the script is the executable contract, and a test keeps the doc's code list identical to the script's) | [x] |
 | 2 | `references/panel-rubrics.md` — per-panel quality bar and push scripts; pointers to reused rubrics; option-coaching rubric (panel 4) | [x] |
-| 3 | `references/facilitation.md` — Step 0 mode (D13) + source detection (D5/D11) → panels 1–6 → footer → review → save (D12) → write-back offer; workshop and coach pacing side by side | [ ] |
-| 4 | `SKILL.md` from `templates/skill-template` — purpose, lifecycle position, scope/handoffs, proceed protocol, guardrails, output format | [ ] |
-| 5 | `references/opportunity-source.md` — OE adapter (signature detection, call order, excerpt cap, quote approval) + Path C fallback against the source contract | [ ] (unblocked) |
-| 6 | `scripts/render_canvas.py`, `templates/canvas.html`, `brand.json`; `scripts/verify_canvas.py` for D4 arithmetic | [ ] |
+| 3 | `references/facilitation.md` — Step 0 mode (D13) + source detection (D5/D11) → panels 1–6 → footer → review → save (D12) → write-back offer; workshop and coach pacing side by side | [x] |
+| 4 | `SKILL.md` from `templates/skill-template` — purpose, lifecycle position, scope/handoffs, proceed protocol, guardrails, output format | [x] |
+| 5 | `references/opportunity-source.md` — OE adapter (signature detection, call order, excerpt cap, quote approval) + Path C fallback against the source contract | [x] |
+| 6 | `scripts/render_canvas.py`, `templates/canvas.html`, `brand.json`; `scripts/verify_canvas.py` for D4 arithmetic | [x] |
 | 7 | `evals/evals.json` + fixtures: solution-shaped problem; findings 1–3 (math/baseline); undated evidence; OE present vs absent; GenAI mode inherits criteria; PM declines write; **PM volunteers a remembered baseline → recorded as `[A]` assumption + GAP, not `[E]`; missing baseline → GAP + panel 5 assumption + panel 6 plan item + ReOps to-do; resume re-reads PDG and closes a now-filled GAP; Proceed blocked while primary baseline is a GAP;** workshop canvas with gaps renders `GAP` chips and resumes in coach mode; linked Jira item → named-attachment handoff, no claimed upload; **null `occurred_at` not treated as stale; 2022–2024 aging split; five ranked rows → one originating source; unknown `schema_version` stops cleanly** | [ ] |
-| 8 | Routing cases vs `aipos-epic-create` ("epic/initiative brief") and `aipos-rapid-validation` ("viability brief / prototype") | [ ] |
+| 8 | Routing cases vs `aipos-epic-create` ("epic/initiative brief") and `aipos-rapid-validation` ("viability brief / prototype") | [~] six cases added; live run not done |
 | 8b | `references/record-writeback.md` pointer + folder writer (D12) | [ ] |
 | 9 | Update `Related` tables in epic-create and rapid-validation; README; plugin version bump | [ ] |
 
@@ -281,11 +281,33 @@ problem statement; panel 3 outcomes seed epic success metrics.
 - **Source contract** field names follow the engine (`composite_score`, `components`); quote and
   snapshot approval live on the canvas items, not on excerpts.
 
+## What building 3–6 changed
+
+- **Rendering:** PDF from headless Chrome is the exact render; the PNG is rasterised from it
+  (`pdftoppm`, or macOS `qlmanage`/`sips`). Chrome's own `--screenshot` crops fixed-height pages in
+  new-headless mode — the first render lost the footer that way. The renderer re-runs the verifier
+  and never trusts a stored `computed`. Looking at renders caught a formatter bug that drew a
+  computed 100 hours as "1"; now pinned by a test.
+- **Second review (model's-eye) fixes:** `through_panel` so the verifier checks only panels reached
+  (it had failed every in-progress canvas on later panels); approval needs `through_panel: 8` and is
+  asked for by name; a new `[T]` mark for values a person reads from a graph-linked record — it
+  computes but is **not graph-backed**, so it never unlocks Proceed; pain points come from the
+  engine's problem title (`[I]`) or snapshot excerpts (`[E]`) only; Step 0 chooses the problem before
+  looking for a saved canvas and freezes the slug; per-step "Writes:" lines; `todo.md` always
+  written; stricter write rule wins (one yes per record per write); excerpts stripped before any
+  tracker fallback; per-item `schema_version` on list responses; unapproved quotes/records withheld
+  from drafts; minutes→hours conversion derived; retirement counts either side.
+- **Routing:** this skill's description hands the canvas's pilot/experiment to rapid-validation, and
+  rapid-validation's description now names canvas pilots and hands the canvas itself back.
+
 ## Open questions
 
 - **O1 — resolved.** 1:1 by contract; dates from `list_evidence.occurred_at`; see *Contract facts*.
 - **O2 — resolved (2026-09-22).** See D12.
 - **O3 — resolved (2026-09-22).** Both; see D13.
 
+- **O5 — `[T]` and Proceed.** ReOps records have no evidence-text adapter, so a baseline held only
+  in a ReOps study can be transcribed (`[T]`) but can never unlock Proceed until the engine exposes
+  it. Conservative by design; flip `graph_backed()` to accept `[T]` if that proves too strict.
 - **O4 — resolved (2026-09-22).** Moved `problem-framing.md` and `metrics-and-evaluation.md` to
   `plugins/aipos/references/`, per CONTRIBUTING; epic-create's paths updated.

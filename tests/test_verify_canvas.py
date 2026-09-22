@@ -146,7 +146,9 @@ def test_filling_a_gap_from_the_graph_unlocks_the_numbers(vc, good):
 @pytest.mark.parametrize("break_it,code", [
     (lambda c: c["todos"].pop(0), "GAP_WITHOUT_TODO"),
     (lambda c: c["panels"]["assumptions"].pop(0), "GAP_WITHOUT_ASSUMPTION"),
-    (lambda c: c["panels"]["assumptions"][0].update(retired_by=[]), "ASSUMPTION_NOT_RETIRED"),
+    (lambda c: (c["panels"]["assumptions"][0].update(retired_by=[]),
+                [p.update(retires=[r for r in p["retires"] if r != "a1"])
+                 for p in c["panels"]["validation"]["plan"]]), "ASSUMPTION_NOT_RETIRED"),
 ])
 def test_an_evidence_gap_is_wired_through_the_canvas_in_coach_mode(vc, good, break_it, code):
     break_it(good)
@@ -459,6 +461,69 @@ def test_provisional_content_cannot_be_approved(vc, good):
 def test_the_primary_baseline_todo_comes_first(vc, good):
     good["todos"] = good["todos"][1:] + good["todos"][:1]
     assert "TODO_ORDER" in warning_codes(vc.verify(good)[0])
+
+
+# --- found in the second review: progressive checking and [T] --------------
+
+
+def partial(through_panel):
+    """The governed canvas cut back to what exists after a given panel."""
+    c = load("triage-from-graph")
+    c["through_panel"] = through_panel
+    panels = c["panels"]
+    if through_panel < 3:
+        panels["hypothesis"], panels["metrics"] = {}, []
+    if through_panel < 4:
+        panels["options"], panels["recommended_option"] = [], None
+    if through_panel < 5:
+        panels["assumptions"], panels["risks"] = [], []
+    if through_panel < 6:
+        panels["validation"] = {"plan": [], "recommendation": {"decision": None}}
+    if through_panel < 7:
+        c["footer"] = {}
+    c["todos"] = [t for t in c["todos"] if through_panel >= 3 or not t["field"].startswith("panels.metrics")]
+    c["todos"] = [t for t in c["todos"] if through_panel >= 7 or not t["field"].startswith("footer")]
+    c["open_questions"] = []
+    return c
+
+
+@pytest.mark.parametrize("through_panel", [1, 2, 3, 4, 5, 6, 7])
+def test_a_canvas_in_progress_is_not_failed_for_panels_not_yet_reached(vc, through_panel):
+    report, computed = vc.verify(partial(through_panel))
+    assert report.errors == [], [e["code"] for e in report.errors]
+    assert computed["through_panel"] == through_panel
+
+
+def test_a_canvas_cannot_be_approved_before_review(vc):
+    c = partial(6)
+    c["stage"] = "approved"
+    assert "INCOMPLETE_AT_APPROVAL" in codes(vc.verify(c)[0])
+
+
+def test_a_transcribed_figure_computes_but_does_not_unlock_proceed(vc, good):
+    """A person keyed it in from a record the graph links: traceable, not graph-supplied."""
+    good["panels"]["metrics"][0]["baseline"] = {
+        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["reops:study-ts-07"],
+        "note": "read from the study record_url by the PM, 2026-09-22"}
+    good["todos"].pop(0)
+    good["panels"]["assumptions"][0]["from_gap"] = None
+    report, computed = vc.verify(good)
+    assert computed["metrics"]["m1"]["target"] == pytest.approx(1.26)
+    assert computed["proceed_available"] is False
+    good["panels"]["validation"]["recommendation"]["decision"] = "proceed"
+    assert "PROCEED_BLOCKED" in codes(vc.verify(good)[0])
+    del good["panels"]["metrics"][0]["baseline"]["note"]
+    assert "T_WITHOUT_RECORD" in codes(vc.verify(good)[0])
+
+
+def test_the_unit_conversion_is_derived_when_not_given(vc, good):
+    del good["footer"]["scale"]["per_unit_factor"]
+    good["footer"]["scale"]["result_unit"] = "agent-hours/month"
+    report, computed = vc.verify(good)
+    assert computed["impact_at_scale"]["per_unit_factor"] == pytest.approx(1 / 60)
+    assert "FACTOR_MISMATCH" not in codes(report)
+    good["footer"]["scale"]["per_unit_factor"] = 1
+    assert "FACTOR_MISMATCH" in codes(vc.verify(good)[0]), "'agent-hours' is still hours"
 
 
 # --- the reference and the script name the same rules ------------------------

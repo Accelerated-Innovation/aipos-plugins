@@ -1,6 +1,6 @@
 ---
 name: aipos-solution-design
-description: "Facilitate a one-page Solution Design canvas for one problem from the Product Definition Graph — problem, evidence, hypothesis, solution options, assumptions and risks, validation and decision — live in a workshop or with a PM, then render it as an image. Use for solution design workshops, canvases and the Solution Blueprint. Epics belong to epic-create; running experiments and viability briefs to rapid-validation."
+description: "Facilitate a one-page Solution Design canvas for one problem from the Product Definition Graph — problem, evidence, hypothesis, solution options, assumptions and risks, validation plan and recommendation — live in a workshop or with a PM, then render it as an image. Use for solution design workshops, canvases and the Solution Blueprint. Epics belong to epic-create; designing or running the pilot or experiment a canvas calls for, and viability briefs, belong to rapid-validation."
 ---
 
 # AIPOS Solution Design — the one-page canvas
@@ -33,12 +33,13 @@ statement and panel 3's metrics can seed an epic if one is wanted.
 - **Canvas** — the six panels plus a footer, recorded in `canvas.json` and rendered as an image.
   `canvas.json` is the record; the image is a view of it.
 - **Fact** — a claim about the world: evidence, a baseline, a volume, a date, an example. Comes from
-  the graph and carries a provenance mark (`[E]` evidence-backed, `[I]` inferred).
+  the graph and carries a provenance mark: `[E]` evidence-backed, `[I]` inferred, `[T]` transcribed
+  by a person from a record the graph links.
 - **Decision** — something the PM authors: wording, targets, options, owners, the plan, the
   recommendation. Carries no mark.
 - **GAP** — something missing. `GAP · evidence` is a fact the graph doesn't hold; `GAP · decision` is
   a choice not yet made. Shown on the canvas as a chip.
-- **Graph-backed** — a fact the graph actually supplied in this session's read.
+- **Graph-backed** — an `[E]` fact, or an `[I]` fact inferred from graph references. `[T]` is not.
 
 ## Operating principle
 
@@ -48,8 +49,9 @@ typed.**
 1. **Never ask the PM for a fact.** If the graph doesn't hold it, it's a `GAP · evidence`, and the
    question becomes *"what evidence would settle it, and where would it come from?"* — which becomes
    a ReOps to-do, a panel-5 assumption and a panel-6 plan item. A figure the PM volunteers is kept as
-   an assumption beside the GAP, never used in a calculation. (With no graph connected the PM's
-   account is the only source — see *Inputs*.)
+   an assumption beside the GAP, never used in a calculation. Two bounded exceptions, both labelled:
+   a value the PM reads from a record the graph links is `[T]` and computes but never unlocks
+   Proceed; with no graph connected, the PM's account is the only source (see *Inputs*).
 2. **Never type a number the verifier can compute.** Percent changes, derived targets, savings,
    impact at scale, evidence counts and dates come from `scripts/verify_canvas.py`. A GAP input
    renders as a formula, never a placeholder.
@@ -88,8 +90,8 @@ Everything is optional. Accept any of:
 `list_evidence` and `get_lineage` on one server. Panels 1 and 2 become a confirm conversation.
 
 **Without it**: say so once and continue on the PM's account (`source.kind: pm-interview`). Facts are
-recorded `[I]` with whose account they are; Proceed stays unavailable; a later resume with the graph
-re-grounds them.
+recorded `[I]` with whose account they are and are computed with, so the arithmetic is still checked;
+panel 2 stays empty; Proceed stays unavailable; a later resume with the graph re-grounds them.
 
 **Never invent** personas, evidence, quotes, examples, baselines, volumes or thresholds. A GAP is a
 legitimate output; a plausible number is not, because this page gets quoted.
@@ -107,8 +109,12 @@ legitimate output; a plausible number is not, because this page gets quoted.
 
 | Script | Use |
 |---|---|
-| `scripts/verify_canvas.py` | Run after every panel with `--write`. Checks the contract; computes every displayed number. Exit 1 on errors. |
-| `scripts/render_canvas.py` | Renders `canvas.html`, and `canvas.png` / `canvas.pdf` when a headless browser is available. Reads numbers only from `computed`. |
+| `scripts/verify_canvas.py` | Run after every panel with `--write`, having set `through_panel`. Checks the panels reached; computes every displayed number. Exit 1 on errors. |
+| `scripts/render_canvas.py` | Renders `canvas.html`, and `canvas.pdf` / `canvas.png` when a headless Chrome is available. Runs the verifier itself and draws numbers only from it. |
+
+Scripts live in this skill's folder; canvases live in the project folder. Run from the project
+folder, naming the script by its full path:
+`python3 <this-skill-folder>/scripts/verify_canvas.py solution-design/<slug>/canvas.json --write`.
 
 If a reference is unavailable, continue from this file and say which rules you are applying from
 memory. If the scripts cannot run, say so: the canvas can still be facilitated, but no number on it
@@ -120,9 +126,10 @@ Treat **proceed, continue, looks good, approved, yes, go** as confirming the mos
 continue without restating it. Where options were offered, accept the option's name, its number, or
 **default**. Advance from the latest answer; don't repeat what was already answered.
 
-**A bare "proceed" never authorizes a write to a tracker.** That takes an explicit, destination-named
-yes every time. Approving the canvas's content is not approval to write anywhere outside the project
-folder.
+**A bare "proceed" never approves the canvas or authorizes a write.** Approval is asked for by name
+(*"Approve the canvas as it stands?"*). A tracker write takes an explicit, destination-named yes —
+one per record, per write. Approving the canvas's content is not approval to write anywhere outside
+the project folder.
 
 ## The flow
 
@@ -138,9 +145,9 @@ folder.
 | 5 Assumptions & Risks | Seeded from the GAPs; the data assumption; risks with mitigations |
 | 6 Validation & Decision | Evidence first, then the test; every assumption retired; the recommendation and its owner |
 | 7 Footer | Who benefits; success; impact at scale (computed) |
-| 8 Review | Verifier clean; coherence; nothing provisional; explicit approval |
+| 8 Review | Verifier clean; coherence; nothing provisional; approval asked for by name |
 | 9 Render | HTML → PNG / PDF; look at it before handing it over |
-| 10 Save and hand off | Project folder; ReOps intake drafts; tracker write-back when a ticket is linked |
+| 10 Save and hand off | Project folder (always `todo.md`); ReOps intake drafts; tracker write-back when a ticket is linked |
 
 **Modes.** *Workshop*: fast, one push per item, gaps shown as chips, draft renders any time.
 *Coach*: one question at a time, full pushing, no final render with open decision gaps unless the PM
@@ -201,7 +208,8 @@ Always:
 - Check for an existing promotion or canvas before starting
 - Turn every evidence GAP into a to-do, an assumption and a plan item
 - Run the verifier after every panel and before rendering
-- Look at the rendered image before handing it over
+- Look at the rendered image before handing it over — and if only HTML was produced, say the
+  layout is unchecked rather than implying you looked
 - Name the next skill when handing off
 
 ## Related
