@@ -164,11 +164,13 @@
       "snapshot": [
         {
           "ref": "zendesk:tkt-88121",
-          "label": "Cannot access account — Uncategorized, 2 transfers"
+          "label": "Cannot access account — Uncategorized, 2 transfers",
+          "approved_for_canvas": true
         },
         {
           "ref": "zendesk:tkt-88340",
-          "label": "Billing charge question — recategorized next day"
+          "label": "Billing charge question — recategorized next day",
+          "approved_for_canvas": true
         }
       ],
       "impact": [
@@ -278,7 +280,6 @@
       "voice": {
         "provenance_reference": "gong:call-5530",
         "quote": "it takes too long to get to the right team",
-        "speaker_role": "Enterprise Admin",
         "approved_for_canvas": true
       }
     },
@@ -352,7 +353,8 @@
           "kind": "decision",
           "status": "confirmed",
           "value": "Share of tickets with no team reassignment, weekly"
-        }
+        },
+        "target_change_kind": "relative"
       }
     ],
     "options": [
@@ -466,6 +468,14 @@
         "retired_by": [
           "p4"
         ]
+      },
+      {
+        "id": "a6",
+        "text": "Historical Zendesk tickets are sufficient and representative to suggest categories from, and can be used for that purpose",
+        "from_gap": null,
+        "retired_by": [
+          "p4"
+        ]
       }
     ],
     "risks": [
@@ -540,7 +550,8 @@
           "by": "2026-11-30",
           "retires": [
             "a4",
-            "a5"
+            "a5",
+            "a6"
           ],
           "todo": null
         }

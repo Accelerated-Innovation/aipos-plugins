@@ -297,6 +297,170 @@ def test_cli_exit_codes_and_write(tmp_path):
     assert again["computed"]["impact_at_scale"]["result"] is None
 
 
+# --- found in review: the D14 guarantees must hold for hostile input too -----
+
+
+@pytest.mark.parametrize("baseline", [
+    {"kind": "fact", "status": "confirmed", "value": 1.8, "mark": "A", "refs": []},
+    {"kind": "fact", "status": "provisional", "value": 1.8, "mark": "I", "refs": [], "note": "PM said"},
+    {"kind": "decision", "status": "confirmed", "value": 1.8},
+], ids=["assumed-as-fact", "inferred-from-a-note", "baseline-as-decision"])
+def test_proceed_cannot_rest_on_a_baseline_the_graph_did_not_supply(vc, good, baseline):
+    good["panels"]["metrics"][0]["baseline"] = baseline
+    good["panels"]["validation"]["recommendation"]["decision"] = "proceed"
+    report, computed = vc.verify(good)
+    assert "PROCEED_BLOCKED" in codes(report)
+    assert computed["proceed_available"] is False
+    assert codes(report) & {"FACT_ASSUMED", "I_WITHOUT_BASIS", "WRONG_KIND"}
+
+
+def test_the_example_as_drawn_cannot_recommend_proceed(vc):
+    report, computed = vc.verify(load("example-as-drawn"))
+    assert "PROCEED_BLOCKED" in codes(report)
+    assert "OWNER_MISSING" in codes(report)
+
+
+def test_a_missing_fact_cannot_be_typed_as_a_decision_to_skip_its_wiring(vc, good):
+    baseline = good["panels"]["metrics"][1]["baseline"]
+    baseline["gap_type"] = "decision"
+    good["gaps_accepted"] = True
+    assert "GAP_TYPE" in codes(vc.verify(good)[0])
+
+
+@pytest.mark.parametrize("junk", [
+    "Tickets arrive uncategorized",
+    {"kind": "fact", "value": "x", "mark": "E", "refs": ["zendesk:made-up"]},
+], ids=["bare-string", "status-less-dict"])
+def test_content_that_is_not_shaped_like_a_field_is_still_checked(vc, good, junk):
+    good["panels"]["problem"]["pain_points"][0] = junk
+    assert "NOT_A_FIELD" in codes(vc.verify(good)[0])
+
+
+def test_a_number_stored_as_text_is_refused_not_silently_dropped(vc, good):
+    good["source"]["evidence_refs"].append({"provenance_reference": "reops:x", "source_system": "reops",
+        "source_type": "study_outcome", "occurred_at": None, "record_url": None})
+    good["panels"]["metrics"][0]["baseline"] = {"kind": "fact", "status": "confirmed", "value": "1.8",
+                                                "mark": "E", "refs": ["reops:x"]}
+    assert "NOT_NUMERIC" in codes(vc.verify(good)[0])
+
+
+def test_numbers_in_prose_are_flagged_because_nothing_checks_them(vc, good):
+    good["footer"]["success"]["value"] = "Save 166 hours a month"
+    assert "NUMBER_IN_PROSE" in warning_codes(vc.verify(good)[0])
+
+
+def test_a_wrong_unit_conversion_is_refused(vc, good):
+    good["footer"]["scale"]["per_unit_factor"] = 1
+    assert "FACTOR_MISMATCH" in codes(vc.verify(good)[0])
+    good["footer"]["scale"]["per_unit_factor"] = 0
+    assert "FACTOR_INVALID" in codes(vc.verify(good)[0])
+
+
+def test_impact_at_scale_needs_a_per_unit_primary_metric(vc, good):
+    good["panels"]["metrics"][0]["primary"] = False
+    good["panels"]["metrics"][1]["primary"] = True
+    good["panels"]["hypothesis"]["outcomes"] = ["m1", "m2"]
+    assert "IMPACT_UNIT" in codes(vc.verify(good)[0])
+
+
+def test_arithmetic_on_zero_and_negative_baselines(vc):
+    base = load("example-as-drawn")
+    metric = base["panels"]["metrics"][0]
+    metric.pop("target_change_pct")
+    metric["baseline"]["value"], metric["target"]["value"] = 0, 5
+    report, computed = vc.verify(base)
+    assert "DIRECTION" in codes(report), "a decrease from 0 to 5 is still the wrong direction"
+    assert computed["impact_at_scale"]["blocked_by"] == [], "zero is a value, not a GAP"
+
+    metric["direction"] = "increase"
+    metric["baseline"]["value"], metric["target"]["value"] = -5, -3
+    metric["target_change_pct"] = {"kind": "decision", "status": "confirmed", "value": 40}
+    report, computed = vc.verify(base)
+    assert computed["metrics"]["m1"]["change_pct"] == pytest.approx(40.0)
+    assert "TARGET_INCONSISTENT" not in codes(report)
+
+
+def test_percent_metrics_distinguish_relative_change_from_points(vc, good):
+    good["source"]["evidence_refs"].append({"provenance_reference": "zendesk:agg-1", "source_system": "zendesk",
+        "source_type": "report", "occurred_at": "2026-09-01T00:00:00Z", "record_url": None})
+    good["panels"]["metrics"][1]["baseline"] = {"kind": "fact", "status": "confirmed", "value": 60,
+                                                "mark": "E", "refs": ["zendesk:agg-1"]}
+    assert vc.verify(good)[1]["metrics"]["m2"]["target"] == pytest.approx(72)
+    good["panels"]["metrics"][1]["target_change_kind"] = "points"
+    assert vc.verify(good)[1]["metrics"]["m2"]["target"] == pytest.approx(80)
+    good["panels"]["metrics"][1]["baseline"]["value"] = 90
+    assert "OUT_OF_RANGE" in codes(vc.verify(good)[0])
+    del good["panels"]["metrics"][1]["target_change_kind"]
+    assert "PCT_KIND" in codes(vc.verify(good)[0])
+
+
+def test_duplicate_refs_do_not_inflate_a_tile(vc, good):
+    good["panels"]["evidence"]["tiles"][3]["refs"] = ["gong:call-5530"] * 5
+    report, computed = vc.verify(good)
+    assert computed["evidence"]["tiles"][3]["count"] == 1
+    assert "DUPLICATE_REF" in warning_codes(report)
+
+
+@pytest.mark.parametrize("break_it", [
+    lambda c: c.update(panels=[]),
+    lambda c: c["panels"]["metrics"].append(None),
+    lambda c: c["source"].update(evidence_refs=None),
+    lambda c: c.update(todos={}),
+    lambda c: c.update(footer=None),
+    lambda c: c["panels"].update(validation=None),
+    lambda c: c["panels"]["evidence"]["voice"].update(quote=None),
+    lambda c: c["source"].update(read_at=20260922),
+    lambda c: c["footer"]["scale"].update(per_unit_factor="1/60"),
+], ids=["panels-list", "null-metric", "null-refs", "todos-dict", "null-footer",
+        "null-validation", "null-quote", "int-date", "string-factor"])
+def test_malformed_input_is_reported_never_a_crash(vc, good, break_it):
+    break_it(good)
+    report, _ = vc.verify(good)
+    assert report.errors
+
+
+def test_a_canvas_that_is_not_an_object_is_reported(vc):
+    report, _ = vc.verify([])
+    assert codes(report) == {"MALFORMED"}
+
+
+def test_an_empty_quote_is_not_verbatim_of_anything(vc, good):
+    good["panels"]["evidence"]["voice"]["quote"] = ""
+    assert "QUOTE_EMPTY" in codes(vc.verify(good)[0])
+
+
+def test_a_speaker_role_the_graph_never_gave_is_flagged(vc, good):
+    good["panels"]["evidence"]["voice"]["speaker_role"] = "Enterprise Admin"
+    assert "SPEAKER_UNSOURCED" in warning_codes(vc.verify(good)[0])
+
+
+def test_real_records_shown_as_examples_are_approved_too(vc, good):
+    good["panels"]["problem"]["snapshot"][0]["approved_for_canvas"] = False
+    assert "SNAPSHOT_NOT_APPROVED" in warning_codes(vc.verify(good)[0])
+    good["stage"] = "approved"
+    assert "SNAPSHOT_NOT_APPROVED" in codes(vc.verify(good)[0])
+
+
+def test_excerpts_belong_to_the_problem_and_are_few(vc, good):
+    good["source"]["excerpts"].append({"provenance_reference": "gong:elsewhere", "text": "x"})
+    assert "EXCERPT_NOT_IN_GRAPH" in codes(vc.verify(good)[0])
+    good = load("triage-from-graph")
+    good["source"]["excerpts"] = good["source"]["excerpts"] * 2
+    assert "EXCERPT_CAP" in warning_codes(vc.verify(good)[0])
+
+
+def test_provisional_content_cannot_be_approved(vc, good):
+    good["goal"]["status"] = "provisional"
+    assert "PROVISIONAL_AT_APPROVAL" not in codes(vc.verify(good)[0])
+    good["stage"] = "approved"
+    assert "PROVISIONAL_AT_APPROVAL" in codes(vc.verify(good)[0])
+
+
+def test_the_primary_baseline_todo_comes_first(vc, good):
+    good["todos"] = good["todos"][1:] + good["todos"][:1]
+    assert "TODO_ORDER" in warning_codes(vc.verify(good)[0])
+
+
 # --- the reference and the script name the same rules ------------------------
 
 

@@ -33,6 +33,8 @@ Configuration (environment):
   MOCK_PDG_FIXTURE         path to a fixture JSON (default: fixtures/default.json)
   MOCK_PDG_EVIDENCE_TEXT   "off" to stop advertising get_evidence_text
   MOCK_PDG_LINKS           "off" to make get_work_item_links raise LINKS_UNAVAILABLE
+  MOCK_PDG_ACCESS_LOG      path of a JSON-lines file recording every get_evidence_text call,
+                           as the engine access-logs each disclosure (refused reads included)
 
 Transport: MCP over stdio, newline-delimited JSON-RPC 2.0. Standard library only, so it runs
 anywhere Python 3.9+ does and never adds a dependency to the plugin.
@@ -208,6 +210,17 @@ class Graph:
         }
 
     def get_evidence_text(self, provenance_reference: str, problem_id: str | None = None) -> dict:
+        try:
+            result = self._evidence_text(provenance_reference, problem_id)
+        except ToolFailure as failure:
+            _log_access(provenance_reference, problem_id, returned=False, code=failure.code)
+            raise
+        _log_access(provenance_reference, problem_id, returned=True, code=None)
+        return result
+
+    def _evidence_text(self, provenance_reference: object, problem_id: str | None) -> dict:
+        # Anchoring mirrors the engine's `_anchor_terms`: an unknown problem degrades to an
+        # unanchored excerpt rather than failing the disclosure.
         if not isinstance(provenance_reference, str):
             raise ToolFailure(
                 "VALIDATION_ERROR",
@@ -244,6 +257,15 @@ class Graph:
         raise ToolFailure(
             "EVIDENCE_TEXT_UNAVAILABLE", f"No text available for {provenance_reference!r}"
         )
+
+
+def _log_access(reference: object, problem_id: object, *, returned: bool, code: str | None) -> None:
+    path = os.environ.get("MOCK_PDG_ACCESS_LOG")
+    if not path:
+        return
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps({"tool": "get_evidence_text", "provenance_reference": reference,
+                                 "problem_id": problem_id, "returned": returned, "code": code}) + "\n")
 
 
 # ----------------------------------------------------------------------------- tool catalog

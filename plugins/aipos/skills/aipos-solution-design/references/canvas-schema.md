@@ -47,18 +47,26 @@ the plan, the recommendation. The split is the whole contract:
 | | Fact | Decision |
 |---|---|---|
 | Source | PDG reads only | The PM / the room |
-| Provenance mark | Required: `E`, `I` or `A` | None; a mark on a decision is an error |
+| Provenance mark | `E` or `I` (see below) | None; a mark on a decision is an error |
 | `[E]` | Cites `refs` the graph returned in this read | — |
-| `[I]` | Names its basis (`refs` or `note`) | — |
-| Missing | `GAP · evidence`, wired to a to-do (below) | `GAP · decision` |
+| `[I]` | Inferred from graph `refs`. A `note` alone is allowed only on a `pm-interview` canvas | — |
+| `[A]` | Never on a present fact — an assumption is a GAP with the figure in `assumed` | — |
+| Missing | `GAP · evidence` (always, for a fact), wired to a to-do | `GAP · decision` |
 
 Rules:
 
 - A GAP carries **no value**. A figure the PM volunteers goes in `assumed` with mark `A`. It is
   displayed beside the GAP and **never computed with**.
-- `status: provisional` is for a fact the room is still checking; it renders with a lighter
-  treatment but counts as present.
+- `status: provisional` means present but not yet confirmed — a fact the room is still checking,
+  or a decision Claude drafted for the PM. It renders with a lighter treatment and **cannot be
+  approved**: confirm or change it first.
 - Never write an `[E]` whose reference was not returned by a tool call recorded in `source`.
+- **Content is checked by position, not by shape.** Every position listed below holds a field
+  object of the stated kind; a bare string, a status-less dict, or a fact written as a decision
+  (e.g. a baseline typed `decision`) is an error. Numeric positions (baseline, target,
+  target_change_pct, volume) hold numbers, not numeric strings.
+- **Graph-backed** means an `[E]` fact, or an `[I]` fact whose `refs` are all graph references.
+  Proceed rests only on a graph-backed primary baseline.
 
 ## Top level
 
@@ -109,7 +117,7 @@ Copy values as returned. `occurred_at: null` means **date unknown**, never old.
 |---|---|
 | `personas` | `{ primary, others[], locked }`. Primary should be a graph persona; locked before approval |
 | `pain_points[]` | 1–3 fact fields — what the graph shows people struggling with |
-| `snapshot[]` | 0–3 `{ ref, label }` — real records the graph returned text for (current-state examples) |
+| `snapshot[]` | 0–3 `{ ref, label, approved_for_canvas }` — real records the graph returned text for (current-state examples), each approved by the PM for a shareable canvas |
 | `impact[]` | fact fields — consequences, with numbers only where the graph holds them |
 | `statement` | decision fields `problem`, `affects`, `resulting_in`, `benefits` — the X/Y/Z/benefits sentence |
 
@@ -117,8 +125,8 @@ Copy values as returned. `occurred_at: null` means **date unknown**, never old.
 
 | Key | Content |
 |---|---|
-| `tiles[]` | 1–4 `{ label, refs[], finding }`. `finding` is a fact field phrased as what the graph establishes. Counts, date ranges and aging are **computed**, never typed |
-| `voice` | `{ provenance_reference, quote, speaker_role, approved_for_canvas }` or null. `quote` is a verbatim substring of that reference's excerpt; approved by the PM before it appears |
+| `tiles[]` | 1–4 `{ label, refs[], finding }`. `finding` is a fact field phrased as what the graph establishes. Counts (distinct refs), date ranges and aging are **computed**, never typed. Breadth is reported once for the whole problem from `originating_sources` — the graph does not map each ref to its originating source, so a tile cannot count sources |
+| `voice` | `{ provenance_reference, quote, approved_for_canvas }` or null. `quote` is a verbatim, non-empty substring of that reference's excerpt; approved by the PM before it appears. Attribute it to its source type and date — the graph does not say who the speaker was, so a `speaker_role` is flagged |
 
 ### `panels.hypothesis` and `panels.metrics` — Hypothesis & Expected Outcomes
 
@@ -135,7 +143,8 @@ Each metric:
 | `counter` | bool — a guard metric against harm |
 | `baseline` | fact field (numeric) — from the graph, or an evidence GAP |
 | `target` | decision field (numeric, absolute), optional |
-| `target_change_pct` | decision field (numeric, signed %), optional — at least one target form is required |
+| `target_change_pct` | decision field (numeric, signed), optional — at least one target form is required |
+| `target_change_kind` | `relative` (default) \| `points`. **Required on a % metric**: +20 on 60% is 72% relative, 80% in points. A % target outside 0–100 is an error |
 | `observation` | decision field — how it will be measured |
 
 When both target forms are given they must agree (±0.5 points). When only the % is given and the
@@ -159,8 +168,9 @@ one pro and one con.
   todo (id | null) }`.
 - `recommendation`: `{ decision: proceed | pivot | park | null, owner (decision field),
   rationale }`. Maps to AIPOS **go / revise / no-go**. It is a recommendation to the named owner,
-  never a record that the decision was made. **Proceed is unavailable while the primary metric's
-  baseline is a GAP.**
+  never a record that the decision was made; a recommendation without a named owner is an error.
+  **Proceed is unavailable unless the primary metric's baseline is graph-backed** — a GAP, a
+  PM's figure, or a note-based inference all block it.
 - `genai_criteria[]`: GenAI mode only. Criteria that work under this Initiative inherits.
 
 ## Footer
@@ -169,7 +179,7 @@ one pro and one con.
 |---|---|
 | `who_benefits[]` | persona / role names |
 | `success` | decision field — "success looks like" |
-| `scale` | `{ volume (fact field), volume_unit, result_unit, per_unit_factor }` — e.g. minutes→hours is `1/60`. Impact at scale = primary-metric saving × volume × factor, **computed**. With a GAP input it renders as the formula (`GAP × GAP ÷ 60`), never a placeholder number |
+| `scale` | `{ volume (fact field), volume_unit, result_unit, per_unit_factor }` — e.g. minutes→hours is `1/60` (a JSON number, 0.016666…). Impact at scale = primary-metric saving × volume × factor, **computed**. The factor is checked against the primary metric's unit when both are time units; a percentage primary metric has no per-unit saving and cannot be scaled. With a GAP input it renders as the formula (`GAP × GAP ÷ 60`), never a placeholder number |
 | `scale.stated_*` | Only when importing a hand-made canvas: stated figures the verifier checks against its own |
 
 ## To-dos
@@ -210,24 +220,32 @@ solution-design/<problem-slug>/
 ```
 
 `<problem-slug>` is the `problem_id` with `:` and `/` replaced by `-` (a colon is not a safe
-folder name on every OS). A re-run that supersedes an approved canvas writes
+folder name on every OS). A `pm-interview` canvas has no `problem_id`; its slug is `pm-` plus the
+slugified title. A re-run that supersedes an approved canvas writes
 `canvas-<YYYY-MM-DD>.json` beside it, per rapid-validation's naming convention. An approved
 canvas is never overwritten.
 
 ## Verifier codes
 
-**Errors** (exit 1): `CANVAS_VERSION` `MODE` `STAGE` `MISSING` `SOURCE_KIND`
-`SCHEMA_VERSION_UNSUPPORTED` `FIELD_STATUS` `GAP_HAS_VALUE` `GAP_TYPE` `ASSUMED_MARK` `EMPTY_FIELD`
-`DECISION_MARKED` `FACT_UNMARKED` `E_WITHOUT_REF` `REF_NOT_IN_GRAPH` `I_WITHOUT_BASIS`
-`TODO_ORPHANED` `PRIMARY_METRIC` `TOO_MANY_OUTCOMES` `UNKNOWN_METRIC` `PRIMARY_NOT_OUTCOME`
-`NO_TARGET` `DIRECTION` `TARGET_INCONSISTENT` `SAVING_INCONSISTENT` `IMPACT_INCONSISTENT`
-`IMPACT_UNSUPPORTED` `QUOTE_WITHOUT_EXCERPT` `QUOTE_NOT_VERBATIM` `SNAPSHOT_WITHOUT_EXCERPT`
-`PERSONAS_UNLOCKED` `UNKNOWN_OPTION` `DECISION_VALUE` `PROCEED_BLOCKED`
+The verifier never crashes: malformed input is reported as `MALFORMED` (or a more specific code).
+
+**Errors** (exit 1):
+- *Shape:* `MALFORMED` `CANVAS_VERSION` `MODE` `STAGE` `MISSING` `NOT_A_FIELD` `WRONG_KIND`
+  `NOT_NUMERIC` `SOURCE_KIND` `SCHEMA_VERSION_UNSUPPORTED` `EXCERPT_NOT_IN_GRAPH`
+- *Provenance:* `FIELD_STATUS` `PROVISIONAL_AT_APPROVAL` `GAP_HAS_VALUE` `GAP_TYPE` `ASSUMED_MARK`
+  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `REF_NOT_IN_GRAPH`
+  `I_WITHOUT_BASIS` `TODO_ORPHANED`
+- *Arithmetic:* `PRIMARY_METRIC` `TOO_MANY_OUTCOMES` `UNKNOWN_METRIC` `PRIMARY_NOT_OUTCOME`
+  `NO_TARGET` `DIRECTION` `TARGET_INCONSISTENT` `OUT_OF_RANGE` `SAVING_INCONSISTENT`
+  `IMPACT_INCONSISTENT` `IMPACT_UNSUPPORTED` `IMPACT_UNIT` `FACTOR_INVALID` `FACTOR_MISMATCH`
+- *Evidence:* `QUOTE_EMPTY` `QUOTE_WITHOUT_EXCERPT` `QUOTE_NOT_VERBATIM` `SNAPSHOT_WITHOUT_EXCERPT`
+- *Decision:* `PERSONAS_UNLOCKED` `UNKNOWN_OPTION` `DECISION_VALUE` `OWNER_MISSING` `PROCEED_BLOCKED`
 
 **Coach mode errors, workshop mode warnings:** `GAP_WITHOUT_TODO` `GAP_WITHOUT_ASSUMPTION`
-`ASSUMPTION_NOT_RETIRED` `OPTION_COUNT` `OPTION_TRADEOFFS` `GENAI_CRITERIA`; and `DECISION_GAP`
-(coach only, lifted by `gaps_accepted`). `QUOTE_NOT_APPROVED` is an error once `stage` is
-`approved`.
+`ASSUMPTION_NOT_RETIRED` `OPTION_COUNT` `OPTION_TRADEOFFS` `GENAI_CRITERIA` `PCT_KIND`; and
+`DECISION_GAP` (coach only, lifted by `gaps_accepted`). `QUOTE_NOT_APPROVED` and
+`SNAPSHOT_NOT_APPROVED` are errors once `stage` is `approved`.
 
-**Warnings:** `INTAKE_ROUTE` `TODO_STALE` `ZERO_BASELINE` `EVIDENCE_AGING` `ALL_EVIDENCE_AGING`
-`SINGLE_SOURCE` `PERSONA_NOT_IN_GRAPH` `RISK_UNMITIGATED` `NO_OPEN_QUESTIONS`
+**Warnings:** `INTAKE_ROUTE` `TODO_STALE` `TODO_ORDER` `ZERO_BASELINE` `EVIDENCE_AGING`
+`ALL_EVIDENCE_AGING` `SINGLE_SOURCE` `DUPLICATE_REF` `EXCERPT_CAP` `SPEAKER_UNSOURCED`
+`PERSONA_NOT_IN_GRAPH` `RISK_UNMITIGATED` `NUMBER_IN_PROSE` `NO_OPEN_QUESTIONS`

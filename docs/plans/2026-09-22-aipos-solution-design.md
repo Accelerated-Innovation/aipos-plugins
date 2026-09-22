@@ -5,7 +5,7 @@
 `scripts/`, `evals/`); routing cases in `evals/routing`; the `Related` tables of `aipos-epic-create`
 and `aipos-rapid-validation`; plugin README.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status: draft — design agreed, nothing implemented.** Opportunity-Engine tool surface received 2026-09-22 (see *Opportunity-Engine mapping*).
+**Status: increments 0–2 implemented on `feat/aipos-solution-design`, reviewed, awaiting checkpoint.** `pytest tests` passes (509). No SKILL.md yet, so the skill is not discoverable; model-graded evals not run.
 
 ## Context
 
@@ -57,7 +57,7 @@ difference: quarterly-planning stops without a live server; this skill falls bac
 interview (D5), because a canvas can legitimately start from a hunch.
 
 **Before the server is live — mock read server (increment 0).** A small stdio MCP server,
-`scripts/mock_pdg_server.py`, exposes the same seven tools with the confirmed response shapes
+`evals/mock_pdg/server.py` (repo-level, never shipped with the plugin), exposes the same seven tools with the confirmed response shapes
 (`ScoredOpportunityResponse`, `EvidenceRefResponse`, `LineageResponse`, `schema_version: 1`) and
 serves fixture JSON. The skill can't tell mock from real except by server prefix, so going live is
 a config swap, not a code change. Rules: every fixture row is visibly synthetic (`fixture:` IDs,
@@ -133,8 +133,9 @@ target-vs-metric consistency are calculated in the script and checked in the int
 is surfaced to the PM once with the corrected figure; the PM decides.
 
 **D5 — Opportunity-Engine first, PM interview as fallback.** At start, detect the Opportunity-Engine
-by its **tool signature** (`get_problem` + `get_lineage` + `get_evidence_text` present under one
-server prefix), not by server name — the prefix differs per install. If present, read the record and
+by its **tool signature** (`get_problem` + `list_evidence` + `get_lineage` present under one
+server prefix), not by server name. `get_evidence_text` is optional: the engine does not advertise
+it at all when evidence text is unconfigured, so requiring it would misread a live graph as absent — the prefix differs per install. If present, read the record and
 summarise back ("here's what I found — correct me"); never re-ask what the record answers. If absent,
 run the evidence-intake Path C interview. Either way, every claim carries [E]/[I]/[A]. The adapter
 fills a small **opportunity source contract** so the rest of the skill doesn't care where data came
@@ -233,9 +234,9 @@ canvas can be resumed later in coach mode to close its gaps.
 
 | # | Deliverable | Status |
 |---|---|---|
-| 0 | `scripts/mock_pdg_server.py` + `evals/fixtures/pdg/*.json` — seven tools, confirmed shapes, synthetic data, edge cases above; registered in a dev-only `.mcp.json` | [ ] |
-| 1 | `references/canvas-schema.md` + `canvas.schema.json` — every field, provenance marks, computed fields, D7 mapping | [ ] |
-| 2 | `references/panel-rubrics.md` — per-panel quality bar and push scripts; pointers to reused rubrics; option-coaching rubric (panel 4) | [ ] |
+| 0 | `evals/mock_pdg/server.py` + `fixtures/default.json` + `mcp.example.json` — seven tools, shapes copied from `discovery-engine/src/engine/api/schemas.py`, synthetic data, edge cases, optional access log; `tests/test_mock_pdg.py` pins every field set | [x] |
+| 1 | `references/canvas-schema.md` + `scripts/verify_canvas.py` (no separate JSON Schema: it would add a non-stdlib dependency and a second source of truth — the script is the executable contract, and a test keeps the doc's code list identical to the script's) | [x] |
+| 2 | `references/panel-rubrics.md` — per-panel quality bar and push scripts; pointers to reused rubrics; option-coaching rubric (panel 4) | [x] |
 | 3 | `references/facilitation.md` — Step 0 mode (D13) + source detection (D5/D11) → panels 1–6 → footer → review → save (D12) → write-back offer; workshop and coach pacing side by side | [ ] |
 | 4 | `SKILL.md` from `templates/skill-template` — purpose, lifecycle position, scope/handoffs, proceed protocol, guardrails, output format | [ ] |
 | 5 | `references/opportunity-source.md` — OE adapter (signature detection, call order, excerpt cap, quote approval) + Path C fallback against the source contract | [ ] (unblocked) |
@@ -256,10 +257,36 @@ Exploration Decision (P1) → aipos-solution-design (canvas, one per Initiative)
 The canvas feeds rapid-validation's evidence intake as a Path B source; panel 1 feeds epic-create's
 problem statement; panel 3 outcomes seed epic success metrics.
 
+## What building 0–2 changed
+
+- **The graph holds references, not numbers.** `ProblemDetailResponse` has a title, personas and
+  evidence references — no statement, no measures. A baseline can only be `[E]` if an excerpt or a
+  graph record carries it. ReOps records have no evidence-text adapter, so their content is never
+  readable through MCP. Expect most canvases to start with their primary baseline as a GAP; the
+  ReOps to-do is what gets it into the graph. Tile findings say what the graph *establishes*
+  (linkage, dates, source type, excerpt words), not what unreadable records said.
+- **Tile counts are refs, breadth is problem-level.** `get_lineage` gives two flat lists with no
+  per-ref mapping, so a tile cannot count originating sources. Breadth is reported once, from
+  `originating_sources`, with a single-source warning.
+- **Independent review (2026-09-22)** found the D14 guarantees held only for well-behaved input.
+  Fixed: content is checked by position, not shape; a fact can only be an evidence GAP; `[A]` is
+  never a present fact; on engine canvases `[I]` needs graph refs; Proceed needs a graph-backed
+  primary baseline (the hand-drawn example's pre-selected PROCEED is now caught); unit-conversion
+  and %-kind checks; zero/negative baselines; malformed input reported, never a crash; empty quotes;
+  speaker roles the graph never gave; snapshot approval; excerpt membership and cap; provisional
+  content cannot be approved; recommendation needs an owner. Rejected: that the mock mis-anchors
+  excerpts — it mirrors the engine's `_anchor_terms` fallback.
+- **Naming (D12) reconciled with the schema:** folder slug = `problem_id` with `:`/`/` → `-`
+  (`pm-<title>` without one); re-runs dated `canvas-<YYYY-MM-DD>.json`, matching rapid-validation.
+- **Source contract** field names follow the engine (`composite_score`, `components`); quote and
+  snapshot approval live on the canvas items, not on excerpts.
+
 ## Open questions
 
 - **O1 — resolved.** 1:1 by contract; dates from `list_evidence.occurred_at`; see *Contract facts*.
 - **O2 — resolved (2026-09-22).** See D12.
 - **O3 — resolved (2026-09-22).** Both; see D13.
 
-No open questions remain. Next: increments 1–2 (schema + rubrics).
+- **O4 — shared references.** CONTRIBUTING says guidance used by more than one skill belongs in
+  `plugins/aipos/references/`. `problem-framing.md` and `metrics-and-evaluation.md` are now cited by
+  epic-create and this skill. Move them (touching epic-create's paths) or keep cross-skill pointers?

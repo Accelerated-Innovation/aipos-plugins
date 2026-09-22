@@ -270,3 +270,18 @@ def test_it_speaks_mcp_over_stdio():
     missing = replies[4]["result"]
     assert missing["isError"] is True
     assert missing["content"][0]["text"].startswith("PROBLEM_NOT_FOUND: ")
+
+
+def test_every_evidence_text_disclosure_is_logged_including_refusals(graph, mock, monkeypatch, tmp_path):
+    """The engine access-logs each read; evals use the mock's log to check a skill fetched only
+    the excerpts a panel needed."""
+    log = tmp_path / "access.jsonl"
+    monkeypatch.setenv("MOCK_PDG_ACCESS_LOG", str(log))
+    graph.get_evidence_text("gong:call-5530", problem_id=TRIAGE)
+    with pytest.raises(mock.ToolFailure):
+        graph.get_evidence_text("reops:int-0412", problem_id=TRIAGE)
+    entries = [json.loads(line) for line in log.read_text().splitlines()]
+    assert [(e["provenance_reference"], e["returned"], e["code"]) for e in entries] == [
+        ("gong:call-5530", True, None), ("reops:int-0412", False, "EVIDENCE_TEXT_UNAVAILABLE")]
+    assert graph.list_evidence(TRIAGE) and len(log.read_text().splitlines()) == 2, \
+        "only evidence text is logged"
