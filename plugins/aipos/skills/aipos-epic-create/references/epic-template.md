@@ -121,7 +121,7 @@ The **Status** and **Validation Decision** lines carry governance state on the a
 | Field | Rule |
 |---|---|
 | **Epic Name** | Outcome-focused. "Cut adjuster time-to-first-action" beats "Claims triage improvements" |
-| **User Problem(s)** | **No solutions, ever.** See `problem-framing.md` |
+| **User Problem(s)** | **No solutions, ever.** See `../../../references/problem-framing.md` |
 | **Personas** | Named roles, one marked primary. Locked once confirmed |
 | **Success Metrics** | 3–5, each with baseline, target, method |
 | **Evidence** | Dated, sized, and honest about what it doesn't establish |

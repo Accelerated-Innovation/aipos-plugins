@@ -287,6 +287,5 @@ problem statement; panel 3 outcomes seed epic success metrics.
 - **O2 — resolved (2026-09-22).** See D12.
 - **O3 — resolved (2026-09-22).** Both; see D13.
 
-- **O4 — shared references.** CONTRIBUTING says guidance used by more than one skill belongs in
-  `plugins/aipos/references/`. `problem-framing.md` and `metrics-and-evaluation.md` are now cited by
-  epic-create and this skill. Move them (touching epic-create's paths) or keep cross-skill pointers?
+- **O4 — resolved (2026-09-22).** Moved `problem-framing.md` and `metrics-and-evaluation.md` to
+  `plugins/aipos/references/`, per CONTRIBUTING; epic-create's paths updated.

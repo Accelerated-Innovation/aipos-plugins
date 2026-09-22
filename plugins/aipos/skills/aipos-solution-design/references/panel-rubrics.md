@@ -61,7 +61,7 @@ or a quote (panel 2) — and never paste more than the fragment the canvas uses.
 and impact, and 2–3 records for the current-state snapshot. **From the PM:** the problem statement
 wording and which persona is primary.
 
-Apply `../../aipos-epic-create/references/problem-framing.md` for the solution-in-problem test,
+Apply `../../../references/problem-framing.md` for the solution-in-problem test,
 root-cause probing, persona rules, benefits and the final-statement check — **but not its
 "Quantifying impact" push scripts** ("roughly how long, and how often?"). Those ask the PM for a
 fact. Here, impact comes from the graph; where it doesn't, ask what evidence would show the impact
@@ -138,7 +138,7 @@ stitched from two excerpts; a strong-looking tile resting on 2022 evidence with 
 **From the graph:** baselines. **From the PM:** the hypothesis, the targets, the observation
 method, which metric is primary.
 
-Apply `../../aipos-epic-create/references/metrics-and-evaluation.md` for the three-part metric and
+Apply `../../../references/metrics-and-evaluation.md` for the three-part metric and
 choosing metrics — **except its "pushing for numbers" section**, which this skill replaces with
 the evidence-GAP question above.
 
@@ -259,7 +259,7 @@ the options were written.
       canvas. Pivot (reassess the approach) and Park (defer) remain available, and "not yet —
       gather the baseline first" is a legitimate outcome, not a failure.
 - [ ] GenAI mode: evaluation criteria with thresholds, and say out loud that work under this
-      Initiative inherits them (see `metrics-and-evaluation.md`).
+      Initiative inherits them (see `../../../references/metrics-and-evaluation.md`).
 
 **Mapping:** Proceed → GO, Pivot → REVISE, Park → NO-GO (defer), so `aipos-rapid-validation`'s
 viability brief can consume the recommendation without translation.

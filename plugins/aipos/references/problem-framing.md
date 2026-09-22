@@ -1,6 +1,8 @@
 # Problem Framing
 
 > The discipline this whole skill exists to enforce. Everything downstream inherits this section — features, scenarios, and eventually code.
+>
+> **Shared** by `aipos-epic-create` (epics) and `aipos-solution-design` (the Solution Design canvas). The canvas applies it with the exceptions its `panel-rubrics.md` names — chiefly that facts come from the Product Definition Graph, never from the PM.
 
 ## Contents
 
