@@ -1,0 +1,302 @@
+{
+  "canvas_version": 1,
+  "mode": "workshop",
+  "stage": "draft",
+  "gaps_accepted": true,
+  "genai": false,
+  "title": {
+    "kind": "decision",
+    "status": "confirmed",
+    "value": "Customer Support Ticket Triage"
+  },
+  "goal": {
+    "kind": "decision",
+    "status": "confirmed",
+    "value": "Reduce triage time and improve first contact resolution"
+  },
+  "source": {
+    "kind": "pm-interview",
+    "schema_version": null,
+    "evidence_refs": [],
+    "originating_sources": [],
+    "excerpts": [],
+    "personas": [],
+    "read_at": null
+  },
+  "panels": {
+    "problem": {
+      "personas": {
+        "primary": "Support Agent",
+        "others": [
+          "Team Lead",
+          "Customer"
+        ],
+        "locked": false
+      },
+      "pain_points": [
+        {
+          "kind": "fact",
+          "status": "provisional",
+          "value": "Support teams spend too much time triaging tickets",
+          "mark": "I",
+          "refs": [],
+          "note": "as drawn"
+        },
+        {
+          "kind": "fact",
+          "status": "provisional",
+          "value": "Inconsistent categorization leads to rework and slower resolution",
+          "mark": "I",
+          "refs": [],
+          "note": "as drawn"
+        }
+      ],
+      "snapshot": [],
+      "impact": [
+        {
+          "kind": "fact",
+          "status": "provisional",
+          "value": "High handle time in triage",
+          "mark": "I",
+          "refs": [],
+          "note": "as drawn"
+        }
+      ],
+      "statement": {
+        "problem": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "inconsistent ticket categorization"
+        },
+        "affects": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "support agents"
+        },
+        "resulting_in": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "slow triage and rework"
+        },
+        "benefits": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "faster triage and accurate routing"
+        }
+      }
+    },
+    "evidence": {
+      "tiles": [],
+      "voice": null
+    },
+    "hypothesis": {
+      "if": {
+        "kind": "decision",
+        "status": "confirmed",
+        "value": "we intelligently suggest or assign the right category at intake"
+      },
+      "then": {
+        "kind": "decision",
+        "status": "confirmed",
+        "value": "we can reduce triage time and improve routing accuracy"
+      },
+      "without": {
+        "kind": "decision",
+        "status": "confirmed",
+        "value": "increasing agent effort"
+      },
+      "outcomes": [
+        "m1",
+        "m2",
+        "m3"
+      ]
+    },
+    "metrics": [
+      {
+        "id": "m1",
+        "name": "Average triage time per ticket",
+        "unit": "min",
+        "direction": "decrease",
+        "primary": true,
+        "counter": false,
+        "baseline": {
+          "kind": "fact",
+          "status": "provisional",
+          "value": 1.8,
+          "mark": "I",
+          "refs": [],
+          "note": "time study, as drawn"
+        },
+        "target": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": 1.2
+        },
+        "target_change_pct": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": -30
+        },
+        "observation": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "pilot comparison"
+        }
+      },
+      {
+        "id": "m2",
+        "name": "Correct routing",
+        "unit": "%",
+        "direction": "increase",
+        "primary": false,
+        "counter": false,
+        "baseline": {
+          "kind": "fact",
+          "status": "gap",
+          "value": null,
+          "gap_type": "evidence",
+          "todo": null
+        },
+        "target_change_pct": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": 20
+        },
+        "observation": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "pilot comparison"
+        }
+      },
+      {
+        "id": "m3",
+        "name": "Agent satisfaction",
+        "unit": "%",
+        "direction": "increase",
+        "primary": false,
+        "counter": false,
+        "baseline": {
+          "kind": "fact",
+          "status": "gap",
+          "value": null,
+          "gap_type": "evidence",
+          "todo": null
+        },
+        "target_change_pct": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": 15
+        },
+        "observation": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "agent survey"
+        }
+      }
+    ],
+    "options": [
+      {
+        "id": "A",
+        "name": "AI Category Suggestion",
+        "approach": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "AI suggests; agent selects"
+        },
+        "preview": [],
+        "pros": [
+          "Fast to implement"
+        ],
+        "cons": [
+          "Still requires manual action"
+        ],
+        "moves": [
+          "m1"
+        ]
+      },
+      {
+        "id": "B",
+        "name": "Automatic Category Assignment with Override",
+        "approach": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "auto-assign; agent can override"
+        },
+        "preview": [],
+        "pros": [
+          "Saves more time"
+        ],
+        "cons": [
+          "Risk of incorrect assignment"
+        ],
+        "moves": [
+          "m1"
+        ]
+      },
+      {
+        "id": "C",
+        "name": "Rules-Based Tagging",
+        "approach": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "keyword rules"
+        },
+        "preview": [],
+        "pros": [
+          "Transparent"
+        ],
+        "cons": [
+          "Rule maintenance"
+        ],
+        "moves": [
+          "m2"
+        ]
+      }
+    ],
+    "recommended_option": null,
+    "assumptions": [],
+    "risks": [],
+    "validation": {
+      "plan": [],
+      "recommendation": {
+        "decision": "proceed",
+        "owner": {
+          "kind": "decision",
+          "status": "gap",
+          "value": null,
+          "gap_type": "decision"
+        },
+        "rationale": null
+      }
+    }
+  },
+  "footer": {
+    "who_benefits": [
+      "Support Agents",
+      "Team Leads",
+      "Customers"
+    ],
+    "success": {
+      "kind": "decision",
+      "status": "confirmed",
+      "value": "Faster triage, accurate routing, happier agents and customers."
+    },
+    "scale": {
+      "volume": {
+        "kind": "fact",
+        "status": "provisional",
+        "value": 10000,
+        "mark": "I",
+        "refs": [],
+        "note": "as drawn"
+      },
+      "volume_unit": "tickets/month",
+      "result_unit": "hours/month",
+      "per_unit_factor": 0.016666666666666666,
+      "stated_saving_per_unit": 1,
+      "stated_result": 166
+    }
+  },
+  "todos": [],
+  "open_questions": []
+}

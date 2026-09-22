@@ -1,0 +1,660 @@
+{
+  "canvas_version": 1,
+  "mode": "coach",
+  "stage": "draft",
+  "gaps_accepted": false,
+  "genai": false,
+  "title": {
+    "kind": "decision",
+    "status": "confirmed",
+    "value": "Customer Support Ticket Triage"
+  },
+  "goal": {
+    "kind": "decision",
+    "status": "confirmed",
+    "value": "Reduce triage time and improve first-contact routing"
+  },
+  "source": {
+    "kind": "opportunity-engine",
+    "schema_version": 1,
+    "problem_id": "fixture:prb-ticket-triage",
+    "title": "[SYNTHETIC] Support tickets arrive uncategorized and are routed to the wrong team",
+    "composite_score": 0.82,
+    "components": {
+      "evidence_strength": 0.71,
+      "revenue_impact": 0.38,
+      "persona_breadth": 0.55,
+      "recency": 0.88,
+      "validation_signal": 0.05
+    },
+    "personas": [
+      {
+        "name": "Support Agent",
+        "confidence": 0.91
+      },
+      {
+        "name": "Support Team Lead",
+        "confidence": 0.74
+      },
+      {
+        "name": "Enterprise Admin",
+        "confidence": 0.52
+      }
+    ],
+    "evidence_refs": [
+      {
+        "provenance_reference": "reops:int-0412",
+        "source_system": "reops",
+        "source_type": "interview_note",
+        "occurred_at": "2026-07-08T15:00:00Z",
+        "record_url": "https://fixture.invalid/reops/int-0412"
+      },
+      {
+        "provenance_reference": "reops:int-0415",
+        "source_system": "reops",
+        "source_type": "interview_note",
+        "occurred_at": "2026-07-09T14:30:00Z",
+        "record_url": "https://fixture.invalid/reops/int-0415"
+      },
+      {
+        "provenance_reference": "reops:int-0419",
+        "source_system": "reops",
+        "source_type": "interview_note",
+        "occurred_at": "2026-07-14T16:00:00Z",
+        "record_url": "https://fixture.invalid/reops/int-0419"
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88121",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "occurred_at": "2026-08-02T09:12:00Z",
+        "record_url": "https://fixture.invalid/zendesk/tkt-88121"
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88340",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "occurred_at": "2026-08-05T11:40:00Z",
+        "record_url": "https://fixture.invalid/zendesk/tkt-88340"
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88417",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "occurred_at": "2026-08-06T08:05:00Z",
+        "record_url": "https://fixture.invalid/zendesk/tkt-88417"
+      },
+      {
+        "provenance_reference": "gong:call-5530",
+        "source_system": "gong",
+        "source_type": "call_transcript",
+        "occurred_at": "2026-06-18T17:00:00Z",
+        "record_url": "https://fixture.invalid/gong/call-5530"
+      },
+      {
+        "provenance_reference": "reops:study-ts-07",
+        "source_system": "reops",
+        "source_type": "study_outcome",
+        "occurred_at": null,
+        "record_url": null
+      }
+    ],
+    "originating_sources": [
+      "reops:study-int-2026-07",
+      "zendesk:view-triage-audit-2026-08",
+      "gong:call-5530",
+      "reops:study-ts-07"
+    ],
+    "excerpts": [
+      {
+        "provenance_reference": "zendesk:tkt-88121",
+        "text": "[SYNTHETIC] Subject: Cannot access account. Customer can't log in to the portal. Category: Uncategorized. Reassigned Billing -> Account Access after 2 transfers.",
+        "anchored": true,
+        "redaction_applied": false
+      },
+      {
+        "provenance_reference": "zendesk:tkt-88340",
+        "text": "[SYNTHETIC] Subject: Billing charge question. Question about subscription invoice. Category: Uncategorized. Recategorized to Billing by team lead on 2026-08-06.",
+        "anchored": true,
+        "redaction_applied": false
+      },
+      {
+        "provenance_reference": "gong:call-5530",
+        "text": "Speaker 2: [SYNTHETIC] Honestly it takes too long to get to the right team. We open a ticket, it bounces between [REDACTED] and billing twice before anyone owns it.",
+        "anchored": true,
+        "redaction_applied": true
+      }
+    ],
+    "work_items": [],
+    "promoted": false,
+    "read_at": "2026-09-22T18:00:00Z"
+  },
+  "panels": {
+    "problem": {
+      "personas": {
+        "primary": "Support Agent",
+        "others": [
+          "Support Team Lead",
+          "Enterprise Admin"
+        ],
+        "locked": true
+      },
+      "pain_points": [
+        {
+          "kind": "fact",
+          "status": "confirmed",
+          "value": "Tickets arrive uncategorized",
+          "mark": "E",
+          "refs": [
+            "zendesk:tkt-88121",
+            "zendesk:tkt-88340"
+          ]
+        },
+        {
+          "kind": "fact",
+          "status": "confirmed",
+          "value": "Tickets are reassigned between teams before anyone owns them",
+          "mark": "E",
+          "refs": [
+            "zendesk:tkt-88121",
+            "gong:call-5530"
+          ]
+        }
+      ],
+      "snapshot": [
+        {
+          "ref": "zendesk:tkt-88121",
+          "label": "Cannot access account — Uncategorized, 2 transfers"
+        },
+        {
+          "ref": "zendesk:tkt-88340",
+          "label": "Billing charge question — recategorized next day"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "fact",
+          "status": "confirmed",
+          "value": "Customers wait while tickets bounce between teams",
+          "mark": "E",
+          "refs": [
+            "gong:call-5530"
+          ]
+        }
+      ],
+      "statement": {
+        "problem": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "support tickets arriving without a reliable category"
+        },
+        "affects": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "support agents first, and the customers and admins waiting on them"
+        },
+        "resulting_in": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "manual triage and reassignment before anyone owns the ticket (time cost not yet in the graph)"
+        },
+        "benefits": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "tickets reach the right team first time with less agent effort"
+        }
+      }
+    },
+    "evidence": {
+      "tiles": [
+        {
+          "label": "Agent interviews",
+          "refs": [
+            "reops:int-0412",
+            "reops:int-0415",
+            "reops:int-0419"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "Three interview notes from July 2026 are linked to this problem",
+            "mark": "E",
+            "refs": [
+              "reops:int-0412",
+              "reops:int-0415",
+              "reops:int-0419"
+            ]
+          }
+        },
+        {
+          "label": "Ticket records",
+          "refs": [
+            "zendesk:tkt-88121",
+            "zendesk:tkt-88340",
+            "zendesk:tkt-88417"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "Sampled tickets arrive Uncategorized and are reassigned after transfers",
+            "mark": "E",
+            "refs": [
+              "zendesk:tkt-88121",
+              "zendesk:tkt-88340"
+            ]
+          }
+        },
+        {
+          "label": "Time study",
+          "refs": [
+            "reops:study-ts-07"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "A time study outcome is linked; its result is not readable through the graph",
+            "mark": "E",
+            "refs": [
+              "reops:study-ts-07"
+            ]
+          }
+        },
+        {
+          "label": "Voice of customer",
+          "refs": [
+            "gong:call-5530"
+          ],
+          "finding": {
+            "kind": "fact",
+            "status": "confirmed",
+            "value": "A customer describes tickets bouncing between teams",
+            "mark": "E",
+            "refs": [
+              "gong:call-5530"
+            ]
+          }
+        }
+      ],
+      "voice": {
+        "provenance_reference": "gong:call-5530",
+        "quote": "it takes too long to get to the right team",
+        "speaker_role": "Enterprise Admin",
+        "approved_for_canvas": true
+      }
+    },
+    "hypothesis": {
+      "if": {
+        "kind": "decision",
+        "status": "confirmed",
+        "value": "we suggest or assign the right category at intake"
+      },
+      "then": {
+        "kind": "decision",
+        "status": "confirmed",
+        "value": "we can reduce triage time and improve first-time routing"
+      },
+      "without": {
+        "kind": "decision",
+        "status": "confirmed",
+        "value": "increasing agent effort"
+      },
+      "outcomes": [
+        "m1",
+        "m2"
+      ]
+    },
+    "metrics": [
+      {
+        "id": "m1",
+        "name": "Average triage time per ticket",
+        "unit": "min",
+        "direction": "decrease",
+        "primary": true,
+        "counter": false,
+        "baseline": {
+          "kind": "fact",
+          "status": "gap",
+          "value": null,
+          "gap_type": "evidence",
+          "todo": "t1"
+        },
+        "target_change_pct": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": -30
+        },
+        "observation": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "Zendesk handle-time from creation to first assignment, weekly median"
+        }
+      },
+      {
+        "id": "m2",
+        "name": "Tickets routed correctly first time",
+        "unit": "% of tickets",
+        "direction": "increase",
+        "primary": false,
+        "counter": false,
+        "baseline": {
+          "kind": "fact",
+          "status": "gap",
+          "value": null,
+          "gap_type": "evidence",
+          "todo": "t2"
+        },
+        "target_change_pct": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": 20
+        },
+        "observation": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "Share of tickets with no team reassignment, weekly"
+        }
+      }
+    ],
+    "options": [
+      {
+        "id": "A",
+        "name": "AI category suggestion",
+        "approach": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "AI suggests the best category; the agent reviews and selects"
+        },
+        "preview": [
+          "Suggested: Account Access (90%)",
+          "Other: Login Issues, Password Reset"
+        ],
+        "pros": [
+          "Fast to implement",
+          "Keeps the agent in control"
+        ],
+        "cons": [
+          "Still requires a manual action"
+        ],
+        "moves": [
+          "m1",
+          "m2"
+        ]
+      },
+      {
+        "id": "B",
+        "name": "Automatic assignment with override",
+        "approach": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "The system assigns a category; the agent can override"
+        },
+        "preview": [
+          "Assigned: Account Access (auto)",
+          "Override category ▾"
+        ],
+        "pros": [
+          "Saves the most time"
+        ],
+        "cons": [
+          "Risk of incorrect assignment"
+        ],
+        "moves": [
+          "m1",
+          "m2"
+        ]
+      },
+      {
+        "id": "C",
+        "name": "Rules-based tagging",
+        "approach": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "Predefined keyword rules auto-tag tickets"
+        },
+        "preview": [
+          "subject contains 'invoice' → Billing"
+        ],
+        "pros": [
+          "Transparent and controllable"
+        ],
+        "cons": [
+          "Rules need ongoing maintenance"
+        ],
+        "moves": [
+          "m2"
+        ]
+      }
+    ],
+    "recommended_option": "A",
+    "assumptions": [
+      {
+        "id": "a1",
+        "text": "Current triage time per ticket is material — a time study exists but its figure is not in the graph",
+        "from_gap": "panels.metrics[0].baseline",
+        "retired_by": [
+          "p1"
+        ]
+      },
+      {
+        "id": "a2",
+        "text": "The current misroute rate is material",
+        "from_gap": "panels.metrics[1].baseline",
+        "retired_by": [
+          "p2"
+        ]
+      },
+      {
+        "id": "a3",
+        "text": "Ticket volume is high enough for per-ticket savings to matter",
+        "from_gap": "footer.scale.volume",
+        "retired_by": [
+          "p3"
+        ]
+      },
+      {
+        "id": "a4",
+        "text": "Categories are well-defined and mutually exclusive",
+        "from_gap": null,
+        "retired_by": [
+          "p4"
+        ]
+      },
+      {
+        "id": "a5",
+        "text": "Agents will trust and adopt suggestions",
+        "from_gap": null,
+        "retired_by": [
+          "p4"
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "id": "r1",
+        "text": "Incorrect suggestions misroute tickets",
+        "mitigation": "Confidence scores and one-click override"
+      },
+      {
+        "id": "r2",
+        "text": "Bias in historical data produces poor suggestions",
+        "mitigation": "Monitor accuracy by category; retrain"
+      },
+      {
+        "id": "r3",
+        "text": "Over-automation erodes agent judgment",
+        "mitigation": "Human-in-the-loop and gradual rollout"
+      }
+    ],
+    "validation": {
+      "plan": [
+        {
+          "id": "p1",
+          "action": "Record the time-study result (study-ts-07) in the graph through ReOps",
+          "owner": {
+            "kind": "decision",
+            "status": "confirmed",
+            "value": "Support Ops Lead"
+          },
+          "by": "2026-10-06",
+          "retires": [
+            "a1"
+          ],
+          "todo": "t1"
+        },
+        {
+          "id": "p2",
+          "action": "Measure first-time routing accuracy over 4 weeks of tickets",
+          "owner": {
+            "kind": "decision",
+            "status": "confirmed",
+            "value": "Support Ops Lead"
+          },
+          "by": "2026-10-20",
+          "retires": [
+            "a2"
+          ],
+          "todo": "t2"
+        },
+        {
+          "id": "p3",
+          "action": "Pull monthly ticket volume for the last two quarters",
+          "owner": {
+            "kind": "decision",
+            "status": "confirmed",
+            "value": "Support Ops Lead"
+          },
+          "by": "2026-10-06",
+          "retires": [
+            "a3"
+          ],
+          "todo": "t3"
+        },
+        {
+          "id": "p4",
+          "action": "Run a 4-week controlled pilot of option A with 2 teams; compare triage time, routing accuracy and rework; collect agent feedback",
+          "owner": {
+            "kind": "decision",
+            "status": "confirmed",
+            "value": "Head of Support"
+          },
+          "by": "2026-11-30",
+          "retires": [
+            "a4",
+            "a5"
+          ],
+          "todo": null
+        }
+      ],
+      "recommendation": {
+        "decision": null,
+        "owner": {
+          "kind": "decision",
+          "status": "confirmed",
+          "value": "Head of Support"
+        },
+        "rationale": "Proceed is unavailable until the triage-time baseline is in the graph"
+      }
+    }
+  },
+  "footer": {
+    "who_benefits": [
+      "Support Agent",
+      "Support Team Lead",
+      "Customers"
+    ],
+    "success": {
+      "kind": "decision",
+      "status": "confirmed",
+      "value": "Faster triage, accurate routing, happier agents and customers"
+    },
+    "scale": {
+      "volume": {
+        "kind": "fact",
+        "status": "gap",
+        "value": null,
+        "gap_type": "evidence",
+        "todo": "t3"
+      },
+      "volume_unit": "tickets/month",
+      "result_unit": "hours/month",
+      "per_unit_factor": 0.016666666666666666
+    }
+  },
+  "todos": [
+    {
+      "id": "t1",
+      "field": "panels.metrics[0].baseline",
+      "action": "Log the time-study result (study-ts-07) via ReOps intake → PDG",
+      "measure": "average minutes per ticket spent on triage",
+      "source_type": "study_outcome",
+      "window": null,
+      "intake_route": "reops",
+      "destination": "todo.md",
+      "status": "open",
+      "reops_draft": {
+        "project_name": "Ticket triage baseline",
+        "background": [
+          "Solution Design canvas for fixture:prb-ticket-triage needs a triage-time baseline; a time study exists but its result is not readable through the graph."
+        ],
+        "needs": [
+          "Average triage time per ticket, with the study window and sample size"
+        ],
+        "personas": [
+          "Support Agent"
+        ]
+      }
+    },
+    {
+      "id": "t2",
+      "field": "panels.metrics[1].baseline",
+      "action": "Log 4 weeks of first-time routing accuracy via ReOps intake → PDG",
+      "measure": "% of tickets with no team reassignment",
+      "source_type": "support_ticket",
+      "window": "4 weeks",
+      "intake_route": "reops",
+      "destination": "todo.md",
+      "status": "open",
+      "reops_draft": {
+        "project_name": "Ticket routing baseline",
+        "background": [
+          "Routing accuracy has no baseline in the graph."
+        ],
+        "needs": [
+          "Share of tickets reassigned at least once, weekly, for 4 weeks"
+        ],
+        "personas": [
+          "Support Team Lead"
+        ]
+      }
+    },
+    {
+      "id": "t3",
+      "field": "footer.scale.volume",
+      "action": "Log monthly ticket volume for two quarters via ReOps intake → PDG",
+      "measure": "tickets created per month",
+      "source_type": "support_ticket",
+      "window": "6 months",
+      "intake_route": "reops",
+      "destination": "todo.md",
+      "status": "open",
+      "reops_draft": {
+        "project_name": "Ticket volume",
+        "background": [
+          "Impact at scale cannot be computed without monthly volume."
+        ],
+        "needs": [
+          "Tickets created per month, last 6 months"
+        ],
+        "personas": [
+          "Support Team Lead"
+        ]
+      }
+    }
+  ],
+  "open_questions": [
+    "Triage-time baseline is not readable through the graph (t1)",
+    "No routing-accuracy baseline (t2)",
+    "No ticket volume, so impact at scale is a formula, not a number (t3)",
+    "Interview notes are linked but their content is not readable through the graph"
+  ]
+}
