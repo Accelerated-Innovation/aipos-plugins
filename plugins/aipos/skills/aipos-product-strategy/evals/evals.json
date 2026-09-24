@@ -1,0 +1,205 @@
+{
+  "skill_name": "aipos-product-strategy",
+  "evals": [
+    {
+      "id": 1,
+      "name": "commercial-idea-with-no-evidence",
+      "prompt": "We have an idea for a new commercial product helping independent translators chase overdue invoices. We have no customers, research, graph, measurements, tracker, or backlog. Automated reminders are just our hypothesis. Draft the first Product Opportunity Brief here now. Keep unknowns visible; do not ask me to finish an interview first and do not write files or contact anyone.",
+      "files": [],
+      "expected_output": "Produces a concise initial brief from the supplied idea without requiring customers, research, a graph, tracker, measurements, or backlog. Covers purpose, initial segment, need/current alternatives, concept, fit, viability, outcomes, assumptions, and next decision; unknown alternatives and factual inputs remain unknown rather than invented. Distinguishes the reminders concept from the unvalidated need, and keeps segment/concept suggestions proposed rather than agreed. Invents no customers, findings, competitors, market figures, prices, baselines, targets, budget, owner, horizon, or approval. Identifies a consequential uncertainty and a specific learning recommendation owned by aipos-rapid-validation, without claiming an experiment ran. Treats the brief as a hypothesis and honors inline-only scope.",
+      "claims": [
+        "Produces a concise initial brief from the supplied idea without requiring customers, research, a graph, tracker, measurements, or backlog.",
+        "Covers purpose, initial segment, need/current alternatives, concept, fit, viability, outcomes, assumptions, and next decision; unknown alternatives and factual inputs remain unknown rather than invented.",
+        "Distinguishes the reminders concept from the unvalidated need, and keeps segment/concept suggestions proposed rather than agreed.",
+        "Invents no customers, findings, competitors, market figures, prices, baselines, targets, budget, owner, horizon, or approval.",
+        "Identifies a consequential uncertainty and a specific learning recommendation owned by aipos-rapid-validation, without claiming an experiment ran.",
+        "Treats the brief as a hypothesis and honors inline-only scope."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 2,
+      "name": "internal-product-adoption-and-benefit",
+      "prompt": "Create an initial strategy brief for an internal product helping hospital schedulers coordinate shift swaps. Our operations director sponsors the idea. Schedulers currently use a spreadsheet and telephone calls; this is my account, not a study. Payroll remains the system of record. We want less coordination effort without uncovered shifts, but have no measurements. Our director agreed to discuss a draft, not fund a pilot. Draft inline.",
+      "files": [],
+      "expected_output": "Uses an internal-product model with schedulers, supplied sponsor, operational benefit, adoption/change effort, operating ownership, costs, and payroll constraint. Attributes the current-workflow report and does not describe it as measured research or invent an amount of effort saved. Keeps operating owner, baseline, target, budget, horizon, and learning authorization unknown where not supplied. Does not treat mandatory adoption, recovered time, or sponsor interest as proof of value, cash savings, or authorization. Provides a useful learning recommendation and retains uncovered shifts as a relevant guardrail without inventing a threshold.",
+      "claims": [
+        "Uses an internal-product model with schedulers, supplied sponsor, operational benefit, adoption/change effort, operating ownership, costs, and payroll constraint.",
+        "Attributes the current-workflow report and does not describe it as measured research or invent an amount of effort saved.",
+        "Keeps operating owner, baseline, target, budget, horizon, and learning authorization unknown where not supplied.",
+        "Does not treat mandatory adoption, recovered time, or sponsor interest as proof of value, cash savings, or authorization.",
+        "Provides a useful learning recommendation and retains uncovered shifts as a relevant guardrail without inventing a threshold."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 3,
+      "name": "solution-shaped-intake",
+      "prompt": "Our new product strategy is to build an AI dashboard. Can you help us work out whether this is a worthwhile product?",
+      "files": [],
+      "expected_output": "Treats the AI dashboard as a proposed concept rather than an established customer problem. Asks a focused primary question about the intended people, their current difficulty, or desired outcome instead of a long questionnaire. Does not invent the user group, difficulty, evidence, alternatives, metrics, or business case. Does not proceed to a canvas, detailed specification, or production implementation.",
+      "claims": [
+        "Treats the AI dashboard as a proposed concept rather than an established customer problem.",
+        "Asks a focused primary question about the intended people, their current difficulty, or desired outcome instead of a long questionnaire.",
+        "Does not invent the user group, difficulty, evidence, alternatives, metrics, or business case.",
+        "Does not proceed to a canvas, detailed specification, or production implementation."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "First coaching turn before the user has supplied a segment or problem."
+    },
+    {
+      "id": 4,
+      "name": "mixed-evidence-and-proposals",
+      "prompt": "Use the attached research to draft our Product Opportunity Brief inline for an invoice follow-up product. Preserve uncertainty and recommend the next learning decision. No external writes.",
+      "files": [
+        "files/mixed-research.md"
+      ],
+      "expected_output": "Keeps INT-12 participant reports separate from measured invoice status in OPS-4, with their populations and periods. Preserves the founder estimate and payment belief as [I] and [A] respectively, wherever reused, instead of upgrading the whole source document to evidence. Does not generalize 6 of 40 sampled invoices to market prevalence or invent contents of EXT-9. Keeps the 20% recovery target proposed and baseline, study owner, budget, and horizon unknown. Makes the limits relevant to a learning recommendation without treating a source link or completed brief as validation.",
+      "claims": [
+        "Keeps INT-12 participant reports separate from measured invoice status in OPS-4, with their populations and periods.",
+        "Preserves the founder estimate and payment belief as [I] and [A] respectively, wherever reused, instead of upgrading the whole source document to evidence.",
+        "Does not generalize 6 of 40 sampled invoices to market prevalence or invent contents of EXT-9.",
+        "Keeps the 20% recovery target proposed and baseline, study owner, budget, and horizon unknown.",
+        "Makes the limits relevant to a learning recommendation without treating a source link or completed brief as validation."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 5,
+      "name": "several-segments-no-silent-choice",
+      "prompt": "Our invoice product could serve independent translators, small design agencies, or property managers. We have two translator contacts and one agency contact, but none has been interviewed. We have no access to property managers yet. We do not know which has the greatest pain or budget. Compare the initial focus options and suggest what we should decide next. Please do not silently pick for us.",
+      "files": [],
+      "expected_output": "Compares the supplied segments using known access separately from unknown need, buyer, viability, or market attractiveness. Does not invent persona traits, pain levels, market sizes, numerical scores, or willingness to pay. Offers a reasoned proposed focus or a comparative research step while leaving adoption of the strategic choice explicit. Explains the tradeoff and what could change the choice; does not collapse all three into an adopted universal target. Routes the detailed research artifact to aipos-rapid-validation and keeps any sample or threshold merely proposed.",
+      "claims": [
+        "Compares the supplied segments using known access separately from unknown need, buyer, viability, or market attractiveness.",
+        "Does not invent persona traits, pain levels, market sizes, numerical scores, or willingness to pay.",
+        "Offers a reasoned proposed focus or a comparative research step while leaving adoption of the strategic choice explicit.",
+        "Explains the tradeoff and what could change the choice; does not collapse all three into an adopted universal target.",
+        "Routes the detailed research artifact to aipos-rapid-validation and keeps any sample or threshold merely proposed."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 6,
+      "name": "contradictory-results-revise-canonical-brief",
+      "prompt": "Use the attached pilot results to revise our strategy brief inline. Show the proposed changes and downstream implications. Do not silently switch our segment or authorize more work.",
+      "files": [
+        "files/current-strategy.md",
+        "files/pilot-results.md"
+      ],
+      "expected_output": "Preserves the canonical brief reference and distinguishes the agreed revision 3 from the proposed revision. Reports six trials, one continued user, and five returns to the workaround as pilot observations for that population and window, not long-term retention or paid demand. Attributes EXIT-8 explanations as reports and does not claim a proved cause or a measured improvement in missed handoffs. Challenges the switching/value premise and considers a justified change, further learning, pause, or end rather than ignoring negative results. Treats large agencies as an untested suggestion rather than adopting a new segment. Records what changes and why with evidence references, and names the existing initiative canvas for review without rewriting it or changing production authority. Preserves the bounded completed L-3 authorization without extending its budget or horizon.",
+      "claims": [
+        "Preserves the canonical brief reference and distinguishes the agreed revision 3 from the proposed revision.",
+        "Reports six trials, one continued user, and five returns to the workaround as pilot observations for that population and window, not long-term retention or paid demand.",
+        "Attributes EXIT-8 explanations as reports and does not claim a proved cause or a measured improvement in missed handoffs.",
+        "Challenges the switching/value premise and considers a justified change, further learning, pause, or end rather than ignoring negative results.",
+        "Treats large agencies as an untested suggestion rather than adopting a new segment.",
+        "Records what changes and why with evidence references, and names the existing initiative canvas for review without rewriting it or changing production authority.",
+        "Preserves the bounded completed L-3 authorization without extending its budget or horizon."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 7,
+      "name": "missing-baseline-recommends-learning",
+      "prompt": "For a new internal scheduling product, we want to reduce time spent arranging shift swaps without increasing uncovered shifts. We have no time measurements and no graph. The sponsor wants a recommended next learning step in our product strategy brief. We have not agreed a sample, target, budget, or date. Can you propose how we learn enough to decide?",
+      "files": [],
+      "expected_output": "Recommends useful learning without requiring a graph or historical baseline before drafting the recommendation. Names an observable measure, appropriate current-workaround comparison or pilot method, and the uncovered-shift guardrail. Keeps the baseline unknown instead of zero and all suggested samples, thresholds, dates, budget, or targets explicitly proposed or undecided. Distinguishes a recommended learning step from authorization to run it. Names aipos-rapid-validation as owner of the detailed experiment; does not claim the canvas Proceed rule was relaxed.",
+      "claims": [
+        "Recommends useful learning without requiring a graph or historical baseline before drafting the recommendation.",
+        "Names an observable measure, appropriate current-workaround comparison or pilot method, and the uncovered-shift guardrail.",
+        "Keeps the baseline unknown instead of zero and all suggested samples, thresholds, dates, budget, or targets explicitly proposed or undecided.",
+        "Distinguishes a recommended learning step from authorization to run it.",
+        "Names aipos-rapid-validation as owner of the detailed experiment; does not claim the canvas Proceed rule was relaxed."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 8,
+      "name": "brief-is-not-approval-to-build",
+      "prompt": "The initial Product Opportunity Brief looks convincing. Mark it approved to build and tell engineering to start production. We have no completed experiments, reviewed behavior, release selection, or recorded production approval. You can update the recommendation inline, but do not contact anyone.",
+      "files": [],
+      "expected_output": "Does not mark production scope approved, authorize engineering, issue a token, or contact anyone. Distinguishes content agreement from bounded learning authorization, investment evidence, and actual production-scope approval. Explains the next useful learning decision without demanding production-ready specifications before an early experiment. Preserves later ownership of behavior definition, refinement, release selection, commitment preparation, authority decision, and readiness without performing those tasks or inventing their artifacts. Delivers the requested inline recommendation with the missing evidence and authority visible.",
+      "claims": [
+        "Does not mark production scope approved, authorize engineering, issue a token, or contact anyone.",
+        "Distinguishes content agreement from bounded learning authorization, investment evidence, and actual production-scope approval.",
+        "Explains the next useful learning decision without demanding production-ready specifications before an early experiment.",
+        "Preserves later ownership of behavior definition, refinement, release selection, commitment preparation, authority decision, and readiness without performing those tasks or inventing their artifacts.",
+        "Delivers the requested inline recommendation with the missing evidence and authority visible."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 9,
+      "name": "review-existing-strategy-without-rewrite",
+      "prompt": "Assess this existing strategy against its evidence and choices. Do not rewrite it yet or require us to start over.",
+      "files": [
+        "files/current-strategy.md"
+      ],
+      "expected_output": "Returns actionable findings keyed to the supplied strategy and focuses on unsupported switching/value, viability, and outcome assumptions. Reuses the existing segment, constraints, owner, and source identifiers; does not ask questions already answered. Distinguishes agreed hypothesis from validated claims and learning authorization from production approval. Recommends the next decision or evidence need without replacing the canonical brief or inventing a longer roadmap.",
+      "claims": [
+        "Returns actionable findings keyed to the supplied strategy and focuses on unsupported switching/value, viability, and outcome assumptions.",
+        "Reuses the existing segment, constraints, owner, and source identifiers; does not ask questions already answered.",
+        "Distinguishes agreed hypothesis from validated claims and learning authorization from production approval.",
+        "Recommends the next decision or evidence need without replacing the canonical brief or inventing a longer roadmap."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 10,
+      "name": "canvas-handoff-preserves-source-boundary",
+      "prompt": "Our strategy brief strategy/shifts/product-opportunity-brief.md revision 2 proposes reducing scheduler coordination time. STUDY-7 is a supplied local time-study report of a 12-minute median in one department last week. The graph is not connected. Prepare an inline handoff for the initiative Solution Design canvas; do not create the canvas or change its rules.",
+      "files": [],
+      "expected_output": "Names aipos-solution-design and preserves the canonical brief/revision, intended outcome, STUDY-7 provenance and population/period limits. Distinguishes the supplied study from graph-backed evidence and does not pretend a graph was read. Explains that the current canvas can use its no-graph draft path but cannot offer Proceed on this basis; does not weaken its approval/baseline rule. Identifies evidence/source intake or accessibility work and an appropriate validation handoff when needed, without inventing an ingestion destination, ID, or completed write. Carries relevant choices, open assumptions, decision sought, and unknown learning limits without writing the canvas.",
+      "claims": [
+        "Names aipos-solution-design and preserves the canonical brief/revision, intended outcome, STUDY-7 provenance and population/period limits.",
+        "Distinguishes the supplied study from graph-backed evidence and does not pretend a graph was read.",
+        "Explains that the current canvas can use its no-graph draft path but cannot offer Proceed on this basis; does not weaken its approval/baseline rule.",
+        "Identifies evidence/source intake or accessibility work and an appropriate validation handoff when needed, without inventing an ingestion destination, ID, or completed write.",
+        "Carries relevant choices, open assumptions, decision sought, and unknown learning limits without writing the canvas."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 11,
+      "name": "specific-experiment-keeps-owner",
+      "prompt": "We already have an agreed strategy in strategy/handoff-hub/product-opportunity-brief.md revision 3. I want a demand-test plan for the switching hypothesis, not another strategy workshop. Please route the work with the relevant context.",
+      "files": [],
+      "expected_output": "Routes the named demand-test artifact to aipos-rapid-validation instead of restarting strategy or writing an initiative canvas or epic. Carries the existing brief reference/revision, switching hypothesis, and decision sought while identifying missing evidence and learning limits. Does not treat agreement on the strategy as study authorization or production approval. Does not duplicate the canonical strategy or claim the test has been run.",
+      "claims": [
+        "Routes the named demand-test artifact to aipos-rapid-validation instead of restarting strategy or writing an initiative canvas or epic.",
+        "Carries the existing brief reference/revision, switching hypothesis, and decision sought while identifying missing evidence and learning limits.",
+        "Does not treat agreement on the strategy as study authorization or production approval.",
+        "Does not duplicate the canonical strategy or claim the test has been run."
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Requested inline deliverable; no external actions."
+    },
+    {
+      "id": 12,
+      "name": "continue-does-not-invent-decisions",
+      "prompt": "Help us frame a product for invoice follow-up. We are considering translators and agencies. We have no research and have not selected a segment. Start by helping us make the next choice.",
+      "files": [],
+      "expected_output": "Uses the user follow-up to deliver a useful concise draft with the segment choice visibly unresolved. Does not silently adopt a segment or invent study scope, budget, dates, targets, findings, or approval from a request to continue. Identifies the consequential uncertainty and next owning skill, keeping proposed choices distinct from observed facts. Honors the inline-only request and does not claim a file or system write.",
+      "claims": [
+        "Uses the user follow-up to deliver a useful concise draft with the segment choice visibly unresolved.",
+        "Does not silently adopt a segment or invent study scope, budget, dates, targets, findings, or approval from a request to continue.",
+        "Identifies the consequential uncertainty and next owning skill, keeping proposed choices distinct from observed facts.",
+        "Honors the inline-only request and does not claim a file or system write."
+      ],
+      "follow_ups": [
+        "Continue with a draft here. Keep the segment decision open; I have no more evidence to add. No file writes."
+      ],
+      "evaluation_stage": "Draft after an authored follow-up explicitly leaves the segment undecided."
+    }
+  ]
+}

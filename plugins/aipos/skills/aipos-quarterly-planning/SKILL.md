@@ -36,6 +36,14 @@ and the governed door enforces budget, horizon, and WIP server-side. The brief's
 step offers to record the Validation Decision back against this Exploration Decision, so
 the next session's funnel signals see what was funded and what came of it.
 
+## Product strategy context
+
+`aipos-product-strategy` owns new-product framing and strategy revision. When a
+Product Opportunity Brief is supplied, use `../../references/strategy-handoff.md`
+to retain its choices, revision, evidence limits, and decision sought. The brief
+does not supply graph entries or an exploration mandate. This skill still
+requires live graph reads and owns capacity allocation across opportunities.
+
 ## What this skill reads, and how
 
 The skill is **read-only over MCP**. It requires a connected MCP server exposing

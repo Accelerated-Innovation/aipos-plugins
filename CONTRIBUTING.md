@@ -6,7 +6,7 @@ Thanks for helping improve AIPOS. This repo is a [Claude Code plugin marketplace
 
 ```
 .claude-plugin/marketplace.json   # marketplace catalog (one aipos entry)
-plugins/aipos/                    # all twelve aipos-* skills
+plugins/aipos/                    # all thirteen aipos-* skills
   .claude-plugin/plugin.json      # plugin manifest (bump version on release)
   references/                     # plugin-wide references shared by several skills
   skills/<skill-name>/SKILL.md    # one folder per skill; loads automatically

@@ -28,6 +28,14 @@ The canvas sits at the start of Pillar 2. Its panel-6 plan is what `aipos-rapid-
 its recommendation (Proceed / Pivot / Park) maps to that skill's GO / REVISE / NO-GO. Panel 1's
 statement and panel 3's metrics can seed an epic if one is wanted.
 
+## Product strategy context
+
+For a supplied Product Opportunity Brief, read `../../references/strategy-handoff.md`.
+Reference its revision, relevant problem/outcome, and strategic choices; this
+canvas owns initiative-level options. Product-level strategy creation or revision
+belongs to `aipos-product-strategy`. A brief does not change this canvas’s source,
+baseline, Proceed, or approval rules.
+
 ## Key terms
 
 - **Canvas** — the six panels plus a footer, recorded in `canvas.json` and rendered as an image.
@@ -216,6 +224,7 @@ Always:
 
 | Skill | Owns | Relationship |
 |---|---|---|
+| `aipos-product-strategy` | Product vision, strategy, and results-driven revision | Supplies canonical brief references and relevant choices; receives findings that challenge strategy. Initiative artifacts retain their own scope and authority rules |
 | `aipos-quarterly-planning` | Which problems get exploration capacity | Reads the same graph with the same tools; its Exploration Decision is what usually precedes a canvas |
 | `aipos-rapid-validation` | Experiments, evidence, the viability brief | Runs the canvas's panel-6 plan; consumes the recommendation as GO / REVISE / NO-GO |
 | `aipos-epic-create` | Epics and program briefs | Shares the problem-framing and metrics references; can take panel 1 and panel 3 into an epic |
