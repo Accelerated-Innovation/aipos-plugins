@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render a Solution Design canvas to HTML, and to PNG / PDF when a headless browser exists.
+"""Render a Solution Framing canvas to HTML, and to PNG / PDF when a headless browser exists.
 
 The render is a view of `canvas.json`, never a second source of truth:
 
@@ -413,7 +413,7 @@ footer .gap{{background:transparent;color:#fff;border-color:#fff}}
 
 def render_html(canvas: dict, computed: dict, report, brand: dict) -> str:
     c = canvas
-    title = D(c.get("title")).get("value") or "Solution Design"
+    title = D(c.get("title")).get("value") or "Solution Framing"
     goal = field_html(c.get("goal"))
     banner_html = "".join(f'<span class="banner {k}">{esc(t)}</span>' for k, t in banners(c, report))
     src = D(c.get("source"))
@@ -424,9 +424,9 @@ def render_html(canvas: dict, computed: dict, report, brand: dict) -> str:
             f' · GAPs: {gaps.get("evidence", 0)} evidence, {gaps.get("decision", 0)} decision'
             f' · verifier: {"ok" if not report.errors else str(len(report.errors)) + " errors"}')
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<title>{esc(title)} — Solution Design</title><style>{css(brand)}</style></head>
+<title>{esc(title)} — Solution Framing</title><style>{css(brand)}</style></head>
 <body><div class="page">
-<header><div><div class="kicker">Solution Design · {esc(brand.get("wordmark", ""))}</div><h1>{esc(title)}</h1></div>
+<header><div><div class="kicker">Solution Framing · {esc(brand.get("wordmark", ""))}</div><h1>{esc(title)}</h1></div>
 <div class="goal"><b>Goal</b><span>{goal}</span></div></header>
 <div class="banners">{banner_html}</div>
 <main>

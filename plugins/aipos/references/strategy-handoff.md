@@ -1,6 +1,6 @@
 # Product strategy handoffs
 
-Shared by product-strategy, quarterly-planning, solution-design, rapid-validation,
+Shared by product-strategy, exploration-planning, solution-framing, rapid-validation,
 and epic-create. The Product Opportunity Brief owns product-level choices. Other
 artifacts reference those choices and own their local decisions. No skill needs
 to reconstruct or copy the whole strategy to accept a scoped handoff.
@@ -32,10 +32,10 @@ existing actual authority and its limits when supplied.
   demand tests, prototypes, feasibility/evaluation work, and experiment findings.
   It can begin without a graph or baseline. Findings return with provenance for
   strategy review; detailed artifacts reference the brief instead of copying it.
-- **Product strategy → solution-design:** a sufficiently framed initiative problem,
+- **Product strategy → solution-framing:** a sufficiently framed initiative problem,
   segment and outcome, with the relevant brief sections and evidence. Solution
-  options and its canvas remain solution-design's work.
-- **Product strategy → quarterly-planning:** allocate research capacity across
+  options and its canvas remain solution-framing's work.
+- **Product strategy → exploration-planning:** allocate research capacity across
   opportunities only with the live graph reads that planning requires. Brief
   choices inform the discussion but do not invent graph entries, rankings,
   mandates, or decisions. An empty/unavailable graph can still permit local
@@ -51,7 +51,7 @@ existing actual authority and its limits when supplied.
 ## Current canvas compatibility boundary
 
 The strategy brief accepts attributable supplied research outside the graph.
-The current Solution Design canvas has stricter rules: its primary baseline must
+The current Solution Framing canvas has stricter rules: its primary baseline must
 be graph-backed to offer Proceed; its no-graph path remains a PM-account draft;
 a linked-record `[T]` transcription cannot unlock Proceed. Neither an adopted
 strategy nor permission for an experiment changes those rules. Do not copy a

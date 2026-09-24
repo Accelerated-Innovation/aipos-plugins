@@ -122,7 +122,7 @@ import pytest  # noqa: E402
 
 from skill_paths import skill_path
 
-_SCRIPTS = skill_path("aipos-feature-map") / "scripts"
+_SCRIPTS = skill_path("aipos-map-render") / "scripts"
 
 
 @pytest.fixture(scope="module")

@@ -5,5 +5,5 @@
 #
 # Nothing here calls a model or the network at test time. The model-graded cases in each
 # skill's evals/evals.json are a separate, optional pass.
--r plugins/aipos/skills/aipos-feature-map/scripts/requirements.txt
+-r plugins/aipos/skills/aipos-map-render/scripts/requirements.txt
 pytest>=7,<9

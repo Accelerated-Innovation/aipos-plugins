@@ -90,14 +90,14 @@ Do not use it for:
 
 - Reviewing spec quality or issuing a Development Token recommendation (`aipos-feature-refine`)
 - Validating a repo package before coding (`aipos-feature-readiness`)
-- Mapping a whole epic (`aipos-feature-map`, which calls this skill per feature)
+- Mapping a whole epic (`aipos-map-render`, which calls this skill per feature)
 - Story-point estimation or velocity forecasting — complexity points are not story points, and no total here is a delivery estimate
 - Deciding what a release commits to on behalf of the PM, or treating a tag as an approval
 - Creating or deleting tracker records; write-back is update-in-place only
 
 ## Inputs
 
-Accept any input form `aipos-feature-refine` accepts: pasted tracker fields, markdown from a tracker, a draft `acceptance.feature`, a `feature_source.md`, or a single feature object in `aipos-feature-map`'s `features.json` schema (field mapping: `rules[].rule` = business rules, `rules[].scenarios[]` = the Gherkin, `rules[].scenarios[].tags[]` = existing tags).
+Accept any input form `aipos-feature-refine` accepts: pasted tracker fields, markdown from a tracker, a draft `acceptance.feature`, a `feature_source.md`, or a single feature object in `aipos-map-render`'s `features.json` schema (field mapping: `rules[].rule` = business rules, `rules[].scenarios[]` = the Gherkin, `rules[].scenarios[].tags[]` = existing tags).
 
 If scenarios already carry slice or size tags, read them — they are prior decisions, not blanks to overwrite. Re-recommend only where the user asks, and show a diff against the existing tags.
 
@@ -282,7 +282,7 @@ a Markdown fence or add an introduction, explanation, or trailing question.
 This output contract persists on a bare “proceed”; only a user request to leave
 batch mode changes it. Report judgments only; the computation script owns sums.
 
-`aipos-feature-map` (or a script) calls this when a corpus needs size badges. Same rules as refine's batch mode: skip every pause, emit a single raw JSON object and nothing else, one feature per invocation — batching degrades every verdict. Batch mode **never writes to a tracker** and never applies tags; it sizes and recommends, and the caller renders recommendations as recommendations.
+`aipos-map-render` (or a script) calls this when a corpus needs size badges. Same rules as refine's batch mode: skip every pause, emit a single raw JSON object and nothing else, one feature per invocation — batching degrades every verdict. Batch mode **never writes to a tracker** and never applies tags; it sizes and recommends, and the caller renders recommendations as recommendations.
 
 Batch mode persists until the caller explicitly changes the task. A bare
 “proceed” or “continue” does not switch to interactive slicing, authorize tag
@@ -353,4 +353,4 @@ Always:
 |---|---|---|
 | `aipos-feature-refine` | Spec quality and the 3 Amigos conversation | Refine first when the Gherkin is too weak to size; slicing revises structure, refine revises meaning |
 | `aipos-feature-readiness` | The repo-side Development Token gate | Slice tags ride along in `acceptance.feature` and survive the handoff; readiness can gate per slice |
-| `aipos-feature-map` | The corpus view | Calls this skill's batch mode to badge many features; renders the rollup this skill's script computes |
+| `aipos-map-render` | The corpus view | Calls this skill's batch mode to badge many features; renders the rollup this skill's script computes |

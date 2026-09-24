@@ -2,7 +2,7 @@
 
 A **development and evaluation stand-in** for the Discovery Engine's `opportunity-engine` MCP
 read server. It exists so skills that read the Product Definition Graph (PDG) —
-`aipos-solution-design` first — can be built and exercised before a live engine is reachable.
+`aipos-solution-framing` first — can be built and exercised before a live engine is reachable.
 
 **It is not a data source.** Every record is synthetic: IDs start with `fixture:`, text carries
 `[SYNTHETIC]`, and links point at `fixture.invalid`. It never ships as part of the `aipos` plugin.
@@ -51,7 +51,7 @@ exercised on every run. Going live is swapping the registration, not changing th
 
 | Problem | Case |
 |---|---|
-| `fixture:prb-ticket-triage` | The Solution Design canvas example. Recent, mixed sources; two readable tickets and one readable call; one ticket and all ReOps records with no readable text; a study outcome with null date and URL. **No ticket volume and no routing baseline in the graph** — both must become evidence GAPs. |
+| `fixture:prb-ticket-triage` | The Solution Framing canvas example. Recent, mixed sources; two readable tickets and one readable call; one ticket and all ReOps records with no readable text; a study outcome with null date and URL. **No ticket volume and no routing baseline in the graph** — both must become evidence GAPs. |
 | `fixture:prb-invoice-dup` | Already promoted (active Aha! link) plus a severed Jira link. |
 | five `fixture:prb-*` renewal rows | Five ranked problems tracing to **one** originating call. |
 | `fixture:prb-month-end` | Evidence only from 2022–2024 (aging), one null `occurred_at` (unknown, not old). |

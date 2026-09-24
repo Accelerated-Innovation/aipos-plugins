@@ -19,5 +19,5 @@ First risk: whether agencies will replace their current workaround.
 
 Learning authorization L-3 from Dana: one two-week pilot with six agencies,
 ending 2026-09-20. The supplied authorization is only for this pilot.
-Initiative canvas: solution-design/handoff-visibility/canvas.json (reference only).
+Initiative canvas: solution-framing/handoff-visibility/canvas.json (reference only).
 No approval of production scope has been supplied. No system writes requested.

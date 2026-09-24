@@ -1,4 +1,4 @@
-# Runtime dependencies for the aipos-feature-map scripts.
+# Runtime dependencies for the aipos-map-render scripts.
 # Pinned to a tested range so ingestion is reproducible locally and in CI.
 #
 #   python -m pip install -r requirements.txt

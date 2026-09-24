@@ -390,7 +390,7 @@ def test_cached_results_still_report_failure_without_model_calls(runner, tmp_pat
     import asyncio
     from types import SimpleNamespace
 
-    name = "aipos-quarterly-planning"
+    name = "aipos-exploration-planning"
     skill = runner.discover_skills()[name]
     case = runner.load_cases(skill)[0]
     args = SimpleNamespace(list=False, skill=name, case=case["name"],

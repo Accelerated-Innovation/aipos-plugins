@@ -48,7 +48,7 @@ The same rhythm as `aipos-epic-create`:
    is `provisional` until the PM confirms it.
 4. **Set `through_panel`** to the step just finished (1–6 panels, 7 footer, 8 reviewed) and **run the
    verifier** from the project folder:
-   `python3 <skill-folder>/scripts/verify_canvas.py solution-design/<slug>/canvas.json --write`
+   `python3 <skill-folder>/scripts/verify_canvas.py solution-framing/<slug>/canvas.json --write`
    (`<skill-folder>` is the folder this SKILL.md is in). It checks only the panels reached, so an
    error is always about something already on the canvas. Translate it into one plain sentence —
    never read out a code. *"The −30% target and the 1.2-minute target
@@ -75,7 +75,7 @@ In this order, briefly:
 2. **The graph** — detect it and choose the problem (`opportunity-source.md`). No graph → say so
    once and take the PM-interview path.
 3. **An existing canvas?** Now that the problem is known, look for
-   `solution-design/<slug>/canvas.json` in the project folder (slug rules in `canvas-schema.md`; on
+   `solution-framing/<slug>/canvas.json` in the project folder (slug rules in `canvas-schema.md`; on
    the no-graph path, ask whether an earlier canvas exists). If one exists, go to
    [Resuming a canvas](#resuming-a-canvas).
 4. **Already promoted?** From `get_work_item_links`: say so before anything else, and ask whether
@@ -88,7 +88,7 @@ In this order, briefly:
 7. **Title and goal** — propose both from the graph's title, in outcome terms: *"Reduce triage time
    and improve first-contact routing"*, not *"Triage improvements"*. One push on a title that names
    an area instead of an outcome.
-8. **Where it's kept** — once: *"I'll keep the canvas in `solution-design/<slug>/` in this project
+8. **Where it's kept** — once: *"I'll keep the canvas in `solution-framing/<slug>/` in this project
    as we go, so we can pick it up later. OK?"* Local files need one confirmation for the set; trackers
    are Step 10. Freeze the slug now; it never changes.
 
@@ -220,7 +220,7 @@ owner, rationale}`; `genai_criteria[]` in GenAI mode; `through_panel: 6`.
 ## Step 9 — Render
 
 ```bash
-python3 <skill-folder>/scripts/render_canvas.py solution-design/<slug>/canvas.json
+python3 <skill-folder>/scripts/render_canvas.py solution-framing/<slug>/canvas.json
 ```
 
 Writes `canvas.html`, and `canvas.png` / `canvas.pdf` when a headless browser is available (the
@@ -235,7 +235,7 @@ the mock graph carries a SYNTHETIC banner, always.
 
 ## Step 10 — Save and hand off
 
-**The project folder** (`solution-design/<slug>/`): `canvas.json`, the render, and **always**
+**The project folder** (`solution-framing/<slug>/`): `canvas.json`, the render, and **always**
 `todo.md` — every open evidence to-do, whatever happens with a ticket. Never overwrite an approved canvas — a re-run writes
 `canvas-<YYYY-MM-DD>.json` beside it.
 

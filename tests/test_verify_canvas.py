@@ -1,4 +1,4 @@
-"""A Solution Design canvas is quoted from, so its numbers and its provenance must hold.
+"""A Solution Framing canvas is quoted from, so its numbers and its provenance must hold.
 
 Two fixtures anchor this file:
 
@@ -27,7 +27,7 @@ import sys
 import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "plugins/aipos/skills/aipos-solution-design/scripts/verify_canvas.py"
+SCRIPT = ROOT / "plugins/aipos/skills/aipos-solution-framing/scripts/verify_canvas.py"
 FIXTURES = ROOT / "tests/fixtures/canvas"
 
 

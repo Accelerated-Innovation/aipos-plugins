@@ -1,9 +1,9 @@
 ---
-name: aipos-workflow-map
-description: "Author or update workflow.json describing a customer journey, actors, branches, and handoffs, with references to canonical behavior. Use for journey structure and coverage gaps. Delegate rendering of existing workflow source to feature-map."
+name: aipos-workflow-create
+description: "Create or update workflow.json describing a customer journey, actors, branches, and handoffs, with references to canonical behavior. Use for journey structure and coverage gaps. Delegate rendering of existing workflow source to map-render."
 ---
 
-# GovKit Workflow Map — Authoring the Workflow Source
+# GovKit Workflow Create — Authoring the Workflow Source
 
 ## Purpose
 
@@ -17,16 +17,16 @@ applies at four steps is authored once and referenced four times, so rewording i
 three stale copies behind in a picture nobody remembered to update.
 
 **You never ask anyone to maintain a diagram.** L1, L2 and L3 are generated projections of
-`workflow.json`, rendered by `aipos-feature-map`. If a view is wrong, the source is wrong; fix
+`workflow.json`, rendered by `aipos-map-render`. If a view is wrong, the source is wrong; fix
 the source and regenerate.
 
 ## Position in the lifecycle
 
 Pillar 2 work: this is how a journey gets described before there is a commitment to anything in
-it. The map is what makes "is this the whole journey?" a question someone can actually answer,
+it. The workflow is what makes "is this the whole journey?" a question someone can actually answer,
 and `aipos-feature-slice` then selects which of that behavior a release contains.
 
-The map is not an approval and never implies one. A rendered view showing a Rule proves the Rule
+The workflow is not an approval and never implies one. A rendered view showing a Rule proves the Rule
 exists, not that anyone committed to it.
 
 ## Scope
@@ -42,7 +42,7 @@ Do not use it for:
 
 - Writing Rules or scenarios — that is `aipos-feature-create`
 - Deciding which behavior ships in which release — that is `aipos-feature-slice`
-- Rendering the views — that is `aipos-feature-map`
+- Rendering the views — that is `aipos-map-render`
 - Drawing or editing a diagram by hand. There is no diagram to edit; there is a source file
 
 ## Required references
@@ -88,11 +88,11 @@ fabricated person with invented goals is the opposite of grounding.
 ### Step 3 — Lay out the activities
 
 The ordered, branching path a customer moves along. Each activity gets a stable `id` — it is what
-a baseline and a map both point at, so it cannot repeat and should not be renamed casually.
+a baseline and a rendered view both point at, so it cannot repeat and should not be renamed casually.
 
 Order is what a **customer experiences**. It is not build order and not release scope; a late
 activity can ship first, and a `@v2` scenario can sit on an untagged activity. Keeping those
-three apart is how a workflow map avoids quietly becoming a project plan.
+three apart is how a workflow avoids quietly becoming a project plan.
 
 Branches carry a `condition` saying what decides them. A branch with no stated condition is a
 question nobody has answered.
@@ -101,7 +101,7 @@ question nobody has answered.
 
 Inside each activity, the human / system / agent collaboration. The part worth the effort is the
 **handoff** — `{"from": ..., "to": ...}` — because work changing hands is where most real defects
-live, and a map that leaves it implied by adjacency hides exactly that.
+live, and a workflow that leaves it implied by adjacency hides exactly that.
 Walk every actor change in the supplied journey, including the initial human
 delegation to an agent and the later human approval passed to a sending system.
 Record each supported transfer explicitly with declared actor IDs; neither
@@ -142,8 +142,8 @@ Resolving needs two inputs: the workflow you just wrote, and the corpus as `feat
 feature directory, not something a user keeps lying around:
 
 ```bash
-python <plugin>/skills/aipos-feature-map/scripts/repo_ingest.py features/ -o features.json
-python <plugin>/skills/aipos-feature-map/scripts/workflow_resolve.py \
+python <plugin>/skills/aipos-map-render/scripts/repo_ingest.py features/ -o features.json
+python <plugin>/skills/aipos-map-render/scripts/workflow_resolve.py \
     workflow.json features.json
 ```
 
@@ -160,10 +160,10 @@ reported, because an unverified reference looks exactly like a verified one in t
 Where the corpus does exist, report both halves of what the resolver returns:
 
 - **Diagnostics** — dangling and ambiguous references, unknown actors, transitions to nowhere,
-  unparsed features. Errors are fixed before the map is worth reading.
+  unparsed features. Errors are fixed before the views are worth reading.
 - **Coverage** — behavior in the corpus that **no step touches**. This is the finding people
   actually need and the one no diagram ever gives them: an unreferenced scenario is behavior the
-  map implies does not exist.
+  journey implies does not exist.
 
 Uncovered behavior is a finding, **not an error**. Keep its classification
 provisional: the source proves it was not referenced, not whether the product
@@ -188,7 +188,7 @@ Close with the gaps, and be selective. Ask about:
 
 Do not ask for cosmetic completeness — a missing `name` you can infer, an activity ordering that
 is obvious from the evidence, a step's `kind`. A skill that asks twelve questions to finish a
-map teaches people to stop running it.
+workflow teaches people to stop running it.
 
 ## Output format
 
@@ -213,7 +213,7 @@ map teaches people to stop running it.
 1. <only gaps that would change the journey>
 ````
 
-Then write `workflow.json` and say where it went. Rendering is `aipos-feature-map`'s job.
+Then write `workflow.json` and say where it went. Rendering is `aipos-map-render`'s job.
 
 ## Guardrails
 
@@ -238,7 +238,7 @@ Always:
 
 ## Related
 
-- `aipos-feature-create` — authors the Rules and scenarios this map references
-- `aipos-feature-slice` — selects which of the mapped behavior a release contains
-- `aipos-feature-map` — renders the L1 / L2 / L3 views from `workflow.json`
+- `aipos-feature-create` — authors the Rules and scenarios this workflow references
+- `aipos-feature-slice` — selects which of the referenced behavior a release contains
+- `aipos-map-render` — renders the L1 / L2 / L3 views from `workflow.json`
 - `../../references/workflow-source.md` — the format

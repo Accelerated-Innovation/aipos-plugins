@@ -1,21 +1,23 @@
 ---
-name: aipos-feature-map
-description: "Render an existing feature corpus and optional workflow source into an HTML view of dependencies and advisory assessments. Use for release dashboards and cross-feature comparisons. Delegate draft-quality scoring to feature-refine, reviewed-repo readiness to feature-readiness, and requested complexity scoring to feature-slice. This view does not issue tokens."
+name: aipos-map-render
+description: "Render an existing feature corpus, and optionally a workflow source, into one HTML map of feature dependencies, advisory assessments, and L1/L2/L3 journey views. Use for release dashboards, cross-feature comparisons, and journey views. Authoring workflow source belongs to workflow-create. Delegate draft-quality scoring to feature-refine, reviewed-repo readiness to feature-readiness, and requested complexity scoring to feature-slice. This view does not issue tokens."
 ---
 
-# GovKit Feature Map
+# GovKit Map Render — the feature map and its journey views
 
-Turn a corpus of feature specs into one self-contained HTML page that a delivery team, a PM and a sponsor can all read: how the features connect, what each one actually specifies, and how ready each is for AI-assisted coding.
+Turn a corpus of feature specs — and, when there is one, the workflow source that describes a journey through them — into one self-contained HTML page that a delivery team, a PM and a sponsor can all read: how the features connect, what each one actually specifies, and how ready each is for AI-assisted coding.
 
 ## What this produces and why it is shaped this way
 
-The map has three registers, and each answers a question the others cannot.
+The map has three registers, plus the journey views when a workflow is supplied, and each answers a question the others cannot.
 
 **The chain** shows producer-to-consumer flow between features. It exists because the sequencing risk in an epic is rarely visible from a backlog: a feature that looks independent is often waiting on an artifact nobody has committed to producing. Readiness badges sit on the chain nodes so a reader can see *where* in the flow the weakness is, not just that it exists.
 
 **The lanes** carry one card per feature, holding the real spec — rules, scenarios, NFRs with thresholds and evidence, evaluation criteria with gates, open questions. This is what makes the map a working document rather than a status picture. The card is where somebody goes to argue with the spec.
 
 **The ledger** lists every artifact with its producers and consumers. Terminal artifacts — produced but never consumed — are usually either genuine outputs or a modelling error worth catching.
+
+**The journey** appears only when a resolved workflow is passed. It projects `workflow.json` as three views — L1 activities and branches, L2 steps and handoffs, L3 the Rules governing each — so the journey is read on the same page as the specs it references, and behavior no step touches shows up as uncovered. This skill renders the workflow; it never authors it. The source belongs to `aipos-workflow-create`, and a wrong view is fixed there, not here.
 
 The deliverable is one HTML file with no external dependencies, because it gets emailed, dropped in a wiki, and opened six months later.
 
@@ -32,7 +34,7 @@ Run these in order. Steps 4 and 5 are the ones people are tempted to skip, and t
 
 Ask what the map is for before building it. A map for a sponsor wants the chain and the badges; a map for a refinement session wants the cards open. Both are the same build, but the framing text differs.
 
-Confirm: which epic, project or directory; whether readiness scoring is wanted; and whether the user has a preferred lane grouping (workstream, team, phase, component).
+Confirm: which epic, project or directory; whether readiness scoring is wanted; whether a `workflow.json` should be rendered alongside; and whether the user has a preferred lane grouping (workstream, team, phase, component).
 
 ### 2. Ingest
 
@@ -127,7 +129,9 @@ python scripts/render_map.py -f features.json -s scores.json -z sizing_computed.
 
 `-z` is optional and takes the *computed* sizing file. Size renders as a distribution — `2L / 5M / 3S · 41 pts` — because the Large count is the risk signal an average hides. Slice tags render as chips on scenarios, and the release-slice filter works from tagged slices only; batch recommendations appear marked `rec` and never drive grouping.
 
-`references/rendering.md` documents `config.json` — title, lanes, boundary sets, and explicit node positions.
+**Journey views.** Pass a *resolved* workflow, never a raw `workflow.json`: run `scripts/workflow_resolve.py workflow.json features.json > resolved.json` and add `-w resolved.json`. Report the resolver's diagnostics and uncovered behavior alongside the render rather than leaving them for a reader to find on the page. If there is no `workflow.json` yet, that is `aipos-workflow-create`'s job; do not draft one here to fill the section.
+
+`references/rendering.md` documents `config.json` — title, lanes, boundary sets, and explicit node positions — and what each journey view shows and omits.
 
 The chain auto-layouts by dependency depth, which is fine for a working session. For anything going in front of stakeholders, hand-set `positions` in the config; a laid-out diagram reads far better than any algorithm will manage, and the escape hatch exists precisely for that.
 
@@ -191,23 +195,26 @@ Lead with the cluster, name the two or three features where it bites hardest, an
 | `references/ingestion-contract.md` | The `features.json` schema, per-adapter field mapping, Gherkin fidelity and parse-failure handling. Read before ingesting. |
 | `../../references/gherkin-authoring-standard.md` | The shared Gherkin authoring standard the corpus is judged against. |
 | `../../references/spec-identifiers.md` | The `@rule:` / `@scenario:` identifiers carried through `features.json`. |
+| `../../references/workflow-source.md` | The `workflow.json` format behind the journey views. Read before rendering one. |
 | `scripts/requirements.txt` | Pinned ingestion dependencies. Install before running `repo_ingest.py`. |
 | `references/scoring.md` | Fan-out pattern, rubric selection, and the subagent prompt. Read before scoring. |
 | `references/rendering.md` | `config.json` options, visual grammar, and the render verification script. |
 | `scripts/repo_ingest.py` | Walk a repo of feature specs; `--merge` overlays them onto a tracker export. |
+| `scripts/workflow_resolve.py` | Resolve a workflow's references against `features.json`; its output is what `-w` takes. |
 | `scripts/verify_scores.py` | The verification gate. Run before every render. |
 | `scripts/render_map.py` | Build the HTML map. |
 
 ## Related
 
-This skill is for the **corpus**. The other GovKit skills act on one feature at a time, and each owns something this one deliberately does not:
+This skill is for the **corpus** and the views over it. The other GovKit skills act on one feature or one source at a time, and each owns something this one deliberately does not:
 
 | Skill | Owns | Use instead of this one when |
 |---|---|---|
 | `aipos-feature-refine` | The 10-dimension collaboration rubric and the 3 Amigos conversation | Reviewing or improving *one existing draft* with the team |
 | `aipos-feature-readiness` | The 12-dimension repo-side gate | Validating *one* approved feature package before coding starts |
+| `aipos-workflow-create` | `workflow.json` — the journey's activities, actors, handoffs and behavior references | Authoring or changing the journey the views are drawn from |
 | `aipos-feature-slice` | The Scenario Complexity Matrix, MoSCoW slicing, and the `@mvp`/`@v1`/`@v2` tag vocabulary | Sizing and slicing *one* feature with a PM — the conversation where slice tags actually get decided |
 
-The map reads their rubrics; it never restates them. If a rubric changes, the badges change with it — which is the point.
+The map reads their rubrics and their sources; it never restates them. If a rubric changes, the badges change with it — which is the point.
 
 A map is not a substitute for either gate. It shows where the corpus stands so a team knows which feature to open next, and the artifact says so on its face.

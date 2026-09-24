@@ -5,7 +5,7 @@
 > the PM's account is the only source, and the canvas says so on its face.
 
 The reference server is the Discovery Engine's `opportunity-engine` read server: seven read tools
-over the Product Definition Graph (PDG), the same vocabulary `aipos-quarterly-planning` uses. It
+over the Product Definition Graph (PDG), the same vocabulary `aipos-exploration-planning` uses. It
 **writes nothing**, and this skill never tries to write to it.
 
 ## Contents

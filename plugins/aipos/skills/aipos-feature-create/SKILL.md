@@ -88,7 +88,7 @@ Do not use it for:
 - Reviewing or scoring an existing spec's quality (`aipos-feature-refine`)
 - Issuing a Development Token or validating a repo package (`aipos-feature-readiness`)
 - Re-sizing or re-slicing existing scenarios per-scenario (`aipos-feature-slice`)
-- Mapping a corpus that already exists (`aipos-feature-map`)
+- Mapping a corpus that already exists (`aipos-map-render`)
 - Writing implementation code, step definitions, or tests
 - Validating whether the epic is worth building at all — that is Pillar 2 (`aipos-rapid-validation`)
 
@@ -532,7 +532,7 @@ Draft section by section per `references/feature-template.md`: Summary · Functi
 
 **Out of Scope is not optional.** It is the section that prevents the most rework, and the one PMs skip most often.
 
-**Produces / Consumes** are the named artifacts this feature emits and depends on, in kebab-case — they come almost verbatim from the Epic-mode scope boundaries ("A owns it, B consumes it") and they are what `aipos-feature-map` builds its dependency chain from. A feature with no entries in either is rare; ask once.
+**Produces / Consumes** are the named artifacts this feature emits and depends on, in kebab-case — they come almost verbatim from the Epic-mode scope boundaries ("A owns it, B consumes it") and they are what `aipos-map-render` builds its dependency chain from. A feature with no entries in either is rare; ask once.
 
 ### Step F6 — Business rules
 
@@ -663,7 +663,7 @@ Do not:
 - Put acceptance criteria, NFRs, or DoD on a stub
 - Present Draft 0 as reviewed, approved, or token-ready
 - Ask the PM to choose Gherkin tags that can be derived
-- Emit any delivery-phase tag other than `@mvp`, `@v1`, `@v2` — the vocabulary is closed, and `aipos-feature-slice` and `aipos-feature-map` discard anything else without an error
+- Emit any delivery-phase tag other than `@mvp`, `@v1`, `@v2` — the vocabulary is closed, and `aipos-feature-slice` and `aipos-map-render` discard anything else without an error
 - Emit Gherkin that fails the validation checks in `references/gherkin-tagging.md`
 - Ask more than one primary question at a time
 - Overwrite an existing field without showing what is being replaced
@@ -687,4 +687,4 @@ Always:
 | `aipos-feature-refine` | Spec quality and the 3 Amigos review | Consumes this skill's Draft 0. This skill creates; refine judges. Never self-review here |
 | `aipos-feature-slice` | Per-scenario sizing and re-slicing | Owns the `@mvp`/`@v1`/`@v2` vocabulary. This skill assigns the delivery tag from the feature's confirmed slice; slice re-decides it per scenario with the Complexity Matrix |
 | `aipos-feature-readiness` | The repo-side Development Token gate | Its blocker list is what this skill writes toward — missing thresholds, absent privacy paths, and missing eval criteria are its named blockers |
-| `aipos-feature-map` | The corpus view | Reads the feature packages this skill writes, via the same `features/<key>/` layout |
+| `aipos-map-render` | The corpus view | Reads the feature packages this skill writes, via the same `features/<key>/` layout |

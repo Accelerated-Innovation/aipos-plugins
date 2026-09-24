@@ -70,7 +70,7 @@
     {
       "id": 3,
       "name": "batch-mode-raw-json",
-      "prompt": "Batch sizing for aipos-feature-map: size this feature non-interactively and return the batch JSON verdict. Do not pause, do not ask questions, output raw JSON only.",
+      "prompt": "Batch sizing for aipos-map-render: size this feature non-interactively and return the batch JSON verdict. Do not pause, do not ask questions, output raw JSON only.",
       "files": [
         "files/feature-appointment-booking.md"
       ],

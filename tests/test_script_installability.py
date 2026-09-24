@@ -5,7 +5,7 @@ sibling source trees and no guarantee that a neighbour skill came along.
 `test_plugin_boundaries.py` already holds the cross-*plugin* line. This
 holds two more that only matter once scripts exist:
 
-- **Third-party imports are declared, not assumed.** `aipos-feature-map`
+- **Third-party imports are declared, not assumed.** `aipos-map-render`
   ships a `requirements.txt` because it needs a Gherkin parser. A script in
   another skill that quietly imports the same parser works perfectly in
   this source tree — where the dependency is installed for the tests — and
@@ -34,7 +34,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 #: Skills allowed third-party imports, and the file that declares them.
 DECLARED = {
     skill: skill_path(skill) / "scripts" / "requirements.txt"
-    for skill in ("aipos-feature-map", "aipos-metrics-emit", "aipos-synthetic-data")
+    for skill in ("aipos-map-render", "aipos-metrics-emit", "aipos-synthetic-data")
 }
 
 _STDLIB_DIR = pathlib.Path(sysconfig.get_paths()["stdlib"]).resolve()
@@ -123,7 +123,7 @@ def test_a_script_does_not_reach_into_another_skill(path):
     whatever working directory the caller has, so a hard-coded relative
     path into a sibling is fragile in a way a documented invocation is
     not — which is why two SKILL.md files legitimately call sibling
-    scripts (`aipos-workflow-map` runs `aipos-feature-map`'s ingester)
+    scripts (`aipos-workflow-create` runs `aipos-map-render`'s ingester)
     and no script hard-codes one. Instructions are the documented place
     for that coupling; a module-level path is not.
 

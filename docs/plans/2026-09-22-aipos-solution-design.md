@@ -5,7 +5,7 @@
 `scripts/`, `evals/`); routing cases in `evals/routing`; the `Related` tables of `aipos-epic-create`
 and `aipos-rapid-validation`; plugin README.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status: all increments implemented on `feat/aipos-solution-design`; ready for one PR.** `pytest tests` passes (553); routing dry run sees 12 skills; eval cases dry-run wired. **Not run:** model-graded evals, live routing, `claude plugin validate` (CI runs it), and a live test against the engine (`docs/testing/solution-design-live-test.md`).
+**Status: all increments implemented on `feat/aipos-solution-design`; ready for one PR.** `pytest tests` passes (553); routing dry run sees 12 skills; eval cases dry-run wired. **Not run:** model-graded evals, live routing, `claude plugin validate` (CI runs it), and a live test against the engine (`docs/testing/solution-framing-live-test.md`).
 
 ## Context
 

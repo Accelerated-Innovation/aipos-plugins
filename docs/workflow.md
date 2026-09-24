@@ -8,7 +8,7 @@ user requests and the state of the available artifacts.
 flowchart TD
     PS["Product strategy: Product Opportunity Brief"] <--> L["Early learning: rapid validation"]
     PS --> P["P1: Live graph → exploration decision draft"]
-    PS --> SD["P2: Solution Design canvas"]
+    PS --> SD["P2: Solution Framing canvas"]
     P --> SD
     SD --> V["P2: Experiments and evidence"]
     P --> V
@@ -40,7 +40,7 @@ The brief is the canonical product-level strategy. Rapid-validation owns the
 interview, sizing, demand, prototype, feasibility, and findings artifacts it calls
 for; findings return to product-strategy to challenge and revise the same brief.
 One initial outcome is enough when a longer roadmap would be speculative.
-Quarterly planning is useful for allocating capacity across graph-backed
+Exploration planning is useful for allocating capacity across graph-backed
 opportunities, and remains optional for an idea with no graph. An explicit request
 for an experiment, canvas, or epic does not first require a strategy document.
 
@@ -59,15 +59,15 @@ or business outcomes.
 | Requested action | Owner | Output and handoff |
 |---|---|---|
 | Start, assess, or revise product vision and strategy | `aipos-product-strategy` | One concise Product Opportunity Brief and next learning decision; delegates experiments and receives findings/results for strategy revision |
-| Allocate research attention using the live graph | `aipos-quarterly-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
-| Facilitate a one-page Solution Design canvas for one problem | `aipos-solution-design` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
+| Allocate research attention using the live graph | `aipos-exploration-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
+| Facilitate a one-page Solution Framing canvas for one problem | `aipos-solution-framing` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
 | Test an opportunity or summarize experiment evidence | `aipos-rapid-validation` | Experiment artifacts and viability brief; delegates behavior definition and prepares the exact commitment package |
 | Create an epic or initiative brief | `aipos-epic-create` | Optional planning artifact; can hand off decomposition to feature-create |
 | Author new acceptance criteria or materialize an approved baseline | `aipos-feature-create` | Canonical Rules, scenarios, and feature package; new drafts go to refine, approved baselines retain their behavior unchanged |
 | Review existing specifications | `aipos-feature-refine` | 3 Amigos findings, evidence gaps, proposed edits; routes reviewed repo packages to readiness |
-| Describe a journey's actors, transitions, and handoffs | `aipos-workflow-map` | `workflow.json` references existing behavior; hands view generation to feature-map |
+| Describe a journey's actors, transitions, and handoffs | `aipos-workflow-create` | `workflow.json` references existing behavior; hands view generation to map-render |
 | Choose the smallest usable release | `aipos-feature-slice` | Proposed behavior selection with prerequisites; returns to commitment preparation for approval |
-| Render a corpus or compare advisory assessments | `aipos-feature-map` | HTML view; requests assessment from refine, readiness, or slice as appropriate |
+| Render a corpus or compare advisory assessments | `aipos-map-render` | HTML view; requests assessment from refine, readiness, or slice as appropriate |
 | Check a reviewed repo package before coding | `aipos-feature-readiness` | Readiness report, verification plan, Development Token record, and applicable approval references |
 | Generate fixtures, boundary cases, or load data | `aipos-synthetic-data` | Repeatable seeded generator and data; labels scenario-derived or schema-derived coverage |
 | Export repository telemetry | `aipos-metrics-emit` | NDJSON events and completeness diagnostics; downstream systems aggregate them |
@@ -75,7 +75,7 @@ or business outcomes.
 Detailed instructions and prerequisites remain in the
 [skill catalog](../plugins/aipos/README.md).
 
-## The Solution Design canvas
+## The Solution Framing canvas
 
 A canvas is often the first P2 artifact for an explored problem: one page — problem,
 evidence, hypothesis, options, assumptions and risks, validation and recommendation —
@@ -112,15 +112,15 @@ evidence-backed opportunity without a tracker, user stories, or estimates.
 ## Choose by action and review state
 
 - **Product direction → product-strategy. A named experiment → rapid-validation.**
-  An initiative canvas belongs to solution-design; a requested epic to epic-create.
+  An initiative canvas belongs to solution-framing; a requested epic to epic-create.
   Product-level strategy review does not replace graph-backed capacity planning.
 - **New criteria → create. Existing criteria with ambiguity → refine.** A request
   mentioning Gherkin does not decide between them; the requested action does.
 - **A repo-resident Draft 0 → refine. A reviewed repo package before coding →
   readiness.** Storage location alone does not establish a completed review.
-- **Journey source → workflow-map. Rendering existing source → feature-map.**
+- **Journey source → workflow-create. Rendering existing source → map-render.**
   A request for both has an explicit author-then-render handoff.
-- **Release selection → slice. Release visualization → feature-map.** Complexity
+- **Release selection → slice. Release visualization → map-render.** Complexity
   assessment is optional and does not convert points into dates or capacity.
 - **Telemetry → metrics-emit. Execution authorization → readiness.** A complete
   artifact set does not establish product approval, current authority, or passing

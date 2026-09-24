@@ -25,7 +25,7 @@ features/<key>/
   eval_criteria.yaml     # GenAI mode only
 ```
 
-These filenames are not arbitrary. `aipos-feature-map`'s repo ingester and `aipos-feature-readiness`'s gate both look for exactly these names — writing them means the feature is readable by every downstream skill with no conversion step.
+These filenames are not arbitrary. `aipos-map-render`'s repo ingester and `aipos-feature-readiness`'s gate both look for exactly these names — writing them means the feature is readable by every downstream skill with no conversion step.
 
 Stubs get the directory and a `feature_source.md` containing only the stub fields. The other files arrive in Feature mode.
 
@@ -164,13 +164,13 @@ Secondary stories exist for other personas or other outcomes of the same capabil
 | **Produces / Consumes** | Named artifacts, kebab-case, from the Epic-mode scope boundaries | The feature map's dependency chain has no edges; sequencing risk stays invisible |
 | **Key user flows** | The paths through the feature, one line each | Scenarios get written without a journey behind them |
 
-**Produces / Consumes are structured, not prose.** One kebab-case artifact name per bullet (`context-pack`, `routing-decision`), matched string-for-string across features by `aipos-feature-map` to draw its producer/consumer chain — `repo_ingest.py` parses these two sections directly. Spelling the same artifact two ways silently drops the edge, so reuse the exact names sibling features declared. The Dependencies section stays free prose for everything that isn't an artifact (teams, external systems, timing).
+**Produces / Consumes are structured, not prose.** One kebab-case artifact name per bullet (`context-pack`, `routing-decision`), matched string-for-string across features by `aipos-map-render` to draw its producer/consumer chain — `repo_ingest.py` parses these two sections directly. Spelling the same artifact two ways silently drops the edge, so reuse the exact names sibling features declared. The Dependencies section stays free prose for everything that isn't an artifact (teams, external systems, timing).
 
 **Out of scope is not optional.** It is the section PMs skip most and the one that prevents the most rework. If the PM has nothing to put in it, prompt once from the adjacent features on the story map: what would someone reasonably assume this covers that it doesn't?
 
 ## nfrs.md
 
-A markdown table. The column names matter — this is the shape `aipos-feature-map` and `aipos-feature-readiness` parse.
+A markdown table. The column names matter — this is the shape `aipos-map-render` and `aipos-feature-readiness` parse.
 
 ```markdown
 # Non-Functional Requirements — <Feature Name>
@@ -242,7 +242,7 @@ Where a Data Protection Impact Assessment is required, say so and name it as a d
 
 GenAI mode only. Three consumers read this one file, and a single shape satisfies all of them:
 
-- `aipos-feature-map`'s repo ingester reads the top-level `evaluation_criteria:` list; each item's `id`, `type`, `rule_link`, `method`, `pass_threshold`, and `gate` land on the feature card.
+- `aipos-map-render`'s repo ingester reads the top-level `evaluation_criteria:` list; each item's `id`, `type`, `rule_link`, `method`, `pass_threshold`, and `gate` land on the feature card.
 - `aipos-feature-readiness` checks the same list for thresholds, data, evidence, and owner.
 - `aipos-metrics-emit` reads `mode` (must be `llm`, `deterministic`, or `none`), counts `llm_evaluation.criteria` when mode is `llm`, collects each criterion's optional `tool`, and reads `unit_tests.enforce_FIRST` and `code_quality.enforce_virtues` — two separate top-level blocks; it does not look for `enforce_virtues` under `unit_tests`. A file without a valid `mode` scores zero on the emitter's `eval_criteria` completeness component.
 

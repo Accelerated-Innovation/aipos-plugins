@@ -1,7 +1,7 @@
 # Stable Rule and Scenario Identifiers
 
 > **Shared reference.** Read by `aipos-feature-create`, `aipos-feature-refine`,
-> `aipos-feature-slice`, `aipos-feature-readiness` and `aipos-feature-map`.
+> `aipos-feature-slice`, `aipos-feature-readiness` and `aipos-map-render`.
 > From a skill folder: `../../references/spec-identifiers.md`.
 > Companion to [`gherkin-authoring-standard.md`](gherkin-authoring-standard.md)
 > and [`workflow-source.md`](workflow-source.md).
@@ -131,7 +131,7 @@ wrote.
 ## What a tool does with each identity event
 
 The authoring rules above say what an author does. This is what a resolver does when it meets
-the result — `aipos-feature-map`'s workflow resolver implements exactly this table.
+the result — `aipos-map-render`'s workflow resolver implements exactly this table.
 
 | Situation | Resolver behavior |
 |---|---|

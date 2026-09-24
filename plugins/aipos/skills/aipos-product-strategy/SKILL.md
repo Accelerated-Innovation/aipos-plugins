@@ -1,6 +1,6 @@
 ---
 name: aipos-product-strategy
-description: "Create, assess, or revise a Product Opportunity Brief covering product vision, target segment, needs, differentiation, and business viability. Use for starting a new commercial or internal product, choosing its strategic focus, or changing strategy after research or product results. Specific experiments belong to rapid-validation; initiative canvases to solution-design; epics to epic-create."
+description: "Create, assess, or revise a Product Opportunity Brief covering product vision, target segment, needs, differentiation, and business viability. Use for starting a new commercial or internal product, choosing its strategic focus, or changing strategy after research or product results. Specific experiments belong to rapid-validation; initiative canvases to solution-framing; epics to epic-create."
 ---
 
 # AIPOS Product Strategy
@@ -21,8 +21,8 @@ invent their participation or treat the PM as the authority for every decision.
 
 Read `../../references/strategy-handoff.md` when work crosses skill boundaries.
 Delegate experiment artifacts and findings to `aipos-rapid-validation`, an
-initiative canvas to `aipos-solution-design`, graph-based capacity allocation to
-`aipos-quarterly-planning`, and an explicitly requested epic to `aipos-epic-create`.
+initiative canvas to `aipos-solution-framing`, graph-based capacity allocation to
+`aipos-exploration-planning`, and an explicitly requested epic to `aipos-epic-create`.
 An explicit request for one of those outputs does not require this brief first.
 Behavior authoring, refinement, release selection, and readiness keep their owners.
 This skill does not implement analytics, a full roadmap, or production software.
