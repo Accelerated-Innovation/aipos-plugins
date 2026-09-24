@@ -61,7 +61,7 @@ def test_resource_check_rejects_missing_and_escaped_paths(tmp_path):
 
 
 def test_copied_plugin_runs_from_an_unrelated_project(tmp_path):
-    source = skill_path("aipos-feature-map").parent.parent
+    source = skill_path("aipos-map-render").parent.parent
     installed = tmp_path / "installed"
     shutil.copytree(source, installed, ignore=shutil.ignore_patterns("__pycache__"))
     project = tmp_path / "unrelated-project"
@@ -72,7 +72,7 @@ def test_copied_plugin_runs_from_an_unrelated_project(tmp_path):
     for skill in (installed / "skills").iterdir():
         if (skill / "SKILL.md").is_file():
             resources(skill)
-    script = installed / "skills/aipos-feature-map/scripts/repo_ingest.py"
+    script = installed / "skills/aipos-map-render/scripts/repo_ingest.py"
     proc = subprocess.run([sys.executable, str(script), "features", "-o", "features.json"],
                           cwd=project, capture_output=True, text=True)
     assert proc.returncode == 0, proc.stderr

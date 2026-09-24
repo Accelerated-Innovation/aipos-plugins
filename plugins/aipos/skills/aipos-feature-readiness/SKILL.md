@@ -250,7 +250,7 @@ Key rules and scenarios by their identifiers throughout, so the report keeps poi
 
 ## Batch mode (non-interactive corpus validation)
 
-Sometimes the caller is not a team at the gate but another skill or script that needs many repo packages scored at once — `aipos-feature-map` badging a repo-first corpus is the usual case. Same rules as `aipos-feature-refine`'s batch mode: it is the same analysis, emitted as data instead of conversation.
+Sometimes the caller is not a team at the gate but another skill or script that needs many repo packages scored at once — `aipos-map-render` badging a repo-first corpus is the usual case. Same rules as `aipos-feature-refine`'s batch mode: it is the same analysis, emitted as data instead of conversation.
 
 **What changes:**
 
@@ -282,7 +282,7 @@ Sometimes the caller is not a team at the gate but another skill or script that 
 
 `score` is the sum of the twelve dimension scores — compute by addition, never by impression. `decision` follows the standard rule: any blocker present → `Blocked`; otherwise ≥ 10 → `Approved`, 8.5 to under 10 → `Approved with edits`, under 8.5 → `Blocked`. Set `notAssessable: true` when the package itself is unreachable from what you were given — score what is in front of you and say in the summary that the score rates reachability, not quality.
 
-Callers verify these verdicts with `aipos-feature-map`'s `verify_scores.py --scale readiness` before rendering anything from them.
+Callers verify these verdicts with `aipos-map-render`'s `verify_scores.py --scale readiness` before rendering anything from them.
 
 ## Failure handling
 

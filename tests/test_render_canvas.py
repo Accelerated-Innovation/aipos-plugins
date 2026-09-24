@@ -18,7 +18,7 @@ import sys
 import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / "plugins/aipos/skills/aipos-solution-design/scripts"
+SCRIPTS = ROOT / "plugins/aipos/skills/aipos-solution-framing/scripts"
 FIXTURES = ROOT / "tests/fixtures/canvas"
 
 

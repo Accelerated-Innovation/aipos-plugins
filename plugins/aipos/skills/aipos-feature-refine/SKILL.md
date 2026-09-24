@@ -500,7 +500,7 @@ exactly one implementation, which is not this one.
 
 ## Batch mode (non-interactive corpus scoring)
 
-Sometimes the caller is not a team in a room but another skill or a script that needs many features scored at once — to badge a feature map, populate a readiness dashboard, or track drift across a release. `aipos-feature-map` is the usual caller.
+Sometimes the caller is not a team in a room but another skill or a script that needs many features scored at once — to badge a feature map, populate a readiness dashboard, or track drift across a release. `aipos-map-render` is the usual caller.
 
 Batch mode exists so that work does not have to reimplement the rubric. It is the same analysis, emitted as data instead of conversation.
 

@@ -96,7 +96,7 @@ Format: `<Feature name> — owns <responsibility>, up to <boundary>. Does not ow
 
 Vague boundaries ("owns claims handling") are how two teams build the same thing twice. Push for the second half of the sentence.
 
-**Boundaries become the dependency chain.** When a boundary says "A owns the routing decision, B consumes it", that is a producer/consumer edge: A *produces* `routing-decision`, B *consumes* it. Carry these into each feature's `## Produces` / `## Consumes` sections (kebab-case artifact names, per `feature-template.md`) — `aipos-feature-map` draws its chain from exactly these, and a boundary left as prose is an edge the map can't see.
+**Boundaries become the dependency chain.** When a boundary says "A owns the routing decision, B consumes it", that is a producer/consumer edge: A *produces* `routing-decision`, B *consumes* it. Carry these into each feature's `## Produces` / `## Consumes` sections (kebab-case artifact names, per `feature-template.md`) — `aipos-map-render` draws its chain from exactly these, and a boundary left as prose is an edge the map can't see.
 
 ## Integrity check 1 — overlap
 

@@ -85,7 +85,7 @@ Separately from the evidence, ask once whether this validation has a mandate, un
 > Is this under an Exploration Decision from planning? If so, paste the log entry or name
 > the record. If not, we'll work unbounded and say so.
 
-An Exploration Decision is Pillar 1's output (`aipos-quarterly-planning`): an accountable
+An Exploration Decision is Pillar 1's output (`aipos-exploration-planning`): an accountable
 owner decided *explore* for this problem with a declared **budget** (in its own units —
 "five interviews", "one two-day spike") and a **horizon** (a date, or a duration from the
 decision date). It is not evidence about the problem. It is the capacity the organisation

@@ -254,7 +254,7 @@ If a check fails in a way you cannot fix without a product decision — a scenar
 Two consequences worth stating plainly:
 
 - **These tags are a starting position, not a final release commitment.** When slice re-decides a scenario, its decision wins — it judged the scenario; this skill judged the feature.
-- **The vocabulary is closed, and enforced by code downstream.** `mvp` / `v1` / `v2` are hard-coded in `aipos-feature-slice`'s `compute_size.py` (`SLICES`) and `aipos-feature-map`'s `render_map.py` (`SLICE_TAGS`). A delivery tag outside that set fails silently and in three separate ways:
+- **The vocabulary is closed, and enforced by code downstream.** `mvp` / `v1` / `v2` are hard-coded in `aipos-feature-slice`'s `compute_size.py` (`SLICES`) and `aipos-map-render`'s `render_map.py` (`SLICE_TAGS`). A delivery tag outside that set fails silently and in three separate ways:
 
 | Where | What happens to an unrecognized delivery tag |
 |---|---|

@@ -1,7 +1,7 @@
 # GovKit Gherkin Authoring Standard
 
 > **Shared reference.** One copy, read by `aipos-feature-create`, `aipos-feature-refine`,
-> `aipos-feature-readiness`, `aipos-feature-slice` and `aipos-feature-map`. From a skill
+> `aipos-feature-readiness`, `aipos-feature-slice` and `aipos-map-render`. From a skill
 > folder the path is `../../references/gherkin-authoring-standard.md`; under an installed
 > plugin it is also `${CLAUDE_PLUGIN_ROOT}/references/gherkin-authoring-standard.md`.
 > Skill-local references govern their own subjects — tags in

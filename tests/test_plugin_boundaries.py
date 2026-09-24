@@ -102,13 +102,13 @@ def test_shared_references_stay_canonical_in_the_plugin_that_owns_them():
     for the Gherkin authoring standard, which five skills cite and none
     restates.
     """
-    owned = {p.name for p in (skill_path("aipos-feature-map").parent.parent / "references").glob("*.md")}
+    owned = {p.name for p in (skill_path("aipos-map-render").parent.parent / "references").glob("*.md")}
     assert "spec-identifiers.md" in owned
     assert "workflow-source.md" in owned
 
     duplicates = [
         p for p in PLUGINS.rglob("references/*.md")
-        if p.name in owned and p.parent != skill_path("aipos-feature-map").parent.parent / "references"
+        if p.name in owned and p.parent != skill_path("aipos-map-render").parent.parent / "references"
     ]
     assert not duplicates, f"shared reference copied instead of cited: {duplicates}"
 

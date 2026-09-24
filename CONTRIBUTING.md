@@ -39,7 +39,7 @@ python -m pip install -r requirements-dev.txt
 python -m pytest tests -q
 ```
 
-The `pytest` suite covers the bundled Python scripts — Gherkin ingestion fidelity (`repo_ingest.py`) and the feature-map renderer. It asserts behavior and semantic preservation, never instructional wording: a test that matched a heading or a phrase in a `SKILL.md` would pass while the tool silently broke. It runs offline and calls no model.
+The `pytest` suite covers the bundled Python scripts — Gherkin ingestion fidelity (`repo_ingest.py`) and the feature-map renderer (`render_map.py`). It asserts behavior and semantic preservation, never instructional wording: a test that matched a heading or a phrase in a `SKILL.md` would pass while the tool silently broke. It runs offline and calls no model.
 
 Each skill's `evals/evals.json` is a separate, **model-graded** pass. Those cases need a model and are not part of the deterministic gate; when you run them, say which cases ran and what the results were. Never report an eval as passing unless it actually ran.
 

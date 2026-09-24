@@ -614,7 +614,7 @@
       "reops_draft": {
         "project_name": "Ticket triage baseline",
         "background": [
-          "Solution Design canvas for fixture:prb-ticket-triage needs a triage-time baseline; a time study exists but its result is not readable through the graph."
+          "Solution Framing canvas for fixture:prb-ticket-triage needs a triage-time baseline; a time study exists but its result is not readable through the graph."
         ],
         "needs": [
           "Average triage time per ticket, with the study window and sample size"

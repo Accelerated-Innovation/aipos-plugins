@@ -1,6 +1,6 @@
 ---
 name: aipos-rapid-validation
-description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, pilots (including one a Solution Design canvas calls for), experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create and the canvas itself to solution-design."
+description: "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, pilots (including one a Solution Framing canvas calls for), experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create and the canvas itself to solution-framing."
 ---
 
 # Rapid Validation
@@ -23,7 +23,7 @@ evidence feeding that decision. A PM who collects six beautiful artifacts and ne
 the call has not completed Pillar 2. Whenever you finish an artifact, point at the
 decision it serves and say what is still unevidenced.
 
-A Solution Design canvas (`aipos-solution-design`) often arrives first: its panel-6 plan
+A Solution Framing canvas (`aipos-solution-framing`) often arrives first: its panel-6 plan
 is the experiment to design here, its evidence GAPs are the first things to measure, and
 its recommendation maps Proceed / Pivot / Park to GO / REVISE / NO-GO. Read its
 `canvas.json` as Path B evidence, keeping its provenance marks.

@@ -1,4 +1,4 @@
-# Live test: `aipos-solution-design` against the real opportunity-engine
+# Live test: `aipos-solution-framing` against the real opportunity-engine
 
 An internal check that the skill behaves against the Discovery Engine's MCP read server the way it
 does against the mock. Run it from Claude Code inside the `discovery-engine` project, which already
@@ -30,8 +30,8 @@ claude plugin install aipos@aipos        # or: claude plugin update aipos@aipos
 Start a new Claude Code session **in the discovery-engine folder** so both the plugin and the
 `opportunity-engine` server load. `/mcp` should list `opportunity-engine` as connected.
 
-Canvases are saved to `solution-design/<slug>/` in the project folder — here, the discovery-engine
-repo. Add `solution-design/` to your local git exclude (`.git/info/exclude`) or run from a scratch
+Canvases are saved to `solution-framing/<slug>/` in the project folder — here, the discovery-engine
+repo. Add `solution-framing/` to your local git exclude (`.git/info/exclude`) or run from a scratch
 folder with its own `.mcp.json` pointing at the engine.
 
 PNG/PDF output uses Chrome at `/Applications/Google Chrome.app` (found automatically); the PNG is
@@ -40,7 +40,7 @@ made from the PDF with macOS Quick Look. Without Chrome only `canvas.html` is wr
 ## 3. Script
 
 Run these in order. Each line names what to watch for; the matching model-graded cases are in
-`plugins/aipos/skills/aipos-solution-design/evals/evals.json`.
+`plugins/aipos/skills/aipos-solution-framing/evals/evals.json`.
 
 | # | Say | Expect |
 |---|---|---|
@@ -58,8 +58,8 @@ Run these in order. Each line names what to watch for; the matching model-graded
 After each run, check the saved canvas yourself:
 
 ```bash
-python3 /Users/marty/repos/aipos-plugins/plugins/aipos/skills/aipos-solution-design/scripts/verify_canvas.py \
-  solution-design/<slug>/canvas.json
+python3 /Users/marty/repos/aipos-plugins/plugins/aipos/skills/aipos-solution-framing/scripts/verify_canvas.py \
+  solution-framing/<slug>/canvas.json
 ```
 
 It should report `"ok": true` for an approved canvas, and every `[E]` should cite a reference the

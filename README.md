@@ -33,8 +33,8 @@ Describe the action and provide the relevant evidence or artifacts:
 | Request | Skill |
 |---|---|
 | “Start a new product from this idea, or revise our strategy after these results.” | `aipos-product-strategy` |
-| “Review the live opportunity graph for next quarter's research choices.” | `aipos-quarterly-planning` |
-| “Run a solution design canvas for this opportunity with the team.” | `aipos-solution-design` |
+| “Review the live opportunity graph for next quarter's research choices.” | `aipos-exploration-planning` |
+| “Run a solution design canvas for this opportunity with the team.” | `aipos-solution-framing` |
 | “Design a demand test for this opportunity.” | `aipos-rapid-validation` |
 | “Draft acceptance criteria from these findings.” | `aipos-feature-create` |
 | “Review these existing criteria with Product, QA, and Engineering.” | `aipos-feature-refine` |
@@ -42,7 +42,7 @@ Describe the action and provide the relevant evidence or artifacts:
 | “Check this reviewed repo package before implementation.” | `aipos-feature-readiness` |
 
 See the [complete skill catalog and prerequisites](plugins/aipos/README.md) for
-solution design canvases, journey authoring, dashboards, optional epics, synthetic data, and metrics.
+solution framing canvases, journey authoring, dashboards, optional epics, synthetic data, and metrics.
 
 ## How the pillars connect
 

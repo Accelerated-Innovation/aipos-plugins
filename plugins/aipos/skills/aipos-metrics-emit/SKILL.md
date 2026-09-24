@@ -92,7 +92,7 @@ inputs.” Even if the user's shorthand was “gate-ready,” reserve readiness 
 for the separate handoff; do not repeat it as a synonym for completeness.
 
 **"Which features are ready to code?"** — use `aipos-feature-readiness` for an
-execution decision, or `aipos-feature-map` for an advisory corpus view. If the
+execution decision, or `aipos-map-render` for an advisory corpus view. If the
 user says only "gate-ready," use the known context or clarify whether they mean
 metric completeness or execution readiness. Do not substitute one for the other.
 

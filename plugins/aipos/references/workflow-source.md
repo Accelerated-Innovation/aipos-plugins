@@ -1,6 +1,6 @@
 # Workflow source (`workflow.json`)
 
-> **Shared reference.** Read by `aipos-feature-map` and by any Pillar 2 skill that
+> **Shared reference.** Read by `aipos-map-render` and by any Pillar 2 skill that
 > authors or renders a workflow. From a skill folder: `../../references/workflow-source.md`.
 > Companion to [`spec-identifiers.md`](spec-identifiers.md) and
 > [`gherkin-authoring-standard.md`](gherkin-authoring-standard.md).

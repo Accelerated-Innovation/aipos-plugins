@@ -1,16 +1,16 @@
 ---
-name: aipos-solution-design
-description: "Facilitate a one-page Solution Design canvas for one problem from the Product Definition Graph — problem, evidence, hypothesis, solution options, assumptions and risks, validation plan and recommendation — live in a workshop or with a PM, then render it as an image. Use for solution design workshops, canvases and the Solution Blueprint. Epics belong to epic-create; designing or running the pilot or experiment a canvas calls for, and viability briefs, belong to rapid-validation."
+name: aipos-solution-framing
+description: "Frame a solution on a one-page Solution Framing canvas for one problem from the Product Definition Graph — problem, evidence, hypothesis, solution options, assumptions and risks, validation plan and recommendation — live in a workshop or with a PM, then render it as an image. Use for solution framing or solution design workshops, canvases and the Solution Blueprint. Epics belong to epic-create; designing or running the pilot or experiment a canvas calls for, and viability briefs, belong to rapid-validation."
 ---
 
-# AIPOS Solution Design — the one-page canvas
+# AIPOS Solution Framing — the one-page canvas
 
 ## Purpose
 
-Coach a Product Manager — alone or with a room — through a **Solution Design canvas**: one page
-that says what problem we're solving, how we know, what we think will fix it, what else we could
-do, what we're betting on, and how we'll find out before committing. It replaces the Solution
-Blueprint, one canvas per Initiative.
+Coach a Product Manager — alone or with a room — through a **Solution Framing canvas**: one page
+that frames a solution before anyone commits to building it — what problem we're solving, how we
+know, what we think will fix it, what else we could do, what we're betting on, and how we'll find
+out. It replaces the Solution Blueprint, one canvas per Initiative.
 
 The canvas gets shared, and then it gets quoted. So this skill works to two standards at once: the
 coaching pushes on quality the way `aipos-epic-create` does, and every fact and every number on the
@@ -20,7 +20,7 @@ them.
 ## Position in the lifecycle
 
 ```
-Exploration Decision → aipos-solution-design → aipos-rapid-validation → (aipos-epic-create) → aipos-feature-create
+Exploration Decision → aipos-solution-framing → aipos-rapid-validation → (aipos-epic-create) → aipos-feature-create
                         the canvas             runs the panel-6 plan     optional epic          behavior
 ```
 
@@ -73,7 +73,7 @@ back on, show them the test it failed.
 
 Use this skill for:
 
-- Facilitating a Solution Design canvas, live in a workshop or one-to-one
+- Facilitating a Solution Framing canvas, live in a workshop or one-to-one
 - Building the canvas from a PDG problem or opportunity — or from the PM's account when no graph is
   reachable
 - Resuming a saved canvas, refreshing it from the graph, and closing its GAPs
@@ -83,7 +83,7 @@ Do not use it for:
 
 - Writing an epic or program brief (`aipos-epic-create`)
 - Designing or running experiments, or writing the viability brief (`aipos-rapid-validation`)
-- Deciding which problems deserve exploration capacity (`aipos-quarterly-planning`)
+- Deciding which problems deserve exploration capacity (`aipos-exploration-planning`)
 - Authoring Rules, scenarios or acceptance criteria (`aipos-feature-create`)
 
 ## Inputs
@@ -122,7 +122,7 @@ legitimate output; a plausible number is not, because this page gets quoted.
 
 Scripts live in this skill's folder; canvases live in the project folder. Run from the project
 folder, naming the script by its full path:
-`python3 <this-skill-folder>/scripts/verify_canvas.py solution-design/<slug>/canvas.json --write`.
+`python3 <this-skill-folder>/scripts/verify_canvas.py solution-framing/<slug>/canvas.json --write`.
 
 If a reference is unavailable, continue from this file and say which rules you are applying from
 memory. If the scripts cannot run, say so: the canvas can still be facilitated, but no number on it
@@ -177,7 +177,7 @@ In conversation, after each panel: a two-or-three-line summary, then the next qu
 At the end:
 
 ````markdown
-# Solution Design — <title>
+# Solution Framing — <title>
 
 **Recommendation:** <Proceed | Pivot | Park | open> to <owner> — <one line why>
 **Blocking the decision:** <the GAP that matters most, or "nothing">
@@ -187,7 +187,7 @@ At the end:
 |---|---|
 | <each panel> | complete / GAPs: <n> / not covered |
 
-**Files:** solution-design/<slug>/canvas.json · canvas.png · canvas.pdf · todo.md
+**Files:** solution-framing/<slug>/canvas.json · canvas.png · canvas.pdf · todo.md
 **Open questions and gaps:** <every GAP and open question>
 **Next:** aipos-rapid-validation runs the panel-6 plan.
 ````
@@ -225,7 +225,7 @@ Always:
 | Skill | Owns | Relationship |
 |---|---|---|
 | `aipos-product-strategy` | Product vision, strategy, and results-driven revision | Supplies canonical brief references and relevant choices; receives findings that challenge strategy. Initiative artifacts retain their own scope and authority rules |
-| `aipos-quarterly-planning` | Which problems get exploration capacity | Reads the same graph with the same tools; its Exploration Decision is what usually precedes a canvas |
+| `aipos-exploration-planning` | Which problems get exploration capacity | Reads the same graph with the same tools; its Exploration Decision is what usually precedes a canvas |
 | `aipos-rapid-validation` | Experiments, evidence, the viability brief | Runs the canvas's panel-6 plan; consumes the recommendation as GO / REVISE / NO-GO |
 | `aipos-epic-create` | Epics and program briefs | Shares the problem-framing and metrics references; can take panel 1 and panel 3 into an epic |
 | `aipos-feature-create` | Rules and scenarios | Downstream, once a commitment is in view |

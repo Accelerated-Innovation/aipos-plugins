@@ -1,5 +1,5 @@
 {
-  "skill_name": "aipos-solution-design",
+  "skill_name": "aipos-solution-framing",
   "evals": [
     {
       "id": 1,
@@ -242,7 +242,7 @@
       "files": [
         "files/canvas-approved-linked-ticket.json"
       ],
-      "expected_output": "The response writes (or states it will write) the project-folder files — canvas.json, the render, and todo.md with the three open ReOps to-dos — under solution-design/fixture-prb-ticket-triage/. For the linked Jira ticket SUP-412 it does not write without an explicit, destination-named yes: it previews the exact index comment (dated first line; problem statement; hypothesis; primary metric shown as a formula because the baseline is a GAP; the Pivot recommendation and to whom; the evidence-base line; open GAPs) and asks to post it to SUP-412. It says plainly it cannot upload files and hands over the attachment by exact filename (canvas.pdf). It does not offer a tracker to-do for a pilot unless panel 6 has one with owner and date (it does: the 4-week pilot, owner Head of Support, by 2026-11-30) — offering it is acceptable. It does not paste evidence excerpts into the ticket. It does not claim any tracker write happened.",
+      "expected_output": "The response writes (or states it will write) the project-folder files — canvas.json, the render, and todo.md with the three open ReOps to-dos — under solution-framing/fixture-prb-ticket-triage/. For the linked Jira ticket SUP-412 it does not write without an explicit, destination-named yes: it previews the exact index comment (dated first line; problem statement; hypothesis; primary metric shown as a formula because the baseline is a GAP; the Pivot recommendation and to whom; the evidence-base line; open GAPs) and asks to post it to SUP-412. It says plainly it cannot upload files and hands over the attachment by exact filename (canvas.pdf). It does not offer a tracker to-do for a pilot unless panel 6 has one with owner and date (it does: the 4-week pilot, owner Head of Support, by 2026-11-30) — offering it is acceptable. It does not paste evidence excerpts into the ticket. It does not claim any tracker write happened.",
       "assertions": [
         {
           "name": "folder-files",

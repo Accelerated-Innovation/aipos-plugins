@@ -1,16 +1,16 @@
 ---
-name: aipos-quarterly-planning
-description: "Prepare quarterly exploration planning from a live Product Definition Graph. Use for evidence-backed opportunity review, research gaps, and exploration decisions with owners, budgets, and horizons. Requires graph reads and drafts the decision log; delivery release planning belongs elsewhere."
+name: aipos-exploration-planning
+description: "Plan which opportunities get exploration capacity, from a live Product Definition Graph. Use for exploration planning sessions (typically quarterly), evidence-backed opportunity review, research gaps, and exploration decisions with owners, budgets, and horizons. Requires graph reads and drafts the decision log; delivery release planning belongs elsewhere."
 ---
 
-# PDG Quarterly Planning
+# PDG Exploration Planning
 
 This skill runs the ceremony where AIPOS Pillar 1 (Continuous Discovery) hands its
-evidence to human judgment: the quarterly planning session, held against a live
-Product Definition Graph rather than a slide deck of recollections.
+evidence to human judgment: the exploration planning session — usually quarterly —
+held against a live Product Definition Graph rather than a slide deck of recollections.
 
 Pillar 1's core question: **what problems do customers actually have, ranked by
-evidence — and which of them deserve exploration capacity next quarter?** The graph
+evidence — and which of them deserve exploration capacity next?** The graph
 answers the first half continuously. This skill exists for the second half, which no
 graph can answer, because allocating budget is governance:
 
@@ -22,7 +22,7 @@ The output is not a ranking — the graph already has one. The output is a set o
 **Exploration Decisions**: for each candidate problem, an accountable owner decides
 *explore* (with a declared budget and horizon), *decline* (with a reason), or *defer*
 (to a named future session). A session that admires the ranked list and decides
-nothing has not done quarterly planning. Whenever you finish an artifact, point at
+nothing has not done exploration planning. Whenever you finish an artifact, point at
 the decisions it serves and say which candidates still lack one.
 
 **This pillar ends at the Exploration Decision. Pillar 2 (Rapid Validation) begins

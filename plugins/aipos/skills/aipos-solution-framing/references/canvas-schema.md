@@ -9,7 +9,7 @@
 script is right and this file is the bug. Run it after every change to the canvas:
 
 ```bash
-python3 scripts/verify_canvas.py solution-design/<folder>/canvas.json --write
+python3 scripts/verify_canvas.py solution-framing/<folder>/canvas.json --write
 ```
 
 `--write` refreshes the `computed` block. Exit code 1 means errors; the JSON report names each
@@ -224,7 +224,7 @@ Written by `verify_canvas.py --write`; the renderer reads numbers only from here
 In the Cowork project folder the skill runs from:
 
 ```
-solution-design/<problem-slug>/
+solution-framing/<problem-slug>/
   canvas.json          canvas.png          canvas.pdf          todo.md (when no ticket)
 ```
 

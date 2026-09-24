@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a Solution Design canvas and compute every number the canvas displays.
+"""Check a Solution Framing canvas and compute every number the canvas displays.
 
 The canvas is a shareable one-page artifact, so its numbers get quoted. This script is the
 reason they can be: nothing on the rendered canvas is typed by hand if it can be derived.
