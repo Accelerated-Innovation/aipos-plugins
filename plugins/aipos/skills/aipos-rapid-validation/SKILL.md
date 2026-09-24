@@ -40,6 +40,16 @@ organised — it is not an arbitrary list:
 2. **Will the proposed solution actually solve it?**
 3. **Is it technically and economically feasible within acceptable constraints?**
 
+## Product strategy context
+
+`aipos-product-strategy` owns the Product Opportunity Brief and revises strategy
+from findings or product results. Read `../../references/strategy-handoff.md` when
+a brief is supplied or findings should return to it. Preserve its canonical
+reference, claim provenance, choices, and decision sought; do not copy the strategy
+into each experiment or infer a mandate from agreement on the brief. This skill
+continues to own experiment design and findings, including collecting a missing
+baseline. A brief is not a prerequisite for any existing intake path.
+
 ## The boundary, and where it now ends
 
 Pillar 2 is Build-to-**Learn**, and most of it is deliberately ungoverned relative to delivery:

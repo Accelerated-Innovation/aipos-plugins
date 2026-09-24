@@ -832,6 +832,188 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "strategy-new-product",
+      "prompt": "Start a new product from this idea and draft its Product Opportunity Brief.",
+      "context": "No evidence graph, customers, research, or backlog.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-internal",
+      "prompt": "Help us choose the users, need, adoption approach, and business benefit for a new internal product.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-assess",
+      "prompt": "Assess our existing product strategy and its target-segment choice.",
+      "context": "Return a critique; do not rewrite it.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-results",
+      "prompt": "These pilot results contradict our strategy. Propose changes to the Product Opportunity Brief.",
+      "context": "Findings have already been analyzed; revise product direction.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-segment-choice",
+      "prompt": "Compare these three possible initial customer segments and help us choose our product focus.",
+      "context": "We have supplied contact/access information but no validated demand.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-to-canvas-contrast",
+      "prompt": "Run a Solution Design canvas for the initiative our product strategy identified.",
+      "context": "The product direction is already set; facilitate the canvas only.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-solution-design",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-to-experiment-contrast",
+      "prompt": "Create an interview guide to test the riskiest assumption in this Product Opportunity Brief.",
+      "context": "Do not revisit product strategy; write the experiment artifact.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-to-epic-contrast",
+      "prompt": "Turn the initiative described in our strategy brief into an epic.",
+      "context": "An epic is explicitly requested, not another product strategy brief.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-epic-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-to-quarter-contrast",
+      "prompt": "Allocate next quarter's research capacity across the graph-backed opportunities aligned to this strategy.",
+      "context": "A live Product Definition Graph is connected; draft exploration decisions.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-quarterly-planning",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-heldout-blank-start",
+      "prompt": "We might offer something new but have no customers yet. Help us articulate who it is for, why they would choose it, and why it makes sense for us.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-heldout-change-direction",
+      "prompt": "Our early users went back to spreadsheets. Reconsider the intended audience and value proposition in our current product-direction document.",
+      "context": "Use supplied study findings; no new experiment design requested.",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-heldout-demand",
+      "prompt": "Use the direction document as context and design a presale experiment.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-rapid-validation",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "strategy-heldout-initiative",
+      "prompt": "I need an initiative brief with scope and success metrics from this product vision.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-epic-create",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }

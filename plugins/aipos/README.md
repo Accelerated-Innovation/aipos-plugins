@@ -1,6 +1,6 @@
 # AIPOS
 
-Twelve focused skills supporting Continuous Discovery (P1), Rapid Validation (P2),
+Thirteen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
 and Accelerated Development (P3) in one installation: `aipos@aipos`.
 
 ## Skill catalog
@@ -9,6 +9,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 
 | Skill | Use it for | Main boundary |
 |---|---|---|
+| [aipos-product-strategy](skills/aipos-product-strategy/SKILL.md) | Product vision and strategy: start, assess, or revise one Product Opportunity Brief | Graph optional; delegates experiments and initiative canvases; does not approve production scope |
 | [aipos-quarterly-planning](skills/aipos-quarterly-planning/SKILL.md) | P1: evidence review, research gaps, exploration decision drafts | Requires live graph reads; does not record authoritative decisions |
 | [aipos-solution-design](skills/aipos-solution-design/SKILL.md) | P2: a one-page Solution Design canvas, live in a workshop or with a PM, rendered as an image | Facts from the graph, decisions from the PM; recommends to a named owner, never decides |
 | [aipos-rapid-validation](skills/aipos-rapid-validation/SKILL.md) | P2: experiments, evidence, viability briefs, commitment preparation | Delegates canonical behavior authoring; prepares rather than grants approval |
@@ -25,6 +26,9 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 ## Prerequisites
 
 - A host supporting Claude plugins; see the [installation guide](../../README.md#install).
+- Product strategy can start with an idea, supplied research, or an existing brief;
+  no graph, tracker, customers, measurements, or backlog is required. It owns the
+  connection between product results and strategy revision, not analytics execution.
 - Quarterly planning requires a live Product Definition Graph read connection.
   Equivalent MCP reads can provide opportunities, problems, lineage, evidence,
   linked work, and evidence text. Without it the skill reports what is missing.

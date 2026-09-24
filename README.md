@@ -1,10 +1,10 @@
 # AIPOS skills
 
-One plugin for evidence-based discovery, rapid validation, and governed AI-assisted
+One plugin for product strategy, evidence-based discovery, rapid validation, and governed AI-assisted
 delivery, from [Accelerated Innovation](https://acceleratedinnovation.com).
 
 AIPOS (AI Product Operating System) groups the work into pillars. The plugin keeps
-all twelve skills together because behavior authoring, review, journey definition,
+all thirteen skills together because behavior authoring, review, journey definition,
 and scope selection support several pillars. Each skill owns a specific action
 and hands off when the requested work changes.
 
@@ -32,6 +32,7 @@ Describe the action and provide the relevant evidence or artifacts:
 
 | Request | Skill |
 |---|---|
+| “Start a new product from this idea, or revise our strategy after these results.” | `aipos-product-strategy` |
 | “Review the live opportunity graph for next quarter's research choices.” | `aipos-quarterly-planning` |
 | “Run a solution design canvas for this opportunity with the team.” | `aipos-solution-design` |
 | “Design a demand test for this opportunity.” | `aipos-rapid-validation` |
@@ -45,7 +46,10 @@ solution design canvases, journey authoring, dashboards, optional epics, synthet
 
 ## How the pillars connect
 
-P1 reviews live evidence and drafts exploration decisions. P2 tests assumptions
+Product strategy starts with a concise Product Opportunity Brief, even with only an
+idea and no graph. It connects vision, initial customers, differentiation, business
+viability, and outcomes to the next learning decision; research and product results
+return to the same brief. P1 reviews live evidence and drafts exploration decisions. P2 tests assumptions
 and progressively defines, reviews, and selects behavior for a commitment package.
 The accountable authority decides whether to approve that exact scope. P3 checks
 the reviewed repository package for execution readiness, then supports test data
@@ -53,7 +57,7 @@ and delivery observation.
 
 An evidence-backed opportunity can go directly to Rules and scenarios. Epics,
 user stories, estimates, and a decision service are optional. Existing work can
-enter at the appropriate stage; this is not a compulsory sequence of twelve calls.
+enter at the appropriate stage; this is not a compulsory sequence of thirteen calls.
 
 The [workflow guide](docs/workflow.md) explains ownership, handoffs, and examples.
 Product approval, local execution readiness, current authority, and implementation
@@ -67,7 +71,9 @@ bundled scripts. [Routing evaluations](evals/routing/README.md) test selection f
 the descriptions; [behavior evaluations](evals/README.md) test a loaded skill's
 coaching. Model results must be reported separately from offline test passes.
 
-The [implementation plan](docs/plans/2026-09-19-aipos-plugin-consolidation.md)
-records the consolidation work and outstanding release checks.
+The [product-strategy integration record](docs/plans/2026-09-24-aipos-product-strategy.md)
+records this addition, its verification, and the unchanged canvas handoff limits.
+The [consolidation plan](docs/plans/2026-09-19-aipos-plugin-consolidation.md) retains
+the earlier release history.
 
 Licensed under [MIT](LICENSE).

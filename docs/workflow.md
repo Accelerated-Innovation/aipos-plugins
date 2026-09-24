@@ -1,12 +1,15 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All twelve skills live in the `aipos`
+The pillars describe a product lifecycle. All thirteen skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
 ```mermaid
 flowchart TD
-    P["P1: Live evidence → exploration decision draft"] --> SD["P2: Solution Design canvas"]
+    PS["Product strategy: Product Opportunity Brief"] <--> L["Early learning: rapid validation"]
+    PS --> P["P1: Live graph → exploration decision draft"]
+    PS --> SD["P2: Solution Design canvas"]
+    P --> SD
     SD --> V["P2: Experiments and evidence"]
     P --> V
     V --> B["Create and refine behavior"]
@@ -17,16 +20,45 @@ flowchart TD
     C --> A["Accountable authority decides"]
     A --> R["P3: Reviewed repo package → readiness"]
     R --> D["Test data, implementation, verification"]
+    V --> PS
+    D --> O["Product results from external analytics/research"]
+    O --> PS
 ```
 
 The diagram is a common route. Validation can start without P1; a no-go can end
 the work; new evidence can return it to an earlier step. Corpus views and metrics
 can run wherever their inputs exist.
 
+## Starting a new product
+
+Use `aipos-product-strategy` to create a Product Opportunity Brief from the idea
+or available evidence: vision, first segment, need, differentiated concept, fit,
+viability, outcomes, assumptions, and next decision. A concise draft can contain
+unknowns. Commercial and internal products both have a supported route.
+
+The brief is the canonical product-level strategy. Rapid-validation owns the
+interview, sizing, demand, prototype, feasibility, and findings artifacts it calls
+for; findings return to product-strategy to challenge and revise the same brief.
+One initial outcome is enough when a longer roadmap would be speculative.
+Quarterly planning is useful for allocating capacity across graph-backed
+opportunities, and remains optional for an idea with no graph. An explicit request
+for an experiment, canvas, or epic does not first require a strategy document.
+
+Agreement on a strategy hypothesis, authorization for learning, evidence for
+further investment, and approval of production scope remain distinct. Missing
+baselines can motivate learning. The [shared strategy handoff](../plugins/aipos/references/strategy-handoff.md)
+carries source revision, evidence, choices, uncertainties, decision sought, and
+next owner without duplicating the strategy.
+
+Product results return here for strategy review; collection and analysis remain
+with their owning systems. Delivery telemetry alone does not establish customer
+or business outcomes.
+
 ## Ownership and handoffs
 
 | Requested action | Owner | Output and handoff |
 |---|---|---|
+| Start, assess, or revise product vision and strategy | `aipos-product-strategy` | One concise Product Opportunity Brief and next learning decision; delegates experiments and receives findings/results for strategy revision |
 | Allocate research attention using the live graph | `aipos-quarterly-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
 | Facilitate a one-page Solution Design canvas for one problem | `aipos-solution-design` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
 | Test an opportunity or summarize experiment evidence | `aipos-rapid-validation` | Experiment artifacts and viability brief; delegates behavior definition and prepares the exact commitment package |
@@ -53,6 +85,14 @@ numbers are computed by the verifier rather than typed. Proceed is unavailable u
 the primary metric's baseline is graph-backed. The canvas recommends; the accountable
 owner decides. Rapid validation then runs the plan the canvas names.
 
+The product brief can accept attributable research outside the graph; the canvas
+retains its stricter graph-backed baseline and approval rules. A brief does not
+unlock Proceed. Its absence of a baseline can instead lead directly to learning
+through rapid-validation. The canvas’s pre-experiment recommendation remains an
+input to validation, not evidence that experiments succeeded. The
+[bounded follow-up](plans/2026-09-24-aipos-product-strategy.md#remaining-integration-gaps)
+records the decision-language and baseline-adapter gaps without changing them here.
+
 ## Progressive definition during P2
 
 Experiments can remain disposable. As an opportunity develops, feature-create
@@ -71,6 +111,9 @@ evidence-backed opportunity without a tracker, user stories, or estimates.
 
 ## Choose by action and review state
 
+- **Product direction → product-strategy. A named experiment → rapid-validation.**
+  An initiative canvas belongs to solution-design; a requested epic to epic-create.
+  Product-level strategy review does not replace graph-backed capacity planning.
 - **New criteria → create. Existing criteria with ambiguity → refine.** A request
   mentioning Gherkin does not decide between them; the requested action does.
 - **A repo-resident Draft 0 → refine. A reviewed repo package before coding →
@@ -103,4 +146,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these twelve skills.
+outside these thirteen skills.

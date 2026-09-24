@@ -4,6 +4,10 @@
 >
 > **Shared** by `aipos-epic-create` (epics) and `aipos-solution-design` (the Solution Design canvas). The canvas applies it with the exceptions its `panel-rubrics.md` names — chiefly that facts come from the Product Definition Graph, never from the PM.
 
+> `aipos-product-strategy` also reuses this guidance with the adaptations in its
+> `SKILL.md`: an initial hypothesis can retain unknowns, segment choices can evolve,
+> and a single initial outcome is sufficient. Epic and canvas contracts are unchanged.
+
 ## Contents
 
 - [The three-part metric](#the-three-part-metric)

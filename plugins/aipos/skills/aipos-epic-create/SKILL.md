@@ -30,6 +30,15 @@ for a new decision rather than redefining behavior in the epic.
 
 The epic this produces is the input to `aipos-feature-create`, which maps it into features.
 
+## Product strategy context
+
+A Product Opportunity Brief is owned by `aipos-product-strategy`. When supplied,
+read `../../references/strategy-handoff.md` and reference its revision and relevant
+choices in the epic’s existing evidence/context fields. Keep this optional epic
+scoped to its initiative; do not recreate product strategy or claim that agreement
+on the brief validates the investment. An explicit epic request still belongs
+here and does not require a brief first.
+
 ## Tool-agnostic design
 
 | Role | What it means | Examples |
@@ -334,6 +343,7 @@ Always:
 
 | Skill | Owns | Relationship |
 |---|---|---|
+| `aipos-product-strategy` | Product vision, strategy, and results-driven revision | Supplies canonical brief references and relevant choices; receives findings that challenge strategy. Initiative artifacts retain their own scope and authority rules |
 | `aipos-rapid-validation` | Experiments and evidence | Supplies evidence and a viability brief when available. Reuse that evidence for an explicitly requested epic; an epic may also support work in progress. Label unevidenced claims and do not imply the epic approves investment |
 | `aipos-solution-design` | The one-page Solution Design canvas | Shares the problem-framing and metrics references. A canvas's panel-1 statement and panel-3 metrics can seed this epic — carry their provenance marks and GAPs across unchanged |
 | `aipos-feature-create` | Story mapping and Draft 0 authoring | Consumes this epic. This skill's field names are that skill's `epic:` input contract; personas and evaluation criteria are inherited wholesale |

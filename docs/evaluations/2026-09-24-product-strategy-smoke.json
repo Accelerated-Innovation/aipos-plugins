@@ -1,0 +1,284 @@
+{
+  "date": "2026-09-24",
+  "version": "1.2.0",
+  "base_commit": "979599f9079b76bec3ba1798affea2de0ccef556",
+  "method": "Independent Codex subagents with no prior conversation. Native smoke checks, not the Anthropic harness or a comparative benchmark. Routing received names/descriptions only; behavior subjects read the skill and relevant references without rubrics. Primary agent inspected responses.",
+  "model_note": "Host-inherited Codex model; no override. Provider model/reasoning identifiers and token usage were not returned with these artifacts; none are invented.",
+  "source_sha256": {
+    "evals/routing/cases.json": "286a28f79fc038e3c5621867c69c460eb3407356188ab054bef4033a229148e1",
+    "plugins/aipos/references/metrics-and-evaluation.md": "31eb1f310a06e65d194d0fc5ad2e106d43128466bd269edaa1b091db564c4dab",
+    "plugins/aipos/references/problem-framing.md": "2c046e066846c1ce8e9d91be261912b0a2823b9869742ecbcf3df41ac22aa062",
+    "plugins/aipos/references/strategy-handoff.md": "dc7442fcd2ee7f2190ec440808bea002a6f2538b04dafc85245878961d20259f",
+    "plugins/aipos/skills/aipos-epic-create/SKILL.md": "bd3f87721ebf77ba9df9e8406dc40dc7233a1031a89279745a7cdea193a74377",
+    "plugins/aipos/skills/aipos-product-strategy/SKILL.md": "b941e1c4833352fc3e09ff8d8052e48d240463f3b7f7b9005b423665a0af6fbc",
+    "plugins/aipos/skills/aipos-product-strategy/evals/evals.json": "3258efaaadb247a67a538a0bc17e5f497c70d570e7bc2093e955979ae98a7bd8",
+    "plugins/aipos/skills/aipos-product-strategy/evals/files/current-strategy.md": "947aab165e84cb4b91c4421e94ec935aea7bedb0a2f3b8b4306b28b94100cf45",
+    "plugins/aipos/skills/aipos-product-strategy/evals/files/mixed-research.md": "aac5b76d59df5bb7b39f82a9bf7ebd694a3a7a64453ec1bdd7d38422014f4047",
+    "plugins/aipos/skills/aipos-product-strategy/evals/files/pilot-results.md": "d8f488b0490172ade29b4168b8229a1624ca7043e8cc577b5e7e309a6191ba09",
+    "plugins/aipos/skills/aipos-product-strategy/references/brief-template.md": "6b20ecdf9fda0e0fa4ea2d24c249c2b9b4152f6f0e601c4cb72372f5c5df6787",
+    "plugins/aipos/skills/aipos-product-strategy/references/evidence-and-decisions.md": "64fbfbc9b425b61b3a336531f94fb204fe2502f08cdcfec0c2f3fb418bed992b",
+    "plugins/aipos/skills/aipos-product-strategy/references/sources.md": "1163e5d60b5e58ceba39a0503ef8d32f24555593ebac66671d273b1f1482259b",
+    "plugins/aipos/skills/aipos-product-strategy/references/strategy-review.md": "0796d356984f55336c2b99b5580a014afa4437e891f143589c7259e90f090dd0",
+    "plugins/aipos/skills/aipos-quarterly-planning/SKILL.md": "24e27dfd0f4be673aab450c7c5620a726184578981f15bae0cb60a36232e82b9",
+    "plugins/aipos/skills/aipos-rapid-validation/SKILL.md": "0716c701b66c2c9c5a71b417d9fb0ea49616e2aa1a7ea542ac51ab3af2ecea2d",
+    "plugins/aipos/skills/aipos-solution-design/SKILL.md": "c61c69e4550ab7af9f5d6b6b6aa38854fd19ee0cf9659014651dc511e088f316"
+  },
+  "routing": {
+    "scope": "13 newly added cases, one batch, one selection per case; no description tuning after seeing held-out selections",
+    "input": {
+      "catalog": [
+        {
+          "name": "aipos-epic-create",
+          "description": "Create or improve an epic, initiative, or program brief covering the problem, outcomes, evidence, scope, risks, and shared constraints. Use when that planning artifact is requested. Opportunity validation and feature-level acceptance criteria have separate owners."
+        },
+        {
+          "name": "aipos-feature-create",
+          "description": "Author new Rules, Gherkin scenarios, and feature packages from opportunities or feature briefs; decompose an epic; or materialize an approved baseline unchanged. Use for creating specifications. Existing-spec review belongs to refine; application implementation is outside this skill."
+        },
+        {
+          "name": "aipos-feature-map",
+          "description": "Render an existing feature corpus and optional workflow source into an HTML view of dependencies and advisory assessments. Use for release dashboards and cross-feature comparisons. Delegate draft-quality scoring to feature-refine, reviewed-repo readiness to feature-readiness, and requested complexity scoring to feature-slice. This view does not issue tokens."
+        },
+        {
+          "name": "aipos-feature-readiness",
+          "description": "Check whether a reviewed repository feature package is ready for AI-assisted implementation and produce its Development Token record. Use for pre-coding checks, repo fit, verification paths, and token requests. Verify applicable existing product approval; this skill does not grant that approval."
+        },
+        {
+          "name": "aipos-feature-refine",
+          "description": "Review and improve an existing feature specification with Product, QA, and Engineering. Use for 3 Amigos, ambiguity, missing behavior, evidence gaps, and draft rewrites. For committed behavior, propose changes for reapproval. Repo execution-readiness and token decisions belong to readiness."
+        },
+        {
+          "name": "aipos-feature-slice",
+          "description": "Select a complete release from existing scenarios, check prerequisites, and recommend MVP/V1/V2 scope. Use for the smallest shippable outcome, release tags, and scenario splitting. Optionally assess scenario complexity; those scores do not forecast delivery time."
+        },
+        {
+          "name": "aipos-metrics-emit",
+          "description": "Compute and export structured delivery and quality events from GovKit repository artifacts, CI exports, PR exports, and git history. Use for NDJSON telemetry and completeness reporting. Execution-readiness decisions belong to readiness; organization-level aggregation belongs downstream."
+        },
+        {
+          "name": "aipos-product-strategy",
+          "description": "Create, assess, or revise a Product Opportunity Brief covering product vision, target segment, needs, differentiation, and business viability. Use for starting a new commercial or internal product, choosing its strategic focus, or changing strategy after research or product results. Specific experiments belong to rapid-validation; initiative canvases to solution-design; epics to epic-create."
+        },
+        {
+          "name": "aipos-quarterly-planning",
+          "description": "Prepare quarterly exploration planning from a live Product Definition Graph. Use for evidence-backed opportunity review, research gaps, and exploration decisions with owners, budgets, and horizons. Requires graph reads and drafts the decision log; delivery release planning belongs elsewhere."
+        },
+        {
+          "name": "aipos-rapid-validation",
+          "description": "Design experiments and synthesize evidence to decide whether an opportunity merits investment. Use for interviews, problem sizing, prototypes, demand tests, feasibility, pilots (including one a Solution Design canvas calls for), experimental AI evaluations, viability briefs, and commitment-package preparation. Delegate production behavior authoring to feature-create and the canvas itself to solution-design."
+        },
+        {
+          "name": "aipos-solution-design",
+          "description": "Facilitate a one-page Solution Design canvas for one problem from the Product Definition Graph \u2014 problem, evidence, hypothesis, solution options, assumptions and risks, validation plan and recommendation \u2014 live in a workshop or with a PM, then render it as an image. Use for solution design workshops, canvases and the Solution Blueprint. Epics belong to epic-create; designing or running the pilot or experiment a canvas calls for, and viability briefs, belong to rapid-validation."
+        },
+        {
+          "name": "aipos-synthetic-data",
+          "description": "Generate repeatable synthetic datasets and seeded Faker generators from feature scenarios or an explicit schema. Use for fixtures, boundary cases, sample records, and load data. State whether coverage is scenario-derived or schema-derived; production-data masking is outside scope."
+        },
+        {
+          "name": "aipos-workflow-map",
+          "description": "Author or update workflow.json describing a customer journey, actors, branches, and handoffs, with references to canonical behavior. Use for journey structure and coverage gaps. Delegate rendering of existing workflow source to feature-map."
+        }
+      ],
+      "requests": [
+        {
+          "id": "strategy-new-product",
+          "prompt": "Start a new product from this idea and draft its Product Opportunity Brief.",
+          "context": "No evidence graph, customers, research, or backlog."
+        },
+        {
+          "id": "strategy-internal",
+          "prompt": "Help us choose the users, need, adoption approach, and business benefit for a new internal product.",
+          "context": ""
+        },
+        {
+          "id": "strategy-assess",
+          "prompt": "Assess our existing product strategy and its target-segment choice.",
+          "context": "Return a critique; do not rewrite it."
+        },
+        {
+          "id": "strategy-results",
+          "prompt": "These pilot results contradict our strategy. Propose changes to the Product Opportunity Brief.",
+          "context": "Findings have already been analyzed; revise product direction."
+        },
+        {
+          "id": "strategy-segment-choice",
+          "prompt": "Compare these three possible initial customer segments and help us choose our product focus.",
+          "context": "We have supplied contact/access information but no validated demand."
+        },
+        {
+          "id": "strategy-to-canvas-contrast",
+          "prompt": "Run a Solution Design canvas for the initiative our product strategy identified.",
+          "context": "The product direction is already set; facilitate the canvas only."
+        },
+        {
+          "id": "strategy-to-experiment-contrast",
+          "prompt": "Create an interview guide to test the riskiest assumption in this Product Opportunity Brief.",
+          "context": "Do not revisit product strategy; write the experiment artifact."
+        },
+        {
+          "id": "strategy-to-epic-contrast",
+          "prompt": "Turn the initiative described in our strategy brief into an epic.",
+          "context": "An epic is explicitly requested, not another product strategy brief."
+        },
+        {
+          "id": "strategy-to-quarter-contrast",
+          "prompt": "Allocate next quarter's research capacity across the graph-backed opportunities aligned to this strategy.",
+          "context": "A live Product Definition Graph is connected; draft exploration decisions."
+        },
+        {
+          "id": "strategy-heldout-blank-start",
+          "prompt": "We might offer something new but have no customers yet. Help us articulate who it is for, why they would choose it, and why it makes sense for us.",
+          "context": ""
+        },
+        {
+          "id": "strategy-heldout-change-direction",
+          "prompt": "Our early users went back to spreadsheets. Reconsider the intended audience and value proposition in our current product-direction document.",
+          "context": "Use supplied study findings; no new experiment design requested."
+        },
+        {
+          "id": "strategy-heldout-demand",
+          "prompt": "Use the direction document as context and design a presale experiment.",
+          "context": ""
+        },
+        {
+          "id": "strategy-heldout-initiative",
+          "prompt": "I need an initiative brief with scope and success metrics from this product vision.",
+          "context": ""
+        }
+      ]
+    },
+    "results": [
+      {
+        "id": "strategy-new-product",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "The requested artifact is a Product Opportunity Brief for a new product; lack of existing evidence does not change the artifact owner.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-internal",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "Choosing users, needs, adoption, and business benefit establishes strategy for an internal product.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-assess",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "Assessment of product strategy and target-segment choice is explicitly within this skill, including a critique without rewriting.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-results",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "The findings are already analyzed and the requested output is a revised Product Opportunity Brief.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-segment-choice",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "Comparing initial customer segments to choose product focus is strategic positioning; the request does not ask to run demand validation.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-to-canvas-contrast",
+        "action": "skill",
+        "skill": "aipos-solution-design",
+        "handoffs": [],
+        "reason": "The direction is set and the requested output is a facilitated Solution Design canvas.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-to-experiment-contrast",
+        "action": "skill",
+        "skill": "aipos-rapid-validation",
+        "handoffs": [],
+        "reason": "An interview guide testing an assumption is an experiment artifact owned by rapid-validation.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-to-epic-contrast",
+        "action": "skill",
+        "skill": "aipos-epic-create",
+        "handoffs": [],
+        "reason": "The user explicitly requests an epic derived from the existing strategy.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-to-quarter-contrast",
+        "action": "skill",
+        "skill": "aipos-quarterly-planning",
+        "handoffs": [],
+        "reason": "Allocating quarterly research capacity across live graph opportunities is quarterly exploration planning.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-heldout-blank-start",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "Defining intended users, differentiation, and business rationale for a new offering is product strategy.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-heldout-change-direction",
+        "action": "skill",
+        "skill": "aipos-product-strategy",
+        "handoffs": [],
+        "reason": "The request revises audience and value proposition using supplied findings, without requesting another experiment.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-heldout-demand",
+        "action": "skill",
+        "skill": "aipos-rapid-validation",
+        "handoffs": [],
+        "reason": "Designing a presale experiment tests demand and belongs to rapid-validation.",
+        "matched_expected_route": true
+      },
+      {
+        "id": "strategy-heldout-initiative",
+        "action": "skill",
+        "skill": "aipos-epic-create",
+        "handoffs": [],
+        "reason": "An initiative brief covering scope and success metrics is explicitly owned by epic-create.",
+        "matched_expected_route": true
+      }
+    ],
+    "matched": 13,
+    "total": 13
+  },
+  "behavioral_smokes": [
+    {
+      "name": "idea-only-commercial-and-production-approval",
+      "prompt": "We are considering a new commercial product to help freelance translators get invoices paid. We have no customers, interviews, graph, measurements, tracker, or backlog. My guess is that reminders might help, but I do not know whether late payment is their main problem. Please draft our first Product Opportunity Brief inline now, with the unknowns visible. Do not spend money or write to any outside system. Once the brief looks convincing, can we treat it as approval to start production development?",
+      "fixtures": [],
+      "response": "**A convincing brief does not approve production development.** It records a strategy hypothesis. Production work requires a separate decision by the accountable authority on the exact scope and commitment. Here is a first draft with the gaps visible.\n\n# Product Opportunity Brief \u2014 Getting translators paid\n\n**Reference:** this inline brief, revision 0.1, 2026-09-24. This is a local document label, not a graph record.  \n**Status:** draft hypothesis; strategic choices below are proposed.  \n**Strategy owner and contributors:** unknown; no cross-functional agreement supplied.\n\n**Evidence base:** your request is the only source. You report no customers, interviews, graph, measurements, tracker, or backlog [E: user request, 2026-09-24; reported project state, not independently verified]. There is no customer evidence about prevalence, causes, consequences, or willingness to pay. `[A]` marks an assumption or unknown; proposed choices are not evidence.\n\n## Vision\n\n**Proposed:** help freelance translators receive payment predictably for completed work, with less administrative effort and confidence that their client relationships are protected. This is an aspiration, not a demonstrated benefit.\n\n## Initial target segment\n\n**Proposed focus:** freelance translators who invoice business clients directly and personally manage payment follow-up. The translator is the proposed user and buyer; purchasing willingness is unknown [A]. Geography, language specialism, client mix, and invoice volume remain unknown [A].\n\n**Outside the initial focus:** salaried translators, translation agencies managing team receivables, and other freelance professions. Debt recovery for disputed work is outside the initial concept. These choices concentrate early learning; they are not adopted exclusions and should change if evidence identifies a stronger opportunity elsewhere.\n\n## Customer need\n\n**Hypothesis:** some translators cannot reliably predict when completed work will become available income and spend effort chasing payment, potentially disrupting cash flow or billable work [A]. Whether this happens frequently, is costly, or matters more than finding clients, setting prices, or managing projects is unknown [A].\n\nCurrent behavior and alternatives are unknown [A]. Discovery should examine what translators actually do: for example, personal follow-up, existing invoicing tools, advance-payment terms, or tolerating delays. These are possibilities to investigate, not observed practices or a verified competitive analysis.\n\nYour suggestion that reminders might help remains an untested solution hypothesis [A: user request]. We do not know whether forgotten invoices cause delays. Disputes, client payment processes, incorrect invoice details, or other causes could call for different responses [A].\n\n## Strategic product concept\n\n**Proposed:** a focused service that helps a translator understand payment status and choose a suitable next action while retaining control of client communication. Reminders are one candidate mechanism, contingent on finding a relevant problem and cause.\n\n**Differentiation hypothesis:** translator-specific context and less follow-up effort could justify adding or switching tools [A]. We have no evidence that existing alternatives fail, that specialization creates an advantage, or that its benefits exceed setup effort and price [A]. Those are requirements to investigate before committing to the concept.\n\n## Opportunity and strategic fit\n\n**Proposed business objective:** discover whether a commercially sustainable product can improve translators\u2019 payment outcomes. Market size, urgency, reachable demand, competitive conditions, and our team\u2019s distribution or operational advantage are unknown [A]. No evidence currently establishes a particular \u201cwhy now.\u201d\n\n## Business viability\n\n**Proposed model to explore:** translators pay for continuing assistance if its benefit exceeds its price and effort. Subscription pricing is a candidate, not a decision. Price, willingness to pay, retention, acquisition channel, acquisition cost, and likely margin are unknown [A].\n\nPotential operating costs include support, integrations, payment-status accuracy, and handling invoice data; their necessity and magnitude remain unknown [A]. The commercial case must account for these costs and whether translators would prefer a capability already included in their current tools [A].\n\n## Success\n\n**Desired customer outcome:** more predictable payment with less effort. **Desired business outcome:** customers continue paying enough to support sustainable delivery.\n\n**Proposed first measurable outcome, if discovery supports the payment-delay need:** the proportion of participating translators\u2019 invoices not fully paid by their agreed due date. Observe due dates and payment dates from voluntarily supplied, redacted records; report the population, observation period, unpaid invoices, and missing due dates explicitly.\n\n**Baseline:** unknown [A]; collect evidence from the current workflow. **Target:** unknown [A]; no numeric criterion has been adopted. **Population and measurement horizon:** proposed segment above; participants and dates unknown. Any later pilot should compare against the current workflow and account for differences in clients and payment terms.\n\n**Proposed guardrails:** follow-up effort and reported damage to client relationships. Sending more reminders is not itself success. This measure is a learning candidate, not a production release gate.\n\n## Critical uncertainties\n\n1. **First: payment delays are a sufficiently important unmet need [A].** Recent concrete examples should show recurrence, consequences, priority relative to other difficulties, and the limits of current workarounds. If translators are usually paid as expected or rank other needs substantially higher, reconsider the problem or segment before pursuing reminders.\n2. **The cause is something this product can influence [A].** If delays persist despite appropriate follow-up, reconsider the reminder hypothesis.\n3. **A distinct product offers enough additional value to sustain payment [A].** If current tools already solve the need satisfactorily or switching effort outweighs improvement, revise or stop this commercial bet.\n\n## Next decision and learning plan\n\n**Recommendation:** consider this proposed segment and problem framing as the basis for bounded discovery. Learn about the need before selecting a solution.\n\n**Proposed method:** problem interviews grounded in recent invoice histories, including translators paid on time as well as those experiencing delays. Where participants consent, inspect redacted examples to separate recalled experience from observed dates and actions. Findings should preserve sources and limits; a small qualitative study would not establish market prevalence. Detailed recruitment, interview materials, sampling, and experiment criteria belong to `aipos-rapid-validation`.\n\n| Decision state | Current status |\n|---|---|\n| Agreement on strategy hypothesis | Not established; revision 0.1 is proposed. |\n| Authorization for bounded learning | This request authorizes drafting the brief. Recruitment, research execution, and external contact are not authorized by it. |\n| Evidence supporting further investment | Not yet available; no customer research or product results supplied. |\n| Approval of production scope | Not established. A persuasive brief or positive research recommendation cannot supply this approval. |\n\n**Owner, research budget, and horizon:** unknown. Current constraints are explicit: no spending and no writes to outside systems. Nothing in this brief allocates budget, schedules research, or commits delivery capacity.\n\n**Handoff when requested:** `aipos-rapid-validation` should use this inline brief, revision 0.1, especially \u201cInitial target segment\u201d and \u201cCritical uncertainties,\u201d to draft a bounded discovery plan. Carry forward the user request as the sole source, all assumptions above, and the unknown owner, budget, and horizon. Research storage/intake destination is unknown; no graph ingestion has occurred.\n\nThe material limitation is that we have no customer evidence establishing the need. The next decision sought is whether to adopt this provisional focus and define bounded discovery; the next owning skill is `aipos-rapid-validation`. Production approval remains a separate decision on a reviewed scope.\n",
+      "observed": "A complete draft with unknowns and proposed focus/concept; source and evidence limits explicit; rapid-validation handoff; brief explicitly not production approval. Suggestions for exclusions, alternatives and model are marked proposals or hypotheses, not research findings."
+    },
+    {
+      "name": "contradictory-results-and-canonical-revision",
+      "prompt": "Use these pilot results to revise our strategy brief inline. Show the proposed changes and downstream implications. Do not silently switch our segment or authorize more work.",
+      "fixtures": [
+        "plugins/aipos/skills/aipos-product-strategy/evals/files/current-strategy.md",
+        "plugins/aipos/skills/aipos-product-strategy/evals/files/pilot-results.md"
+      ],
+      "response": "The pilot weakens the switching hypothesis: five of six agencies returned to their spreadsheet within two weeks. I recommend pausing further investment in the current workspace concept pending a strategy decision. The revision below preserves the adopted segment; all new strategic recommendations remain proposed.\n\n# Product Opportunity Brief \u2014 Hand-off Hub\n\nCanonical reference: `strategy/handoff-hub/product-opportunity-brief.md`  \n**Proposed revision: 4, 2026-09-24**, following revision 3 dated 2026-09-01.  \n**Content status: revision proposed.** Revision 3 remains the recorded agreed hypothesis. Strategy owner: PM Dana.\n\n**Evidence read:** the supplied current brief and pilot-results attachment containing PILOT-8 and EXIT-8. Findings below are attributed to that summary; the underlying usage export, researcher notes, cost ledger, and INT-1/INT-2 were not separately inspected. The pilot attachment identifies itself as a synthetic fixture, so these claims describe the supplied scenario.\n\n**Change markers:** \u201cChanged\u201d and \u201cAdded\u201d identify proposed revisions. Other choices are retained.\n\n## Vision and segment\n\nVision: make supplier handoffs dependable for small agencies.\n\nAdopted initial segment: independent design agencies with 5\u201320 staff. Outside initial focus: large agencies and solo designers.\n\n**Added \u2014 segment interpretation:** [I, assessment of PILOT-8/EXIT-8] The findings challenge the current concept\u2019s ability to displace the workaround in this segment; they do not establish that another segment is better. [A, owner suggestion in pilot-results] Large agencies might have dedicated operations staff, but neither that staffing premise nor demand for this product has been studied. No segment change is proposed in this revision.\n\n## Need, concept, and differentiation\n\nNeed hypothesis [A]: small agencies lose client trust because supplier handoffs are difficult to track. Existing workflow: email and a shared spreadsheet, reported in INT-1 and INT-2 according to revision 3; these were interview reports, not measured behavior. **Added:** PILOT-8 did not measure client trust or establish the need\u2019s prevalence or severity.\n\nConcept [A]: a shared handoff workspace makes missed handoffs visible early. **Added:** this intended benefit remains unmeasured in the supplied results.\n\n**Changed \u2014 differentiation and switching:** retain \u201cworthwhile improvement over maintaining the spreadsheet\u201d as an assumption [A], now materially weakened by pilot behavior [I, assessment of PILOT-8]. [E, supplied PILOT-8 summary, 2026-09-20] Across six agencies in the adopted segment during a two-week window, all six tried the workspace, one was still using it at the end, and five returned to their spreadsheet. This supports initial trial, but provides little support for continued replacement of the workaround. One agency\u2019s end-of-pilot use does not establish durable retention.\n\n[E, supplied EXIT-8 summary] Of the five agencies that stopped, four reportedly said suppliers would not maintain another workspace; one preferred existing email. [I] Supplier participation and added workflow burden are plausible adoption barriers. These explanations are reported accounts, not experimentally established causes or direct supplier observations.\n\n## Commercial viability and outcomes\n\nCommercial model [A]: agency subscription. Price, willingness to pay, acquisition cost, buying role, and material operating costs remain unknown. **Added:** PILOT-8 measured use, not willingness to pay or cash savings. [I] Weak continued use raises concern about sustainable paid use, but does not determine commercial viability by itself. Market size and organizational advantage remain unsupported by the supplied sources.\n\nCustomer outcome: fewer missed handoffs. Business outcome: sustainable paid use.\n\nBaseline missed-handoff rate: unknown. No numeric success threshold adopted. **Added:** no pre-pilot missed-handoff measure was collected, and the supplied pilot measured use rather than handoff outcomes. No reduction in missed handoffs can be claimed. The result is evidence against the switching premise, not a retrospective pass/fail against an invented threshold.\n\n## First risk and next decision\n\n**Changed \u2014 first risk:** whether a workspace can deliver enough value for agencies and their suppliers to replace the email/spreadsheet workflow voluntarily. [A] The reason one agency continued, the actual supplier burden, and the benefit relative to the workaround remain unresolved.\n\n**Proposed recommendation:** pause further investment in the present workspace concept while Dana reviews whether to end this bet or seek a separately bounded investigation of the adoption barrier. The negative result does not justify default continuation or a large-agency pivot. This is a recommendation, not an enacted pause or cancellation of any existing commitment.\n\n**Proposed learning direction, only if separately authorized:** examine actual handoff workflows with agencies and suppliers, including the continuing agency and agencies that stopped, and compare the workspace\u2019s value and maintenance burden with their current workaround. `aipos-rapid-validation` would own the detailed study or prototype comparison. Collect a missed-handoff baseline if measuring the customer outcome.\n\n**Observation that would change the recommendation:** repeated voluntary replacement of the workaround in the adopted segment, accompanied by evidence of fewer missed handoffs and acceptable maintenance effort, would support reconsidering the pause. Continued fallback without a credible value advantage would support ending the current concept. These are proposed decision criteria; sample, duration, numeric thresholds, and study design remain undecided.\n\n**Decision status:**\n\n- Strategy agreement: revision 3 is agreed; revision 4 and its investment recommendation await adoption.\n- Bounded learning: L-3 authorized one two-week, six-agency pilot ending 2026-09-20. [E, supplied pilot-results ledger summary] It completed within that time limit. L-3 supplies no authority for a follow-up.\n- Further investment: [I] the available evidence weakens the case for expansion; no new investment decision is supplied.\n- Production scope: no approval supplied. No additional research, spend, or segment change is authorized by this revision.\n\nDana remains the known strategy owner and original L-3 authorizer. A future study\u2019s execution owner, budget, horizon, and authorization are not established; authority for production investment is not supplied.\n\n## Revision note and downstream implications\n\n**Revision 3 \u2192 proposed revision 4:** PILOT-8 weakens the switching/differentiation premise; EXIT-8 adds an adoption-barrier hypothesis. Preserve the vision, adopted segment, exclusions, commercial hypothesis, desired outcomes, unknown baseline, and L-3 decision history. Add a proposed investment pause and a conditional learning direction. No adoption of these changes has been recorded.\n\n| Downstream reference | Review needed if this revision is adopted |\n|---|---|\n| `solution-design/handoff-visibility/canvas.json` | Its owner, through `aipos-solution-design`, should review adoption assumptions, concept viability, and its recommendation against proposed revision 4, `#need-concept-and-differentiation` and `#first-risk-and-next-decision`. Only the canvas reference was supplied; its content, owner, and commitments have not been verified. Do not silently revise its scope or decision status. The brief\u2019s evidence does not establish a graph-backed canvas baseline. |\n| L-3 / PILOT-8 / EXIT-8 | Preserve the completed pilot and its limits. Reference its findings in the brief; do not extend L-3 or recast its results as production approval. |\n| Any future learning artifact | Conditional handoff to `aipos-rapid-validation`: canonical brief, proposed revision 4, `#first-risk-and-next-decision`; adopted 5\u201320-person agency segment; switching assumption; PILOT-8/EXIT-8 with the limits above; proposed workflow comparison; decision sought is whether to retain or end the concept. New owner, budget, horizon, and authority remain unknown. No study is commissioned here. |\n\nThis is the inline proposed revision; the canonical file and downstream artifacts have not been changed. The key limit is that six agencies\u2019 use over two weeks establishes neither the cause of abandonment nor customer or commercial outcomes. **Next decision:** Dana reviews the proposed revision and whether to pause or end the current concept; any later learning requires separate authorization, with `aipos-rapid-validation` as the next owning skill.\n",
+      "observed": "Proposed revision 4 preserves canonical brief and adopted segment; negative pilot evidence weakens switching hypothesis; reports remain reports; no retrospective numeric threshold; completed L-3 not extended; downstream canvas review named without claiming a write."
+    }
+  ],
+  "anthropic_harness": {
+    "routing": "One live attempt: strategy-new-product, claude-opus-5, reps=1, max-calls=1. Setup failed before a completed model call; completed=0, passed=0, missing=1, accepted=false. Authentication method could not be resolved.",
+    "behavior": "Not executed: same missing Anthropic authentication. Dry-run assembly succeeded for all 12 new cases.",
+    "claims": "No Anthropic routing or behavioral pass, no full-catalog native regression pass, no installation or connected-system end-to-end pass."
+  }
+}
