@@ -48,6 +48,14 @@ subject explained learning versus production instead of the required "recommende
 not a decision made" (2 of 3). The learning point now explicitly adds to the owner point rather
 than replacing it: **3/3**.
 
+## Code review follow-up
+
+Qodo's review of PR #44 found the new `record_url` rule written but not enforced: `verify_canvas.py`
+accepted a `[T]` figure citing a record returned with no `record_url`, and the existing test did
+exactly that. The verifier now raises `T_WITHOUT_URL` (documented in `canvas-schema.md`); the
+existing transcription test cites a record with a URL, and a new test covers the refusal. No
+shipped canvas uses a transcribed value. `pytest`: 625 passed, 5 skipped.
+
 ## Remaining misses
 
 - `aipos-rapid-validation` (7/42): the closing handoff naming the brief, extra text after "none

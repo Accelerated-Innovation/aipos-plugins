@@ -502,6 +502,9 @@ def test_a_canvas_cannot_be_approved_before_review(vc):
 
 def test_a_transcribed_figure_computes_but_does_not_unlock_proceed(vc, good):
     """A person keyed it in from a record the graph links: traceable, not graph-supplied."""
+    study = next(r for r in good["source"]["evidence_refs"]
+                 if r["provenance_reference"] == "reops:study-ts-07")
+    study["record_url"] = "https://fixture.invalid/reops/study-ts-07"
     good["panels"]["metrics"][0]["baseline"] = {
         "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["reops:study-ts-07"],
         "note": "read from the study record_url by the PM, 2026-09-22"}
@@ -514,6 +517,17 @@ def test_a_transcribed_figure_computes_but_does_not_unlock_proceed(vc, good):
     assert "PROCEED_BLOCKED" in codes(vc.verify(good)[0])
     del good["panels"]["metrics"][0]["baseline"]["note"]
     assert "T_WITHOUT_RECORD" in codes(vc.verify(good)[0])
+
+
+def test_a_record_with_no_url_cannot_be_transcribed_from(vc, good):
+    """The fixture's time study comes back with record_url null: nothing to read the figure from,
+    so a [T] value citing it is refused and the baseline has to stay a GAP."""
+    good["panels"]["metrics"][0]["baseline"] = {
+        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["reops:study-ts-07"],
+        "note": "read from the study by the PM, 2026-09-22"}
+    good["todos"].pop(0)
+    good["panels"]["assumptions"][0]["from_gap"] = None
+    assert "T_WITHOUT_URL" in codes(vc.verify(good)[0])
 
 
 def test_the_unit_conversion_is_derived_when_not_given(vc, good):
