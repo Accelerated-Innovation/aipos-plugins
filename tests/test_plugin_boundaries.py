@@ -142,6 +142,21 @@ def test_marketplace_entries_agree_with_their_plugin_manifests():
     assert not mismatches, mismatches
 
 
+def test_the_version_lives_only_in_plugin_json():
+    """Claude Code reads the version from plugin.json first and silently ignores
+    a marketplace entry's; declaring it in both invites the two to drift. See
+    https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version
+    """
+    import json
+
+    catalog = json.loads((ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+    for entry in catalog.get("plugins", []):
+        assert "version" not in entry, f"{entry['name']}: set the version in plugin.json only"
+        manifest = json.loads((PLUGINS / entry["name"] / ".claude-plugin" / "plugin.json")
+                              .read_text(encoding="utf-8"))
+        assert manifest.get("version"), f"{entry['name']}: plugin.json declares no version"
+
+
 def test_every_plugin_appears_in_the_marketplace():
     import json
 

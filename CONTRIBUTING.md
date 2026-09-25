@@ -78,12 +78,12 @@ Then check:
 - [ ] If the change touches `viewers/journey/`, `npm test` and `npm run check-bundle` pass there, and you looked at a rendered map with `check-page.mjs`.
 - [ ] If the change touches coaching behaviour (a `SKILL.md`, a reference it reads, or an eval case), ran `evals/run_evals.py` for the affected skill and reported which cases ran, the models used, and the results — or said plainly that it was not run.
 - [ ] JSON files (`marketplace.json`, `plugin.json`, any `evals.json`) are valid and consistent (names, descriptions, keywords).
-- [ ] Bumped `version` in the affected plugin's `.claude-plugin/plugin.json` if the change is user-visible. See the [rollout guide](docs/rollout.md#later-updates) for marketplace refresh and installed-plugin update commands.
+- [ ] Bumped `version` in the affected plugin's `.claude-plugin/plugin.json` if the change touches anything under `plugins/` — see [Releases](#releases). CI fails the PR otherwise.
 - [ ] Updated the [README](README.md) and any relevant `references/` if behavior changed.
 
 ## Continuous integration
 
-Every pull request runs three jobs from [`.github/workflows/validate.yml`](.github/workflows/validate.yml): `claude plugin validate` (static structural validation of the manifests), `pytest` against `tests/`, and the journey viewer's `npm test` plus a rebuild that fails if the committed bundle is stale. All must pass before merge, and none needs an API key or network access at test time beyond installing pinned packages.
+Every pull request runs four jobs from [`.github/workflows/validate.yml`](.github/workflows/validate.yml): `claude plugin validate` (static structural validation of the manifests), `pytest` against `tests/`, the journey viewer's `npm test` plus a rebuild that fails if the committed bundle is stale, and the `version-bump` check that fails a plugin change without a version increase. All must pass before merge, and none needs an API key or network access at test time beyond installing pinned packages.
 
 ## Commit and PR conventions
 
@@ -93,10 +93,16 @@ Every pull request runs three jobs from [`.github/workflows/validate.yml`](.gith
 
 ## Releases
 
-A version is released when the PR that bumps it merges: the marketplace installs from `main`, so users receive it on their next `claude plugin marketplace update`. Record each one:
+**A version bump is a release.** Claude Code updates an installed plugin only when its `version` changes: a commit that edits a plugin without bumping it never reaches anyone who already has that version, while fresh installs pick it up from `main` — so one version number would mean two different plugins ([docs](https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version)). So:
 
-1. Add an update section to [`docs/rollout.md`](docs/rollout.md) in the bumping PR — renames, moved files, and anything else an existing user must act on.
-2. After it merges, tag the merge commit `vX.Y.Z` (matching `plugin.json`) and publish a GitHub release from that section:
+- **Every change under `plugins/` bumps `version`** in that plugin's `.claude-plugin/plugin.json` — patch for fixes and wording, minor for new behavior or renames, major for breaking changes to scripts or file formats. The `version-bump` CI job fails a PR that changes plugin files without raising it. Changes outside `plugins/` (docs, tests, evals, the viewer source) need no bump.
+- **The version lives only in `plugin.json`.** Do not add one to the `marketplace.json` entry; Claude Code ignores it there, and a test enforces this.
+- **Merging the bump releases it.** The marketplace installs from `main`; users receive it on their next `claude plugin marketplace update`, or automatically if they turned on auto-update.
+
+Record each release:
+
+1. In the bumping PR, add an *Updating to X.Y.Z* section to [`docs/rollout.md`](docs/rollout.md) — renames, moved files, and anything else an existing user must act on.
+2. After it merges, tag the merge commit and publish a GitHub release from that section:
 
    ```bash
    git switch main && git pull --ff-only

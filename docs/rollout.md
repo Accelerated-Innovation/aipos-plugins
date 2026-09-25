@@ -3,22 +3,28 @@
 The new package is `aipos@aipos`, containing all thirteen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
-These commands apply once the consolidated candidate has been released to that
-source. See the [product-strategy candidate record](plans/2026-09-24-aipos-product-strategy.md)
-for current verification and publication status. The earlier
-[1.0.1 release record](release-check.md) is historical.
+Everything merged to `main` is released: the version in
+`plugins/aipos/.claude-plugin/plugin.json` is the release, and each one is tagged
+and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
+The sections below say what an existing user must do when updating to a
+version. The earlier [1.0.1 release record](release-check.md) is historical.
 
-## Product-strategy limited release
+## Updating to 1.3.1
 
-The 1.2.0 candidate keeps `aipos-product-strategy` as implemented. Canvas decision
-language, graph baseline access, and first-evidence intake are tracked follow-ups
-for the limited release or later updates, not prerequisites for trying the brief
-workflow. Existing downstream evidence and approval rules continue to apply.
+1.3.1 delivers `aipos-map-render` guidance that shipped after 1.3.0 without a
+version bump, so installations updated to 1.3.0 before 2026-09-25 do not have it:
+journey answers are given only after a render, a scenario under a referenced
+Rule is placed through `aipos-workflow-create`, and readers are told how to get
+both answers from the page. Nothing to do beyond updating; no files move.
 
-The [candidate record](plans/2026-09-24-aipos-product-strategy.md) defines pilot
-coverage and outstanding checks. Full Anthropic model evaluations, native
-installation, and connected-workflow checks remain unverified. Review pilot
-feedback and completed checks before deciding on broader rollout.
+## Product strategy (since 1.2.0)
+
+`aipos-product-strategy` shipped in 1.2.0. Canvas decision language, graph
+baseline access, and first-evidence intake are tracked follow-ups, not
+prerequisites for using the brief workflow. Existing downstream evidence and
+approval rules continue to apply. Its [verification record](plans/2026-09-24-aipos-product-strategy.md)
+lists what was checked at release; full Anthropic model evaluations, native
+installation, and connected-workflow checks were not run then.
 
 ## Updating to 1.3.0
 
@@ -97,6 +103,7 @@ claude plugin marketplace update aipos
 claude plugin update aipos@aipos --scope user
 ```
 
-Keep plugin and marketplace metadata consistent and bump the plugin version when
-releasing a user-visible change. Historical plans and evaluation traces retain
+Maintainers: every change under `plugins/` bumps the version in `plugin.json`,
+which is what makes it reach installed users; see
+[Releases](../CONTRIBUTING.md#releases). Historical plans and evaluation traces retain
 the identities recorded when they were created.

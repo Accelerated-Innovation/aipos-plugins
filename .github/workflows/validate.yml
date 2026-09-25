@@ -91,3 +91,24 @@ jobs:
       # and fail if the committed copy is not what this source produces.
       - name: Check the committed bundle is current
         run: npm run check-bundle
+
+  version-bump:
+    name: plugin version bumped when plugin files change
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      # Full history, so the base branch and the merge base are available.
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+
+      # Installed plugins update only when their version changes, so a plugin
+      # edit without a bump never reaches existing users.
+      - name: Check the plugin version increased
+        run: python .github/scripts/check_version_bump.py "origin/${{ github.base_ref }}"
