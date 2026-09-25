@@ -107,5 +107,15 @@ This scope decision does not change the publication or installation status above
    source IDs and reporting unknown destinations. The owning system must execute
    ingestion; saving a brief or findings locally does not create graph evidence.
 
+**Gaps 2 and 3 — investigated 2026-09-25, planned in `discovery-engine`.** No ReOps
+study result reaches the graph today: a ReOps outcome carries only a verdict and a
+signal strength, the engine stores it as a scoring input rather than evidence, and it
+has no ReOps connector. The plan, [discovery-engine #96](https://github.com/Accelerated-Innovation/discovery-engine/pull/96),
+takes the PDG as the source of truth: ReOps pushes a measured finding (metric, value,
+unit, sample size, method, date) into the graph, and consumers — this plugin included —
+read it only through the engine MCP. Increment 0, two bugs on the existing outcome path,
+is in review as [discovery-engine #95](https://github.com/Accelerated-Innovation/discovery-engine/pull/95)
+and [reops #155](https://github.com/Accelerated-Innovation/reops/pull/155).
+
 These follow-ups are bounded integration work. Canvas approval/baseline rules,
 production behavior ownership, and readiness authority are unchanged here.
