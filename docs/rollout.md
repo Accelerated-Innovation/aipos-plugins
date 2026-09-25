@@ -20,6 +20,38 @@ coverage and outstanding checks. Full Anthropic model evaluations, native
 installation, and connected-workflow checks remain unverified. Review pilot
 feedback and completed checks before deciding on broader rollout.
 
+## Updating to 1.3.0
+
+1.3.0 renames four skills and adds interactive journey diagrams. Update as in
+[Later updates](#later-updates), then start a new session.
+
+| Before 1.3.0 | From 1.3.0 |
+|---|---|
+| `aipos-workflow-map` | `aipos-workflow-create` |
+| `aipos-feature-map` | `aipos-map-render` |
+| `aipos-quarterly-planning` | `aipos-exploration-planning` |
+| `aipos-solution-design` | `aipos-solution-framing` |
+
+There are no aliases. Anything that names an old skill — saved prompts, team
+docs, hooks, scripts calling `skills/aipos-feature-map/scripts/...` — needs the
+new name.
+
+**Solution canvases move folders.** The canvas is now the *Solution Framing*
+canvas, saved under `solution-framing/<slug>/` rather than `solution-design/<slug>/`.
+To resume an existing canvas, move its folder first:
+
+```bash
+git mv solution-design solution-framing   # or plain mv if the folder is not tracked
+```
+
+Renders from 1.3.0 on say "Solution Framing" in the canvas header.
+
+**Journey diagrams.** `aipos-map-render` draws L1 / L2 / L3 journey diagrams
+from one or more workflows (`render_map.py -w` repeats), showing which scenarios
+specify a journey and which journeys a feature change affects. The viewer ships
+prebuilt; nothing extra to install. Maps rendered before 1.3.0 are unchanged
+until re-rendered.
+
 ## New installation
 
 ```bash

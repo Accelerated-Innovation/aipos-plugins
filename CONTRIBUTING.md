@@ -91,6 +91,22 @@ Every pull request runs three jobs from [`.github/workflows/validate.yml`](.gith
 - Describe the user-facing effect of the change in the PR body, not just the files touched.
 - One skill or one coherent change per PR where practical.
 
+## Releases
+
+A version is released when the PR that bumps it merges: the marketplace installs from `main`, so users receive it on their next `claude plugin marketplace update`. Record each one:
+
+1. Add an update section to [`docs/rollout.md`](docs/rollout.md) in the bumping PR — renames, moved files, and anything else an existing user must act on.
+2. After it merges, tag the merge commit `vX.Y.Z` (matching `plugin.json`) and publish a GitHub release from that section:
+
+   ```bash
+   git switch main && git pull --ff-only
+   git tag -a vX.Y.Z -m "aipos X.Y.Z"
+   git push origin vX.Y.Z
+   gh release create vX.Y.Z --title "aipos X.Y.Z" --notes-file <notes.md>
+   ```
+
+Tags do not change what users install; they mark what each version was, so versions can be diffed, referenced, and restored.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
