@@ -301,8 +301,10 @@ hand-made canvases actually carry:
    the correct figure, including a drawn figure that does not follow from its own inputs or is
    rounded inconsistently.
 2. **Targets against their own metrics.** A stated "−30%" beside 1.8 → 1.2 is a 33% change; say so.
-3. **An outcome with no baseline.** Name any measured rate the canvas already holds as a candidate
-   baseline (`panel-rubrics.md`), and ask whether a percentage target is relative or in points.
+3. **An outcome with no baseline.** Name a measured rate the canvas already holds as a candidate
+   baseline only if it measures the same outcome, or its direct complement, over the same
+   population and definition (`panel-rubrics.md`); a merely related rate is context and the
+   baseline stays a GAP. Ask whether a percentage target is relative or in points.
 4. **A decision shown as made.** The canvas recommends to a named owner; a Proceed highlighted
    before its validation plan has run, or with no owner, is a decision presented as taken.
 5. **Provenance.** Say which facts a graph read backs — for a hand-made canvas, usually none — and
