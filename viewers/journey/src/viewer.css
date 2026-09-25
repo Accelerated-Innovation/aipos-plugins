@@ -1,0 +1,146 @@
+/* Journey viewer. Colours come from the map page's tokens, with fallbacks so
+   the viewer also renders on a bare page (tests, previews). */
+.jv {
+  --jv-ink: var(--ink, #131a2b);
+  --jv-ink2: var(--ink2, #3d4759);
+  --jv-mut: var(--mut, #6b7486);
+  --jv-pap: var(--pap, #f7f8fa);
+  --jv-wht: var(--wht, #fff);
+  --jv-cen: var(--cen, #275e8e);
+  --jv-dep: var(--dep, #1f6f5c);
+  --jv-amb: var(--amb, #b06a0f);
+  --jv-red: var(--red, #9b3b2e);
+  --jv-hair: var(--hair, #d8dce4);
+  --jv-hair2: var(--hair2, #eaedf2);
+  --jv-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--jv-ink);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  background: var(--jv-wht);
+  border: 1px solid var(--jv-hair);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.jv-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  padding: 10px 12px; border-bottom: 1px solid var(--jv-hair2); background: var(--jv-pap);
+}
+.jv-levels { display: inline-flex; border: 1px solid var(--jv-hair); border-radius: 7px; overflow: hidden; }
+.jv-levels button {
+  font: 600 12px var(--jv-mono); padding: 6px 11px; border: 0; background: var(--jv-wht);
+  color: var(--jv-ink2); cursor: pointer; border-right: 1px solid var(--jv-hair);
+}
+.jv-levels button:last-child { border-right: 0; }
+.jv-levels button[aria-pressed="true"] { background: var(--jv-ink); color: var(--jv-wht); }
+.jv-levels button:focus-visible, .jv button:focus-visible, .jv select:focus-visible {
+  outline: 2px solid var(--jv-cen); outline-offset: 2px;
+}
+.jv-scope { font-size: 12px; color: var(--jv-ink2); }
+.jv-scope select { font: inherit; padding: 4px 6px; border: 1px solid var(--jv-hair); border-radius: 5px; background: var(--jv-wht); }
+.jv-focus {
+  font: 12px var(--jv-mono); background: #e7eef4; color: var(--jv-cen);
+  padding: 3px 4px 3px 9px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;
+}
+.jv-focus button { border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 15px; line-height: 1; padding: 0 5px; }
+.jv-hint { font-size: 12px; color: var(--jv-mut); margin-left: auto; }
+
+.jv-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; min-height: 560px; }
+.jv-canvas { height: 560px; min-width: 0; }
+.jv-panel {
+  border-left: 1px solid var(--jv-hair2); padding: 14px 16px 18px; overflow-y: auto; max-height: 560px;
+  font-size: 13px; color: var(--jv-ink2);
+}
+@media (max-width: 860px) {
+  .jv-body { grid-template-columns: 1fr; }
+  .jv-canvas { height: 440px; }
+  .jv-panel { border-left: 0; border-top: 1px solid var(--jv-hair2); max-height: none; }
+  .jv-hint { margin-left: 0; width: 100%; }
+}
+
+.jv-panel h3 { margin: 2px 0 8px; font-size: 16px; line-height: 1.3; color: var(--jv-ink); letter-spacing: -0.01em; }
+.jv-panel h4 {
+  margin: 16px 0 6px; font: 600 10.5px var(--jv-mono); letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--jv-mut); display: flex; align-items: center; gap: 6px;
+}
+.jv-panel p { margin: 0 0 8px; }
+.jv-count { font: 10.5px var(--jv-mono); background: var(--jv-hair2); color: var(--jv-ink2); padding: 0 6px; border-radius: 8px; letter-spacing: 0; }
+.jv-list { margin: 0; padding-left: 16px; }
+.jv-list li { margin-bottom: 4px; }
+.jv-link {
+  vertical-align: top;
+  font: inherit; color: var(--jv-cen); background: none; border: 0; padding: 0; cursor: pointer;
+  text-align: left; text-decoration: underline; text-decoration-color: var(--jv-hair); text-underline-offset: 2px;
+}
+.jv-link:hover { text-decoration-color: currentColor; }
+.jv-clear { float: right; font-size: 11px; border: 1px solid var(--jv-hair); background: var(--jv-wht); border-radius: 5px; padding: 2px 7px; cursor: pointer; color: var(--jv-ink2); }
+.jv-crumbs { font-size: 12px; }
+.jv-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+.jv-actions button { font: inherit; font-size: 12px; border: 1px solid var(--jv-hair); background: var(--jv-wht); border-radius: 5px; padding: 4px 9px; cursor: pointer; }
+.jv-actions a { font-size: 12px; color: var(--jv-cen); }
+.jv-steps { margin: 0; padding-left: 18px; font-size: 12.5px; }
+.jv-steps li { margin-bottom: 4px; }
+.jv-steps b { color: var(--jv-ink); }
+.jv-doc { font: 11.5px var(--jv-mono); background: var(--jv-pap); border: 1px solid var(--jv-hair2); border-radius: 4px; padding: 6px 8px; white-space: pre-wrap; margin: 4px 0; }
+.jv-table { border-collapse: collapse; font: 11.5px var(--jv-mono); margin: 4px 0 6px; display: block; overflow-x: auto; }
+.jv-table th, .jv-table td { border: 1px solid var(--jv-hair2); padding: 2px 6px; text-align: left; white-space: nowrap; }
+.jv-table th { background: var(--jv-pap); color: var(--jv-mut); font-weight: 600; }
+.jv-source code, .jv code { font: 11.5px var(--jv-mono); }
+.jv-source a { font: 11.5px var(--jv-mono); color: var(--jv-cen); word-break: break-all; }
+.jv-muted { color: var(--jv-mut); }
+.jv-warn { color: var(--jv-amb); }
+.jv-mono { font-family: var(--jv-mono); font-size: 12px; word-break: break-all; }
+.jv-chip { font: 10px var(--jv-mono); background: #e7eef4; color: var(--jv-cen); padding: 0 5px; border-radius: 3px; margin-left: 5px; text-transform: none; letter-spacing: 0; }
+
+/* Nodes */
+.jv-node {
+  width: 100%; height: 100%; background: var(--jv-wht); border: 1.5px solid var(--jv-hair);
+  border-radius: 8px; padding: 7px 10px; overflow: hidden; cursor: pointer;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+.react-flow__node.selected .jv-node { border-color: var(--jv-ink); box-shadow: 0 0 0 2px rgba(19, 26, 43, 0.12); }
+.jv-node.jv-on { border-color: var(--jv-cen); }
+.jv-node.jv-dim, .react-flow__edge.jv-dim { opacity: 0.28; }
+.jv-kind {
+  font: 600 9.5px var(--jv-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--jv-mut);
+  display: flex; flex-wrap: wrap; gap: 3px 4px; align-items: center; margin-bottom: 2px;
+}
+.jv-panel .jv-kind { margin-bottom: 4px; }
+.jv-key { letter-spacing: 0; text-transform: none; color: var(--jv-ink2); }
+.jv-note { letter-spacing: 0; text-transform: none; font-weight: 400; color: var(--jv-mut); }
+.jv-title { font-size: 13px; font-weight: 620; line-height: 1.3; color: var(--jv-ink); }
+.jv-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.jv-sub { font-size: 11.5px; color: var(--jv-ink2); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.jv-meta { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; margin-top: 5px; font-size: 11px; color: var(--jv-mut); }
+.jv-badge { font: 10px var(--jv-mono); background: var(--jv-hair2); color: var(--jv-ink2); padding: 1px 6px; border-radius: 8px; }
+.jv-badge.jv-warn { background: #f6eee2; color: var(--jv-amb); }
+.jv-actor { font-size: 11.5px; color: var(--jv-ink2); display: inline-flex; gap: 4px; align-items: baseline; }
+.jv-actor i { font-style: normal; font-size: 9px; }
+.jv-k-human i { color: var(--jv-cen); }
+.jv-k-system i { color: var(--jv-dep); }
+.jv-k-agent i { color: var(--jv-amb); }
+
+.jv-journey { border-color: var(--jv-ink); border-width: 2px; background: var(--jv-pap); }
+.jv-activity { border-top: 3px solid var(--jv-cen); }
+.jv-feature { border-top: 3px solid var(--jv-dep); }
+.jv-rule { border-left: 3px solid var(--jv-hair); }
+.jv-scenario { border-radius: 6px; }
+.jv-p-referenced.jv-rule { border-left-color: var(--jv-dep); }
+.jv-p-referenced.jv-scenario { border-color: var(--jv-dep); }
+.jv-p-under-referenced-rule { border-style: dashed; border-color: var(--jv-amb); }
+.jv-p-uncovered, .jv-p-outside { border-style: dashed; background: var(--jv-pap); }
+.jv-unresolved, .jv-missing { border-style: dashed; border-color: var(--jv-amb); background: #fdf8f1; }
+
+/* Edges */
+.react-flow__edge.jv-e-next .react-flow__edge-path { stroke: var(--jv-ink2); stroke-width: 1.6; }
+.react-flow__edge.jv-e-starts .react-flow__edge-path { stroke: var(--jv-mut); stroke-dasharray: 2 4; }
+.react-flow__edge.jv-e-uses .react-flow__edge-path { stroke: var(--jv-dep); stroke-opacity: 0.55; }
+.react-flow__edge.jv-e-contains .react-flow__edge-path { stroke: var(--jv-hair); }
+.react-flow__edge.jv-e-unresolved .react-flow__edge-path { stroke: var(--jv-amb); stroke-dasharray: 5 4; }
+.react-flow__edge.jv-e-dangling .react-flow__edge-path { stroke: var(--jv-red); stroke-dasharray: 5 4; }
+.react-flow__edge-text { font: 11px var(--jv-mono); fill: var(--jv-ink2); }
+.react-flow__edge-textbg { fill: var(--jv-wht); }
+.react-flow__handle { opacity: 0; pointer-events: none; }
+
+@media print {
+  .jv { display: none; }
+}

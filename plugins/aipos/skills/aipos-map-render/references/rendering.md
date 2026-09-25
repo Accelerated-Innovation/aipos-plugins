@@ -1,6 +1,6 @@
 # Rendering the map
 
-`scripts/render_map.py` builds one self-contained HTML file — inline CSS and JS, no network calls, no build step. It gets emailed, pasted into a wiki, and opened offline six months later, so it has to keep working with nothing around it.
+`scripts/render_map.py` builds one self-contained HTML file — inline CSS and JS, no network calls, nothing to build or install when you render. It gets emailed, pasted into a wiki, and opened offline six months later, so it has to keep working with nothing around it. The journey diagram is no exception: its viewer is a prebuilt bundle in `scripts/assets/` that the renderer inlines.
 
 ```bash
 python scripts/render_map.py -f features.json -s scores.json -z sizing_computed.json \
@@ -14,6 +14,7 @@ python scripts/render_map.py -f features.json -s scores.json -z sizing_computed.
 - [config.json](#configjson)
 - [Hand-placing the chain](#hand-placing-the-chain)
 - [Visual grammar](#visual-grammar)
+- [The journey diagram (L1 / L2 / L3)](#the-journey-diagram-l1--l2--l3)
 - [Verifying the render](#verifying-the-render)
 - [Delivering](#delivering)
 
@@ -36,7 +37,11 @@ python scripts/render_map.py -f features.json -s scores.json -z sizing_computed.
      "note": "Client-visible surface. Every question here must earn its place."}
   ],
 
-  "positions": {"AI-201": [40, 84], "AI-202": [390, 136]}
+  "positions": {"AI-201": [40, 84], "AI-202": [390, 136]},
+
+  // Journey diagram only (see below)
+  "sourceBaseUrl": "https://github.com/acme/specs/blob/3f9c2e1/",
+  "journeyPositions": {"j:invoice-approval/a:route": {"x": 300, "y": 40}}
 }
 ```
 
@@ -71,6 +76,101 @@ Long chains render wide and the container scrolls horizontally. That is delibera
 **Parse errors** render as a red block at the top of the acceptance-criteria panel, naming file, line and column. A feature whose Gherkin did not parse is not a feature with a thin spec, and the card must not let a reader confuse the two.
 
 **Slice tags** (`@mvp` / `@v1` / `@v2`, `@small` / `@medium` / `@large`) render as chips on scenario names, and a **release-slice filter bar** appears above the lanes whenever any scenario carries a slice tag. The filter dims scenarios outside the chosen slice and works from *tagged* slices only — recommendations never drive it, so the filter cannot present an unconfirmed release plan as a decided one. Tags inherit: a slice tag on the `Feature:` or the `Rule:` applies to the scenarios beneath it, and a scenario's own tag overrides that default.
+
+## The journey diagram (L1 / L2 / L3)
+
+Pass one or more **resolved** workflows — `workflow_resolve.py`'s output, not a raw
+`workflow.json` — and the page gains a journey section above the feature lanes:
+
+```bash
+python scripts/repo_ingest.py features/ -o features.json
+python scripts/workflow_resolve.py invoice-approval.workflow.json features.json > invoice.json
+python scripts/workflow_resolve.py threshold-setup.workflow.json features.json > setup.json
+python scripts/render_map.py -f features.json -w invoice.json -w setup.json -o map.html
+```
+
+Taking the resolver's output rather than resolving here is deliberate: two implementations of
+"what does this reference mean" would eventually disagree, and the one in the renderer would be
+the wrong one. `-w` repeats; each workflow is one journey, identified by its `workflow_key`. Two
+workflows with the same key, or resolved against different sources, are refused rather than
+merged.
+
+The section is an interactive diagram with the same journeys as tables beneath it.
+`scripts/journey_graph.py` builds one graph from the corpus and every resolved workflow, and
+both are drawn from it, so they cannot disagree.
+
+| Level | Shows | Deliberately omits |
+|---|---|---|
+| **L1 Journey** | Each journey's activities in customer order, branch conditions on the edges, the actor on each activity, and a count of the handoffs its steps record | All Gherkin. A rule slug in the view someone outside the team reads is the failure mode |
+| **L2 Features** | The Gherkin features each activity uses. A feature used by several activities or journeys is **one node** with an edge from each | Scenarios |
+| **L3 Scenarios** | The Rules and scenarios under each feature. Selecting a scenario shows its Background, Given / When / Then with data tables and doc strings, Examples, tags, identity, where it is referenced, and its source file and line | — |
+
+The diagram answers two questions directly; say both answers when you present the map:
+
+- **Which scenarios specify this journey?** Select the journey. The panel lists the scenarios
+  it references, and separately the ones that only sit under a Rule it references. Naming a
+  Rule does not place every scenario beneath it, so those are not counted as specifying it.
+- **Which journeys are affected if this feature changes?** Select the feature. Every journey
+  and activity that uses it lights up, and the panel lists them.
+
+A journey selector narrows the diagram to one journey; *Show only this feature's scenarios*
+narrows L3 to one feature. Neither changes a fact — they only hide what is out of scope.
+
+**Handoffs come only from steps.** An activity's handoff count is what its steps' `handoff`
+fields record. Adjacent activities with different actors are not evidence that work changed
+hands, and the diagram does not infer one.
+
+**Reuse must read as reuse.** A shared feature is one node. In the tables, a Rule referenced
+from several steps appears once per reference with an *"also referenced at"* column naming the
+others; without it, three references to one authored Rule look like three Rules. With more
+than one journey, a *Features and the journeys that use them* table answers the second
+question without the diagram.
+
+**Unresolved references are not links.** A `design:` reference lives outside the Gherkin corpus,
+a `foreign-source` one belongs to another repository, and a dangling one names behavior the
+corpus does not declare. Each is a dashed node on the activity that wrote it, with the reason,
+because linking it would send a reader to a card that does not exist and imply the behavior was
+verified.
+
+**Uncovered behavior stays visible.** Features no journey on the page uses appear at L2 marked
+*in no journey*; at L3, scenarios are marked by whether a journey references them, sit under a
+referenced Rule, or are in no journey at all. With several journeys the page-wide finding is
+what *no* journey references; each journey's own coverage is still reported. A
+`partial-coverage` diagnostic means the list is a floor: that feature had Gherkin that did not
+parse.
+
+**Source links are explicit.** Set `sourceBaseUrl` in `config.json` to turn each scenario's
+`path:line` into a link — for GitHub, `https://github.com/<org>/<repo>/blob/<commit>/`, pinned
+to the commit the specs were ingested from so a link opened later shows what was rendered.
+Without it the panel shows `path:line` as text. Paths are as `repo_ingest.py` recorded them, so
+run ingestion from the repository root when you want links.
+
+**Hand placement.** The diagram lays itself out left to right with dagre. `journeyPositions`
+pins individual nodes by graph id (`j:<workflow_key>/a:<activity id>` for an activity), for a
+stakeholder-facing journey that reads better arranged by a person.
+
+**The page never depends on the diagram.** The tables start open and collapse to a *Table view*
+disclosure once the diagram loads; with script off, or if the bundle is missing from
+`scripts/assets/`, the tables are all there is and the renderer warns. Printing hides the canvas
+and prints the tables.
+
+### What the page must never claim
+
+A rendered map is generated from files in a working tree. It cannot verify that any decision was
+recorded anywhere, so it carries an **advisory banner** and no approval badge, and slice chips
+are labelled a planning view over behavior rather than a commitment. If a future version shows
+authorization status, it must come from a verifiable decision read at render time and say where
+it came from — never from a tag, a file, or the absence of an error.
+
+### Accessibility and width
+
+Every disclosure in the page's own markup is a native `<details>` / `<summary>`: focusable, and
+operable with Enter or Space with no script. No element in that markup wears `role="button"` or a
+`tabindex`. The journey diagram is the exception by necessity — React Flow makes its nodes
+focusable, and Enter or Space on one selects it — so it is a supplementary view, and the tables
+remain the complete keyboard and screen-reader route to every fact it shows. The journey tables
+collapse to stacked rows below 640px, and the diagram stacks its detail panel under the canvas
+below 860px, with no horizontal page scroll.
 
 ## Verifying the render
 
@@ -111,60 +211,35 @@ const {chromium} = require('playwright');
 })();
 ```
 
-`tokens` and `pills` should equal the scored-feature count, `dims` should be exactly ten times it, and `overlap` must be `0`. A mismatch between token count and score count means a feature key in `scores.json` does not match any key in `features.json` — the renderer warns about this on stdout too.
+When the page has a journey diagram, check it too — it only draws in a browser, so this is the
+one place a layout or script fault shows up:
+
+```javascript
+  const j = await b.newPage({viewport: {width: 1360, height: 900}});
+  const external = [];
+  j.on('request', r => { if (!/^(file|data|blob|about):/.test(r.url())) external.push(r.url()); });
+  await j.goto('file://' + process.cwd() + '/feature-map.html', {waitUntil: 'load'});
+  await j.waitForSelector('.jv .react-flow__node');
+  for (const n of [1, 2, 3]) {                       // L1, L2, L3
+    await j.locator('.jv-levels button').nth(n - 1).click();
+    await j.waitForTimeout(250);
+    await j.locator('.jv').screenshot({path: `check-journey-l${n}.png`});
+    console.log(`L${n}`, await j.evaluate(() => {
+      const r = [...document.querySelectorAll('.jv .react-flow__node')].map(x => x.getBoundingClientRect());
+      let c = 0;
+      for (let i = 0; i < r.length; i++) for (let k = i + 1; k < r.length; k++)
+        if (!(r[i].right <= r[k].left || r[k].right <= r[i].left ||
+              r[i].bottom <= r[k].top || r[k].bottom <= r[i].top)) c++;
+      return {nodes: r.length, overlap: c};
+    }));
+  }
+  console.log('network requests', external);         // must be []
+```
+
+`tokens` and `pills` should equal the scored-feature count, `dims` should be exactly ten times it, and every `overlap` — chain and journey — must be `0`, as must the journey page's network requests. A mismatch between token count and score count means a feature key in `scores.json` does not match any key in `features.json` — the renderer warns about this on stdout too.
 
 ## Delivering
 
 Send the HTML with `SendUserFile`. A feature map is something a team comes back to and re-reads, so when a desktop is connected also persist it with `create_artifact` so it survives outside the conversation; use `update_artifact` on later rebuilds rather than creating a second copy.
 
-Keep `features.json`, `scores.json` and `config.json` alongside the output. Re-running the map after a spec changes should mean re-ingesting and re-scoring, not rebuilding the inputs by hand.
-
-
-## The journey views (L1 / L2 / L3)
-
-Pass a **resolved** workflow — `workflow_resolve.py`'s output, not a raw `workflow.json` — and
-the page gains a journey section above the feature lanes:
-
-```bash
-python scripts/repo_ingest.py features/ -o features.json
-python scripts/workflow_resolve.py workflow.json features.json > resolved.json
-python scripts/render_map.py -f features.json -w resolved.json -o map.html
-```
-
-Taking the resolver's output rather than resolving here is deliberate: two implementations of
-"what does this reference mean" would eventually disagree, and the one in the renderer would be
-the wrong one.
-
-| View | Shows | Deliberately omits |
-|---|---|---|
-| **L1** | Outcome, activities in order, actor per activity, branches and their conditions | All Gherkin. A rule slug in the view someone outside the team reads is the failure mode |
-| **L2** | The steps inside each activity, actor kinds, and the handoffs where work changes hands | Behavior references |
-| **L3** | The Rules and scenarios governing each activity and step, linked to their feature cards | — |
-
-**Reuse must read as reuse.** A Rule referenced from several steps appears once per reference
-with an *"also referenced at"* column naming the others. Without it, three references to one
-authored Rule look like three Rules.
-
-**Unresolved references are not links.** A `design:` reference lives outside the Gherkin corpus
-and a `foreign-source` one belongs to another repository; both render as plain text with the
-reason, because linking them would send a reader to a card that does not exist and imply the
-behavior was verified.
-
-**Uncovered behavior gets its own panel** — corpus elements no activity or step references,
-with the caveat that this is legitimate when they belong to another journey. A
-`partial-coverage` diagnostic means the list is a floor: that feature had Gherkin that did not
-parse.
-
-### What the page must never claim
-
-A rendered map is generated from files in a working tree. It cannot verify that any decision was
-recorded anywhere, so it carries an **advisory banner** and no approval badge, and slice chips
-are labelled a planning view over behavior rather than a commitment. If a future version shows
-authorization status, it must come from a verifiable decision read at render time and say where
-it came from — never from a tag, a file, or the absence of an error.
-
-### Accessibility and width
-
-Every disclosure is a native `<details>` / `<summary>`: focusable, and operable with Enter or
-Space with no script. No element wears `role="button"` or a `tabindex`. The journey tables
-collapse to stacked rows below 640px, which is the one thing that cannot simply shrink.
+Keep `features.json`, `scores.json`, `config.json` and any resolved workflows alongside the output. Re-running the map after a spec changes should mean re-ingesting and re-scoring, not rebuilding the inputs by hand.

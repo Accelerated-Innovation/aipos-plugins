@@ -60,3 +60,34 @@ jobs:
       # needs no API key — these assert what the tools do, not how any skill is worded.
       - name: Run deterministic checks
         run: python -m pytest tests -q
+
+  viewer:
+    name: journey viewer (vitest + bundle freshness)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: viewers/journey
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: viewers/journey/package-lock.json
+
+      # Pinned by package-lock.json, so the rebuild below is reproducible.
+      - name: Install viewer dependencies
+        run: npm ci
+
+      # The viewer's own logic: levels, scope and highlighting. Facts about the
+      # graph are tested in pytest, where journey_graph.py computes them.
+      - name: Run viewer tests
+        run: npm test
+
+      # The bundle in aipos-map-render/scripts/assets is what ships. Rebuild it
+      # and fail if the committed copy is not what this source produces.
+      - name: Check the committed bundle is current
+        run: npm run check-bundle

@@ -1,0 +1,25 @@
+{
+  "name": "aipos-journey-viewer",
+  "private": true,
+  "description": "React Flow viewer for the aipos-map-render journey diagrams. Built into a single committed bundle; never shipped as source.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "vitest run",
+    "check-bundle": "node check-bundle.mjs",
+    "check-page": "node check-page.mjs"
+  },
+  "devDependencies": {
+    "@dagrejs/dagre": "3.1.1",
+    "@xyflow/react": "12.12.0",
+    "esbuild": "0.28.2",
+    "playwright-core": "1.63.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "vitest": "5.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

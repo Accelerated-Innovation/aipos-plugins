@@ -45,3 +45,6 @@ tmp/
 
 # Local test virtualenv (CONTRIBUTING.md: python -m pytest tests -q)
 .venv/
+
+# --- Journey viewer build (source in viewers/journey; bundle is committed) ---
+viewers/journey/node_modules/

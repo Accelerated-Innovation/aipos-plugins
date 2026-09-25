@@ -17,7 +17,7 @@ The map has three registers, plus the journey views when a workflow is supplied,
 
 **The ledger** lists every artifact with its producers and consumers. Terminal artifacts — produced but never consumed — are usually either genuine outputs or a modelling error worth catching.
 
-**The journey** appears only when a resolved workflow is passed. It projects `workflow.json` as three views — L1 activities and branches, L2 steps and handoffs, L3 the Rules governing each — so the journey is read on the same page as the specs it references, and behavior no step touches shows up as uncovered. This skill renders the workflow; it never authors it. The source belongs to `aipos-workflow-create`, and a wrong view is fixed there, not here.
+**The journey** appears only when resolved workflows are passed — one or several. It is an interactive diagram at three levels — L1 each journey's activities in order, with actors and handoffs; L2 the features each activity uses; L3 their Rules and scenarios, down to Given / When / Then — with the same journeys as tables beneath it. It answers the two questions a backlog cannot: *which scenarios specify this journey?* and *which journeys are affected if this feature changes?* Behavior no journey touches shows up as uncovered. This skill renders the workflow; it never authors it. The source belongs to `aipos-workflow-create`, and a wrong view is fixed there, not here.
 
 The deliverable is one HTML file with no external dependencies, because it gets emailed, dropped in a wiki, and opened six months later.
 
@@ -129,15 +129,15 @@ python scripts/render_map.py -f features.json -s scores.json -z sizing_computed.
 
 `-z` is optional and takes the *computed* sizing file. Size renders as a distribution — `2L / 5M / 3S · 41 pts` — because the Large count is the risk signal an average hides. Slice tags render as chips on scenarios, and the release-slice filter works from tagged slices only; batch recommendations appear marked `rec` and never drive grouping.
 
-**Journey views.** Pass a *resolved* workflow, never a raw `workflow.json`: run `scripts/workflow_resolve.py workflow.json features.json > resolved.json` and add `-w resolved.json`. Report the resolver's diagnostics and uncovered behavior alongside the render rather than leaving them for a reader to find on the page. If there is no `workflow.json` yet, that is `aipos-workflow-create`'s job; do not draft one here to fill the section.
+**Journey views.** Pass *resolved* workflows, never a raw `workflow.json`: run `scripts/workflow_resolve.py workflow.json features.json > resolved.json` for each journey and add `-w resolved.json` once per journey. Report the resolver's diagnostics and uncovered behavior alongside the render rather than leaving them for a reader to find on the page, and when you present the map, answer both journey questions for the journeys and features the user cares about. The diagram's viewer ships prebuilt in `scripts/assets/`; nothing needs installing. If the renderer warns the bundle is missing, the page still carries every fact as tables — say the diagram is absent rather than implying it rendered. If there is no `workflow.json` yet, that is `aipos-workflow-create`'s job; do not draft one here to fill the section.
 
-`references/rendering.md` documents `config.json` — title, lanes, boundary sets, and explicit node positions — and what each journey view shows and omits.
+`references/rendering.md` documents `config.json` — title, lanes, boundary sets, explicit node positions, and the journey diagram's `sourceBaseUrl` for scenario source links and `journeyPositions` — and what each journey level shows and omits.
 
 The chain auto-layouts by dependency depth, which is fine for a working session. For anything going in front of stakeholders, hand-set `positions` in the config; a laid-out diagram reads far better than any algorithm will manage, and the escape hatch exists precisely for that.
 
 ### 7. Verify the render, then deliver
 
-Screenshot the output and actually look at it before sending. Check that badge counts match `scores.json`, that no chain nodes overlap, and that the page works at mobile width. `references/rendering.md` has a Playwright check script that asserts these.
+Screenshot the output and actually look at it before sending. Check that badge counts match `scores.json`, that no chain nodes overlap, that the journey diagram draws at each level without overlapping nodes, and that the page works at mobile width. `references/rendering.md` has a Playwright check script that asserts these; the diagram only draws in a browser, so an unchecked render is an unverified diagram — say so if you could not run it.
 
 Deliver with `SendUserFile`. A feature map is something a team returns to, so also persist it as an artifact when a desktop is connected.
 
@@ -201,6 +201,8 @@ Lead with the cluster, name the two or three features where it bites hardest, an
 | `references/rendering.md` | `config.json` options, visual grammar, and the render verification script. |
 | `scripts/repo_ingest.py` | Walk a repo of feature specs; `--merge` overlays them onto a tracker export. |
 | `scripts/workflow_resolve.py` | Resolve a workflow's references against `features.json`; its output is what `-w` takes. |
+| `scripts/journey_graph.py` | Join the corpus and every resolved workflow into the graph the journey diagram and tables are drawn from. Called by the renderer. |
+| `scripts/assets/` | The prebuilt journey viewer (React Flow) the renderer inlines, and the notices for the code it bundles. Generated; do not edit. |
 | `scripts/verify_scores.py` | The verification gate. Run before every render. |
 | `scripts/render_map.py` | Build the HTML map. |
 

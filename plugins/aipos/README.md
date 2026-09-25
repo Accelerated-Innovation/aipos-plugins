@@ -18,7 +18,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 | [aipos-feature-refine](skills/aipos-feature-refine/SKILL.md) | P2 and change review: existing specs, 3 Amigos, ambiguity, evidence gaps | Recommends readiness; committed behavior changes require reapproval |
 | [aipos-workflow-create](skills/aipos-workflow-create/SKILL.md) | P2 and maintenance: journey source, actors, branches, handoffs | References canonical behavior; delegates rendering |
 | [aipos-feature-slice](skills/aipos-feature-slice/SKILL.md) | P2 and release changes: smallest shippable selection, prerequisites | Scope recommendation; optional complexity scores are not delivery forecasts |
-| [aipos-map-render](skills/aipos-map-render/SKILL.md) | P2/P3: corpus views, dependencies, advisory assessment orchestration | Uses the owning assessment skill; does not issue tokens |
+| [aipos-map-render](skills/aipos-map-render/SKILL.md) | P2/P3: corpus views, dependencies, interactive L1/L2/L3 journey diagrams across several journeys, advisory assessment orchestration | Uses the owning assessment skill; does not issue tokens |
 | [aipos-feature-readiness](skills/aipos-feature-readiness/SKILL.md) | P3: reviewed repo package, verification paths, Development Token | Local readiness is distinct from product approval and passing tests |
 | [aipos-synthetic-data](skills/aipos-synthetic-data/SKILL.md) | Delivery support: seeded generators, scenario or schema-derived datasets | Does not mask production data or invent constraints |
 | [aipos-metrics-emit](skills/aipos-metrics-emit/SKILL.md) | Delivery observation: structured events and completeness diagnostics | Completeness is distinct from authorization; aggregation is downstream |
@@ -46,7 +46,8 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
   requires the Cucumber parser; [metrics](skills/aipos-metrics-emit/scripts/requirements.txt)
   requires PyYAML; [synthetic-data](skills/aipos-synthetic-data/scripts/requirements.txt)
   requires Faker. Readiness, change-package, and sizing scripts use the standard
-  library. Model evaluation tooling has separate development dependencies.
+  library. Map-render's journey diagram ships prebuilt inside the skill; rendering
+  it needs no Node, no install, and no network. Model evaluation tooling has separate development dependencies.
 
 ## Workflow and contracts
 

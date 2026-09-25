@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "workflow_key": "threshold-setup",
+  "source_key": "acme",
+  "outcome": "A legal entity's approval thresholds are set and take effect on the next invoice.",
+  "actors": [
+    { "id": "controller", "name": "Financial controller", "kind": "human" },
+    { "id": "routing", "name": "Routing service", "kind": "system" }
+  ],
+  "activities": [
+    {
+      "id": "set-threshold",
+      "name": "Set the entity's threshold",
+      "actor": "controller",
+      "next": [{ "to": "confirm-routing" }],
+      "behavior": ["acme/FEATURE-inv_full#rule:configurable-thresholds"],
+      "steps": [
+        {
+          "id": "publish",
+          "name": "Publish the new threshold",
+          "actor": "controller",
+          "kind": "human",
+          "handoff": { "from": "controller", "to": "routing" }
+        }
+      ]
+    },
+    {
+      "id": "confirm-routing",
+      "name": "Confirm the next invoice routes correctly",
+      "actor": "routing",
+      "next": [],
+      "behavior": ["acme/FEATURE-inv_full#scenario:approval-routing-by-amount"],
+      "steps": []
+    }
+  ]
+}
