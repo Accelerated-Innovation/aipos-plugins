@@ -63,14 +63,16 @@ resume the canvas when its own evidence requirements are met. A draft canvas can
 still be facilitated under its existing rules. New findings need the intended
 system-of-record intake; saving the brief does not perform ingestion.
 
-The canvas also maps Proceed/Pivot/Park to GO/REVISE/NO-GO before experiments,
-while the viability brief's recommendation concerns production investment. Keep
+The canvas's Proceed/Pivot/Park is a learning decision made before experiments;
+the viability brief's GO/REVISE/NO-GO decides production investment once the
+evidence is in. The two do not map onto each other (see `aipos-solution-framing`'s
+*Two different decisions* and `aipos-rapid-validation`'s viability brief). Keep
 the origin, timing, evidence state, and decision sought explicit. A canvas
 recommendation is an input to validation, never the result of experiments not run.
 Do not convert a strategy's “learn next” into production GO.
 
-A bounded follow-up should clarify those decision meanings and examine the
-ReOps-to-graph baseline adapter, with cold-start and transcription evaluations.
+A bounded follow-up should examine the ReOps-to-graph baseline adapter, with
+cold-start and transcription evaluations.
 This product-strategy addition does not change canvas approval, baseline, or
 recommendation rules. Production behavior, commitment preparation, actual
 approval, and execution-readiness continue through their existing owners.

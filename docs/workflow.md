@@ -83,7 +83,9 @@ agreed with the team before experiments start. Its facts come only from the Prod
 Definition Graph; what the graph lacks becomes a GAP with a ReOps to-do, and its
 numbers are computed by the verifier rather than typed. Proceed is unavailable until
 the primary metric's baseline is graph-backed. The canvas recommends; the accountable
-owner decides. Rapid validation then runs the plan the canvas names.
+owner decides. Its Proceed / Pivot / Park is about learning — whether to run its validation
+plan — not the viability brief's GO / REVISE / NO-GO, which decides production investment
+once the evidence is in. Rapid validation then runs the plan the canvas names.
 
 The product brief can accept attributable research outside the graph; the canvas
 retains its stricter graph-backed baseline and approval rules. A brief does not

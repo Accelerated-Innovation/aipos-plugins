@@ -148,7 +148,9 @@ Reopening a saved canvas starts with a fresh read — the graph may have moved s
    the value — an excerpt that states it: quote the fragment, cite the reference, mark it `[E]`.
 
 **Transcribed values (`[T]`).** A record the graph links but can't show as text (a ReOps study
-outcome, say) may carry the value behind its `record_url`. The PM may read it from there — in any
+outcome, say) may carry the value behind its `record_url`. Only a reference the read returned
+**with** a `record_url` can be transcribed; one without has nowhere to read from, so don't offer
+it — the value stays a GAP whose to-do brings it into the graph. The PM may read it from there — in any
 session, not just on resume — and it is recorded `[T]`, citing that reference, with `note: "read
 from <record_url> by <who> on <date>"`. This is the one place a person keys a number in. A `[T]`
 value is traceable and it computes, so the formulas resolve — but it is **not graph-backed**:

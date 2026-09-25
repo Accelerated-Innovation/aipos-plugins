@@ -55,7 +55,7 @@ with canvas, experiment, epic, and graph planning owners, plus four held-out cas
 | Independent native behavior smoke | Two responses inspected: idea-only brief/build-authority distinction; canonical strategy revision after contradictory results |
 | Anthropic routing | 2026-09-24: one bounded attempt failed authentication, no pass claimed. **2026-09-25: full catalog passed** — development 192/192, held-out 36/36, all critical cases in every repetition ([record](../evaluations/2026-09-25-map-render-journey-evals.md)) |
 | Anthropic behavioral evaluation | 2026-09-24: not executed, no authentication. **2026-09-25: 36/36** (12 cases × 3, Opus 5 subject, Sonnet 5 judge) after attaching one case's missing fixture ([record](../evaluations/2026-09-25-eval-debt.md)) |
-| Native installation / connected graph and tracker workflows | Not run; no installation or external writes requested |
+| Native installation / connected graph and tracker workflows | **Installation, 2026-09-25:** 1.3.2 installed from GitHub into a clean profile — 13 skills under current names, installed files identical to `v1.3.2`, journey renderer run from the installed copy. Connected graph and tracker workflows: not run |
 
 The [smoke evidence](../evaluations/2026-09-24-product-strategy-smoke.json) retains
 source hashes, raw routing inputs/selections, behavioral prompts/responses, and
@@ -91,11 +91,13 @@ This scope decision does not change the publication or installation status above
 
 ## Remaining integration gaps
 
-1. **Canvas decision language.** The pre-experiment canvas maps Proceed/Pivot/Park
-   to the viability brief's GO/REVISE/NO-GO. This addition carries decision type,
-   timing, and authority explicitly rather than changing that mapping. Follow-up:
-   clarify experiment recommendations versus production-investment recommendations
-   in both contracts and their evaluations, preserving existing approval authority.
+1. **Canvas decision language — addressed in 1.3.3.** The canvas's Proceed/Pivot/Park
+   is now defined as a learning decision made before experiments (run the plan, rework
+   the approach, defer), and the viability brief's GO/REVISE/NO-GO as a
+   production-investment decision on the evidence; the two no longer map onto each
+   other, and a canvas Proceed is cited as the brief's origin, never its answer. Both
+   contracts, the shared handoff reference, the rendered canvas and one new eval case
+   per skill carry it. Approval authority is unchanged.
 2. **Graph baseline access.** Attributable supplied research can inform the product
    brief, but a no-graph canvas and a `[T]` baseline still cannot unlock Proceed.
    Follow-up: inspect the ReOps-to-graph evidence-text/measurement adapter and test

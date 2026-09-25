@@ -302,6 +302,10 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
     """Field-level provenance. Returns the list of (path, field) for later checks."""
     engine = D(canvas.get("source")).get("kind") == "opportunity-engine"
     approved = canvas.get("stage") == "approved"
+    # Where each graph reference can be read by a person. Transcription needs somewhere to read
+    # from: a record the graph returned without a record_url can only be brought into the graph.
+    record_urls = {D(r).get("provenance_reference"): D(r).get("record_url")
+                   for r in L(D(canvas.get("source")).get("evidence_refs"))}
     fields = list(walk_fields(canvas))
     for path, f in fields:
         status, kind, mark = f.get("status"), f.get("kind"), f.get("mark")
@@ -347,6 +351,11 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
                 report.error("T_WITHOUT_RECORD", path,
                              "a transcribed [T] fact cites the graph record it was read from and "
                              "notes who read it, from which record_url, when")
+            unreadable = [r for r in refs if r in record_urls and not record_urls[r]]
+            if unreadable:
+                report.error("T_WITHOUT_URL", path,
+                             f"transcribed from {unreadable}, which the graph returned with no "
+                             "record_url — there is nothing to read it from, so it stays a GAP")
         missing = [r for r in refs if r not in graph_refs]
         if missing:
             report.error("REF_NOT_IN_GRAPH", path, f"references not returned by the graph read: {missing}")

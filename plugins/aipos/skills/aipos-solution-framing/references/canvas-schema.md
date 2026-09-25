@@ -50,7 +50,7 @@ the plan, the recommendation. The split is the whole contract:
 | Provenance mark | `E` or `I` (see below) | None; a mark on a decision is an error |
 | `[E]` | Cites `refs` the graph returned in this read | — |
 | `[I]` | Inferred from graph `refs`. A `note` alone is allowed only on a `pm-interview` canvas | — |
-| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value | — |
+| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) — one the read returned **with** a `record_url` — and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value | — |
 | `[A]` | Never on a present fact — an assumption is a GAP with the figure in `assumed` | — |
 | Missing | `GAP · evidence` (always, for a fact), wired to a to-do | `GAP · decision` |
 
@@ -176,8 +176,12 @@ one pro and one con.
 - `plan[]`: `{ id, action, owner (decision field), by (date | null), retires[assumption ids],
   todo (id | null) }`.
 - `recommendation`: `{ decision: proceed | pivot | park | null, owner (decision field),
-  rationale }`. Maps to AIPOS **go / revise / no-go**. It is a recommendation to the named owner,
-  never a record that the decision was made; a recommendation without a named owner is an error.
+  rationale }`. A **learning** recommendation, made before any experiment: *proceed* = run the
+  panel-6 plan on the recommended option; *pivot* = rework the approach before testing it;
+  *park* = defer and run nothing now. It is not a production-investment decision and does not map
+  to the viability brief's go / revise / no-go, which `aipos-rapid-validation` reaches once the
+  evidence is in. It is a recommendation to the named owner, never a record that the decision was
+  made; a recommendation without a named owner is an error.
   **Proceed is unavailable unless the primary metric's baseline is graph-backed** — a GAP, a
   PM's figure, or a note-based inference all block it.
 - `genai_criteria[]`: GenAI mode only. Criteria that work under this Initiative inherits.
@@ -247,7 +251,7 @@ The verifier never crashes: malformed input is reported as `MALFORMED` (or a mor
 - *Shape:* `MALFORMED` `CANVAS_VERSION` `MODE` `STAGE` `INCOMPLETE_AT_APPROVAL` `MISSING` `NOT_A_FIELD` `WRONG_KIND`
   `NOT_NUMERIC` `SOURCE_KIND` `SCHEMA_VERSION_UNSUPPORTED` `EXCERPT_NOT_IN_GRAPH`
 - *Provenance:* `FIELD_STATUS` `PROVISIONAL_AT_APPROVAL` `GAP_HAS_VALUE` `GAP_TYPE` `ASSUMED_MARK`
-  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `T_WITHOUT_RECORD` `REF_NOT_IN_GRAPH`
+  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `T_WITHOUT_RECORD` `T_WITHOUT_URL` `REF_NOT_IN_GRAPH`
   `I_WITHOUT_BASIS` `TODO_ORPHANED`
 - *Arithmetic:* `PRIMARY_METRIC` `TOO_MANY_OUTCOMES` `UNKNOWN_METRIC` `PRIMARY_NOT_OUTCOME`
   `NO_TARGET` `DIRECTION` `TARGET_INCONSISTENT` `OUT_OF_RANGE` `SAVING_INCONSISTENT`
