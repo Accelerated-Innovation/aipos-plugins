@@ -16,6 +16,30 @@
       "expected_output": "Selects aipos-feature-readiness batch mode with the 12-dimension rubric and verification scale readiness. Distinguishes the advisory dashboard from issuing a token or freshly checking product approval. Does not claim any package is approved or tests passed without evidence.",
       "follow_ups": [],
       "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 3,
+      "name": "journey-impact-across-two-workflows",
+      "prompt": "We keep two journeys as journeys/invoice-approval.workflow.json and journeys/threshold-setup.workflow.json, and the feature packages under features/. We want one page showing both journeys, and we need to know which journeys are affected if FEATURE-inv_full changes. Describe the commands you would run and what you would report; do not run anything.",
+      "expected_output": "Ingests the corpus once with repo_ingest.py, resolves each workflow separately with workflow_resolve.py, and renders once with render_map.py passing -w once per resolved workflow (never a raw workflow.json). Says the second question is answered on the page by selecting the feature, which highlights every journey and activity that uses it, and commits to stating that answer when presenting. Commits to reporting each resolver's diagnostics and uncovered behavior. Commits to checking the diagram in a browser, or saying it is unverified. Does not edit or author either workflow, invent identifiers or results, or present the page as an approval.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 4,
+      "name": "rule-reference-does-not-place-its-scenarios",
+      "prompt": "Our onboarding journey's invite-members activity references acme/FEATURE-access#rule:invites-expire and acme/FEATURE-access#scenario:invitation-accepted. That Rule has two scenarios: invitation-accepted and invitation-expired. Which scenarios specify the onboarding journey, based on these facts? Answer only; do not render or execute tools.",
+      "expected_output": "States that invitation-accepted specifies the journey because a reference names it. States that invitation-expired does not: it only sits under a referenced Rule, and naming a Rule does not place every scenario beneath it, so it is not counted as specifying the journey and remains uncovered. Suggests confirming its placement and, if it belongs, adding the reference through aipos-workflow-create rather than counting it now. Does not edit the workflow or invent other scenarios.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 5,
+      "name": "no-workflow-source-yet",
+      "prompt": "Render the L1/L2/L3 journey diagram for our checkout journey. We only have the feature packages under features/; nobody has written a workflow.json. Explain what you will do; do not render or execute tools.",
+      "expected_output": "Says the journey diagram needs a workflow source this skill does not author, and hands authoring workflow.json to aipos-workflow-create rather than drafting one to fill the section. Offers to render the feature map from the corpus now, with no journey section, and to add the journeys once a workflow exists. Does not invent activities, actors, order or references.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     }
   ]
 }
