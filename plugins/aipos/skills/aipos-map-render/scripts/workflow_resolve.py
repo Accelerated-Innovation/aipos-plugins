@@ -342,8 +342,8 @@ def resolve(workflow, features, source_key=None):
 
     diagnostics = list(validate_workflow(workflow))
     if any(d["code"] == "unsupported-version" for d in diagnostics):
-        return {"workflow": workflow.get("workflow_key"), "views": {}, "ok": False,
-                "diagnostics": diagnostics}
+        return {"workflow": workflow.get("workflow_key"), "sourceKey": source_key,
+                "views": {}, "ok": False, "diagnostics": diagnostics}
 
     index, corpus_diags = index_corpus(features)
     diagnostics.extend(corpus_diags)
@@ -401,6 +401,9 @@ def resolve(workflow, features, source_key=None):
 
     return {
         "workflow": workflow.get("workflow_key"),
+        # The corpus identity the local references were resolved against. A
+        # consumer joining several workflows needs it to know they agree.
+        "sourceKey": source_key,
         "views": {"l1": view_l1(resolved), "l2": view_l2(resolved), "l3": view_l3(resolved)},
         "coverage": cover,
         "diagnostics": diagnostics,

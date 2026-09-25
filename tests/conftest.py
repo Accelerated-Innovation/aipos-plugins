@@ -43,6 +43,12 @@ def workflow_resolve():
 
 
 @pytest.fixture(scope="session")
+def journey_graph():
+    return _load("journey_graph",
+                 skill_path("aipos-map-render") / "scripts" / "journey_graph.py")
+
+
+@pytest.fixture(scope="session")
 def workflows():
     return FIXTURES / "workflows"
 

@@ -20,13 +20,22 @@ hand, and this repository builds no diagram editor.
 
 ## Three levels, one definition
 
-L1, L2 and L3 are **views of the same file**, not three files:
+L1, L2 and L3 are **levels of the same file**, not three files. `aipos-map-render` draws them as
+one interactive diagram, which can hold several journeys at once:
 
-| View | Answers | Contains |
+| Level | Answers | Contains |
 |---|---|---|
-| **L1** | What does the customer go through? | Outcome, actors, activities, order and branches |
-| **L2** | Who and what collaborates at each step? | The above plus steps, actor kinds, and handoffs |
-| **L3** | Which behavior governs it? | The above plus resolved Rules, scenarios and design references |
+| **L1 Journey** | What does the customer go through? | Outcome, activities, order and branches; the actor at each activity and the handoffs its steps record |
+| **L2 Features** | What capabilities does each activity rely on? | The above plus the Gherkin features its references resolve into. A feature several activities or journeys use is one node |
+| **L3 Scenarios** | Which behavior specifies it? | The above plus those features' Rules and scenarios, each with its steps, examples and source |
+
+Two questions follow from the levels, and the diagram answers both: *which scenarios specify
+this journey?* (the scenarios it references — not every scenario under a Rule it references) and
+*which journeys are affected if this feature changes?* (every journey with an activity that
+references into it).
+
+Handoffs are still authored on steps, and L1 counts only those. Adjacent activities with
+different actors do not record a transfer.
 
 L1 deliberately contains no Gherkin. It is the view someone outside the team reads, and a rule
 slug leaking into it is the failure mode.
@@ -67,7 +76,7 @@ Where a document uses more than one, it says which.
       ],
       "design": ["acme/FEATURE-inv_full#design:approval-panel"],
 
-      "steps": [                           // L2: collaboration inside the activity
+      "steps": [                           // collaboration inside the activity; handoffs show on L1
         {
           "id": "evaluate-threshold",
           "name": "Evaluate the approval threshold",

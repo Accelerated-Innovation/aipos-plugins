@@ -118,7 +118,7 @@ Three rules, all of which the resolver enforces:
 - **Reference; never restate.** If you find yourself typing what a Rule says into the workflow,
   stop — that is the second copy the format exists to prevent.
 - **Reuse is expected.** A Rule referenced from four steps is correct and is not duplication.
-  The L3 view shows it once with everywhere it is referenced.
+  The rendered diagram shows it once, with everywhere it is referenced.
 - **Never invent an identifier.** A slug you cannot see in the corpus is a dangling reference
   that looks authoritative. Name the behavior in the author's words and say no identifier exists.
 - **Ground each placement.** A described action, outcome, or confirmed user decision must

@@ -67,7 +67,7 @@ or business outcomes.
 | Review existing specifications | `aipos-feature-refine` | 3 Amigos findings, evidence gaps, proposed edits; routes reviewed repo packages to readiness |
 | Describe a journey's actors, transitions, and handoffs | `aipos-workflow-create` | `workflow.json` references existing behavior; hands view generation to map-render |
 | Choose the smallest usable release | `aipos-feature-slice` | Proposed behavior selection with prerequisites; returns to commitment preparation for approval |
-| Render a corpus or compare advisory assessments | `aipos-map-render` | HTML view; requests assessment from refine, readiness, or slice as appropriate |
+| Render a corpus, its journeys, or compare advisory assessments | `aipos-map-render` | One offline HTML page: feature map plus an interactive L1/L2/L3 journey diagram showing which scenarios specify a journey and which journeys a feature change affects; requests assessment from refine, readiness, or slice as appropriate |
 | Check a reviewed repo package before coding | `aipos-feature-readiness` | Readiness report, verification plan, Development Token record, and applicable approval references |
 | Generate fixtures, boundary cases, or load data | `aipos-synthetic-data` | Repeatable seeded generator and data; labels scenario-derived or schema-derived coverage |
 | Export repository telemetry | `aipos-metrics-emit` | NDJSON events and completeness diagnostics; downstream systems aggregate them |

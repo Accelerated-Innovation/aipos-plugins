@@ -17,14 +17,35 @@ The map has three registers, and they answer different questions:
 Usage:
     python render_map.py -f features.json -s scores.json -z sizing_computed.json \
                          -c config.json -o map.html
+
+With one or more resolved workflows (`-w`, repeatable), the page also gains the
+journey section: an interactive L1 / L2 / L3 diagram and, beneath it, the same
+journeys as tables for keyboard, screen-reader, no-script and print readers.
 """
 
 import argparse
 import html
+import importlib.util
 import json
 import os
+import pathlib
 import sys
 from collections import defaultdict
+
+HERE = pathlib.Path(__file__).resolve().parent
+ASSETS = HERE / "assets"
+
+
+def _load_sibling(name):
+    """Load a script from this folder by path, so the renderer works from any
+    working directory without the folder being on sys.path."""
+    spec = importlib.util.spec_from_file_location(name, HERE / f"{name}.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+journey_graph = _load_sibling("journey_graph")
 
 e = lambda s: html.escape(str(s) if s is not None else "")
 
@@ -770,15 +791,13 @@ def _wf_ref_row(b, refby, here=None, where="&#8212;"):
     return f'<tr><td class="an">{name}</td><td>{where}</td><td>{ident}</td><td>{also}</td></tr>'
 
 
-def workflow_section(resolved):
-    """The whole workflow block: three views, diagnostics, and an honest status.
+def workflow_tables(resolved, heading=False):
+    """One journey as tables: the three views and its diagnostics.
 
     Rendered from the resolver's output, so this function performs no
     resolution of its own and cannot disagree with the resolver about what a
     reference means.
     """
-    if not resolved:
-        return ""
     views = resolved.get("views") or {}
     cov = resolved.get("coverage") or {}
     diags = resolved.get("diagnostics") or []
@@ -799,14 +818,10 @@ def workflow_section(resolved):
             f'<summary>Diagnostics <span class="ls">{len(errs)} error, {len(warns)} warning'
             f'</span></summary><ul class="wfd">{dlist(errs)}{dlist(warns)}</ul></details>')
 
+    head = (f'<h3 class="wfj" id="wfj-{e(resolved.get("workflow"))}">'
+            f'{e(resolved.get("workflow"))}</h3>') if heading else ""
     return (
-        '<h2 id="workflow">The journey</h2>'
-        '<p class="h2s">One workflow source, three views. Behavior is referenced, never '
-        'restated &#8212; a Rule shown at several steps is authored once.</p>'
-        '<p class="advisory"><strong>Advisory view.</strong> Slice chips are a planning view '
-        'over behavior, not a commitment, and nothing here is an approval: this page is '
-        'generated from files in a working tree and cannot verify that any decision was '
-        'recorded. Where a card shows a commitment, that is a <strong>snapshot</strong> of what was read when this page was generated &#8212; it does not gate anything, and it can be out of date the moment it is written. The gate is in CI.</p>'
+        f'{head}'
         '<details class="wfview" open><summary>L1 &#8212; customer journey</summary>'
         f'{wf_l1(views)}</details>'
         '<details class="wfview"><summary>L2 &#8212; who collaborates, and where work changes '
@@ -814,6 +829,87 @@ def workflow_section(resolved):
         '<details class="wfview"><summary>L3 &#8212; the behavior that governs each step'
         f'</summary>{wf_l3(views, cov)}</details>'
         f'{diag_block}')
+
+
+def _journeys_by_feature_table(graph):
+    """Question 2 without the diagram: which journeys use each feature."""
+    nodes = {n["id"]: n for n in graph["nodes"]}
+    rows = ""
+    for fid, journeys in sorted(graph["index"]["journeysByFeature"].items(),
+                                key=lambda kv: (-len(kv[1]), kv[0])):
+        f = nodes[fid]
+        acts = [nodes[a] for a in graph["index"]["activitiesByFeature"].get(fid, [])]
+        by_j = defaultdict(list)
+        for a in acts:
+            by_j[a["journey"]].append(a["name"])
+        used = "; ".join(f'<b>{e(j)}</b> &#8212; {e(", ".join(by_j[j]))}' for j in journeys) \
+            or "<em>no journey on this page</em>"
+        rows += (f'<tr><td class="an"><a href="#{e(f["key"])}">{e(f["name"])}</a></td>'
+                 f'<td>{len(journeys)}</td><td>{used}</td></tr>')
+    return ('<details class="wfview" open><summary>Features and the journeys that use them'
+            '</summary><table class="led wf"><tr><th>Feature</th><th>Journeys</th>'
+            f'<th>Where</th></tr>{rows}</table></details>')
+
+
+def viewer_assets():
+    """The committed viewer bundle, or None when it is missing.
+
+    A missing bundle degrades to the tables rather than failing the render:
+    the tables carry every fact the diagram does.
+    """
+    js, css = ASSETS / "journey-viewer.js", ASSETS / "journey-viewer.css"
+    if not (js.is_file() and css.is_file()):
+        return None
+    return js.read_text(encoding="utf-8"), css.read_text(encoding="utf-8")
+
+
+def _script_safe(text):
+    """Inline text inside <script> without it closing the element early."""
+    return text.replace("</", "<\\/")
+
+
+def workflow_section(resolved, cfg=None, assets=None):
+    """The journey section: the diagram, then the same journeys as tables.
+
+    `resolved` is one resolver output or a list of them. The diagram and the
+    tables are both built from the same resolved data, and the diagram's facts
+    come from journey_graph.py, so the two cannot disagree.
+    """
+    workflows = [w for w in (resolved if isinstance(resolved, list) else [resolved]) if w]
+    if not workflows:
+        return ""
+    cfg = cfg or {}
+    many = len(workflows) > 1
+    graph = journey_graph.build(cfg.get("_features") or [], workflows,
+                                base_url=cfg.get("sourceBaseUrl"))
+
+    viewer = ""
+    if assets:
+        js, css = assets
+        payload = {"graph": graph, "config": {"positions": cfg.get("journeyPositions") or {}}}
+        viewer = (
+            f'<style>{css}</style>'
+            '<div id="journey-root" class="jv-root"></div>'
+            '<script type="application/json" id="journey-data">'
+            f'{_script_safe(json.dumps(payload, ensure_ascii=False))}</script>'
+            f'<script>{_script_safe(js)}</script>')
+
+    tables = "".join(workflow_tables(w, heading=many) for w in workflows)
+    if many:
+        tables = _journeys_by_feature_table(graph) + tables
+    title = "The journeys" if many else "The journey"
+    return (
+        f'<h2 id="workflow">{title}</h2>'
+        '<p class="h2s">One workflow source per journey, three levels of detail. Behavior is '
+        'referenced, never restated &#8212; a Rule shown at several steps is authored once.</p>'
+        '<p class="advisory"><strong>Advisory view.</strong> Slice chips are a planning view '
+        'over behavior, not a commitment, and nothing here is an approval: this page is '
+        'generated from files in a working tree and cannot verify that any decision was '
+        'recorded. Where a card shows a commitment, that is a <strong>snapshot</strong> of what was read when this page was generated &#8212; it does not gate anything, and it can be out of date the moment it is written. The gate is in CI.</p>'
+        f'{viewer}'
+        '<details class="wftables" open><summary>Table view &#8212; the same journeys, for '
+        'keyboard, screen-reader and print</summary>'
+        f'{tables}</details>')
 
 
 # ------------------------------------------------------------------ document
@@ -1063,6 +1159,9 @@ details.wfview{border:1px solid #dcdfe4;border-radius:8px;margin:.5rem 0;backgro
 details.wfview>summary{padding:.6rem .85rem;font-weight:600;cursor:pointer;list-style:revert}
 details.wfview[open]>summary{border-bottom:1px solid #eceef1}
 details.wfview>*:not(summary){padding:0 .85rem .7rem}
+details.wftables{margin:1rem 0 .5rem}
+details.wftables>summary{cursor:pointer;font-weight:600;padding:.4rem 0;list-style:revert;color:var(--ink2)}
+h3.wfj{margin:1.2rem 0 .3rem;font-size:15px;font-family:ui-monospace,monospace}
 details.wfact{margin:.4rem 0;border-left:3px solid #e3e6ea;padding-left:.7rem}
 details.wfact>summary{cursor:pointer;font-weight:600;padding:.25rem 0;list-style:revert}
 table.wf td,table.wf th{vertical-align:top}
@@ -1082,7 +1181,7 @@ ul.wfd code{background:#f3f4f6;padding:.05rem .3rem;border-radius:3px}
 """
 
 
-def render(feats, scores, sizing, cfg, workflow=None):
+def render(feats, scores, sizing, cfg, workflow=None, assets=None):
     central = set(cfg.get("central") or [])
     lanes_cfg = cfg.get("lanes") or []
     if not lanes_cfg:
@@ -1225,7 +1324,7 @@ def render(feats, scores, sizing, cfg, workflow=None):
 <p class="h2s">Every producer-to-consumer link in the corpus. Each arrow is a named artifact one
 feature emits and the next reads.</p>
 <div class="spinebox">{build_chain(feats, scores, cfg)}</div>
-{workflow_section(workflow)}
+{workflow_section(workflow, {**cfg, "_features": feats}, assets)}
 <div class="legend"><span><i></i>{e(cfg.get('centralLabel','Runs centrally'))}</span>
 <span><i></i>{e(cfg.get('deploymentLabel','Runs in the deployment'))}</span></div>
 {tkleg}
@@ -1243,8 +1342,9 @@ def main():
     ap.add_argument("-s", "--scores")
     ap.add_argument("-z", "--sizing",
                     help="computed sizing (compute_size.py output), keyed by feature key")
-    ap.add_argument("-w", "--workflow",
-                    help="resolved workflow (workflow_resolve.py output) — adds the L1/L2/L3 views")
+    ap.add_argument("-w", "--workflow", action="append", default=[],
+                    help="resolved workflow (workflow_resolve.py output); repeat for several "
+                         "journeys. Adds the L1/L2/L3 journey diagram and tables")
     ap.add_argument("-c", "--config")
     ap.add_argument("-o", "--out", default="feature-map.html")
     a = ap.parse_args()
@@ -1271,18 +1371,30 @@ def main():
     if scores and missing:
         print(f"warning: {len(missing)} feature(s) unscored: {', '.join(missing)}")
 
-    workflow = json.load(open(a.workflow)) if a.workflow and os.path.isfile(a.workflow) else None
-    if a.workflow and workflow is None:
-        print(f"warning: workflow file not found: {a.workflow} -- rendering without the journey views")
+    workflows = []
+    for path in a.workflow:
+        if os.path.isfile(path):
+            workflows.append(json.load(open(path)))
+        else:
+            print(f"warning: workflow file not found: {path} -- rendering without it")
 
-    doc = render(feats, scores, sizing, cfg, workflow)
+    assets = viewer_assets() if workflows else None
+    if workflows and assets is None:
+        print("warning: journey viewer bundle not found in scripts/assets -- "
+              "rendering the journeys as tables only")
+
+    try:
+        doc = render(feats, scores, sizing, cfg, workflows or None, assets)
+    except journey_graph.JourneyGraphError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
     open(a.out, "w", encoding="utf-8").write(doc)
     wf_note = ""
-    if workflow:
+    for workflow in workflows:
         cov = workflow.get("coverage") or {}
-        wf_note = (f", workflow '{workflow.get('workflow')}' "
-                   f"({len(cov.get('covered') or [])} covered, "
-                   f"{len(cov.get('uncovered') or [])} uncovered)")
+        wf_note += (f", workflow '{workflow.get('workflow')}' "
+                    f"({len(cov.get('covered') or [])} covered, "
+                    f"{len(cov.get('uncovered') or [])} uncovered)")
     print(f"{len(feats)} features, {len(scores)} scored, {len(sizing)} sized{wf_note} -> "
           f"{a.out} ({len(doc)} bytes)")
     return 0

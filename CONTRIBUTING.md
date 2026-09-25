@@ -12,6 +12,7 @@ plugins/aipos/                    # all thirteen aipos-* skills
   skills/<skill-name>/SKILL.md    # one folder per skill; loads automatically
 templates/skill-template/         # copy this to start a new skill
 tests/                            # deterministic checks for the bundled skill scripts
+viewers/journey/                  # source of the journey diagram viewer (never shipped)
 ```
 
 Guidance that more than one skill depends on belongs in `plugins/aipos/references/`, not copied into each skill. A skill reaches it with a relative path — `../../references/<file>.md`. `plugins/aipos/references/gherkin-authoring-standard.md` is the worked example: one Gherkin authoring standard, cited by five skills, restated by none.
@@ -55,10 +56,26 @@ python evals/run_evals.py --skill aipos-feature-create --execute   # real calls,
 
 It is deliberately **not** a required check. The merge gate stays offline and key-free; the eval job is `workflow_dispatch`. Run it when a change touches coaching behaviour and paste the result into the PR.
 
+### The journey viewer
+
+`aipos-map-render` draws its L1 / L2 / L3 journey diagram with React Flow. The viewer's source lives in [`viewers/journey/`](viewers/journey/) and is built into one committed bundle in `plugins/aipos/skills/aipos-map-render/scripts/assets/`, which the renderer inlines so every map stays a single offline file. Users never need Node; contributors changing the viewer do:
+
+```bash
+cd viewers/journey
+npm ci
+npm test               # vitest: levels, scope and highlighting
+npm run build          # rewrites scripts/assets/ — commit the result
+npm run check-bundle   # fails if the committed bundle is not what the source builds
+node check-page.mjs <map.html> [screenshot-dir]   # drives a rendered map in Chrome
+```
+
+The bundle, its CSS and `THIRD_PARTY_NOTICES.txt` are build output: review them as generated code and never edit them by hand. Every fact the diagram shows is computed in Python by `journey_graph.py` and tested in `pytest`; the viewer only lays it out and handles selection. When the graph model changes, regenerate the viewer's test fixture with `python tests/test_render_journeys.py --write-viewer-fixture` — a pytest fails until you do. Keep dependencies pinned and permissively licensed, and keep the bundle under the ceiling `tests/test_render_journeys.py` sets.
+
 Then check:
 
 - [ ] `claude plugin validate .` passes.
 - [ ] `python -m pytest tests -q` passes.
+- [ ] If the change touches `viewers/journey/`, `npm test` and `npm run check-bundle` pass there, and you looked at a rendered map with `check-page.mjs`.
 - [ ] If the change touches coaching behaviour (a `SKILL.md`, a reference it reads, or an eval case), ran `evals/run_evals.py` for the affected skill and reported which cases ran, the models used, and the results — or said plainly that it was not run.
 - [ ] JSON files (`marketplace.json`, `plugin.json`, any `evals.json`) are valid and consistent (names, descriptions, keywords).
 - [ ] Bumped `version` in the affected plugin's `.claude-plugin/plugin.json` if the change is user-visible. See the [rollout guide](docs/rollout.md#later-updates) for marketplace refresh and installed-plugin update commands.
@@ -66,7 +83,7 @@ Then check:
 
 ## Continuous integration
 
-Every pull request runs two jobs from [`.github/workflows/validate.yml`](.github/workflows/validate.yml): `claude plugin validate` (static structural validation of the manifests) and `pytest` against `tests/`. Both must pass before merge, and neither needs an API key or network access at test time.
+Every pull request runs three jobs from [`.github/workflows/validate.yml`](.github/workflows/validate.yml): `claude plugin validate` (static structural validation of the manifests), `pytest` against `tests/`, and the journey viewer's `npm test` plus a rebuild that fails if the committed bundle is stale. All must pass before merge, and none needs an API key or network access at test time beyond installing pinned packages.
 
 ## Commit and PR conventions
 
