@@ -1014,6 +1014,64 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "journey-feature-impact",
+      "prompt": "If we change the invoice approval routing feature, which customer journeys are affected? Show me on the journey map.",
+      "context": "Workflow sources for two journeys and the feature packages already exist.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-map-render",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "journey-specifying-scenarios",
+      "prompt": "Which scenarios actually specify our onboarding journey? I want to click from the journey down to the Gherkin.",
+      "context": "workflow.json for onboarding and the feature packages exist.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-map-render",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "journey-diagram-no-source",
+      "prompt": "Show me the L1/L2/L3 diagram for our checkout journey.",
+      "context": "Feature packages exist; no workflow.json has been written for checkout.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-workflow-create",
+          "handoffs": [
+            "aipos-map-render"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "journey-impact-heldout",
+      "prompt": "Before we rework the permissions feature, lay out every journey and step that depends on it.",
+      "context": "Journey workflow files and the feature corpus are in the repository.",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-map-render",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }
