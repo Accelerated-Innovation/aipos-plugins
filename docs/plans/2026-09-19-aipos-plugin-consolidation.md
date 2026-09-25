@@ -2,6 +2,8 @@
 
 **Date:** 2026-09-19
 
+**Closed (2026-09-25):** all thirteen increments complete — see [Closure](#closure-2026-09-25). The 2026-09-20 status below is historical.
+
 **Status (2026-09-20):** Consolidation PR #31 and label-clarification PR #32 are merged. PE1–PE5 changes are in [draft PR #33](https://github.com/Accelerated-Innovation/govkit-plugins/pull/33); implementation and release review are recorded below and in the [follow-up report](../evaluations/2026-09-20-plugin-evaluation-followups.md). This does not reopen the completed cross-repository E1–E5 pilot. No new tag or publication is authorized by this status line.
 
 **Direction:** One `aipos` plugin, eleven focused `aipos-*` skills, explicit AIPOS pillar workflows.
@@ -169,17 +171,17 @@ All statuses start unchecked. Record the implementing PR/commit and verification
 |---|---|---|---|
 | 01 | Ownership examples and routing cases | This plan | [x] |
 | 02 | Routing evaluator and baseline | 01 | [x] |
-| 03 | Discovery, validation, and epic boundaries | 02 | [~] |
-| 04 | Create, refine, and readiness boundaries | 03 | [~] |
-| 05 | Journey authoring, slicing, and visualization boundaries | 04 | [~] |
-| 06 | Metrics and synthetic-data boundaries | 05 | [~] |
+| 03 | Discovery, validation, and epic boundaries | 02 | [x] |
+| 04 | Create, refine, and readiness boundaries | 03 | [x] |
+| 05 | Journey authoring, slicing, and visualization boundaries | 04 | [x] |
+| 06 | Metrics and synthetic-data boundaries | 05 | [x] |
 | 07 | Packaging tests independent of old directory names | 06 | [x] |
 | 08 | Rename all eleven skills to `aipos-*` | 07 | [x] |
 | 09 | Atomic consolidation into `plugins/aipos` | 08 | [x] |
 | 10 | Pillar workflow and onboarding documentation | 09 | [x] |
 | 11 | Clean-install and old-plugin removal check | 10 | [x] |
-| 12 | Combined routing and workflow acceptance | 11 | [~] |
-| 13 | Release checkpoint and rollout handoff | 12 | [~] |
+| 12 | Combined routing and workflow acceptance | 11 | [x] |
+| 13 | Release checkpoint and rollout handoff | 12 | [x] |
 
 ### 01 — Turn the ownership model into observable examples
 
@@ -603,3 +605,21 @@ remain failures. Preserve the original judgment and apply the correction to matc
 baseline and candidate transcripts.
 
 **Closure evidence:** source `0000375fdf358797011855ea66671e5774f171a1`; 87/87 substantive trials, 73/87 full-rubric trials for the affected set; three final native checks; 427 offline passes and five fixture skips; all eleven skills and both manifests valid; fresh isolated installation with 58 matching runtime files. All candidate revisions and original evaluator failures remain in the [closure report and JSON](../evaluations/2026-09-20-substantive-closure.md).
+
+## Closure (2026-09-25)
+
+Increments 03–06, 12 and 13 were left partial on 2026-09-19 because coaching
+acceptance and positive integration evidence were not yet established. The PE1–PE5
+follow-ups established both, and the release shipped; the table was not updated
+at the time.
+
+| Increment | Closing evidence |
+|---|---|
+| 03–06 | Boundary descriptions and cases from local commits `31f0e90`, `97865cd`, `43d21a3`, `b6419c6`, merged in PR #31 (`73d24ae`). Substantive coaching acceptance **87/87** in the [closure report](../evaluations/2026-09-20-substantive-closure.md); PE4 exercised the runtime metrics cases, live graph planning, authority and browser checks within its recorded scope. |
+| 12 | Catalog routing **159/159** with all 102 critical trials (2026-09-19). Re-verified on the current 13-skill catalog on 2026-09-25: development **192/192** and held-out **36/36**, every critical case correct in every repetition ([record](../evaluations/2026-09-25-map-render-journey-evals.md)). |
+| 13 | PR #33 merged as `e08ed37`, released as 1.0.1 ([release check](../release-check.md)). Later versions are tagged and released from `v1.3.0`. |
+
+Still open, as tracked polish rather than acceptance blockers: the fourteen
+full-rubric coaching misses listed in the closure report. Skill names in this plan
+are the ones in use when it was written; four were renamed in 1.3.0 (see
+[rollout](../rollout.md#updating-to-130)).

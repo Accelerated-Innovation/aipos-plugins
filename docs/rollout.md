@@ -9,6 +9,13 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.3.2
+
+`aipos-solution-framing` asks one question per turn while setting up, states the
+mode instead of asking for it, and checks a hand-made canvas properly: it
+recomputes drawn figures, proposes a candidate baseline the canvas already holds,
+and offers a graph-backed rebuild. Nothing to do beyond updating; no files move.
+
 ## Updating to 1.3.1
 
 1.3.1 delivers `aipos-map-render` guidance that shipped after 1.3.0 without a

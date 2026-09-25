@@ -1,5 +1,7 @@
 # AIPOS 1.0.1 candidate verification
 
+> **Outcome (recorded 2026-09-25):** this candidate merged as `e08ed37` in PR #33 and was released as 1.0.1 through the marketplace. The record below is unchanged from before the merge. Later versions are listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases), and [`rollout.md`](rollout.md) covers updating.
+
 **Status:** PE1–PE5 changes are in [draft PR #33](https://github.com/Accelerated-Innovation/govkit-plugins/pull/33). Consolidation [PR #31](https://github.com/Accelerated-Innovation/govkit-plugins/pull/31) and label-clarification [PR #32](https://github.com/Accelerated-Innovation/govkit-plugins/pull/32) are merged. This candidate has not been merged, tagged, or published. Substantive coaching acceptance is complete; the remaining full-rubric follow-ups and evaluator adjudications are recorded below. Merge/publication remains a separate decision.
 
 **Tested source:** `0000375fdf358797011855ea66671e5774f171a1` on `codex/plugin-evaluation-followups`, plugin **1.0.1**. The latest closure comparison starts at PR #33 candidate `c2e3b8d`; the earlier `c622ec4` comparison remains historical. Per-trial fingerprints, original/clarified judgments and installed-file hashes are committed in the evidence.

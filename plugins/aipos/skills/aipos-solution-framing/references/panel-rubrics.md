@@ -171,6 +171,10 @@ the evidence-GAP question above.
       arrives.
 - [ ] On a percentage metric, "+20%" is ambiguous — relative (60% → 72%) or percentage points
       (60% → 80%)? Ask once and record it as `target_change_kind`.
+- [ ] A metric with no baseline: look for a measured rate the canvas or graph already holds that
+      bears on it — an audit's recategorisation rate for a routing metric, say — and name it as a
+      *candidate* baseline for the PM to accept or reject. Never adopt it silently, and never
+      promote it past its provenance: a candidate from the PM's account stays `[I]`, not `[E]`.
 
 **Push scripts**
 

@@ -53,8 +53,8 @@ with canvas, experiment, epic, and graph planning owners, plus four held-out cas
 | Behavioral dry run | All 12 new cases assembled, plus all cases of the four handoff skills; no model calls |
 | Independent native routing smoke | All 13 new cases matched expected routes, one selection each, including four held-out cases |
 | Independent native behavior smoke | Two responses inspected: idea-only brief/build-authority distinction; canonical strategy revision after contradictory results |
-| Anthropic routing | One bounded attempt failed authentication before a completed model call; zero completions, no pass claimed |
-| Anthropic behavioral evaluation | Not executed because Anthropic authentication is unavailable |
+| Anthropic routing | 2026-09-24: one bounded attempt failed authentication, no pass claimed. **2026-09-25: full catalog passed** — development 192/192, held-out 36/36, all critical cases in every repetition ([record](../evaluations/2026-09-25-map-render-journey-evals.md)) |
+| Anthropic behavioral evaluation | 2026-09-24: not executed, no authentication. **2026-09-25: 36/36** (12 cases × 3, Opus 5 subject, Sonnet 5 judge) after attaching one case's missing fixture ([record](../evaluations/2026-09-25-eval-debt.md)) |
 | Native installation / connected graph and tracker workflows | Not run; no installation or external writes requested |
 
 The [smoke evidence](../evaluations/2026-09-24-product-strategy-smoke.json) retains
