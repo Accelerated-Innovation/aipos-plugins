@@ -92,7 +92,7 @@ Everything is optional. Accept any of:
 
 - A `problem_id`, a problem or opportunity name, or nothing (the skill offers a picker from the graph)
 - An existing canvas to resume or change
-- A hand-made canvas to import and check — its figures go in as stated values the verifier checks
+- A hand-made canvas to import and check — its figures go in as stated values the verifier checks; `references/facilitation.md` (*Checking a hand-made canvas*) lists what to check before offering changes
 
 **With the graph** (`references/opportunity-source.md`): detected by tool signature — `get_problem`,
 `list_evidence` and `get_lineage` on one server. Panels 1 and 2 become a confirm conversation.

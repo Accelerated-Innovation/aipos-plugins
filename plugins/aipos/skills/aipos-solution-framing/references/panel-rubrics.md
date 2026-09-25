@@ -171,6 +171,14 @@ the evidence-GAP question above.
       arrives.
 - [ ] On a percentage metric, "+20%" is ambiguous — relative (60% → 72%) or percentage points
       (60% → 80%)? Ask once and record it as `target_change_kind`.
+- [ ] A metric with no baseline: look for a measured rate the canvas or graph already holds that
+      measures **the same outcome, or its direct complement, over the same population and
+      definition** — an audit's 32% recategorisation rate is a 68% first-time-correct routing rate
+      only if both count the same tickets the same way. Name it as a *candidate* baseline and ask
+      the PM to confirm that equivalence; never adopt it silently, and never promote it past its
+      provenance (a candidate from the PM's account stays `[I]`, not `[E]`). A rate that is merely
+      related is context, not a baseline: say so, and the baseline stays a GAP. A PM's agreement
+      cannot make two different measures one.
 
 **Push scripts**
 

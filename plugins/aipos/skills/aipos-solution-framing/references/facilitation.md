@@ -17,13 +17,18 @@ recorded) and `opportunity-source.md` (reading the graph).
 - [Step 9 — Render](#step-9--render)
 - [Step 10 — Save and hand off](#step-10--save-and-hand-off)
 - [Resuming a canvas](#resuming-a-canvas)
+- [Checking a hand-made canvas](#checking-a-hand-made-canvas)
 
 ## Two modes
 
-Ask once at the start, unless the request already says: *"we're in the workshop now"* → workshop;
-*"help me put together the canvas for…"* → coach.
+Settle it once at the start without spending a question on it. Take it from the request when it
+says: *"we're in the workshop now"* → workshop; *"help me put together the canvas for…"* → coach.
+Otherwise state a default and invite a correction:
 
-> Are we running this live with a room, or working through it together at your pace?
+> I'll take this one-to-one at your pace — say if we're running it live with a room.
+
+A correction switches it; silence keeps it. The turn's one question stays free for what actually
+needs deciding.
 
 | | **Workshop** — live, facilitated | **Coach** — one PM, async |
 |---|---|---|
@@ -69,9 +74,14 @@ forgotten.
 
 ## Step 0 — Set up
 
-In this order, briefly:
+In this order, briefly — and **one question per turn** during set-up, in both modes (the panels then follow the mode's own pace). Set-up is where questions
+pile up: mode, which problem, a promotion, the title, where the canvas is kept. Ask only the one the
+next step depends on, and fold the rest into the summary as stated defaults the PM's next reply
+confirms or corrects (see *Proceed protocol*). Title, goal and where it's kept are proposals, never
+separate questions. When nothing in set-up needs deciding, the turn's one question is panel 1's
+first — usually which persona suffers most.
 
-1. **Mode** — above.
+1. **Mode** — above: from the request or a stated default, never its own question.
 2. **The graph** — detect it and choose the problem (`opportunity-source.md`). No graph → say so
    once and take the PM-interview path.
 3. **An existing canvas?** Now that the problem is known, look for
@@ -88,9 +98,10 @@ In this order, briefly:
 7. **Title and goal** — propose both from the graph's title, in outcome terms: *"Reduce triage time
    and improve first-contact routing"*, not *"Triage improvements"*. One push on a title that names
    an area instead of an outcome.
-8. **Where it's kept** — once: *"I'll keep the canvas in `solution-framing/<slug>/` in this project
-   as we go, so we can pick it up later. OK?"* Local files need one confirmation for the set; trackers
-   are Step 10. Freeze the slug now; it never changes.
+8. **Where it's kept** — once, as a stated default: *"I'll keep the canvas in
+   `solution-framing/<slug>/` in this project as we go, so we can pick it up later."* The PM's next
+   reply confirms it — one confirmation for the local set; trackers are Step 10. Freeze the slug
+   now; it never changes.
 
 *Writes:* `canvas_version: 1`, `mode`, `stage: "draft"`, `through_panel: 0`, `slug`, `genai`,
 `gaps_accepted: false`, `title`, `goal`, the whole `source` block, `todos: []`,
@@ -277,3 +288,28 @@ epic when one is wanted.
    workshop, work through the GAP list.
 
 An approved canvas reopened for changes becomes a new dated draft; the approved one stays as it was.
+
+## Checking a hand-made canvas
+
+When a PM brings a canvas made elsewhere — a slide, an image, a transcription — and asks for a
+check, report what you find before offering to change anything. The failures below are the ones
+hand-made canvases actually carry:
+
+1. **Recompute every derived figure from the canvas's own stated inputs** — percent changes,
+   savings per item, impact at scale — with `verify_canvas.py` when it can run (stated figures go
+   in as `scale.stated_*`), or by showing the arithmetic when it cannot. Report each mismatch with
+   the correct figure, including a drawn figure that does not follow from its own inputs or is
+   rounded inconsistently.
+2. **Targets against their own metrics.** A stated "−30%" beside 1.8 → 1.2 is a 33% change; say so.
+3. **An outcome with no baseline.** Name a measured rate the canvas already holds as a candidate
+   baseline only if it measures the same outcome, or its direct complement, over the same
+   population and definition (`panel-rubrics.md`); a merely related rate is context and the
+   baseline stays a GAP. Ask whether a percentage target is relative or in points.
+4. **A decision shown as made.** The canvas recommends to a named owner; a Proceed highlighted
+   before its validation plan has run, or with no owner, is a decision presented as taken.
+5. **Provenance.** Say which facts a graph read backs — for a hand-made canvas, usually none — and
+   offer to rebuild it from the Product Definition Graph so its facts become traceable: now if the
+   graph is connected, or once it is. Until then its facts are the PM's account, `[I]` at most.
+
+Do not rewrite the canvas wholesale uninvited, and invent no numbers: every corrected figure is
+arithmetic on figures the canvas states.

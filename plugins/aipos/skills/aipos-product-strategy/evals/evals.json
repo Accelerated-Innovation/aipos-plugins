@@ -173,7 +173,9 @@
       "id": 11,
       "name": "specific-experiment-keeps-owner",
       "prompt": "We already have an agreed strategy in strategy/handoff-hub/product-opportunity-brief.md revision 3. I want a demand-test plan for the switching hypothesis, not another strategy workshop. Please route the work with the relevant context.",
-      "files": [],
+      "files": [
+        "files/current-strategy.md"
+      ],
       "expected_output": "Routes the named demand-test artifact to aipos-rapid-validation instead of restarting strategy or writing an initiative canvas or epic. Carries the existing brief reference/revision, switching hypothesis, and decision sought while identifying missing evidence and learning limits. Does not treat agreement on the strategy as study authorization or production approval. Does not duplicate the canonical strategy or claim the test has been run.",
       "claims": [
         "Routes the named demand-test artifact to aipos-rapid-validation instead of restarting strategy or writing an initiative canvas or epic.",
