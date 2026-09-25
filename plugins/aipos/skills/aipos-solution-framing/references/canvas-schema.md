@@ -176,8 +176,12 @@ one pro and one con.
 - `plan[]`: `{ id, action, owner (decision field), by (date | null), retires[assumption ids],
   todo (id | null) }`.
 - `recommendation`: `{ decision: proceed | pivot | park | null, owner (decision field),
-  rationale }`. Maps to AIPOS **go / revise / no-go**. It is a recommendation to the named owner,
-  never a record that the decision was made; a recommendation without a named owner is an error.
+  rationale }`. A **learning** recommendation, made before any experiment: *proceed* = run the
+  panel-6 plan on the recommended option; *pivot* = rework the approach before testing it;
+  *park* = defer and run nothing now. It is not a production-investment decision and does not map
+  to the viability brief's go / revise / no-go, which `aipos-rapid-validation` reaches once the
+  evidence is in. It is a recommendation to the named owner, never a record that the decision was
+  made; a recommendation without a named owner is an error.
   **Proceed is unavailable unless the primary metric's baseline is graph-backed** — a GAP, a
   PM's figure, or a note-based inference all block it.
 - `genai_criteria[]`: GenAI mode only. Criteria that work under this Initiative inherits.

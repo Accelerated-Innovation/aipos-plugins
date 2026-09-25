@@ -25,7 +25,10 @@ decision it serves and say what is still unevidenced.
 
 A Solution Framing canvas (`aipos-solution-framing`) often arrives first: its panel-6 plan
 is the experiment to design here, its evidence GAPs are the first things to measure, and
-its recommendation maps Proceed / Pivot / Park to GO / REVISE / NO-GO. Read its
+its recommendation is a *learning* decision made before any experiment — Proceed (run the
+plan), Pivot (rework the approach), Park (defer). That is not a Validation Decision: the brief's
+GO / REVISE / NO-GO decides production investment once the plan's evidence is in. Never carry a
+canvas Proceed into the brief as GO; cite it as where validation started. Read its
 `canvas.json` as Path B evidence, keeping its provenance marks.
 
 An explicit request for an epic or program brief belongs to `aipos-epic-create`;

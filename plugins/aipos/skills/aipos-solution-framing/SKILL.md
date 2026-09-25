@@ -25,7 +25,9 @@ Exploration Decision → aipos-solution-framing → aipos-rapid-validation → (
 ```
 
 The canvas sits at the start of Pillar 2. Its panel-6 plan is what `aipos-rapid-validation` runs;
-its recommendation (Proceed / Pivot / Park) maps to that skill's GO / REVISE / NO-GO. Panel 1's
+its recommendation (Proceed / Pivot / Park) is a learning decision — run that plan, rework the
+approach, or defer — not that skill's GO / REVISE / NO-GO, which decides production investment once
+the evidence is in (`references/panel-rubrics.md`, *Two different decisions*). Panel 1's
 statement and panel 3's metrics can seed an epic if one is wanted.
 
 ## Product strategy context
@@ -204,6 +206,7 @@ Do not:
 - Paraphrase a record the graph could not show you, or fetch evidence text a panel doesn't need
 - Offer Proceed while the primary baseline isn't graph-backed, or present a recommendation as a
   decision made
+- Present Proceed as a go-ahead to build or invest — it recommends running the validation plan
 - Write to a tracker without an explicit, destination-named yes; claim a file was attached; or write
   anything to the graph
 - Overwrite an approved canvas
@@ -226,6 +229,6 @@ Always:
 |---|---|---|
 | `aipos-product-strategy` | Product vision, strategy, and results-driven revision | Supplies canonical brief references and relevant choices; receives findings that challenge strategy. Initiative artifacts retain their own scope and authority rules |
 | `aipos-exploration-planning` | Which problems get exploration capacity | Reads the same graph with the same tools; its Exploration Decision is what usually precedes a canvas |
-| `aipos-rapid-validation` | Experiments, evidence, the viability brief | Runs the canvas's panel-6 plan; consumes the recommendation as GO / REVISE / NO-GO |
+| `aipos-rapid-validation` | Experiments, evidence, the viability brief | Runs the canvas's panel-6 plan; cites the recommendation as where validation started, and reaches its own GO / REVISE / NO-GO from the evidence |
 | `aipos-epic-create` | Epics and program briefs | Shares the problem-framing and metrics references; can take panel 1 and panel 3 into an epic |
 | `aipos-feature-create` | Rules and scenarios | Downstream, once a commitment is in view |

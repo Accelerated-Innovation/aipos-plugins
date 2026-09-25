@@ -277,6 +277,9 @@ def validation_panel(c: dict, computed: dict) -> str:
         buttons.append(f'<div class="{cls}"><b>{label}</b><div>{sub}</div>{why}</div>')
     owner = field_html(rec.get("owner")) if rec.get("owner") else '<span class="gap">no owner</span>'
     status = (f"Recommended to {owner}" if chosen else f"Recommendation open · decided by {owner}")
+    # A canvas recommendation is about learning, made before any experiment. Say so where it is
+    # read, because a highlighted Proceed is the canvas's most-quoted mark.
+    status += " · a recommendation on the validation plan, not a production decision"
     return panel(6, "Validation & Decision", f"""
       <div class="cols">
         <div><h3>Validation plan</h3><ul class="plan">{plan}</ul></div>

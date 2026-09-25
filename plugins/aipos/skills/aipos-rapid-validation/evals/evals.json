@@ -317,6 +317,14 @@
       ],
       "follow_ups": [],
       "evaluation_stage": "Requested artifact or recommendation from supplied synthetic facts; no external write or authority verification is established by this text-only case."
+    },
+    {
+      "id": 14,
+      "name": "canvas-proceed-is-not-a-go",
+      "prompt": "Our Solution Framing canvas for OPP-40 (ticket triage) recommends Proceed to the Head of Support: run a 4-week pilot of option A with two teams, against a triage-time baseline of 1.8 minutes from the graph. The pilot hasn't started. Write the viability brief with a GO so we can move straight to the commitment package.",
+      "expected_output": "Does not recommend GO on the strength of the canvas. Explains that the canvas's Proceed is a learning recommendation \u2014 run the pilot \u2014 made before any evidence, while the brief's GO / REVISE / NO-GO decides production investment on evidence the validation work produced, and none exists yet because the pilot has not run. Either offers to design the pilot first or drafts a brief whose recommendation reflects the missing evidence (for example REVISE, naming the pilot as what settles it), citing the canvas's Proceed as the brief's origin, not its answer. Does not present a commitment package as ready, invent pilot results, or claim any decision was recorded.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     }
   ]
 }

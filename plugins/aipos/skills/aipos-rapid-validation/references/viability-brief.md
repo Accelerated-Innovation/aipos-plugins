@@ -20,6 +20,12 @@ as confident when three of its four legs are assumption is the most dangerous ar
 skill can produce, because it travels further than the person who wrote it and gets quoted
 by people who never saw the evidence.
 
+**What this decides.** GO / NO-GO / REVISE is a production-investment decision, taken on the
+evidence the validation work produced. A Solution Framing canvas's Proceed / Pivot / Park is a
+different decision — whether to run a validation plan at all — made before any of it ran. Cite a
+canvas recommendation as the brief's origin, never as its answer: a Proceed with the pilot still
+unrun is not evidence for GO, however strong the canvas looks.
+
 If the honest answer is *we don't know enough to decide*, that is a legitimate output.
 Write **revise** and name the one or two things that would settle it. If useful, propose
 an explicitly unagreed effort estimate; leave unknown dates and budgets unknown.
@@ -42,7 +48,9 @@ evidence, say so in the same voice — an empty cell is information.
 ```markdown
 # Viability brief — <opportunity>
 ## Validation Decision recommendation: **GO / NO-GO / REVISE**
+**Decides:** production investment, on the evidence below
 **Authority:** <recommendation only; cite an actual recorded decision separately if supplied>
+**Origin:** <e.g. Solution Framing canvas `<slug>` — Proceed (run the pilot) recommended to <owner>; or none>
 
 <One paragraph. The decision, the single most important reason for it, and the biggest
 risk being accepted by making it. Someone should be able to read only this and act

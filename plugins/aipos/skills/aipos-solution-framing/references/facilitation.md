@@ -78,8 +78,10 @@ In this order, briefly — and **one question per turn** during set-up, in both 
 pile up: mode, which problem, a promotion, the title, where the canvas is kept. Ask only the one the
 next step depends on, and fold the rest into the summary as stated defaults the PM's next reply
 confirms or corrects (see *Proceed protocol*). Title, goal and where it's kept are proposals, never
-separate questions. When nothing in set-up needs deciding, the turn's one question is panel 1's
-first — usually which persona suffers most.
+separate questions. When nothing in set-up needs deciding, move straight into panel 1 at the mode's
+pace: in coach mode, ask its first question — usually which persona suffers most; in a workshop,
+put the panel's questions to the room together and show what it can't settle as `GAP` chips. The
+one-question rule is for set-up, not for a workshop's panels.
 
 1. **Mode** — above: from the request or a stated default, never its own question.
 2. **The graph** — detect it and choose the problem (`opportunity-source.md`). No graph → say so

@@ -9,6 +9,23 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.3.3
+
+The Solution Framing canvas and the viability brief now say plainly that they make
+different decisions. A canvas's Proceed / Pivot / Park is a learning decision made
+before any experiment — run its validation plan, rework the approach, or defer.
+The viability brief's GO / REVISE / NO-GO decides production investment once the
+evidence is in. They no longer map onto each other: a canvas Proceed is cited as
+where validation started, never carried into a brief as GO. Approval authority is
+unchanged. Rendered canvases add a line saying the recommendation is about the
+validation plan.
+
+Also in 1.3.3, for `aipos-solution-framing`: a workshop goes straight into panel 1
+at workshop pace (1.3.2's one-question rule now clearly covers set-up only), a
+figure is offered for transcription only when its record has a link to read from,
+and a volunteered figure is recorded beside its GAP before moving on to the target.
+Nothing to do beyond updating; no files move.
+
 ## Updating to 1.3.2
 
 `aipos-solution-framing` asks one question per turn while setting up, states the

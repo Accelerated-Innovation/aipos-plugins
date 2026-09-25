@@ -44,9 +44,12 @@ A precise to-do gets done; "go gather evidence" does not. Push once for precisio
 
 If the PM volunteers a figure anyway, keep it — as `assumed` with mark `[A]`, displayed beside the
 GAP, never computed with. Their knowledge is not thrown away, and the graph stays authoritative.
+Say so in a line, record the GAP and its to-do, and move on to the panel's next item — usually the
+target, which is the PM's call. A GAP doesn't hold the panel up, and it isn't re-argued.
 
 One exception: if the value sits in a record the graph links but can't show as text, the PM may read
-it from that record's `record_url`. It is recorded `[T]` (transcribed) — it computes, but it does not
+it from that record's `record_url` — only when the read returned one; with no `record_url` there
+is nothing to transcribe from. It is recorded `[T]` (transcribed) — it computes, but it does not
 unlock Proceed (`opportunity-source.md`, *Transcribed values*). Without a graph at all, the PM's
 account is the only source and is recorded `[I]` — see *No graph* in the same file.
 
@@ -268,6 +271,11 @@ the options were written.
 - [ ] **The recommendation is a recommendation.** Proceed / Pivot / Park with a named decision
       owner and a one-line rationale. The canvas never shows a decision as made; it shows what is
       recommended to whom.
+- [ ] **It is a recommendation about learning.** Proceed means run the panel-6 plan; Pivot, rework
+      the approach before testing it; Park, defer. None of them is a decision to invest in
+      production, and nobody should read a Proceed as permission to build. This adds to the point
+      above; it doesn't replace it. When the PM asks to set or change the recommendation, lead with
+      the owner: it is recommended to them, and they decide.
 - [ ] **Proceed is unavailable unless the primary metric's baseline is graph-backed.** A GAP, a
       figure the PM remembers, or an inference resting on a note all block it. Say why on the
       canvas. Pivot (reassess the approach) and Park (defer) remain available, and "not yet —
@@ -275,15 +283,20 @@ the options were written.
 - [ ] GenAI mode: evaluation criteria with thresholds, and say out loud that work under this
       Initiative inherits them (see `../../../references/metrics-and-evaluation.md`).
 
-**Mapping:** Proceed → GO, Pivot → REVISE, Park → NO-GO (defer), so `aipos-rapid-validation`'s
-viability brief can consume the recommendation without translation.
+**Two different decisions.** The canvas's recommendation is a *learning* decision, sought before
+any experiment: run the plan, rework the approach, or defer. The viability brief's GO / REVISE /
+NO-GO, from `aipos-rapid-validation`, is a *production-investment* decision, sought once the plan's
+evidence is in. They do not map onto each other. A Proceed asks the owner to fund the plan, nothing
+more, and it never becomes GO: the brief cites the canvas's recommendation as where validation
+started, then makes its own call from what the plan found. Approval authority is unchanged on both
+sides — each is a recommendation to a named owner.
 
 **Push scripts**
 
 > Who actually makes this call? The canvas names them; it doesn't make it for them.
 
-> Which result from the pilot would make you choose Pivot instead of Proceed? Write that down now,
-> before the result is in.
+> Which pilot result would count as support, and which would not? Write it down now, before the
+> result is in — it is what the viability brief will decide against.
 
 ## Footer
 
