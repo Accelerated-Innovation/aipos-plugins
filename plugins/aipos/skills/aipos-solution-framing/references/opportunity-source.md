@@ -74,7 +74,9 @@ For the chosen `problem_id`, in this order:
    old**), `record_url` (nullable), and `measurement` — a study finding's `{metric, value, unit,
    currency, n, method}` on a `study_finding` row, `null` on every other row.
 4. **`get_lineage`** — `originating_sources`, for breadth. Several references tracing to one
-   source is one source; five ranked problems from one call is one call.
+   source is one source; five ranked problems from one call is one call. The engine lists each
+   study finding as its own entry (`reops:<study>:<finding>`); the findings of one study are one
+   source, and the verifier counts them that way.
 5. **`get_evidence_text`** — only on demand, below.
 
 Check `schema_version` on every record: on `get_problem`, `get_lineage` and `get_work_item_links`

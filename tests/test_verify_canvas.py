@@ -604,6 +604,47 @@ def test_an_inference_from_a_finding_names_its_basis_and_is_not_held_to_its_numb
     assert not codes(report) & {"FINDING_MISMATCH", "FINDING_UNIT_MISMATCH"}
 
 
+@pytest.mark.parametrize(("unit", "mismatch"), [
+    ("% of tickets", False),        # the fixture's own routing unit: percent, however it is worded
+    ("minutes per ticket", True),   # a time unit named by its first word
+    ("EUR", True),                  # a currency code
+    ("$", True),                    # a currency symbol
+])
+def test_a_unit_written_as_people_write_it_is_still_checked(vc, good, unit, mismatch):
+    """Qodo review of #46: whole-string matching skipped '% of tickets' and 'minutes per ticket'."""
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["unit"] = unit
+    assert ("FINDING_UNIT_MISMATCH" in codes(vc.verify(c)[0])) is mismatch
+
+
+def test_a_monetary_finding_does_not_back_a_percentage_baseline(vc, good):
+    c = misrouting_canvas(good)
+    row = next(r for r in c["source"]["evidence_refs"] if r["provenance_reference"] == _FINDING)
+    row["measurement"].update({"unit": "currency", "currency": "EUR"})
+    assert "FINDING_UNIT_MISMATCH" in codes(vc.verify(c)[0])
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf")], ids=["nan", "infinity"])
+def test_a_non_finite_figure_is_not_a_number(vc, good, value):
+    """Qodo review of #46: NaN compares unequal to nothing, so it slipped past the finding check
+    and into the computed metrics."""
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["baseline"]["value"] = value
+    report, computed = vc.verify(c)
+    assert "NOT_NUMERIC" in codes(report)
+    assert computed["proceed_available"] is False
+    assert "nan" not in json.dumps(computed).lower() and "infinity" not in json.dumps(computed).lower()
+
+
+def test_findings_from_one_study_are_one_source(vc, good):
+    """Qodo review of #46: the engine's lineage lists each finding (reops:<study>:<finding>), so
+    two findings of one study must still count as one originating source."""
+    good["source"]["originating_sources"] = ["reops:study-ts-07:fnd-0002", "reops:study-ts-07:fnd-0003"]
+    report, computed = vc.verify(good)
+    assert computed["evidence"]["originating_sources"] == 1
+    assert "SINGLE_SOURCE" in warning_codes(report)
+
+
 def test_a_figure_cannot_be_transcribed_from_a_reops_record(vc, good):
     """Open question 3, decided 2026-09-26: a ReOps figure reaches the canvas as a finding the
     graph holds, never read off a ReOps page. [T] stays for sources with no push path."""

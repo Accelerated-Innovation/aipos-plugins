@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -104,7 +105,9 @@ def is_field(node: object) -> bool:
 
 
 def is_num(value: object) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
+    """A finite number. NaN and Infinity are not: NaN compares unequal to everything, so it would
+    slip past every arithmetic and finding check and into the computed block."""
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
 def walk_fields(node: object, path: str = ""):
@@ -419,8 +422,7 @@ def check_findings(canvas: dict, fields: list, report: Report) -> None:
                              f"{measurement.get('unit')} that {ref} holds")
     for index, metric in enumerate(L(D(canvas.get("panels")).get("metrics"))):
         baseline = D(D(metric).get("baseline"))
-        unit = str(D(metric).get("unit") or "").strip().lower()
-        stated = next((engine for engine, names in FINDING_UNITS.items() if unit in names), None)
+        stated = finding_unit(D(metric).get("unit"))
         if stated is None or baseline.get("status") == "gap" or baseline.get("mark") != "E":
             continue
         for ref in (r for r in L(baseline.get("refs")) if r in findings):
@@ -429,6 +431,32 @@ def check_findings(canvas: dict, fields: list, report: Report) -> None:
                 report.error("FINDING_UNIT_MISMATCH", f"panels.metrics[{index}].baseline",
                              f"the metric is in {D(metric).get('unit')!r} but {ref} measures in "
                              f"{measured}: a finding backs a baseline only for the same measure")
+
+
+def finding_unit(unit: object) -> str | None:
+    """The engine measurement unit a canvas unit names, or None when it cannot be told.
+
+    People write units as phrases ("% of tickets", "minutes per ticket"): a percent sign means
+    percent wherever it appears, a time unit is read from the first word, and an ISO 4217 code or a
+    currency symbol means currency. Anything else — "tickets", "misroutes per hundred" — is not
+    guessed at."""
+    if not isinstance(unit, str) or not unit.strip():
+        return None
+    if is_percent_unit(unit):
+        return "percent"
+    text = unit.strip()
+    if re.fullmatch(r"[A-Z]{3}", text) or any(symbol in text for symbol in "$€£¥"):
+        return "currency"
+    first = re.split(r"[\s/]+", text.lower())[0]
+    return next((engine for engine, names in FINDING_UNITS.items() if first in names), None)
+
+
+def origin(source: object) -> object:
+    """The source a lineage entry traces to. The engine lists each study finding as
+    `reops:<study>:<finding>`; several findings of one study are one source."""
+    if isinstance(source, str) and source.startswith("reops:") and source.count(":") == 2:
+        return source.rsplit(":", 1)[0]
+    return source
 
 
 def check_gap_wiring(canvas: dict, fields: list, report: Report) -> None:
@@ -684,7 +712,8 @@ def compute_evidence(canvas: dict, report: Report) -> dict:
         report.warn("ALL_EVIDENCE_AGING", "source.evidence_refs",
                     "every dated piece of evidence is aging — say so to the PM once")
     originating = L(source.get("originating_sources"))
-    single = len(set(originating)) == 1 and len(rows) >= 1
+    origins = {origin(s) for s in originating}
+    single = len(origins) == 1 and len(rows) >= 1
     if single:
         report.warn("SINGLE_SOURCE", "source.originating_sources",
                     "all evidence traces to one originating source — breadth is one, whatever the count")
@@ -720,7 +749,7 @@ def compute_evidence(canvas: dict, report: Report) -> dict:
             report.either(approved, "SNAPSHOT_NOT_APPROVED", path,
                           "the PM approves each real record shown on a shareable canvas")
     return {"tiles": tiles, "evidence_refs": len(rows), "undated": len(all_dates) - len(dated),
-            "originating_sources": len(set(originating)), "single_source": single,
+            "originating_sources": len(origins), "single_source": single,
             "all_aging": all_aging, "as_of": as_of.isoformat(), "aging_months": aging_months}
 
 
@@ -781,6 +810,8 @@ def proceed_guard(canvas: dict, fields: list, graph_refs: set, report: Report) -
         baseline = primary.get("baseline")
         if not present(baseline):
             blocked.append("the primary metric's baseline is a GAP")
+        elif not is_num(D(baseline).get("value")):
+            blocked.append("the primary metric's baseline is not a finite number")
         elif not graph_backed(baseline, graph_refs):
             blocked.append("the primary metric's baseline is not backed by the graph")
     decision = D(D(panels.get("validation")).get("recommendation")).get("decision")

@@ -71,8 +71,9 @@ Rules:
 - **A study finding is a number the graph holds.** A `study_finding` row carries its
   `measurement` (`metric`, `value`, `unit`, `currency`, `n`, `method`). A numeric `[E]` fact
   that cites one states **that finding's value**, and an `[E]` metric baseline citing one is in
-  **the same unit** (`min` for `minutes`, `%` for `percent`, and so on; a unit the verifier does
-  not recognise is not guessed at). Whether the finding measures the metric's *definition and
+  **the same unit**. The verifier reads a unit as people write it: a `%` anywhere is percent
+  (`% of tickets`), a time unit is its first word (`minutes per ticket`), and an ISO 4217 code or a
+  currency symbol is currency. A unit it cannot read that way (`tickets`) is not guessed at. Whether the finding measures the metric's *definition and
   population* is the candidate-baseline judgement in `panel-rubrics.md` — the verifier checks the
   number, the PM confirms the measure. A figure *derived* from a finding — the complement of a
   rate, say — is `[I]`, cites the finding, and names the derivation in its `note`. A finding the

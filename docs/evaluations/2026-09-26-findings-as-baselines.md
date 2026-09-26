@@ -80,6 +80,26 @@ baseline a GAP until the PM confirms.
 - Case 10 required Proceed to go "to a named owner" at panel 3, but the owner is named at panel 6.
   The assertion now tests that Proceed is framed as a recommendation.
 
+## Code review follow-up
+
+Qodo's review of PR #46 found three gaps in the verifier, and all three are fixed with tests
+written first:
+
+- **Units written as phrases skipped the check.** `% of tickets` (the fixture's own routing unit)
+  and `minutes per ticket` were not recognised, so an `[E]` baseline in an incompatible unit that
+  happened to share the finding's number passed. The verifier now reads a `%` anywhere as percent,
+  a time unit by its first word, and an ISO 4217 code or currency symbol as currency.
+- **NaN and Infinity counted as numbers.** NaN compares unequal to everything, so it slipped past
+  the finding check and into the computed block. `is_num` now requires a finite number, so such a
+  figure is `NOT_NUMERIC` everywhere. The Proceed guard also requires a numeric primary baseline:
+  a NaN `[E]` baseline had still reported Proceed as available.
+- **Findings inflated source breadth.** The engine's lineage lists each finding as
+  `reops:<study>:<finding>`, so two findings of one study counted as two sources and could hide
+  `SINGLE_SOURCE`. The verifier now counts a study's findings as one source. The mock keeps
+  matching the engine.
+
+`pytest`: 646 passed, 5 skipped.
+
 ## Remaining misses
 
 - `a-finding-that-is-the-metric-becomes-the-baseline`, 1 of 3: the model typed the derived 16%
