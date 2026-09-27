@@ -715,6 +715,25 @@ def test_any_record_of_a_finding_system_is_refused_for_transcription(vc, good):
     assert "T_FROM_REOPS" in codes(vc.verify(transcribed(good, "reops:int-0412"))[0])
 
 
+def test_a_later_duplicate_row_cannot_launder_a_finding(vc, good):
+    """Qodo review of #47: a second, ordinary row for the same reference must not overwrite the
+    finding row — any row saying the reference is a finding (or from a finding system) counts."""
+    good["source"]["evidence_refs"].append({
+        "provenance_reference": _FINDING, "source_system": "zendesk", "source_type": "support_ticket",
+        "occurred_at": None, "record_url": "https://zendesk.test/x", "measurement": None})
+    assert "T_FROM_REOPS" in codes(vc.verify(transcribed(good, _FINDING))[0])
+
+
+def test_a_later_duplicate_row_does_not_ungroup_a_finding(vc, good):
+    second_finding(good)
+    good["source"]["evidence_refs"].append({
+        "provenance_reference": "reops:study-ts-07:fnd-0003", "source_system": "zendesk",
+        "source_type": "support_ticket", "occurred_at": None, "record_url": None, "measurement": None})
+    good["source"]["originating_sources"] = [_FINDING, "reops:study-ts-07:fnd-0003"]
+    _, computed = vc.verify(good)
+    assert computed["evidence"]["originating_sources"] == 1
+
+
 def test_a_record_of_another_system_can_still_be_transcribed(vc, good):
     assert "T_FROM_REOPS" not in codes(vc.verify(transcribed(good, "zendesk:tkt-88121"))[0])
 

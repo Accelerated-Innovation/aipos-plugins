@@ -321,8 +321,13 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
     approved = canvas.get("stage") == "approved"
     # Where each graph reference can be read by a person. Transcription needs somewhere to read
     # from: a record the graph returned without a record_url can only be brought into the graph.
-    rows = {D(r).get("provenance_reference"): D(r) for r in L(D(canvas.get("source")).get("evidence_refs"))}
-    record_urls = {ref: row.get("record_url") for ref, row in rows.items()}
+    rows = [D(r) for r in L(D(canvas.get("source")).get("evidence_refs"))]
+    record_urls = {row.get("provenance_reference"): row.get("record_url") for row in rows}
+    # Any row saying a reference is a finding, or from a system that records findings, counts —
+    # a later ordinary row for the same reference cannot overwrite it.
+    finding_sourced = {row.get("provenance_reference") for row in rows
+                       if row.get("source_type") == "study_finding"
+                       or row.get("source_system") in FINDING_SYSTEMS}
     fields = list(walk_fields(canvas))
     for path, f in fields:
         status, kind, mark = f.get("status"), f.get("kind"), f.get("mark")
@@ -364,9 +369,7 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
                          "figure in 'assumed'")
             continue
         if mark == "T":
-            from_findings = [r for r in refs if r in rows and (
-                rows[r].get("source_type") == "study_finding"
-                or rows[r].get("source_system") in FINDING_SYSTEMS)]
+            from_findings = [r for r in refs if r in finding_sourced]
             if from_findings:
                 report.error("T_FROM_REOPS", path,
                              f"a research figure reaches the canvas as a study finding the graph "
@@ -720,7 +723,8 @@ def compute_evidence(canvas: dict, report: Report) -> dict:
         report.warn("ALL_EVIDENCE_AGING", "source.evidence_refs",
                     "every dated piece of evidence is aging — say so to the PM once")
     originating = L(source.get("originating_sources"))
-    findings = {ref for ref, row in rows.items() if row.get("source_type") == "study_finding"}
+    findings = {D(r).get("provenance_reference") for r in L(source.get("evidence_refs"))
+                if D(r).get("source_type") == "study_finding"}
     origins = {origin(s, findings) for s in originating}
     single = len(origins) == 1 and len(rows) >= 1
     if single:
