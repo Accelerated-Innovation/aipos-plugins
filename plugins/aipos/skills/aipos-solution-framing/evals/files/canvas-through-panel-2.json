@@ -47,63 +47,78 @@
         "source_system": "reops",
         "source_type": "interview_note",
         "occurred_at": "2026-07-08T15:00:00Z",
-        "record_url": "https://fixture.invalid/reops/int-0412"
+        "record_url": "https://fixture.invalid/reops/int-0412",
+        "measurement": null
       },
       {
         "provenance_reference": "reops:int-0415",
         "source_system": "reops",
         "source_type": "interview_note",
         "occurred_at": "2026-07-09T14:30:00Z",
-        "record_url": "https://fixture.invalid/reops/int-0415"
+        "record_url": "https://fixture.invalid/reops/int-0415",
+        "measurement": null
       },
       {
         "provenance_reference": "reops:int-0419",
         "source_system": "reops",
         "source_type": "interview_note",
         "occurred_at": "2026-07-14T16:00:00Z",
-        "record_url": "https://fixture.invalid/reops/int-0419"
+        "record_url": "https://fixture.invalid/reops/int-0419",
+        "measurement": null
       },
       {
         "provenance_reference": "zendesk:tkt-88121",
         "source_system": "zendesk",
         "source_type": "support_ticket",
         "occurred_at": "2026-08-02T09:12:00Z",
-        "record_url": "https://fixture.invalid/zendesk/tkt-88121"
+        "record_url": "https://fixture.invalid/zendesk/tkt-88121",
+        "measurement": null
       },
       {
         "provenance_reference": "zendesk:tkt-88340",
         "source_system": "zendesk",
         "source_type": "support_ticket",
         "occurred_at": "2026-08-05T11:40:00Z",
-        "record_url": "https://fixture.invalid/zendesk/tkt-88340"
+        "record_url": "https://fixture.invalid/zendesk/tkt-88340",
+        "measurement": null
       },
       {
         "provenance_reference": "zendesk:tkt-88417",
         "source_system": "zendesk",
         "source_type": "support_ticket",
         "occurred_at": "2026-08-06T08:05:00Z",
-        "record_url": "https://fixture.invalid/zendesk/tkt-88417"
+        "record_url": "https://fixture.invalid/zendesk/tkt-88417",
+        "measurement": null
       },
       {
         "provenance_reference": "gong:call-5530",
         "source_system": "gong",
         "source_type": "call_transcript",
         "occurred_at": "2026-06-18T17:00:00Z",
-        "record_url": "https://fixture.invalid/gong/call-5530"
+        "record_url": "https://fixture.invalid/gong/call-5530",
+        "measurement": null
       },
       {
-        "provenance_reference": "reops:study-ts-07",
+        "provenance_reference": "reops:study-ts-07:fnd-0002",
         "source_system": "reops",
-        "source_type": "study_outcome",
-        "occurred_at": null,
-        "record_url": null
+        "source_type": "study_finding",
+        "occurred_at": "2026-08-20T00:00:00+00:00",
+        "record_url": null,
+        "measurement": {
+          "metric": "misrouted_ticket_rate",
+          "value": 32.0,
+          "unit": "percent",
+          "currency": null,
+          "n": 400,
+          "method": "log_analysis"
+        }
       }
     ],
     "originating_sources": [
       "reops:study-int-2026-07",
       "zendesk:view-triage-audit-2026-08",
       "gong:call-5530",
-      "reops:study-ts-07"
+      "reops:study-ts-07:fnd-0002"
     ],
     "excerpts": [
       {
@@ -250,15 +265,15 @@
         {
           "label": "Time study",
           "refs": [
-            "reops:study-ts-07"
+            "reops:study-ts-07:fnd-0002"
           ],
           "finding": {
             "kind": "fact",
             "status": "confirmed",
-            "value": "A time study outcome is linked; its result is not readable through the graph",
+            "value": "The time study's recorded finding is the misrouting rate — 32% of 400 tickets — not triage time; its triage-time result is not yet recorded as a finding",
             "mark": "E",
             "refs": [
-              "reops:study-ts-07"
+              "reops:study-ts-07:fnd-0002"
             ]
           }
         },

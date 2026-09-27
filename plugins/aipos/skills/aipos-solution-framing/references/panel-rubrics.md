@@ -50,7 +50,9 @@ target, which is the PM's call. A GAP doesn't hold the panel up, and it isn't re
 One exception: if the value sits in a record the graph links but can't show as text, the PM may read
 it from that record's `record_url` — only when the read returned one; with no `record_url` there
 is nothing to transcribe from. It is recorded `[T]` (transcribed) — it computes, but it does not
-unlock Proceed (`opportunity-source.md`, *Transcribed values*). Without a graph at all, the PM's
+unlock Proceed (`opportunity-source.md`, *Transcribed values*). **Not from a ReOps record**: a
+figure ReOps holds is recorded there as a study finding and reaches the canvas through the graph,
+so the to-do is to record the finding in ReOps. Without a graph at all, the PM's
 account is the only source and is recorded `[I]` — see *No graph* in the same file.
 
 Decisions — wording, targets, options, owners, the plan, the recommendation — are the PM's, and
@@ -182,6 +184,16 @@ the evidence-GAP question above.
       provenance (a candidate from the PM's account stays `[I]`, not `[E]`). A rate that is merely
       related is context, not a baseline: say so, and the baseline stays a GAP. A PM's agreement
       cannot make two different measures one.
+- [ ] A **study finding** in the graph read is the strongest baseline there is — a measured
+      number the graph holds. When its measurement is the metric (same measure, population and
+      unit), the baseline is the finding's own value, `[E]`, citing it; that is graph-backed, so
+      Proceed can later be *recommended to the named owner* — it is still not a decision made. The
+      target stays the PM's (a % change or an absolute), and any derived figure comes from the
+      verifier, not typed. When it measures a related rate, the check above applies: it is a
+      candidate. Ask **one** question — do the two count the same things, over the same
+      population, the same way? — say the baseline stays a GAP until the PM confirms, and record a
+      confirmed derivation `[I]` citing the finding. When the graph holds no
+      finding, the to-do is to record one in ReOps — never to read a figure off a ReOps page.
 
 **Push scripts**
 

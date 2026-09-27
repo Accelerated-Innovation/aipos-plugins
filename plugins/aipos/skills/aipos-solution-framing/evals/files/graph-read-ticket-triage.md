@@ -28,7 +28,7 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
     "zendesk:tkt-88340",
     "zendesk:tkt-88417",
     "gong:call-5530",
-    "reops:study-ts-07"
+    "reops:study-ts-07:fnd-0002"
   ],
   "personas": [
     {
@@ -61,7 +61,8 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "int-0412",
       "occurred_at": "2026-07-08T15:00:00Z",
       "record_url": "https://fixture.invalid/reops/int-0412",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
       "provenance_reference": "reops:int-0415",
@@ -70,7 +71,8 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "int-0415",
       "occurred_at": "2026-07-09T14:30:00Z",
       "record_url": "https://fixture.invalid/reops/int-0415",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
       "provenance_reference": "reops:int-0419",
@@ -79,7 +81,8 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "int-0419",
       "occurred_at": "2026-07-14T16:00:00Z",
       "record_url": "https://fixture.invalid/reops/int-0419",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
       "provenance_reference": "zendesk:tkt-88121",
@@ -88,7 +91,8 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "tkt-88121",
       "occurred_at": "2026-08-02T09:12:00Z",
       "record_url": "https://fixture.invalid/zendesk/tkt-88121",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
       "provenance_reference": "zendesk:tkt-88340",
@@ -97,7 +101,8 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "tkt-88340",
       "occurred_at": "2026-08-05T11:40:00Z",
       "record_url": "https://fixture.invalid/zendesk/tkt-88340",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
       "provenance_reference": "zendesk:tkt-88417",
@@ -106,7 +111,8 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "tkt-88417",
       "occurred_at": "2026-08-06T08:05:00Z",
       "record_url": "https://fixture.invalid/zendesk/tkt-88417",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
       "provenance_reference": "gong:call-5530",
@@ -115,16 +121,25 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
       "external_record_id": "call-5530",
       "occurred_at": "2026-06-18T17:00:00Z",
       "record_url": "https://fixture.invalid/gong/call-5530",
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": null
     },
     {
-      "provenance_reference": "reops:study-ts-07",
+      "provenance_reference": "reops:study-ts-07:fnd-0002",
       "source_system": "reops",
-      "source_type": "study_outcome",
-      "external_record_id": "study-ts-07",
-      "occurred_at": null,
+      "source_type": "study_finding",
+      "external_record_id": "study-ts-07:fnd-0002",
+      "occurred_at": "2026-08-20T00:00:00+00:00",
       "record_url": null,
-      "schema_version": 1
+      "schema_version": 1,
+      "measurement": {
+        "metric": "misrouted_ticket_rate",
+        "value": 32.0,
+        "unit": "percent",
+        "currency": null,
+        "n": 400,
+        "method": "log_analysis"
+      }
     }
   ],
   "total": 8
@@ -143,13 +158,13 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
     "zendesk:tkt-88340",
     "zendesk:tkt-88417",
     "gong:call-5530",
-    "reops:study-ts-07"
+    "reops:study-ts-07:fnd-0002"
   ],
   "originating_sources": [
     "reops:study-int-2026-07",
     "zendesk:view-triage-audit-2026-08",
     "gong:call-5530",
-    "reops:study-ts-07"
+    "reops:study-ts-07:fnd-0002"
   ],
   "schema_version": 1
 }

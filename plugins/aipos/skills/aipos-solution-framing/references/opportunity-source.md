@@ -71,9 +71,12 @@ For the chosen `problem_id`, in this order:
    is still the PM's to write.
 3. **`list_evidence`** — the primary evidence read: qualified `provenance_reference`
    (`<source_system>:<id>`), `source_type`, `occurred_at` (nullable — **null is unknown, not
-   old**), `record_url` (nullable).
+   old**), `record_url` (nullable), and `measurement` — a study finding's `{metric, value, unit,
+   currency, n, method}` on a `study_finding` row, `null` on every other row.
 4. **`get_lineage`** — `originating_sources`, for breadth. Several references tracing to one
-   source is one source; five ranked problems from one call is one call.
+   source is one source; five ranked problems from one call is one call. The engine lists each
+   study finding as its own entry (`reops:<study>:<finding>`); the findings of one study are one
+   source, and the verifier counts them that way.
 5. **`get_evidence_text`** — only on demand, below.
 
 Check `schema_version` on every record: on `get_problem`, `get_lineage` and `get_work_item_links`
@@ -129,7 +132,7 @@ Copy values exactly as returned — the verifier checks every `[E]` against this
 | `server` | the tool prefix you read from |
 | `schema_version`, `problem_id`, `title`, `composite_score`, `personas` | `get_problem` |
 | `components` | the problem's `list_opportunities` row, when read |
-| `evidence_refs[]` | `list_evidence` items: `provenance_reference`, `source_system`, `source_type`, `occurred_at`, `record_url` |
+| `evidence_refs[]` | `list_evidence` items: `provenance_reference`, `source_system`, `source_type`, `occurred_at`, `record_url`, `measurement` |
 | `originating_sources` | `get_lineage` |
 | `excerpts[]` | each `get_evidence_text` result actually used: `provenance_reference`, `excerpt` → `text`, `anchored`, `redaction_applied` |
 | `work_items[]`, `promoted` | `get_work_item_links` (`promoted: null` when unavailable) |
@@ -145,10 +148,28 @@ Reopening a saved canvas starts with a fresh read — the graph may have moved s
    a new promotion. Evidence that disappeared from the graph can no longer back an `[E]` — the
    verifier will say which fields lost their footing.
 3. For each open evidence GAP, look at the new references. A GAP closes when a graph record carries
-   the value — an excerpt that states it: quote the fragment, cite the reference, mark it `[E]`.
+   the value — a **study finding** whose measurement is the metric (its own number, in its unit,
+   cited `[E]`), or an excerpt that states it: quote the fragment, cite the reference, mark it `[E]`.
+   A finding that measures something close but different is a candidate, not the value (see
+   *Findings as baselines*).
 
-**Transcribed values (`[T]`).** A record the graph links but can't show as text (a ReOps study
-outcome, say) may carry the value behind its `record_url`. Only a reference the read returned
+**Findings as baselines.** A `study_finding` row is the graph holding a number. When its
+measurement is the metric — the same measure, over the same population, in the same unit — the
+baseline is that finding: its `value`, marked `[E]`, citing the finding. The verifier checks the
+number and the unit; whether it is the same measure is a judgement you name to the PM (the
+candidate-baseline check in `panel-rubrics.md`). A finding that measures a related rate — the
+complement of a misrouting rate, say — is a *candidate*: name it, ask the PM one question — do
+the two count the same things, over the same population, the same way? — and keep the baseline a
+GAP until they confirm; only then record the derived figure `[I]`, citing the finding, with the
+derivation in `note`. A graph-backed baseline makes Proceed available to *recommend* to the named
+owner; it never makes the decision. A finding returned with `measurement: null` backs nothing.
+When the graph has no finding for a baseline, the to-do asks the researcher to **record the finding
+in ReOps**: the push brings it into the graph. Never ask a PM to read a figure off a ReOps page.
+
+**Transcribed values (`[T]`).** A record the graph links but can't show as text — from a source
+with no way into the graph as a number, such as a Zendesk view — may carry the value behind its
+`record_url`. **Never a ReOps record**: a ReOps figure reaches the canvas as a study finding, and
+the verifier refuses a `[T]` citing a `reops:` reference (`T_FROM_REOPS`). Only a reference the read returned
 **with** a `record_url` can be transcribed; one without has nowhere to read from, so don't offer
 it — the value stays a GAP whose to-do brings it into the graph. The PM may read it from there — in any
 session, not just on resume — and it is recorded `[T]`, citing that reference, with `note: "read

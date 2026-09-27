@@ -50,7 +50,7 @@ the plan, the recommendation. The split is the whole contract:
 | Provenance mark | `E` or `I` (see below) | None; a mark on a decision is an error |
 | `[E]` | Cites `refs` the graph returned in this read | — |
 | `[I]` | Inferred from graph `refs`. A `note` alone is allowed only on a `pm-interview` canvas | — |
-| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) — one the read returned **with** a `record_url` — and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value | — |
+| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) — one the read returned **with** a `record_url` — and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value. **Never from a ReOps record** (`reops:`): a ReOps figure reaches the canvas as a study finding the graph holds, cited `[E]` | — |
 | `[A]` | Never on a present fact — an assumption is a GAP with the figure in `assumed` | — |
 | Missing | `GAP · evidence` (always, for a fact), wired to a to-do | `GAP · decision` |
 
@@ -68,6 +68,16 @@ Rules:
   target_change_pct, volume) hold numbers, not numeric strings.
 - **Graph-backed** means an `[E]` fact, or an `[I]` fact whose `refs` are all graph references.
   `[T]` is not graph-backed. Proceed rests only on a graph-backed primary baseline.
+- **A study finding is a number the graph holds.** A `study_finding` row carries its
+  `measurement` (`metric`, `value`, `unit`, `currency`, `n`, `method`). A numeric `[E]` fact
+  that cites one states **that finding's value**, and an `[E]` metric baseline citing one is in
+  **the same unit**. The verifier reads a unit as people write it: a `%` anywhere is percent
+  (`% of tickets`), a time unit is its first word (`minutes per ticket`), and an ISO 4217 code or a
+  currency symbol is currency. A unit it cannot read that way (`tickets`) is not guessed at. Whether the finding measures the metric's *definition and
+  population* is the candidate-baseline judgement in `panel-rubrics.md` — the verifier checks the
+  number, the PM confirms the measure. A figure *derived* from a finding — the complement of a
+  rate, say — is `[I]`, cites the finding, and names the derivation in its `note`. A finding the
+  graph returned with `measurement: null` backs no number, stated or inferred.
 - **On a `pm-interview` canvas** the PM's account is the only source: facts are `[I]` with a `note`
   naming whose account, and they **are** computed with — the arithmetic is still checked — but
   nothing is graph-backed, so Proceed is unavailable and the render says the canvas rests on the
@@ -104,7 +114,9 @@ A record of exactly what the graph returned, so every `[E]` can be checked again
   "personas": [{ "name": "Support Agent", "confidence": 0.91 }],
   "evidence_refs": [{ "provenance_reference": "zendesk:tkt-88121", "source_system": "zendesk",
                       "source_type": "support_ticket", "occurred_at": "…" | null,
-                      "record_url": "…" | null }],
+                      "record_url": "…" | null,
+                      "measurement": null }],   // on a study_finding row: { metric, value,
+                                                // unit, currency, n, method } — as list_evidence returned it
   "originating_sources": ["…"],           // from get_lineage — breadth, not the ref count
   "excerpts": [{ "provenance_reference": "…", "text": "…", "anchored": true,
                  "redaction_applied": true }],   // only what get_evidence_text returned
@@ -201,8 +213,8 @@ Each evidence GAP has one:
 
 ```json
 { "id": "t1", "field": "panels.metrics[0].baseline",
-  "action": "Log the time-study result (study-ts-07) via ReOps intake → PDG",
-  "measure": "average minutes per ticket spent on triage", "source_type": "study_outcome",
+  "action": "Record the time study's triage-time result as a finding on study-ts-07 in ReOps",
+  "measure": "average minutes per ticket spent on triage", "source_type": "study_finding",
   "window": "4 weeks" | null, "intake_route": "reops",
   "destination": "ticket" | "todo.md", "status": "open" | "done",
   "reops_draft": { "project_name": "…", "background": ["…"], "needs": ["…"], "personas": ["…"] } }
@@ -251,8 +263,9 @@ The verifier never crashes: malformed input is reported as `MALFORMED` (or a mor
 - *Shape:* `MALFORMED` `CANVAS_VERSION` `MODE` `STAGE` `INCOMPLETE_AT_APPROVAL` `MISSING` `NOT_A_FIELD` `WRONG_KIND`
   `NOT_NUMERIC` `SOURCE_KIND` `SCHEMA_VERSION_UNSUPPORTED` `EXCERPT_NOT_IN_GRAPH`
 - *Provenance:* `FIELD_STATUS` `PROVISIONAL_AT_APPROVAL` `GAP_HAS_VALUE` `GAP_TYPE` `ASSUMED_MARK`
-  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `T_WITHOUT_RECORD` `T_WITHOUT_URL` `REF_NOT_IN_GRAPH`
+  `EMPTY_FIELD` `DECISION_MARKED` `FACT_UNMARKED` `FACT_ASSUMED` `E_WITHOUT_REF` `T_WITHOUT_RECORD` `T_WITHOUT_URL` `T_FROM_REOPS` `REF_NOT_IN_GRAPH`
   `I_WITHOUT_BASIS` `TODO_ORPHANED`
+- *Findings:* `FINDING_MISMATCH` `FINDING_UNIT_MISMATCH` `FINDING_UNREADABLE`
 - *Arithmetic:* `PRIMARY_METRIC` `TOO_MANY_OUTCOMES` `UNKNOWN_METRIC` `PRIMARY_NOT_OUTCOME`
   `NO_TARGET` `DIRECTION` `TARGET_INCONSISTENT` `OUT_OF_RANGE` `SAVING_INCONSISTENT`
   `IMPACT_INCONSISTENT` `IMPACT_UNSUPPORTED` `IMPACT_UNIT` `FACTOR_INVALID` `FACTOR_MISMATCH`

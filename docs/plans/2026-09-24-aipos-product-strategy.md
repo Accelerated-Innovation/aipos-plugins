@@ -117,5 +117,15 @@ read it only through the engine MCP. Increment 0, two bugs on the existing outco
 is in review as [discovery-engine #95](https://github.com/Accelerated-Innovation/discovery-engine/pull/95)
 and [reops #155](https://github.com/Accelerated-Innovation/reops/pull/155).
 
+**Gap 2 — the plugin side addressed in 1.4.0 (2026-09-26).** The engine now stores a
+study finding and serves its measurement on `list_evidence` (discovery-engine features
+17 and 18, #98–#107). The canvas takes a finding that *is* the metric as an `[E]`
+baseline with the finding's own value — graph-backed, so Proceed can be recommended —
+and the verifier checks the number and unit. A related finding is a candidate (`[I]`
+once the PM confirms it). `[T]` may no longer cite a ReOps record: a ReOps figure
+reaches the canvas as a finding in the graph. What remains is ReOps recording and
+pushing findings (plan increment 3, in refinement as [reops #157](https://github.com/Accelerated-Innovation/reops/pull/157)),
+then the end-to-end check on the live stack.
+
 These follow-ups are bounded integration work. Canvas approval/baseline rules,
 production behavior ownership, and readiness authority are unchanged here.

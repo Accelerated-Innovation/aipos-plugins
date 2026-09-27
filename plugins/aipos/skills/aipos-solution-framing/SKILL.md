@@ -44,7 +44,10 @@ baseline, Proceed, or approval rules.
   `canvas.json` is the record; the image is a view of it.
 - **Fact** — a claim about the world: evidence, a baseline, a volume, a date, an example. Comes from
   the graph and carries a provenance mark: `[E]` evidence-backed, `[I]` inferred, `[T]` transcribed
-  by a person from a record the graph links.
+  by a person from a record the graph links (never a ReOps record).
+- **Study finding** — a researcher's measured result (metric, value, unit, sample size, method),
+  recorded in ReOps and held by the graph. `list_evidence` returns it on a `study_finding` row as
+  `measurement`. It is the graph's way to carry a baseline: cite it `[E]` with its own number.
 - **Decision** — something the PM authors: wording, targets, options, owners, the plan, the
   recommendation. Carries no mark.
 - **GAP** — something missing. `GAP · evidence` is a fact the graph doesn't hold; `GAP · decision` is
@@ -61,7 +64,8 @@ typed.**
    a ReOps to-do, a panel-5 assumption and a panel-6 plan item. A figure the PM volunteers is kept as
    an assumption beside the GAP, never used in a calculation. Two bounded exceptions, both labelled:
    a value the PM reads from a record the graph links is `[T]` and computes but never unlocks
-   Proceed; with no graph connected, the PM's account is the only source (see *Inputs*).
+   Proceed — never from a ReOps record, whose figures reach the graph as study findings; with no
+   graph connected, the PM's account is the only source (see *Inputs*).
 2. **Never type a number the verifier can compute.** Percent changes, derived targets, savings,
    impact at scale, evidence counts and dates come from `scripts/verify_canvas.py`. A GAP input
    renders as a formula, never a placeholder.

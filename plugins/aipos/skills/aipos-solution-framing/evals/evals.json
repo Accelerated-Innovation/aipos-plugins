@@ -8,7 +8,7 @@
       "files": [
         "files/graph-read-ticket-triage.md"
       ],
-      "expected_output": "The response starts from the graph read rather than asking the PM to recall anything. It summarises what the graph holds — 8 evidence references (3 interview notes from July 2026, 3 support tickets from August 2026, 1 call transcript from June 2026, 1 study outcome with no date), 4 originating sources, the three personas with their confidences — and, just as prominently, what it does not hold: no ticket volume and no triage-time or routing figure it can read. It notes the problem is not promoted (no work-item links). It says once that this is the mock graph and the data is synthetic. It treats the null occurred_at as 'date unknown', not as old. It asks whether this is a live workshop or a one-to-one session (or proceeds on a stated default) and otherwise asks one primary question — typically which persona suffers most. It does not invent a baseline, a volume, a quote or a finding about what the interview notes say.",
+      "expected_output": "The response starts from the graph read rather than asking the PM to recall anything. It summarises what the graph holds — 8 evidence references (3 interview notes from July 2026, 3 support tickets from August 2026, 1 call transcript from June 2026, and 1 study finding from August 2026 whose measurement is a misrouted-ticket rate of 32% over 400 tickets, by log analysis), 4 originating sources, the three personas with their confidences — and, just as prominently, what it does not hold: no ticket volume and no triage-time figure. It reads the finding as a number the graph holds, but does not adopt it as the triage-time or first-time-correct routing baseline: it may say the finding could be a baseline if the PM chooses the misrouting rate as a metric, or a candidate for the routing metric to confirm, but nothing is adopted before the PM chooses the metrics. It notes the problem is not promoted (no work-item links). It says once that this is the mock graph and the data is synthetic. It asks whether this is a live workshop or a one-to-one session (or proceeds on a stated default) and otherwise asks one primary question — typically which persona suffers most. It does not invent a baseline, a volume, a quote or a finding about what the interview notes say.",
       "assertions": [
         {
           "name": "summarises-what-the-graph-holds",
@@ -16,15 +16,15 @@
         },
         {
           "name": "names-what-the-graph-lacks",
-          "text": "The response says the graph holds no readable ticket volume and no readable triage-time or routing baseline."
+          "text": "The response says the graph holds no ticket volume and no triage-time figure."
         },
         {
           "name": "synthetic-flagged",
           "text": "The response says the data comes from the mock graph and is synthetic."
         },
         {
-          "name": "null-date-is-unknown",
-          "text": "The undated study outcome is described as undated or date unknown, not as old or stale."
+          "name": "finding-read-not-adopted",
+          "text": "The response reports the study finding's measurement (a 32% misrouted-ticket rate over 400 tickets) as a number the graph holds, and does not adopt it as the triage-time or first-time-correct routing baseline before the PM has chosen the metrics (saying it could serve if chosen is fine)."
         },
         {
           "name": "one-question",
@@ -46,7 +46,7 @@
         "files/canvas-through-panel-2.json",
         "files/graph-read-ticket-triage.md"
       ],
-      "expected_output": "The response does not record 2 minutes as evidence. It explains briefly that the graph does not hold a readable triage-time figure (the linked time study reops:study-ts-07 has no readable text and no date), so the baseline is an evidence GAP; it keeps the PM's figure as an assumption shown beside the GAP ([A], 'PM estimate'), and says it will not be used in any calculation. It asks what evidence would settle the baseline and where it would come from — or proposes the concrete route: the time-study result logged into the graph via ReOps intake — and creates or offers the to-do with a specific measure (average minutes per ticket spent on triage) rather than 'gather evidence'. It does not offer to transcribe the figure from the study record: that record has no record_url in the graph read, so there is nothing to transcribe from. It then moves on to the target, which is the PM's decision, without re-litigating. It does not lecture and asks at most one question.",
+      "expected_output": "The response does not record 2 minutes as evidence. It explains briefly that the graph does not hold a triage-time figure — the time study's one recorded finding (reops:study-ts-07:fnd-0002) measures the misrouting rate, not triage time — so the baseline is an evidence GAP; it keeps the PM's figure as an assumption shown beside the GAP ([A], 'PM estimate'), and says it will not be used in any calculation. It asks what evidence would settle the baseline and where it would come from — or proposes the concrete route: the researcher records the time study's triage-time result as a finding on study-ts-07 in ReOps, and the push brings it into the graph — and creates or offers the to-do with a specific measure (average minutes per ticket spent on triage) rather than 'gather evidence'. It does not offer to have anyone read the figure off a ReOps page or transcribe it. It then moves on to the target, which is the PM's decision, without re-litigating. It does not lecture and asks at most one question.",
       "assertions": [
         {
           "name": "not-recorded-as-evidence",
@@ -62,7 +62,7 @@
         },
         {
           "name": "specific-todo",
-          "text": "The to-do names a specific measure (e.g. average triage minutes per ticket) and the ReOps intake route."
+          "text": "The to-do names a specific measure (e.g. average triage minutes per ticket) and the route: recording the time study's result as a finding in ReOps."
         },
         {
           "name": "moves-forward",
@@ -279,6 +279,96 @@
       "expected_output": "Says no: Proceed is a learning recommendation to the named owner, the Head of Support, to run the panel-6 plan — the 4-week pilot with two teams — and nothing more. It is a recommendation, not a decision recorded as made, and it is not a production-investment go-ahead. Building option A for every team is a different decision: the viability brief's GO / REVISE / NO-GO from aipos-rapid-validation, reached once the pilot's evidence is in, with approval staying with the accountable owner. Suggests writing down now what pilot result would count as support. Does not invent pilot results or treat the canvas as evidence the pilot succeeded.",
       "follow_ups": [],
       "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 10,
+      "name": "a-finding-that-is-the-metric-becomes-the-baseline",
+      "prompt": "Panel 3. Let's make the primary metric the misrouted-ticket rate — the share of tickets first sent to the wrong team. We want to halve it.",
+      "files": [
+        "files/canvas-through-panel-2.json",
+        "files/graph-read-ticket-triage.md"
+      ],
+      "expected_output": "The response takes the baseline from the graph rather than asking the PM: the time study's finding reops:study-ts-07:fnd-0002 measures the misrouted-ticket rate at 32% over 400 tickets, by log analysis. It records the baseline as 32 (%) marked [E], citing that finding, and checks once with the PM that the finding counts misrouting the way the metric means it (first assignment to the wrong team, over the triaged tickets) — the verifier checks the number and the unit, the PM confirms the measure. The target is the PM's −50%, and the derived target (16%) comes from the verifier, not typed. It says this baseline is graph-backed, so Proceed can be offered once the panels are done — as a recommendation to whoever owns the decision (named at panel 6), not a decision made. It does not invent a volume or ask the PM for the baseline.",
+      "assertions": [
+        {
+          "name": "baseline-from-the-finding",
+          "text": "The baseline is 32% taken from the study finding reops:study-ts-07:fnd-0002, marked [E] and citing it, not a number asked of the PM."
+        },
+        {
+          "name": "measure-confirmed",
+          "text": "The response checks with the PM that the finding measures the same thing the metric means (misrouting defined the same way over the same tickets)."
+        },
+        {
+          "name": "target-computed",
+          "text": "The target is kept as the PM's −50% with the absolute target left to the verifier (or stated as 16% derived from it), not typed as an independent figure."
+        },
+        {
+          "name": "graph-backed-said",
+          "text": "The response says the baseline is graph-backed and that Proceed can therefore be recommended later — framed as a recommendation to the decision's owner, not as a decision made. (The owner is named at panel 6, so it need not be named yet.)"
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Mid-flow, panel 3 — a finding the graph holds is the metric."
+    },
+    {
+      "id": 11,
+      "name": "a-related-finding-is-a-candidate-not-the-baseline",
+      "prompt": "Panel 3. The primary metric is tickets routed correctly first time. The study says 32% are misrouted, so the baseline is 68%. Put 68% in as evidence.",
+      "files": [
+        "files/canvas-through-panel-2.json",
+        "files/graph-read-ticket-triage.md"
+      ],
+      "expected_output": "The response does not record 68% as [E]: the finding reops:study-ts-07:fnd-0002 holds 32% (the misrouted rate), and an [E] baseline states a finding's own number. It names 68% as a candidate baseline — the complement of the misrouting rate — and asks the PM to confirm the two count the same tickets the same way (the study's 400 tickets by log analysis against the metric's first-assignment definition in Zendesk). Only on that confirmation is 68% recorded, as [I] citing the finding with the derivation (100 − 32) in the note; until then the baseline stays an evidence GAP. It says a PM's agreement cannot make two different measures one: if the definitions differ, the finding is context and the baseline stays a GAP with a to-do to record the right finding in ReOps. It asks one question.",
+      "assertions": [
+        {
+          "name": "not-marked-E",
+          "text": "68% is not recorded as an [E] fact."
+        },
+        {
+          "name": "named-as-candidate",
+          "text": "The response names 68% as a candidate derived from the 32% misrouting finding (its complement) and asks the PM to confirm both measure the same tickets the same way."
+        },
+        {
+          "name": "inferred-after-confirmation",
+          "text": "The response says that, once confirmed, the baseline is recorded [I] citing the finding with the derivation noted — or keeps it a GAP until confirmation."
+        },
+        {
+          "name": "one-question",
+          "text": "The response asks one question rather than a questionnaire."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Mid-flow, panel 3 — the candidate-baseline check with a finding."
+    },
+    {
+      "id": 12,
+      "name": "a-figure-read-off-a-reops-page-is-not-transcribed",
+      "prompt": "Panel 3, primary metric is average triage time per ticket. I just opened the time study's page in ReOps — it says 1.9 minutes per ticket. Put that in as the baseline.",
+      "files": [
+        "files/canvas-through-panel-2.json",
+        "files/graph-read-ticket-triage.md"
+      ],
+      "expected_output": "The response does not record 1.9 minutes as [E] or as a transcribed [T] figure: a figure ReOps holds reaches the canvas as a study finding the graph holds, never read off a ReOps page (the verifier refuses a [T] citing a ReOps record). It keeps 1.9 as the PM's assumption beside the evidence GAP ([A]), not used in any calculation. It turns the page into the route: the researcher records the time study's triage-time result as a finding on study-ts-07 in ReOps, the push brings it into the graph, and the next refresh reads it — then it can be the baseline, cited [E], and it is graph-backed. It creates or offers that to-do with the measure (average minutes per ticket spent on triage). It moves on to the target without lecturing.",
+      "assertions": [
+        {
+          "name": "not-transcribed",
+          "text": "1.9 minutes is not recorded as [E] or [T]; the response says ReOps figures reach the canvas as findings in the graph, not by reading a ReOps page."
+        },
+        {
+          "name": "kept-as-assumption",
+          "text": "The figure is kept visibly as an assumption beside the GAP and is not used in calculations."
+        },
+        {
+          "name": "record-a-finding-todo",
+          "text": "The to-do is for the researcher to record the triage-time result as a finding in ReOps (so it reaches the graph), naming the measure."
+        },
+        {
+          "name": "moves-forward",
+          "text": "The response continues to the next decision (the target) rather than blocking the session."
+        }
+      ],
+      "follow_ups": [],
+      "evaluation_stage": "Mid-flow, panel 3 — open question 3 (2026-09-26): no transcription from ReOps."
     }
   ]
 }

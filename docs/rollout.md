@@ -9,6 +9,31 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.4.0
+
+A study finding in the Product Definition Graph can now be a canvas baseline. A
+finding is a researcher's measured result — metric, value, unit, sample size and
+method — recorded in ReOps and held by the graph; the engine returns it as
+`measurement` on the finding's `list_evidence` row (engine feature 18).
+
+- **A finding that is the metric is the baseline.** Cite it `[E]` with its own
+  value, and the baseline is graph-backed, so Proceed can be recommended. The
+  verifier checks the number (`FINDING_MISMATCH`) and, where the canvas unit is
+  recognisable, the unit (`FINDING_UNIT_MISMATCH`); the PM confirms it is the
+  same measure. A finding that measures a related rate is a candidate: once the PM
+  confirms it, the derived figure is `[I]`, citing the finding.
+- **No transcription from ReOps.** A `[T]` figure citing a `reops:` record is
+  refused (`T_FROM_REOPS`): a ReOps figure reaches the canvas as a finding in the
+  graph. The missing-baseline to-do now asks for the finding to be recorded in
+  ReOps. `[T]` still works for other sources.
+- A finding the graph returns with `measurement: null` backs no number
+  (`FINDING_UNREADABLE`).
+
+**If you have saved canvases:** re-run the verifier on any canvas with a `[T]`
+figure citing a `reops:` reference. It now fails with `T_FROM_REOPS`; make that
+field an evidence GAP with a "record the finding in ReOps" to-do. Canvases without
+`[T]` on ReOps records need nothing.
+
 ## Updating to 1.3.3
 
 The Solution Framing canvas and the viability brief now say plainly that they make

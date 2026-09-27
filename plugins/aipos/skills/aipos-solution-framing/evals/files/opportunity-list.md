@@ -187,13 +187,13 @@ Server connected: `opportunity-engine-mock` (tools: list_problems, get_problem, 
     "zendesk:tkt-88340",
     "zendesk:tkt-88417",
     "gong:call-5530",
-    "reops:study-ts-07"
+    "reops:study-ts-07:fnd-0002"
   ],
   "originating_sources": [
     "reops:study-int-2026-07",
     "zendesk:view-triage-audit-2026-08",
     "gong:call-5530",
-    "reops:study-ts-07"
+    "reops:study-ts-07:fnd-0002"
   ],
   "schema_version": 1
 }

@@ -168,6 +168,9 @@ class Graph:
                 "occurred_at": e["occurred_at"],
                 "record_url": e["record_url"],
                 "schema_version": e.get("schema_version", 1),
+                # Engine feature 18: a study finding's row carries its measurement; every other
+                # row carries null, and the key is always present.
+                "measurement": e.get("measurement"),
             }
             for e in p["evidence"]
         ]
@@ -287,7 +290,7 @@ TOOLS = [
     ("list_problems", "List ranked problems, highest composite score first.", _PAGED),
     ("get_problem", "Get one problem's detail, with its personas and evidence references.", _BY_PROBLEM),
     ("get_lineage", "Get the source evidence and originating sources a problem was extracted from.", _BY_PROBLEM),
-    ("list_evidence", "List a problem's evidence as provenance references only — never quote or note text.", _BY_PROBLEM),
+    ("list_evidence", "List a problem's evidence as provenance references — never quote or note text. A study_finding row also carries its `measurement` (metric, value, unit, currency, n, method): declared scalars, not text. Every other row has `measurement: null`. Only live problems are listed; a proposal answers PROBLEM_NOT_FOUND until it is promoted.", _BY_PROBLEM),
     ("list_opportunities", "List ranked opportunities with score components and active work-item links.", _PAGED),
     ("get_work_item_links", "Get a problem's work-item links and its derived promoted verdict.", _BY_PROBLEM),
     (

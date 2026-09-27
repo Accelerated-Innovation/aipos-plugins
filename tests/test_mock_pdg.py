@@ -34,7 +34,12 @@ PROBLEM_DETAIL = {"problem_id", "title", "composite_score", "evidence_references
 PERSONA = {"name", "confidence"}
 LINEAGE = {"problem_id", "source_evidence_refs", "originating_sources", "schema_version"}
 EVIDENCE_REF = {"provenance_reference", "source_system", "source_type", "external_record_id",
-                "occurred_at", "record_url", "schema_version"}
+                "occurred_at", "record_url", "schema_version", "measurement"}
+MEASUREMENT = {"metric", "value", "unit", "currency", "n", "method"}
+#: Engine feature 17's closed sets (D2, D4) — a mock finding outside them is one the engine refuses.
+UNITS = {"seconds", "minutes", "hours", "days", "percent", "ratio", "count", "currency"}
+METHODS = {"interview_tally", "survey", "usability_test", "concept_test", "time_study",
+           "log_analysis", "experiment"}
 OPPORTUNITY = {"problem_id", "title", "composite_score", "components", "strategic_weight",
                "weight_config_version", "links", "schema_version"}
 COMPONENTS = {"evidence_strength", "revenue_impact", "persona_breadth", "recency", "validation_signal"}
@@ -165,9 +170,45 @@ def test_the_fixture_carries_every_edge_case_the_plan_names(graph):
     assert versions == {1, 2}, "a newer schema_version row a consumer must refuse"
 
 
+def test_a_study_finding_row_carries_its_measurement_and_every_other_row_null(graph):
+    """Engine feature 18: the finding's declared scalars on its row, null on every other."""
+    findings = []
+    for pid in all_problem_ids(graph):
+        for row in graph.list_evidence(pid)["items"]:
+            if row["source_type"] == "study_finding":
+                findings.append(row)
+                m = row["measurement"]
+                assert set(m) == MEASUREMENT
+                assert m["unit"] in UNITS and m["method"] in METHODS
+                assert (m["currency"] is not None) == (m["unit"] == "currency")
+                assert row["occurred_at"], "a finding always carries measured_at"
+            else:
+                assert row["measurement"] is None
+    assert findings, "the fixture holds at least one finding"
+    assert not [r for r in findings if r["source_type"] == "study_outcome"]
+
+
+def test_a_finding_has_no_text_to_read(graph, mock):
+    """Engine feature 18 D4: a finding is a measurement, not text."""
+    with pytest.raises(mock.ToolFailure) as caught:
+        graph.get_evidence_text("reops:study-ts-07:fnd-0002", TRIAGE)
+    assert caught.value.code == "EVIDENCE_TEXT_UNAVAILABLE"
+
+
+def test_the_triage_finding_measures_misrouting_not_triage_time(graph):
+    """The time study's recorded finding is the misrouting rate: a candidate for the
+    first-time-correct routing baseline (its complement), and no triage-time figure at all."""
+    [finding] = [r for r in graph.list_evidence(TRIAGE)["items"]
+                 if r["source_type"] == "study_finding"]
+    assert finding["measurement"]["metric"] == "misrouted_ticket_rate"
+    assert finding["measurement"]["unit"] == "percent"
+
+
 def test_the_triage_problem_holds_no_volume_and_no_routing_baseline(graph):
-    """The canvas example's 10,000 tickets/month and its routing baseline are NOT in the graph,
-    so a skill reading this fixture must produce evidence GAPs for them rather than numbers."""
+    """The canvas example's 10,000 tickets/month and its routing baseline are NOT in the graph as
+    figures to adopt, so a skill reading this fixture produces evidence GAPs rather than numbers.
+    The one number the graph does hold — the time study's misrouting finding — is a candidate for
+    the routing baseline, never the baseline itself without the PM's confirmation."""
     texts = []
     for row in graph.list_evidence(TRIAGE)["items"]:
         try:

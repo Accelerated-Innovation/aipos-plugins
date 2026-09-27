@@ -26,7 +26,7 @@
         "reops:study-int-2026-07",
         "zendesk:view-triage-audit-2026-08",
         "gong:call-5530",
-        "reops:study-ts-07"
+        "reops:study-ts-07:fnd-0002"
       ],
       "evidence": [
         {
@@ -98,12 +98,20 @@
           }
         },
         {
-          "provenance_reference": "reops:study-ts-07",
+          "provenance_reference": "reops:study-ts-07:fnd-0002",
           "source_system": "reops",
-          "source_type": "study_outcome",
-          "external_record_id": "study-ts-07",
-          "occurred_at": null,
-          "record_url": null
+          "source_type": "study_finding",
+          "external_record_id": "study-ts-07:fnd-0002",
+          "occurred_at": "2026-08-20T00:00:00+00:00",
+          "record_url": null,
+          "measurement": {
+            "metric": "misrouted_ticket_rate",
+            "value": 32.0,
+            "unit": "percent",
+            "currency": null,
+            "n": 400,
+            "method": "log_analysis"
+          }
         }
       ],
       "links": [],
@@ -239,7 +247,7 @@
           "occurred_at": "2026-08-27T15:00:00Z",
           "record_url": "https://fixture.invalid/gong/call-7781",
           "excerpt": {
-            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end — quotes, approvals, redlines, templates, all of it.",
             "redaction_applied": false
           }
         }
@@ -282,7 +290,7 @@
           "occurred_at": "2026-08-27T15:00:00Z",
           "record_url": "https://fixture.invalid/gong/call-7781",
           "excerpt": {
-            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end — quotes, approvals, redlines, templates, all of it.",
             "redaction_applied": false
           }
         }
@@ -325,7 +333,7 @@
           "occurred_at": "2026-08-27T15:00:00Z",
           "record_url": "https://fixture.invalid/gong/call-7781",
           "excerpt": {
-            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end — quotes, approvals, redlines, templates, all of it.",
             "redaction_applied": false
           }
         }
@@ -368,7 +376,7 @@
           "occurred_at": "2026-08-27T15:00:00Z",
           "record_url": "https://fixture.invalid/gong/call-7781",
           "excerpt": {
-            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end — quotes, approvals, redlines, templates, all of it.",
             "redaction_applied": false
           }
         }
@@ -411,7 +419,7 @@
           "occurred_at": "2026-08-27T15:00:00Z",
           "record_url": "https://fixture.invalid/gong/call-7781",
           "excerpt": {
-            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end \u2014 quotes, approvals, redlines, templates, all of it.",
+            "text": "Speaker 1: [SYNTHETIC] Renewals are painful end to end — quotes, approvals, redlines, templates, all of it.",
             "redaction_applied": false
           }
         }

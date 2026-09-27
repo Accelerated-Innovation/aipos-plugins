@@ -51,7 +51,7 @@ exercised on every run. Going live is swapping the registration, not changing th
 
 | Problem | Case |
 |---|---|
-| `fixture:prb-ticket-triage` | The Solution Framing canvas example. Recent, mixed sources; two readable tickets and one readable call; one ticket and all ReOps records with no readable text; a study outcome with null date and URL. **No ticket volume and no routing baseline in the graph** — both must become evidence GAPs. |
+| `fixture:prb-ticket-triage` | The Solution Framing canvas example. Recent, mixed sources; two readable tickets and one readable call; one ticket and all ReOps records with no readable text; one **study finding** from time study `study-ts-07` — the misrouting rate, 32% of 400 tickets (`log_analysis`), with a measurement and no URL. **No ticket volume and no triage-time figure in the graph**, so both must become evidence GAPs. The finding is not the first-time-correct routing baseline either: it is its complement, a *candidate* the PM must confirm counts the same tickets the same way. |
 | `fixture:prb-invoice-dup` | Already promoted (active Aha! link) plus a severed Jira link. |
 | five `fixture:prb-*` renewal rows | Five ranked problems tracing to **one** originating call. |
 | `fixture:prb-month-end` | Evidence only from 2022–2024 (aging), one null `occurred_at` (unknown, not old). |

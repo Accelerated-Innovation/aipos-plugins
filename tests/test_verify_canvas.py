@@ -216,13 +216,17 @@ def test_evidence_counts_and_dates_are_computed_from_the_graph_read(vc, good):
     _, computed = vc.verify(good)
     tiles = computed["evidence"]["tiles"]
     assert [t["count"] for t in tiles] == [3, 3, 1, 1]
-    assert tiles[2]["undated"] == 1 and tiles[2]["latest"] is None
+    assert tiles[2]["undated"] == 0 and tiles[2]["latest"] == "2026-08-20"
     assert tiles[0]["earliest"] == "2026-07-08" and tiles[0]["latest"] == "2026-07-14"
 
 
 def test_unknown_dates_are_never_treated_as_old(vc, good):
+    call = next(r for r in good["source"]["evidence_refs"]
+                if r["provenance_reference"] == "gong:call-5530")
+    call["occurred_at"] = None  # a record the graph returns undated
     _, computed = vc.verify(good)
-    undated_tile = computed["evidence"]["tiles"][2]
+    undated_tile = computed["evidence"]["tiles"][3]
+    assert undated_tile["undated"] == 1 and undated_tile["latest"] is None
     assert undated_tile["aging"] is False
 
 
@@ -501,13 +505,11 @@ def test_a_canvas_cannot_be_approved_before_review(vc):
 
 
 def test_a_transcribed_figure_computes_but_does_not_unlock_proceed(vc, good):
-    """A person keyed it in from a record the graph links: traceable, not graph-supplied."""
-    study = next(r for r in good["source"]["evidence_refs"]
-                 if r["provenance_reference"] == "reops:study-ts-07")
-    study["record_url"] = "https://fixture.invalid/reops/study-ts-07"
+    """A person keyed it in from a record the graph links: traceable, not graph-supplied. The
+    record is a Zendesk view — a source with no push path into the graph."""
     good["panels"]["metrics"][0]["baseline"] = {
-        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["reops:study-ts-07"],
-        "note": "read from the study record_url by the PM, 2026-09-22"}
+        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["zendesk:tkt-88121"],
+        "note": "read from the ticket's record_url by the PM, 2026-09-22"}
     good["todos"].pop(0)
     good["panels"]["assumptions"][0]["from_gap"] = None
     report, computed = vc.verify(good)
@@ -520,14 +522,146 @@ def test_a_transcribed_figure_computes_but_does_not_unlock_proceed(vc, good):
 
 
 def test_a_record_with_no_url_cannot_be_transcribed_from(vc, good):
-    """The fixture's time study comes back with record_url null: nothing to read the figure from,
-    so a [T] value citing it is refused and the baseline has to stay a GAP."""
+    """A record the graph returns with record_url null has nothing to read the figure from, so a
+    [T] value citing it is refused and the baseline has to stay a GAP."""
+    ticket = next(r for r in good["source"]["evidence_refs"]
+                  if r["provenance_reference"] == "zendesk:tkt-88121")
+    ticket["record_url"] = None
     good["panels"]["metrics"][0]["baseline"] = {
-        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["reops:study-ts-07"],
-        "note": "read from the study by the PM, 2026-09-22"}
+        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": ["zendesk:tkt-88121"],
+        "note": "read from the ticket by the PM, 2026-09-22"}
     good["todos"].pop(0)
     good["panels"]["assumptions"][0]["from_gap"] = None
     assert "T_WITHOUT_URL" in codes(vc.verify(good)[0])
+
+
+# --- study findings as baselines (PDG study-findings plan, increment 4) ------------------
+
+_FINDING = "reops:study-ts-07:fnd-0002"
+
+
+def misrouting_canvas(good):
+    """The fixture re-aimed at the misrouting rate — the metric the time study's finding measures —
+    with its baseline cited from that finding."""
+    metric = good["panels"]["metrics"][0]
+    metric.update({"name": "Misrouted tickets", "unit": "%"})
+    metric["baseline"] = {"kind": "fact", "status": "confirmed", "value": 32.0, "mark": "E",
+                          "refs": [_FINDING]}
+    good["todos"].pop(0)
+    good["panels"]["assumptions"][0]["from_gap"] = None
+    return good
+
+
+def test_a_baseline_that_equals_its_finding_is_graph_backed_and_unlocks_proceed(vc, good):
+    c = misrouting_canvas(good)
+    report, computed = vc.verify(c)
+    assert not codes(report) & {"FINDING_MISMATCH", "FINDING_UNREADABLE", "FINDING_UNIT_MISMATCH"}
+    assert computed["proceed_available"] is True
+    c["panels"]["validation"]["recommendation"]["decision"] = "proceed"
+    assert "PROCEED_BLOCKED" not in codes(vc.verify(c)[0])
+
+
+def test_a_baseline_that_differs_from_its_finding_is_refused(vc, good):
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["baseline"]["value"] = 30.0
+    report, _ = vc.verify(c)
+    assert "FINDING_MISMATCH" in codes(report)
+    assert any("32" in e["message"] for e in report.errors if e["code"] == "FINDING_MISMATCH")
+
+
+def test_a_finding_the_graph_returned_without_a_measurement_backs_no_value(vc, good):
+    """The engine returns an unreadable finding with measurement null (feature 18 B4): there is
+    no number to cite, so the fact is refused rather than trusted."""
+    c = misrouting_canvas(good)
+    row = next(r for r in c["source"]["evidence_refs"] if r["provenance_reference"] == _FINDING)
+    row["measurement"] = None
+    assert "FINDING_UNREADABLE" in codes(vc.verify(c)[0])
+
+
+@pytest.mark.parametrize("unit", ["min", "hours", "ratio"])
+def test_a_baseline_in_another_unit_than_its_finding_is_refused(vc, good, unit):
+    """32 minutes is not 32 percent: the value matches, the measure does not."""
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["unit"] = unit
+    assert "FINDING_UNIT_MISMATCH" in codes(vc.verify(c)[0])
+
+
+def test_a_unit_the_verifier_does_not_recognise_is_not_guessed_at(vc, good):
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["unit"] = "misroutes per hundred"
+    assert "FINDING_UNIT_MISMATCH" not in codes(vc.verify(c)[0])
+
+
+def test_an_inference_from_a_finding_names_its_basis_and_is_not_held_to_its_number(vc, good):
+    """The rubric's candidate baseline: a 32% misrouting rate is a 68% first-time-correct rate
+    only if both count the same tickets the same way. Once the PM confirms that, the complement
+    is an [I] inferred from the finding — a derived figure, so not the finding's own number."""
+    routing = good["panels"]["metrics"][1]
+    routing["baseline"] = {"kind": "fact", "status": "confirmed", "value": 68.0, "mark": "I",
+                           "refs": [_FINDING], "note": "complement of the misrouting rate"}
+    good["todos"] = [t for t in good["todos"] if t["field"] != "panels.metrics[1].baseline"]
+    report, _ = vc.verify(good)
+    assert not codes(report) & {"FINDING_MISMATCH", "FINDING_UNIT_MISMATCH"}
+
+
+@pytest.mark.parametrize(("unit", "mismatch"), [
+    ("% of tickets", False),        # the fixture's own routing unit: percent, however it is worded
+    ("minutes per ticket", True),   # a time unit named by its first word
+    ("EUR", True),                  # a currency code
+    ("$", True),                    # a currency symbol
+])
+def test_a_unit_written_as_people_write_it_is_still_checked(vc, good, unit, mismatch):
+    """Qodo review of #46: whole-string matching skipped '% of tickets' and 'minutes per ticket'."""
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["unit"] = unit
+    assert ("FINDING_UNIT_MISMATCH" in codes(vc.verify(c)[0])) is mismatch
+
+
+def test_a_monetary_finding_does_not_back_a_percentage_baseline(vc, good):
+    c = misrouting_canvas(good)
+    row = next(r for r in c["source"]["evidence_refs"] if r["provenance_reference"] == _FINDING)
+    row["measurement"].update({"unit": "currency", "currency": "EUR"})
+    assert "FINDING_UNIT_MISMATCH" in codes(vc.verify(c)[0])
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf")], ids=["nan", "infinity"])
+def test_a_non_finite_figure_is_not_a_number(vc, good, value):
+    """Qodo review of #46: NaN compares unequal to nothing, so it slipped past the finding check
+    and into the computed metrics."""
+    c = misrouting_canvas(good)
+    c["panels"]["metrics"][0]["baseline"]["value"] = value
+    report, computed = vc.verify(c)
+    assert "NOT_NUMERIC" in codes(report)
+    assert computed["proceed_available"] is False
+    assert "nan" not in json.dumps(computed).lower() and "infinity" not in json.dumps(computed).lower()
+
+
+def test_findings_from_one_study_are_one_source(vc, good):
+    """Qodo review of #46: the engine's lineage lists each finding (reops:<study>:<finding>), so
+    two findings of one study must still count as one originating source."""
+    good["source"]["originating_sources"] = ["reops:study-ts-07:fnd-0002", "reops:study-ts-07:fnd-0003"]
+    report, computed = vc.verify(good)
+    assert computed["evidence"]["originating_sources"] == 1
+    assert "SINGLE_SOURCE" in warning_codes(report)
+
+
+def test_a_figure_cannot_be_transcribed_from_a_reops_record(vc, good):
+    """Open question 3, decided 2026-09-26: a ReOps figure reaches the canvas as a finding the
+    graph holds, never read off a ReOps page. [T] stays for sources with no push path."""
+    row = next(r for r in good["source"]["evidence_refs"] if r["provenance_reference"] == _FINDING)
+    row["record_url"] = "https://reops.test/studies/study-ts-07#finding-fnd-0002"
+    good["panels"]["metrics"][0]["baseline"] = {
+        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": [_FINDING],
+        "note": "read from the study page by the PM, 2026-09-22"}
+    good["todos"].pop(0)
+    good["panels"]["assumptions"][0]["from_gap"] = None
+    assert "T_FROM_REOPS" in codes(vc.verify(good)[0])
+
+
+def test_a_text_fact_citing_a_finding_is_not_held_to_its_number(vc, good):
+    """The evidence tile describes the finding in words; only a numeric fact must equal it."""
+    report, _ = vc.verify(good)
+    assert not codes(report) & {"FINDING_MISMATCH", "FINDING_UNIT_MISMATCH"}
 
 
 def test_the_unit_conversion_is_derived_when_not_given(vc, good):
