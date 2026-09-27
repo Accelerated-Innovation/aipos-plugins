@@ -50,7 +50,7 @@ the plan, the recommendation. The split is the whole contract:
 | Provenance mark | `E` or `I` (see below) | None; a mark on a decision is an error |
 | `[E]` | Cites `refs` the graph returned in this read | — |
 | `[I]` | Inferred from graph `refs`. A `note` alone is allowed only on a `pm-interview` canvas | — |
-| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) — one the read returned **with** a `record_url` — and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value. **Never from a ReOps record** (`reops:`): a ReOps figure reaches the canvas as a study finding the graph holds, cited `[E]` | — |
+| `[T]` | Transcribed: a person read the value from a record the graph links (`refs`) — one the read returned **with** a `record_url` — and the `note` says who, from which `record_url`, when. Computes, but is **not graph-backed** — Proceed waits for the graph to carry the value. **Never from a study finding, nor from any record of a system that records findings into the graph** (ReOps today): such a figure reaches the canvas as a finding the graph holds, cited `[E]` (`T_FROM_REOPS`) | — |
 | `[A]` | Never on a present fact — an assumption is a GAP with the figure in `assumed` | — |
 | Missing | `GAP · evidence` (always, for a fact), wired to a to-do | `GAP · decision` |
 

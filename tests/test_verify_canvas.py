@@ -636,13 +636,43 @@ def test_a_non_finite_figure_is_not_a_number(vc, good, value):
     assert "nan" not in json.dumps(computed).lower() and "infinity" not in json.dumps(computed).lower()
 
 
+def second_finding(good):
+    """A second finding of the same time study, as the graph read would return it."""
+    row = dict(next(r for r in good["source"]["evidence_refs"] if r["provenance_reference"] == _FINDING))
+    row["provenance_reference"] = "reops:study-ts-07:fnd-0003"
+    good["source"]["evidence_refs"].append(row)
+    return good
+
+
 def test_findings_from_one_study_are_one_source(vc, good):
-    """Qodo review of #46: the engine's lineage lists each finding (reops:<study>:<finding>), so
-    two findings of one study must still count as one originating source."""
-    good["source"]["originating_sources"] = ["reops:study-ts-07:fnd-0002", "reops:study-ts-07:fnd-0003"]
+    """Qodo review of #46: the engine's lineage lists each finding (<system>:<study>:<finding>),
+    so two findings of one study must still count as one originating source."""
+    second_finding(good)
+    good["source"]["originating_sources"] = [_FINDING, "reops:study-ts-07:fnd-0003"]
     report, computed = vc.verify(good)
     assert computed["evidence"]["originating_sources"] == 1
     assert "SINGLE_SOURCE" in warning_codes(report)
+
+
+def test_only_a_finding_row_is_grouped_by_its_study(vc, good):
+    """1.4.1: the grouping keys on the graph read — a lineage entry is a finding because a
+    study_finding row carries that reference — not on a system name or the entry's shape."""
+    good["source"]["originating_sources"] = ["zendesk:view:triage-a", "zendesk:view:triage-b"]
+    _, computed = vc.verify(good)
+    assert computed["evidence"]["originating_sources"] == 2
+
+
+def test_a_finding_from_any_system_is_grouped_by_its_study(vc, good):
+    second_finding(good)
+    for row in good["source"]["evidence_refs"]:
+        if row["source_type"] == "study_finding":
+            row["source_system"] = "labs"
+            row["provenance_reference"] = row["provenance_reference"].replace("reops:", "labs:")
+    good["source"]["originating_sources"] = ["labs:study-ts-07:fnd-0002", "labs:study-ts-07:fnd-0003"]
+    good["panels"]["evidence"]["tiles"][2]["refs"] = ["labs:study-ts-07:fnd-0002"]
+    good["panels"]["evidence"]["tiles"][2]["finding"]["refs"] = ["labs:study-ts-07:fnd-0002"]
+    _, computed = vc.verify(good)
+    assert computed["evidence"]["originating_sources"] == 1
 
 
 def test_a_figure_cannot_be_transcribed_from_a_reops_record(vc, good):
@@ -656,6 +686,37 @@ def test_a_figure_cannot_be_transcribed_from_a_reops_record(vc, good):
     good["todos"].pop(0)
     good["panels"]["assumptions"][0]["from_gap"] = None
     assert "T_FROM_REOPS" in codes(vc.verify(good)[0])
+
+
+def transcribed(good, ref):
+    good["panels"]["metrics"][0]["baseline"] = {
+        "kind": "fact", "status": "confirmed", "value": 1.8, "mark": "T", "refs": [ref],
+        "note": "read from the record by the PM, 2026-09-27"}
+    good["todos"].pop(0)
+    good["panels"]["assumptions"][0]["from_gap"] = None
+    return good
+
+
+def test_a_figure_cannot_be_transcribed_from_a_finding_of_any_system(vc, good):
+    """1.4.1: a finding's number is in the graph already, whichever system recorded it."""
+    row = next(r for r in good["source"]["evidence_refs"] if r["provenance_reference"] == _FINDING)
+    row.update({"source_system": "labs", "provenance_reference": "labs:study-ts-07:fnd-0002",
+                "record_url": "https://labs.test/study-ts-07"})
+    good["source"]["originating_sources"] = ["labs:study-ts-07:fnd-0002" if s == _FINDING else s
+                                             for s in good["source"]["originating_sources"]]
+    good["panels"]["evidence"]["tiles"][2]["refs"] = ["labs:study-ts-07:fnd-0002"]
+    good["panels"]["evidence"]["tiles"][2]["finding"]["refs"] = ["labs:study-ts-07:fnd-0002"]
+    assert "T_FROM_REOPS" in codes(vc.verify(transcribed(good, "labs:study-ts-07:fnd-0002"))[0])
+
+
+def test_any_record_of_a_finding_system_is_refused_for_transcription(vc, good):
+    """Your direction: never read ReOps directly. An interview note is not a finding, but ReOps
+    is where findings are recorded, so its pages are not read for figures either."""
+    assert "T_FROM_REOPS" in codes(vc.verify(transcribed(good, "reops:int-0412"))[0])
+
+
+def test_a_record_of_another_system_can_still_be_transcribed(vc, good):
+    assert "T_FROM_REOPS" not in codes(vc.verify(transcribed(good, "zendesk:tkt-88121"))[0])
 
 
 def test_a_text_fact_citing_a_finding_is_not_held_to_its_number(vc, good):

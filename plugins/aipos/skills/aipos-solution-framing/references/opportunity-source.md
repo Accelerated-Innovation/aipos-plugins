@@ -169,7 +169,8 @@ in ReOps**: the push brings it into the graph. Never ask a PM to read a figure o
 **Transcribed values (`[T]`).** A record the graph links but can't show as text — from a source
 with no way into the graph as a number, such as a Zendesk view — may carry the value behind its
 `record_url`. **Never a ReOps record**: a ReOps figure reaches the canvas as a study finding, and
-the verifier refuses a `[T]` citing a `reops:` reference (`T_FROM_REOPS`). Only a reference the read returned
+the verifier refuses a `[T]` citing a `study_finding` row, or any record of a system that records
+findings into the graph — ReOps today (`T_FROM_REOPS`). Only a reference the read returned
 **with** a `record_url` can be transcribed; one without has nowhere to read from, so don't offer
 it — the value stays a GAP whose to-do brings it into the graph. The PM may read it from there — in any
 session, not just on resume — and it is recorded `[T]`, citing that reference, with `note: "read

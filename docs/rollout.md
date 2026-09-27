@@ -9,6 +9,24 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.4.1
+
+The canvas verifier's two study-finding rules now read the graph, not a system name.
+
+- **Transcription.** A `[T]` figure citing a `study_finding` row is refused
+  whichever system recorded the finding. Records of a system that records findings
+  into the graph are refused too; ReOps is the only such system, named once in the
+  verifier (`FINDING_SYSTEMS`). The code stays `T_FROM_REOPS`, so nothing matching
+  on it breaks.
+- **Source breadth.** Findings of one study count as one source when a
+  `study_finding` row in the read carries the lineage entry — no longer because the
+  entry starts with `reops:`.
+
+Nothing to do beyond updating. With today's engine, which records findings only from
+ReOps, a canvas's errors are unchanged; at most, the source-breadth count and the
+`SINGLE_SOURCE` warning can differ for a `reops:` lineage entry that is not a finding
+in the read.
+
 ## Updating to 1.4.0
 
 A study finding in the Product Definition Graph can now be a canvas baseline. A

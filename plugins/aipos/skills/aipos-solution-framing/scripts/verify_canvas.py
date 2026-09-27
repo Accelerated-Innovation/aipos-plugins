@@ -54,6 +54,10 @@ def through(canvas: dict) -> int:
     value = canvas.get("through_panel", FINAL_PANEL)
     return value if isinstance(value, int) and not isinstance(value, bool) else FINAL_PANEL
 STATUSES = {"confirmed", "provisional", "gap"}
+#: Systems that record study findings into the graph. A figure one of them holds reaches the
+#: canvas as a finding the graph returns — never read off that system's pages as a [T]. The only
+#: place the verifier names a research system; every other finding rule reads the graph read.
+FINDING_SYSTEMS = {"reops"}
 #: A canvas metric's unit, as people write it, mapped to the engine's closed measurement unit set
 #: (engine feature 17 D2). A unit not listed here is not guessed at.
 FINDING_UNITS = {
@@ -317,8 +321,8 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
     approved = canvas.get("stage") == "approved"
     # Where each graph reference can be read by a person. Transcription needs somewhere to read
     # from: a record the graph returned without a record_url can only be brought into the graph.
-    record_urls = {D(r).get("provenance_reference"): D(r).get("record_url")
-                   for r in L(D(canvas.get("source")).get("evidence_refs"))}
+    rows = {D(r).get("provenance_reference"): D(r) for r in L(D(canvas.get("source")).get("evidence_refs"))}
+    record_urls = {ref: row.get("record_url") for ref, row in rows.items()}
     fields = list(walk_fields(canvas))
     for path, f in fields:
         status, kind, mark = f.get("status"), f.get("kind"), f.get("mark")
@@ -360,12 +364,14 @@ def check_fields(canvas: dict, graph_refs: set, report: Report) -> list:
                          "figure in 'assumed'")
             continue
         if mark == "T":
-            from_reops = [r for r in refs if isinstance(r, str) and r.startswith("reops:")]
-            if from_reops:
+            from_findings = [r for r in refs if r in rows and (
+                rows[r].get("source_type") == "study_finding"
+                or rows[r].get("source_system") in FINDING_SYSTEMS)]
+            if from_findings:
                 report.error("T_FROM_REOPS", path,
-                             f"a ReOps figure reaches the canvas as a study finding the graph holds, "
-                             f"never read off a ReOps page ({from_reops}): record it as a finding in "
-                             "ReOps and cite it [E], or keep the GAP")
+                             f"a research figure reaches the canvas as a study finding the graph "
+                             f"holds, never read off its source page ({from_findings}): record it as "
+                             "a finding and cite it [E], or keep the GAP")
             if not refs or not f.get("note"):
                 report.error("T_WITHOUT_RECORD", path,
                              "a transcribed [T] fact cites the graph record it was read from and "
@@ -451,10 +457,12 @@ def finding_unit(unit: object) -> str | None:
     return next((engine for engine, names in FINDING_UNITS.items() if first in names), None)
 
 
-def origin(source: object) -> object:
-    """The source a lineage entry traces to. The engine lists each study finding as
-    `reops:<study>:<finding>`; several findings of one study are one source."""
-    if isinstance(source, str) and source.startswith("reops:") and source.count(":") == 2:
+def origin(source: object, findings: set) -> object:
+    """The source a lineage entry traces to. The engine lists each study finding by its own
+    reference, `<system>:<study>:<finding>`; several findings of one study are one source. An entry
+    is a finding because a `study_finding` row in the read carries that reference — not because of
+    its system or its shape."""
+    if source in findings and isinstance(source, str):
         return source.rsplit(":", 1)[0]
     return source
 
@@ -712,7 +720,8 @@ def compute_evidence(canvas: dict, report: Report) -> dict:
         report.warn("ALL_EVIDENCE_AGING", "source.evidence_refs",
                     "every dated piece of evidence is aging — say so to the PM once")
     originating = L(source.get("originating_sources"))
-    origins = {origin(s) for s in originating}
+    findings = {ref for ref, row in rows.items() if row.get("source_type") == "study_finding"}
+    origins = {origin(s, findings) for s in originating}
     single = len(origins) == 1 and len(rows) >= 1
     if single:
         report.warn("SINGLE_SOURCE", "source.originating_sources",
