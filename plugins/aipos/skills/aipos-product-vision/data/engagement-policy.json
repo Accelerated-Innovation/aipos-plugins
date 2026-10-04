@@ -1,0 +1,407 @@
+{
+  "$schema_version": "1.0",
+  "policy_id": "aipos-product-vision-engagement",
+  "policy_version": "2.0.0-pilot",
+  "maturity": "pilot",
+  "maturity_note": "Internal team pilot. The thresholds, the roster and the Learn mode grant rule are deliberately light so the team can run real visions through them quickly. NOT FOR CLIENT USE. The enterprise policy is a 3.0.0 of this file with a maturity of 'production', and records carry the policy_version they were routed under, so pilot-era work stays distinguishable from client-era work forever.",
+  "effective_date": "2026-10-03",
+  "owner": "Security and Compliance, Accelerated Innovation",
+  "intent": "Decide which stakeholders must review a Product Vision, and with what authority, from the risk the product actually carries. This file is the policy. The skill and the AIOS screen both read it and neither reasons about engagement on its own.",
+  "change_process": "Security and Compliance own this file. Changing a threshold, a reviewer or a right is a change here and a version bump, not an edit to any skill or screen. Briefs record the policy_version they were routed under, so a brief routed under an older policy stays auditable.",
+  "modes": {
+    "note": "Two peer modes, divided by intent rather than by lifecycle position. The mode decides what the brief must say and who must review it. It never decides whether a brief is honest about its own risk, which is why triage runs in both modes.",
+    "vocabulary_warning": "Both modes are authored at Step 6 and both sit inside Build-to-Learn. Commit mode names an intent to commit, not a commitment already made, and a Product Vision has NOT cleared the Validation Decision. Do not read Commit mode as Build-to-Earn.",
+    "learn": {
+      "label": "Learn mode",
+      "intent": "We are exploring whether this product or feature is worth building. Stopping is a success.",
+      "description": "A focused collaboration between Product and Engineering to explore whether a product or feature is worth building. The record is a Product Vision; Learn mode means the blocks that only matter at commitment are not asked yet, and two that only matter in exploration are: the learning question and the kill condition.",
+      "selection": "granted_by_accountable_owner",
+      "grant_rule": "The named accountable owner grants it, in their own name, with a reason and a review-by date. The grant is recorded on the brief. Nobody else can grant it and the Product Lead cannot select it.",
+      "grant_requires": [
+        "granted_by",
+        "granted_at",
+        "grant_reason",
+        "review_by",
+        "learning_question",
+        "kill_condition",
+        "triage_at_grant"
+      ],
+      "roster_override": [
+        "engineering",
+        "accountable_owner"
+      ],
+      "roster_note": "A grant holds Engineering as blocking, because step two without Engineering is not a review. Every extended reviewer drops to inform. The computed roster is still shown so the owner sees who the grant routes past.",
+      "review_rounds_max": 2,
+      "step_12": "A vision in Learn mode cannot be the basis of a GO at the Validation Decision. Clearing Step 12 requires Commit mode, because Step 12 reads the blocks Learn mode does not ask for. Structural, not a policy setting.",
+      "out_of_scope": "Technical spikes with no candidate product or feature behind them are handled at the team and work-management level, not here."
+    },
+    "commit": {
+      "label": "Commit mode",
+      "intent": "We intend to build this. The brief carries the direction the rest of the cycle is judged against.",
+      "description": "Every block, the computed roster, the full check set.",
+      "selection": "default",
+      "step_12": "Required to clear the Validation Decision. Still inside Build-to-Learn until it does."
+    },
+    "artifact_note": "One artifact in both modes: a Product Vision. Promotion opens the remaining blocks on the same record; it does not produce a different document."
+  },
+  "promotion": {
+    "note": "Learn mode becomes Commit mode when intent changes: the exploration answered its question and the work is heading for a commitment. The accountable owner decides. The signals below are computed and reported on every run; they never promote a vision and never block one. What they guarantee is that the owner cannot not-know.",
+    "timing": "Promote alongside Step 11 validation, not after it. The sections fill while the experiments run, so nothing waits on anything, and the measures come from the build itself rather than from a week-one estimate.",
+    "carries_forward": "Everything already written, every raise and every disposition. The learning question and its answer become evidence under the Commit mode measures. Triage is re-run, because intent changing usually means the risk profile moved.",
+    "one_way": true,
+    "signals": [
+      {
+        "id": "S1",
+        "name": "Risk profile changed since the grant",
+        "test": "a trigger is live now that was not live when the grant was made",
+        "why": "The grant was made against a known risk profile. A trigger that was already live is not news; one that became live since is."
+      },
+      {
+        "id": "S2",
+        "name": "Real users",
+        "test": "learn_mode.real_users is true",
+        "why": "Anyone outside the build team is using it or receiving its output."
+      },
+      {
+        "id": "S3",
+        "name": "Production or client data",
+        "test": "learn_mode.production_data is true",
+        "why": "It has moved off synthetic or sample data."
+      },
+      {
+        "id": "S4",
+        "name": "Review-by date passed",
+        "test": "today is after learn_mode.review_by",
+        "why": "The window the owner granted has ended."
+      },
+      {
+        "id": "S5",
+        "name": "Spend committed",
+        "test": "learn_mode.spend_committed is true, or committed_spend triage is live",
+        "why": "It needs budget, headcount or a contract beyond discovery."
+      }
+    ],
+    "acknowledgement_rule": "A vision in Learn mode with a live signal cannot sit ratified with that signal unacknowledged. The owner either promotes it to Commit mode, or records that they have seen the signal and why the work continues as exploration. Both are one line. Neither is the skill deciding."
+  },
+  "answer_model": {
+    "values": [
+      "yes",
+      "not_sure",
+      "no"
+    ],
+    "not_sure_rule": "treat_as_yes",
+    "not_sure_note": "Not Sure routes conservatively, exactly as Yes, AND raises a GAP of kind 'triage' naming the reviewer who was engaged because of it. The gap is closed by the Product Lead confirming a Yes or a No, which may remove that reviewer from the roster. A brief cannot ratify with an open triage gap.",
+    "rationale": "A PM who does not know whether the product touches regulated data is exactly the case where Compliance should be in the room. Uncertainty engages the reviewer; it does not defer the question."
+  },
+  "triggers": [
+    {
+      "id": "sensitive_data",
+      "question_ref": "T1",
+      "name": "Sensitive data",
+      "test": "Will the product process personal, financial, health, or client-confidential data, or data a client has restricted by contract?"
+    },
+    {
+      "id": "autonomous_action",
+      "question_ref": "T2",
+      "name": "Autonomous action",
+      "test": "Will the agent take actions with effect outside the system without a human approving each one?"
+    },
+    {
+      "id": "external_users",
+      "question_ref": "T3",
+      "name": "External users",
+      "test": "Will people outside the organization interact with the product directly, or receive its output unmediated?"
+    },
+    {
+      "id": "regulated_domain",
+      "question_ref": "T4",
+      "name": "Regulated domain",
+      "test": "Does the product operate in a regulated domain, or produce output that could be read as regulated advice or a regulated decision?"
+    },
+    {
+      "id": "committed_spend",
+      "question_ref": "T5",
+      "name": "Committed spend",
+      "test": "Will the direction in this brief require committed spend, headcount, or a vendor contract beyond the discovery budget?"
+    },
+    {
+      "id": "brand_attribution",
+      "question_ref": "T6",
+      "name": "Brand attribution",
+      "test": "Could the product's output be attributed publicly to the company, a client, or a named individual?"
+    },
+    {
+      "id": "workforce_impact",
+      "question_ref": "T7",
+      "name": "Workforce impact",
+      "test": "Would this change what people do, how their work is evaluated, or how many of them are needed?"
+    }
+  ],
+  "tiers": {
+    "tier_1": {
+      "label": "Standard",
+      "description": "Internal, human-in-the-loop, no sensitive data. Engineering shapes it; everyone else is informed.",
+      "review_rounds_max": 3
+    },
+    "tier_2": {
+      "label": "Elevated",
+      "description": "One material risk dimension is live. Security and Data Privacy hold a blocking review; Compliance advises.",
+      "review_rounds_max": 4
+    },
+    "tier_3": {
+      "label": "High",
+      "description": "Regulated, or several risk dimensions at once. Security, Compliance and Data Privacy all hold blocking reviews, and the accountable owner is named before the review round opens, not after.",
+      "review_rounds_max": 5
+    }
+  },
+  "tier_rules": [
+    {
+      "tier": "tier_3",
+      "when": "regulated_domain AND (sensitive_data OR autonomous_action)",
+      "because": "Regulated output with sensitive data or unsupervised action is the combination that carries real exposure."
+    },
+    {
+      "tier": "tier_3",
+      "when": "count(sensitive_data, autonomous_action, external_users, regulated_domain) >= 3",
+      "because": "Three or more live risk dimensions compound. Treat as high regardless of which three."
+    },
+    {
+      "tier": "tier_2",
+      "when": "sensitive_data OR autonomous_action OR regulated_domain OR external_users",
+      "because": "Any single material risk dimension warrants a blocking security review."
+    },
+    {
+      "tier": "tier_1",
+      "when": "default",
+      "because": "No material risk dimension is live."
+    }
+  ],
+  "rights": {
+    "shape": "May change what the product is aiming at. A shape reviewer's raise can alter the brief's direction, measures or boundaries.",
+    "constrain": "May impose a constraint or disqualify an approach, but may not redirect the product. A constrain reviewer's raise narrows the brief; it does not re-aim it.",
+    "inform": "Receives the brief and may comment. Comments are recorded; they do not block and they do not require a disposition."
+  },
+  "engagement_levels": {
+    "blocking": "Must respond before the brief can reach ratified. Every raise needs a disposition.",
+    "advisory": "Is invited and their raises need a disposition if made, but silence does not hold the brief.",
+    "inform": "Receives a copy. No response expected.",
+    "absent": "Not engaged at this tier."
+  },
+  "reviewers": [
+    {
+      "id": "engineering",
+      "name": "Engineering",
+      "right": "shape",
+      "by_tier": {
+        "tier_1": "blocking",
+        "tier_2": "blocking",
+        "tier_3": "blocking"
+      },
+      "note": "Always blocking and always shape. Feasibility is the one constraint allowed to change where a product is aimed, and it is cheaper to learn at the vision than at the agent contract.",
+      "team": "core",
+      "role": "reviewer"
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "right": "constrain",
+      "by_tier": {
+        "tier_1": "inform",
+        "tier_2": "blocking",
+        "tier_3": "blocking"
+      },
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "compliance",
+      "name": "Compliance and Legal",
+      "right": "constrain",
+      "by_tier": {
+        "tier_1": "absent",
+        "tier_2": "advisory",
+        "tier_3": "blocking"
+      },
+      "escalations": [
+        {
+          "when": "regulated_domain",
+          "to": "blocking",
+          "because": "Regulated domain is Compliance's call, not a tier average."
+        }
+      ],
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "data_privacy",
+      "name": "Data and Privacy",
+      "right": "constrain",
+      "by_tier": {
+        "tier_1": "absent",
+        "tier_2": "blocking",
+        "tier_3": "blocking"
+      },
+      "escalations": [
+        {
+          "when": "sensitive_data",
+          "to": "blocking",
+          "because": "Sensitive data engages Privacy at any tier."
+        }
+      ],
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "right": "constrain",
+      "by_tier": {
+        "tier_1": "absent",
+        "tier_2": "absent",
+        "tier_3": "advisory"
+      },
+      "escalations": [
+        {
+          "when": "committed_spend",
+          "to": "blocking",
+          "because": "Committed spend is Finance's call regardless of risk tier."
+        }
+      ],
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing and Communications",
+      "right": "inform",
+      "by_tier": {
+        "tier_1": "inform",
+        "tier_2": "inform",
+        "tier_3": "advisory"
+      },
+      "escalations": [
+        {
+          "when": "brand_attribution",
+          "to": "advisory",
+          "right": "shape",
+          "because": "When output carries the company's name, Marketing gets a say in what the product is for, not only how it is described."
+        }
+      ],
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "people",
+      "name": "People and HR",
+      "right": "constrain",
+      "by_tier": {
+        "tier_1": "absent",
+        "tier_2": "absent",
+        "tier_3": "absent"
+      },
+      "escalations": [
+        {
+          "when": "workforce_impact",
+          "to": "blocking",
+          "because": "Changes to roles or evaluation are engaged by the trigger, not by the tier."
+        }
+      ],
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "sales_cs",
+      "name": "Sales and Customer Success",
+      "right": "inform",
+      "by_tier": {
+        "tier_1": "inform",
+        "tier_2": "inform",
+        "tier_3": "inform"
+      },
+      "note": "Usually the source of the evidence behind the opportunity. Promote to advisory by hand when the brief contradicts what they are hearing in the field.",
+      "team": "extended",
+      "role": "reviewer"
+    },
+    {
+      "id": "accountable_owner",
+      "name": "Accountable owner",
+      "right": "shape",
+      "by_tier": {
+        "tier_1": "absent",
+        "tier_2": "absent",
+        "tier_3": "absent"
+      },
+      "note": "Ratifies rather than reviews. Modelled separately; never counted as a reviewer response.",
+      "team": "owner",
+      "role": "ratifies"
+    },
+    {
+      "id": "design",
+      "name": "Design",
+      "team": "extended",
+      "role": "reviewer",
+      "right": "shape",
+      "by_tier": {
+        "tier_1": "inform",
+        "tier_2": "advisory",
+        "tier_3": "blocking"
+      },
+      "note": "Extended. Holds a shaping right because the experience can legitimately change where a product is aimed.",
+      "escalations": [
+        {
+          "when": "external_users",
+          "to": "blocking",
+          "because": "An experience people outside the organization meet is Design's call."
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "name": "Architecture",
+      "team": "extended",
+      "role": "reviewer",
+      "right": "constrain",
+      "by_tier": {
+        "tier_1": "inform",
+        "tier_2": "advisory",
+        "tier_3": "blocking"
+      },
+      "note": "Extended. Constrains rather than shapes: platform fit and reuse narrow a direction without re-aiming it."
+    }
+  ],
+  "escalation": {
+    "on_rounds_exhausted": "When the mode's review_rounds_max is reached without readiness, stop iterating and schedule a decision session with the accountable owner. Carry the unresolved blocking raises into it as the agenda. Do not open another round.",
+    "rationale": "Mirrors the facilitated-session escape hatch in the Vision Builder. A brief that will not converge is a decision that needs making, not a draft that needs another pass."
+  },
+  "scope_note": "Scope - new, increment or revision - is a separate axis from mode and is decided by the Step 0 test, not by selection. Mode decides depth; scope decides inheritance. Triage runs in every combination: a small increment on a safe product can still be the one that touches regulated data.",
+  "team_model": {
+    "principle": "The Product Manager or Owner drafts the vision. Engineering and the extended stakeholders review and shape it. The accountable owner finalises. Three steps, and the roster is how step two happens.",
+    "core_team": {
+      "members": [
+        "product_lead",
+        "engineering"
+      ],
+      "role": "the delivery team whose backlog the Product Owner prioritises",
+      "note": "Engineering reviews the vision at step two and holds a shaping right there, because feasibility is the one constraint allowed to change where a product is aimed. Being a reviewer is not being an outsider: the register of the request should read as a teammate being asked to shape something, never as a petition for sign-off. See review.dispatch in flow-content.json."
+    },
+    "extended_team": {
+      "members": [
+        "architecture",
+        "design",
+        "security",
+        "data_privacy",
+        "compliance",
+        "finance",
+        "marketing",
+        "people",
+        "sales_cs"
+      ],
+      "role": "reviewers engaged deliberately, with a stated right and a deadline",
+      "note": "Not in the room daily. Engaging them on purpose is the point of the roster."
+    },
+    "accountable_owner": {
+      "role": "finalises",
+      "note": "Step three. Not a reviewer; ratification is a separate act."
+    }
+  }
+}

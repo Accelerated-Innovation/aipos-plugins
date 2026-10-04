@@ -1,0 +1,180 @@
+{
+  "schema_version": "2.0",
+  "slug": "claims-triage-bulk-upload",
+  "title": "Bulk document upload",
+  "pass_type": "new",
+  "scope": "increment",
+  "status": "in_review",
+  "version": "0.3",
+  "product_lead": {
+    "name": "Dana Okoye"
+  },
+  "accountable_owner": {
+    "name": "Marcus Hale",
+    "role": "Director of Product"
+  },
+  "parent_vision_ref": {
+    "id": "VIS-claims-triage",
+    "version": "1.0",
+    "ratified": true,
+    "product": "Claims triage agent",
+    "exists": true
+  },
+  "blocks": {
+    "C1": "Handlers working a multi-document claim get an answer without leaving the workflow.",
+    "C3": "Nobody new. Same reviewers, same queue.",
+    "D1": [
+      "OCR of handwritten attachments"
+    ],
+    "D2": [
+      "It will not merge documents across claims"
+    ],
+    "D3": "Unchanged from the parent vision.",
+    "D4": [
+      "Attributes a clause to the wrong document in a bundle"
+    ],
+    "B5": "Recovers the abandoned fifth of sessions. Chosen over reviewer-side summarisation, which is larger but has no production signal behind it yet.",
+    "C5": "Year one, inside situational precedent for handlers.",
+    "F2": true,
+    "A8": [
+      {
+        "claim": "18 percent abandon at upload",
+        "source": "Step 19 telemetry, weeks 3-8",
+        "basis": "known"
+      }
+    ],
+    "A10": "Handlers working multi-document claims, roughly a fifth of volume.",
+    "A11": "Production shows 18 percent of sessions abandoned at the upload step, and support tickets name the single-file limit directly.",
+    "A4": {
+      "value": "high",
+      "why": "Handlers are abandoning a fifth of multi-document sessions and the ops lead is measured on completion rate."
+    },
+    "A6": "About 20 minutes per abandoned session, and the claim restarts from scratch. The backlog grows with volume, and the escalation queue is already the bottleneck in the ops review.",
+    "A7": {
+      "value": "yes",
+      "how": "Handlers are zipping files and emailing them to themselves to work around it.",
+      "basis": "known"
+    },
+    "B0": {
+      "categories": [
+        {
+          "id": "revenue",
+          "value": "yes",
+          "why": "Recovers handling cost in the claims in scope."
+        },
+        {
+          "id": "market_position",
+          "value": "yes",
+          "why": "We hold the policy corpus and the workflow; others hold neither."
+        },
+        {
+          "id": "dissatisfier",
+          "value": "yes",
+          "why": "Removes the escalation wait handlers complain about."
+        },
+        {
+          "id": "relationship",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "margin",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "capability",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "other",
+          "value": "no",
+          "why": ""
+        }
+      ],
+      "ranking": [
+        "revenue",
+        "market_position",
+        "dissatisfier"
+      ]
+    },
+    "B00": {
+      "outcome": "Reduce cost-to-serve by 15 percent in FY26",
+      "contribution": "About a third of the gap, from the claims in scope",
+      "owner": "COO"
+    }
+  },
+  "measures": [
+    {
+      "id": "M1",
+      "primary": true,
+      "measure": "Upload-step abandonment",
+      "baseline": "18 percent",
+      "baseline_source": "Step 19 telemetry, weeks 3-8",
+      "target": "Under 5 percent",
+      "by_when": "Two sprints",
+      "horizon": "near_term"
+    }
+  ],
+  "triage": {
+    "sensitive_data": "yes",
+    "autonomous_action": "no",
+    "external_users": "no",
+    "regulated_domain": "no",
+    "committed_spend": "no",
+    "brand_attribution": "no",
+    "workforce_impact": "no"
+  },
+  "reviews": [
+    {
+      "reviewer_id": "security",
+      "responder": {
+        "name": "Priya Raman"
+      },
+      "responded_at": "2026-10-14",
+      "raises": [
+        {
+          "id": "RS-1",
+          "severity": "blocking",
+          "section_ref": "D3",
+          "text": "No second control above threshold.",
+          "disposition": {
+            "type": "accepted",
+            "change_ref": "D3 rewritten",
+            "reviewer_acknowledged": true,
+            "owner_override": false
+          }
+        }
+      ]
+    },
+    {
+      "reviewer_id": "data_privacy",
+      "responder": {
+        "name": "Tom Vega"
+      },
+      "responded_at": "2026-10-15",
+      "raises": []
+    },
+    {
+      "reviewer_id": "engineering",
+      "responder": {
+        "name": "Sam Ide"
+      },
+      "responded_at": "2026-10-12",
+      "raises": []
+    }
+  ],
+  "gaps": [],
+  "changes": [],
+  "rounds": 1,
+  "confidence": 85,
+  "_expect_exit": 0,
+  "core_team": {
+    "formed_with": [
+      "Dana Okoye, Product",
+      "Sam Ide, Engineering",
+      "Ola Ben, Design"
+    ]
+  }
+}

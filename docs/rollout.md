@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all thirteen `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all fourteen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 Everything merged to `main` is released: the version in
@@ -8,6 +8,30 @@ Everything merged to `main` is released: the version in
 and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
+
+## Updating to 1.5.0
+
+A fourteenth skill, `aipos-product-vision`, writes the PMLC Step 6 Product Vision and takes it
+through review and ratification.
+
+- **New skill.** Ask for a product vision, or for Step 6, and it drafts the artifact, routes the
+  reviewers and computes readiness. Nothing else changes behaviour; no existing artifact, file
+  layout or script is touched.
+- **`aipos-product-strategy` no longer answers to "product vision".** Its description said it
+  covered one, meaning the vision statement inside a Product Opportunity Brief. Both descriptions
+  now draw the line: the brief holds the strategic choices, and the vision is the Step 6 artifact
+  with its own review and ratification. A request for a brief still routes to product-strategy, and
+  its behaviour is unchanged. If your team says "product vision" and means the brief, say "brief".
+- **Two things are computed, and one of them is owned elsewhere.**
+  `data/engagement-policy.json` decides which reviewers a risk tier engages, and Security and
+  Compliance own it. It ships at `2.0.0-pilot` and is marked `maturity: pilot` - it has been run
+  against one real vision, not hardened for client use. Review it before this skill is used on
+  client work.
+- **Learn mode.** The same artifact at exploration depth, granted by the accountable owner after
+  triage rather than chosen at setup. Ratifying any vision records agreement on direction, not
+  approval to build.
+
+Nothing to do beyond updating.
 
 ## Updating to 1.4.1
 

@@ -1,0 +1,35 @@
+{
+  "skill_name": "aipos-product-vision",
+  "evals": [
+    {
+      "id": 1,
+      "name": "does-not-open-on-the-product",
+      "prompt": "We want to build an agent that helps leaders baseline their AI readiness. Let's write the product vision.",
+      "expected_output": "The response does not start from the product. It establishes the scope first - new product or an improvement to an existing one - and then opens block A on the customer: who the target customer or user is for the solution being explored. The question arrives with its worked example, so the shape of a good answer is visible without asking for one. It asks one thing at a time. It does not ask what the product does, what its features are, or what it should be called, and it does not announce what comes next in the flow."
+    },
+    {
+      "id": 2,
+      "name": "tests-an-inherited-opportunity-rather-than-confirming-it",
+      "prompt": "The opportunity is already defined - it came out of our discovery work last quarter. Skip the customer problem section and go straight to the direction.",
+      "expected_output": "The response declines to skip block A, warmly and in one or two lines, and gives the reason: an opportunity arriving from another group is reviewed and tuned here rather than rubber-stamped, because the vision is what the rest of the cycle is judged against. It then asks block A's questions anyway, offering what the discovery work already establishes as a draft for the person to correct rather than asking them to restate it. It records where the opportunity came from. It does not treat agreement with the inherited framing as confirmation, and it does not simply comply."
+    },
+    {
+      "id": 3,
+      "name": "asks-only-what-is-needed-at-exploration-depth",
+      "prompt": "This is a Learn-mode vision for a two-week exploration. How big is the market, what uplift do you expect, and who owns the outcome?",
+      "expected_output": "The response does not collect market size, expected uplift or an outcome owner, and says once why: at exploration depth the question is which outcome this contributes to, not how much it moves or who signs for it, and a number invented now gets quoted later. It offers the question it does ask instead. If the person insists, it records what they give as their own statement rather than as a finding. It does not invent a figure, and it does not describe the Learn-mode vision as reduced, lesser, or missing the blocks it did not ask."
+    },
+    {
+      "id": 4,
+      "name": "translates-the-roster-instead-of-reading-out-the-record",
+      "prompt": "Triage is done. Who needs to look at this?",
+      "expected_output": "The response says who must respond, who gets a say and who is simply told, and what each of them can actually do - whether they can change where the product is aimed or only narrow it. It names the trigger that engaged each one. It does not read out computed roster, engagement level, shaping right, blocking, advisory, constrain, disposition or a tier label as bare vocabulary, and it does not present the roster as a list of labels for the person to decode."
+    },
+    {
+      "id": 5,
+      "name": "carries-evidence-marks-into-a-generated-artifact",
+      "prompt": "Draft the session brief for the engineering review from this vision. The record marks the customer's current workarounds as known from discovery sessions, and marks 'they have not made a formal attempt' as inferred, with no interviews behind it.",
+      "expected_output": "The brief states the known claim plainly and names its source, and hedges the inferred one in the sentence itself before marking it - probably nothing formal, we have not asked anyone directly - rather than asserting it as a finding. It does not attach a source to the inferred claim. It keeps the gap visible where it bears on what engineering is being asked to do. It marks claims rather than every line, and it reads as a teammate being asked to shape something rather than a request for sign-off, with no skill vocabulary in it."
+    }
+  ]
+}

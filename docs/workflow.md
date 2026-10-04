@@ -1,6 +1,6 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All thirteen skills live in the `aipos`
+The pillars describe a product lifecycle. All fourteen skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
@@ -8,7 +8,9 @@ user requests and the state of the available artifacts.
 flowchart TD
     PS["Product strategy: Product Opportunity Brief"] <--> L["Early learning: rapid validation"]
     PS --> P["P1: Live graph → exploration decision draft"]
-    PS --> SD["P2: Solution Framing canvas"]
+    PS --> PV["Step 6: Product Vision, drafted, reviewed, ratified"]
+    PV --> SD["P2: Solution Framing canvas"]
+    PS --> SD
     P --> SD
     SD --> V["P2: Experiments and evidence"]
     P --> V
@@ -58,7 +60,8 @@ or business outcomes.
 
 | Requested action | Owner | Output and handoff |
 |---|---|---|
-| Start, assess, or revise product vision and strategy | `aipos-product-strategy` | One concise Product Opportunity Brief and next learning decision; delegates experiments and receives findings/results for strategy revision |
+| Start, assess, or revise product strategy | `aipos-product-strategy` | One concise Product Opportunity Brief and next learning decision; delegates experiments and receives findings/results for strategy revision |
+| Write a Product Vision, or take one through review and ratification | `aipos-product-vision` | One vision record plus a to-do list; the reviewer roster is routed from a risk triage and readiness is computed; ratification records agreement on direction, never approval to build |
 | Allocate research attention using the live graph | `aipos-exploration-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
 | Facilitate a one-page Solution Framing canvas for one problem | `aipos-solution-framing` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
 | Test an opportunity or summarize experiment evidence | `aipos-rapid-validation` | Experiment artifacts and viability brief; delegates behavior definition and prepares the exact commitment package |
@@ -74,6 +77,27 @@ or business outcomes.
 
 Detailed instructions and prerequisites remain in the
 [skill catalog](../plugins/aipos/README.md).
+
+## The Product Vision
+
+`aipos-product-vision` owns the Step 6 artifact: who the customer is and what is hard for them,
+what solving it is worth to us, the direction and its arc, the boundaries, and the statement that
+travels. It runs in three steps — the Product Manager or Owner drafts, Engineering and the routed
+stakeholders review, the accountable owner ratifies.
+
+Two things are computed rather than judged. A seven-question risk triage sets the tier, and the
+tier picks the reviewer roster from `data/engagement-policy.json`, which Security and Compliance
+own: a vision that touches personal data engages Privacy whether or not the author thought to ask.
+Readiness is computed the same way, from `data/readiness-rules.json`.
+
+**Learn mode** is the same artifact at exploration depth, granted by the accountable owner after
+triage so the grant is made knowing what it routes past. It is for exploring a product or feature,
+not for a technical spike, and it is not a reduced vision: the blocks it does not ask are not owed.
+Promotion signals tell the owner when an exploration has started behaving like a commitment.
+
+The brief is the product-level strategy; the vision is the artifact Step 7 onward is built and
+judged against. Ratifying one records agreement on direction. It is not approval to build, and it
+does not clear the Validation Decision, which stays with `aipos-rapid-validation`.
 
 ## The Solution Framing canvas
 
@@ -148,4 +172,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these thirteen skills.
+outside these fourteen skills.

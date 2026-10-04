@@ -1,0 +1,593 @@
+{
+  "$schema_version": "2.0",
+  "rules_id": "aipos-product-vision-readiness",
+  "rules_version": "2.0.0",
+  "effective_date": "2026-10-03",
+  "owner": "Product, Accelerated Innovation",
+  "intent": "The checks that drive the readiness meter. Readiness is computed from the state of the record, never self-reported. Each check declares which mode and scope combinations ask it, so the matrix lives here as data rather than as branching inside the skill or a screen.",
+  "model": {
+    "gate": "all_blocking_checks_pass",
+    "meter_percent": "round(100 * checks_passed / checks_asked)",
+    "meter_note": "The percentage is for the person reading the screen. The gate is the blocking set, so 92 percent with one blocking check open is not ready, and the panel says which check.",
+    "not_asked": "A check whose combination is not listed in asked_in reports n/a, stays visible, and is left out of the meter. It is not a failure and it is not owed later.",
+    "combinations": [
+      "commit:new",
+      "commit:increment",
+      "learn:new",
+      "learn:increment"
+    ],
+    "modes": {
+      "learn": {
+        "label": "Learn mode",
+        "asks": "the exploration set: A, C1, D2, D3, one B question, LQ and KC, plus triage"
+      },
+      "commit": {
+        "label": "Commit mode",
+        "asks": "every block"
+      },
+      "note": "One artifact in both modes: a Product Vision. A check a mode does not ask reports n/a, stays visible, and is left out of the meter. It is not a failure and it is not owed later."
+    }
+  },
+  "checks": [
+    {
+      "id": "R1",
+      "severity": "blocking",
+      "name": "The change is stated",
+      "test": "C1 is present and substantive",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "There is no outcome statement, or it names a solution rather than a change.",
+      "concerns": "C1 the change",
+      "action": "Write the change in the customer's world, with no product in it"
+    },
+    {
+      "id": "R2",
+      "severity": "blocking",
+      "name": "Lineage is linked",
+      "test": "scope new: an accepted opportunity, or an explicit note that none exists. scope increment: a parent vision resolves.",
+      "asked_in": [
+        "commit:new",
+        "commit:increment"
+      ],
+      "failure_message": "Nothing links this to an accepted opportunity or to a parent vision.",
+      "concerns": "lineage"
+    },
+    {
+      "id": "R17",
+      "severity": "advisory",
+      "name": "Who drafted this is recorded",
+      "test": "core_team lists the people who drafted it, or records explicitly that someone was absent and why",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "concerns": "who formed the vision",
+      "action": "Record who formed this vision with you, or note who was missing",
+      "failure_message": "Nothing records who formed this vision. A vision drafted by the Product Lead alone is a proposal, not a team's direction.",
+      "note": "Context, not a gate. The Product Manager drafting alone is the normal case, not a defect."
+    },
+    {
+      "id": "R3",
+      "severity": "blocking",
+      "name": "A primary measure has a sourced baseline",
+      "test": "at least one measure in C4 has baseline AND baseline_source",
+      "asked_in": [
+        "commit:new",
+        "commit:increment"
+      ],
+      "failure_message": "No measure carries both a baseline and its source, so there is nothing to judge this against later.",
+      "concerns": "C4 measures"
+    },
+    {
+      "id": "R4",
+      "severity": "blocking",
+      "name": "Boundaries are stated",
+      "test": "D1 has at least one entry AND D2 has at least one entry",
+      "asked_in": [
+        "commit:new",
+        "commit:increment"
+      ],
+      "failure_message": "The adjacent list or the non-goals list is empty. These are what Step 7 and Step 9 build guardrails from.",
+      "concerns": "D1 and D2 boundaries"
+    },
+    {
+      "id": "R5",
+      "severity": "blocking",
+      "name": "Human-in-the-loop posture is stated",
+      "test": "D3 is present",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "It does not say what a person always decides. The agent contract cannot be designed against it.",
+      "concerns": "D3 who decides",
+      "action": "Say what a person always decides, and what the agent does when it gets there"
+    },
+    {
+      "id": "R6",
+      "severity": "blocking",
+      "name": "Triage is settled",
+      "test": "every triage question is answered AND no answer is still not_sure",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Triage has unresolved Not Sure answers. Each one engaged a reviewer conservatively and needs a Yes or a No.",
+      "concerns": "triage"
+    },
+    {
+      "id": "R7",
+      "severity": "blocking",
+      "name": "Every blocking reviewer has responded",
+      "test": "for each reviewer whose engagement is blocking at the computed tier, a response exists",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "The routed roster is incomplete. Named reviewers have not responded.",
+      "concerns": "the review round",
+      "action": "Open the review round so the people who must respond can"
+    },
+    {
+      "id": "R8",
+      "severity": "blocking",
+      "name": "Every blocking raise is dispositioned",
+      "test": "no raise with severity blocking lacks a disposition",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Blocking raises are still open.",
+      "concerns": "open raises"
+    },
+    {
+      "id": "R9",
+      "severity": "blocking",
+      "name": "Rejected blocking constraints are acknowledged",
+      "test": "every blocking raise from a constrain reviewer with disposition rejected carries reviewer_acknowledged OR owner_override",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "A constraint was rejected without the reviewer's acknowledgement or the accountable owner's call.",
+      "concerns": "rejected constraints"
+    },
+    {
+      "id": "R10",
+      "severity": "blocking",
+      "name": "An accountable owner is named",
+      "test": "accountable_owner is a named person",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "No accountable owner is named, so there is nobody to ratify.",
+      "concerns": "the accountable owner"
+    },
+    {
+      "id": "R16",
+      "severity": "blocking",
+      "name": "Ratification carries a name",
+      "test": "status is not ratified, OR ratified_by names a person",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Marked ratified with nobody named as the ratifier. Ratification is a person's act.",
+      "concerns": "ratification"
+    },
+    {
+      "id": "V1",
+      "severity": "blocking",
+      "name": "The customer is named and their world described",
+      "test": "A1 names a role AND A5 describes a current state",
+      "asked_in": [
+        "commit:new",
+        "learn:new"
+      ],
+      "failure_message": "The customer is a segment, or the current state is written as the absence of the solution.",
+      "note": "On an increment this is inherited from the parent vision and A10 carries what is new.",
+      "concerns": "A1 and A5 the customer"
+    },
+    {
+      "id": "V11",
+      "severity": "blocking",
+      "name": "The challenge or opportunity is stated",
+      "test": "A3 is present and states the problem in the customer's terms",
+      "asked_in": [
+        "commit:new",
+        "learn:new"
+      ],
+      "failure_message": "No challenge or opportunity is stated, so nothing after it in block A has a referent.",
+      "concerns": "A3 the problem"
+    },
+    {
+      "id": "V12",
+      "severity": "blocking",
+      "name": "Customer priority is stated with a reason",
+      "test": "A4 carries a value from the scale AND a why",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "A3 needs both a priority value and the reason behind it. The value alone is not evidence.",
+      "concerns": "A4 priority"
+    },
+    {
+      "id": "V14",
+      "severity": "blocking",
+      "name": "The committed outcome is named",
+      "test": "B00 names an outcome with what it would move, or explicitly records that none is served",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "concerns": "B00 the outcome",
+      "action": "Name the committed outcome this serves, or record that none is",
+      "failure_message": "Nothing places this against an outcome the business is committed to, so it cannot be prioritised against the rest of the backlog.",
+      "note": "None is a passing answer. It means a new bet rather than a contribution, which is a different approval conversation."
+    },
+    {
+      "id": "V13",
+      "severity": "blocking",
+      "name": "Business benefit categories are answered",
+      "test": "B0 has a value for every category, a ranking of the Yes set when more than one is Yes, and a why on the top three of that ranking",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "B0 is incomplete: a category is unanswered, the Yes set is unranked, or one of the top three has no reason behind it.",
+      "note": "A why on every Yes is busywork when seven are ticked. A why on the top three is the part a reviewer reads, and it is also what feeds the statement.",
+      "concerns": "B0 benefits",
+      "action": "Rank the benefits and give a reason for the top three"
+    },
+    {
+      "id": "V2",
+      "severity": "blocking",
+      "name": "Prior attempts are recorded, with their basis",
+      "test": "A7 carries a value, and when yes a how and a basis of known or inferred",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "A6 needs a value, and a Yes needs both what they did and whether that is known or inferred.",
+      "note": "A stated nothing passes. It is a real finding and it moves adoption to the dominant risk.",
+      "concerns": "A7 prior attempts"
+    },
+    {
+      "id": "L7",
+      "severity": "blocking",
+      "name": "What we are still figuring out is named",
+      "test": "LQd has at least one of What, How, For whom, For how much selected, and a primary when more than one",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "concerns": "LQd what is open",
+      "action": "Say which parts of this are still open",
+      "failure_message": "Nothing says which parts are still being figured out, so the learning question has no subject."
+    },
+    {
+      "id": "V3",
+      "severity": "blocking",
+      "name": "Claims are marked known, inferred or gap",
+      "test": "A8 has a row per claim, every row carries a basis, and every known row carries a source",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Claims are unmarked, or a known claim has no source behind it.",
+      "concerns": "A8 sources",
+      "action": "Name a source for each claim marked known, or re-mark it inferred"
+    },
+    {
+      "id": "V4",
+      "severity": "blocking",
+      "name": "The prize is sized, or the gap is named",
+      "test": "B1 is present, and every figure in it carries a source or the absence of sizing is recorded as a gap with an owner",
+      "asked_in": [
+        "commit:new"
+      ],
+      "failure_message": "A figure appears with no source behind it. A number without a source is a gap, not a number.",
+      "note": "This is the most fabricated field in any vision, which is why it is the one with an explicit anti-fabrication test.",
+      "concerns": "B1 the prize"
+    },
+    {
+      "id": "V5",
+      "severity": "blocking",
+      "name": "Strategic fit and competitive position are stated",
+      "test": "B2 and B3 are both present",
+      "asked_in": [
+        "commit:new"
+      ],
+      "failure_message": "Why us, or what happens if we do not move, is unstated.",
+      "concerns": "B2 and B3"
+    },
+    {
+      "id": "V6",
+      "severity": "advisory",
+      "name": "Why now names what closes the window",
+      "test": "B4 is present and names a closing condition",
+      "asked_in": [
+        "commit:new"
+      ],
+      "failure_message": "The timing answer has no closing condition, which usually means the honest answer is not yet.",
+      "concerns": "B4 why now"
+    },
+    {
+      "id": "V7",
+      "severity": "blocking",
+      "name": "The arc and what MVP proves are stated",
+      "test": "C2 has both parts",
+      "asked_in": [
+        "commit:new"
+      ],
+      "failure_message": "There is no arc, so no scope decision downstream can be judged as a step or a retreat.",
+      "concerns": "C2 the arc"
+    },
+    {
+      "id": "V8",
+      "severity": "blocking",
+      "name": "The statement exists and is well formed",
+      "test": "F1 has a stem and between three and five focus areas",
+      "asked_in": [
+        "commit:new"
+      ],
+      "failure_message": "There is no statement, or it has fewer than three or more than five focus areas.",
+      "note": "The statement becomes the scope test for every future increment, so a missing one costs more later than it does here.",
+      "concerns": "F1 the statement"
+    },
+    {
+      "id": "V9",
+      "severity": "advisory",
+      "name": "Who absorbs the change is named",
+      "test": "C3 names a role distinct from the beneficiary",
+      "asked_in": [
+        "commit:new",
+        "commit:increment"
+      ],
+      "failure_message": "It names who gains but not whose work changes.",
+      "concerns": "C3 who absorbs"
+    },
+    {
+      "id": "V10",
+      "severity": "advisory",
+      "name": "The pull-it condition is stated",
+      "test": "D4 has at least one entry",
+      "asked_in": [
+        "commit:new",
+        "commit:increment"
+      ],
+      "failure_message": "Nothing says what would make us turn it off, so Step 9 writes evaluation criteria without the product's intent behind them.",
+      "concerns": "D4 pull-it"
+    },
+    {
+      "id": "S1",
+      "severity": "blocking",
+      "name": "The parent product is named",
+      "test": "parent_vision_ref names the product, and records one of: a linked vision, no vision document, or information unavailable with a reason",
+      "asked_in": [
+        "commit:increment",
+        "learn:increment"
+      ],
+      "failure_message": "This improves a product that has not been named, or its lookup result was not recorded.",
+      "concerns": "the parent vision",
+      "note": "All three outcomes pass. A product with no vision is normal, and information unavailable is a legitimate state worth counting. Silence about which product is not."
+    },
+    {
+      "id": "S2",
+      "severity": "advisory",
+      "name": "The parent statement still covers this",
+      "test": "F2 is answered yes, OR the parent has no vision document",
+      "asked_in": [
+        "commit:increment",
+        "learn:increment"
+      ],
+      "failure_message": "The parent statement does not cover this. Re-scope as a revision of the parent vision.",
+      "note": "Advisory rather than blocking, because it cannot run when the parent has no statement, which is the normal case for anything built before this skill. A No is still a routing result: re-scope.",
+      "concerns": "the statement check"
+    },
+    {
+      "id": "S3",
+      "severity": "blocking",
+      "name": "Why this increment, and why next",
+      "test": "B5 names the incremental value and what it was chosen over",
+      "asked_in": [
+        "commit:increment"
+      ],
+      "failure_message": "Nothing says why this is the next most valuable thing to build on this product.",
+      "concerns": "B5 why this next"
+    },
+    {
+      "id": "S4",
+      "severity": "advisory",
+      "name": "Production signal is stated",
+      "test": "A11 is present",
+      "asked_in": [
+        "commit:increment",
+        "learn:increment"
+      ],
+      "failure_message": "The live product has signal about this and none of it is recorded.",
+      "concerns": "A11 production signal"
+    },
+    {
+      "id": "L1",
+      "severity": "blocking",
+      "name": "The grant is recorded",
+      "test": "learn_mode.granted_by names the accountable owner AND granted_at AND grant_reason are present",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "This is in Learn mode without a recorded grant. Only the named accountable owner can grant it, in their name, with a reason.",
+      "concerns": "the Learn mode grant",
+      "action": "Record the grant with a reason, in the owner's name"
+    },
+    {
+      "id": "L2",
+      "severity": "blocking",
+      "name": "A review-by date is set",
+      "test": "learn_mode.review_by is a date",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "No review-by date. The owner granted Learn mode and needs a date on which they are asked about it again.",
+      "concerns": "the review-by date",
+      "action": "Set a review-by date"
+    },
+    {
+      "id": "L3",
+      "severity": "blocking",
+      "name": "The learning question is stated",
+      "test": "learn_mode.learning_question is present",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "It does not say what this build is going to answer.",
+      "concerns": "LQ"
+    },
+    {
+      "id": "L4",
+      "severity": "blocking",
+      "name": "A kill condition is stated",
+      "test": "learn_mode.kill_condition is present",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "No result is named that would stop this. A proof of concept with no stopping condition is an unreviewed product.",
+      "concerns": "KC"
+    },
+    {
+      "id": "L5",
+      "severity": "blocking",
+      "name": "Non-goals are stated",
+      "test": "D2 has at least one item",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Non-goals are asked in both modes. They cost one line and they become refusal behaviour later.",
+      "concerns": "D2 non-goals"
+    },
+    {
+      "id": "L6",
+      "severity": "blocking",
+      "name": "Live promotion signals are acknowledged",
+      "test": "no live promotion signal lacks an entry in learn_mode.signal_acknowledgements, OR status is not ratified",
+      "asked_in": [
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "A promotion signal is live and has not been acknowledged by the accountable owner.",
+      "note": "This check does not promote and does not decide anything. It guarantees that a Learn-mode vision cannot sit ratified while the owner has not seen a signal. Delete this rule if the organization wants signals purely informational.",
+      "concerns": "promotion signals"
+    },
+    {
+      "id": "R13",
+      "severity": "advisory",
+      "name": "Evidence gaps have owners",
+      "test": "every gap of kind evidence carries an owner and a next action",
+      "asked_in": [
+        "commit:new",
+        "commit:increment"
+      ],
+      "failure_message": "Some evidence gaps have no owner, so nothing will close them.",
+      "concerns": "R13"
+    },
+    {
+      "id": "R14",
+      "severity": "advisory",
+      "name": "Advisory raises are answered",
+      "test": "no raise with severity advisory lacks a disposition",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Advisory raises are unanswered. They do not hold the record, but reviewers notice.",
+      "concerns": "R14"
+    },
+    {
+      "id": "R15",
+      "severity": "advisory",
+      "name": "Change rationale is present in revision mode",
+      "test": "pass_type is new OR every changed block carries a rationale",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "This is a revision pass and some changes have no rationale recorded.",
+      "concerns": "R15"
+    }
+  ],
+  "step_12": {
+    "rule": "A vision in Learn mode cannot be the basis of a GO at the Validation Decision. Clearing Step 12 requires Commit mode.",
+    "why": "Step 12 produces a refined MVP scope recommendation, an output quality scorecard and safety and boundary results. Those read D1, D4 and C4 with sourced baselines, which are exactly the checks Learn mode does not ask. Step 12's REVISE path also re-enters at Step 7, which presumes something solid enough to design an agent contract against.",
+    "enforcement": "The record carries its mode. The rule belongs to aipos-rapid-validation, which owns Step 12.",
+    "not_required_for": [
+      "NO-GO",
+      "REVISE"
+    ],
+    "not_required_note": "A Learn-mode vision that gets a no-go returns to the backlog as it is, with its learning. Most Learn-mode visions never reach Step 12 at all, which is the success case."
+  },
+  "secondary_signals": {
+    "product_lead_confidence": {
+      "captured": true,
+      "gates": false,
+      "prompt": "How confident are you that this captures where the product should go?",
+      "scale": "0 to 100 in steps of 10",
+      "note": "Recorded and shown to the accountable owner at ratification. It never gates. A Product Lead at 40 percent on something that meets every check is useful information, and it disappears if the only number on the screen is computed."
+    }
+  },
+  "anti_gaming": [
+    "No check is satisfied by the Product Lead asserting it",
+    "Reviewer responses are recorded against the named reviewer, not against the roster slot",
+    "Readiness recomputes on every change, so editing a block after reviewers responded reopens their checks for the blocks they raised against",
+    "Scope is a test, not a selection: S2 is what stops an increment being used to avoid a revision"
+  ],
+  "coherence_warnings": [
+    {
+      "id": "W1",
+      "name": "Stated as critical, nothing done",
+      "test": "A4 value is critical or high AND A7 value is no",
+      "says": "Stated as %s, but nothing has been tried, built or paid for. Adoption, not capability, is the dominant risk here, and it should show in the measures and in the Step 11 plan.",
+      "note": "A warning, never a failure. It is frequently the most useful line the verifier prints."
+    }
+  ]
+}

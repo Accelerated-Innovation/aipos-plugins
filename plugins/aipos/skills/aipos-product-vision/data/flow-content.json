@@ -1,0 +1,1768 @@
+{
+  "$schema_version": "2.0",
+  "content_id": "aipos-product-vision-flow",
+  "content_version": "2.1",
+  "maps_to": "Agentic PMLC Step 6, Define Your Product Vision",
+  "owner": "Product, Accelerated Innovation",
+  "intent": "Every question, the reason behind it and its examples, held as data so the skill and the AIOS screen ask the same things in the same words. Copy follows the Accelerated Innovation voice rules: commas rather than em dashes, Title Case for headlines and buttons, sentence case for body and helper text, no emoji.",
+  "axes": {
+    "note": "Two orthogonal axes. Mode decides depth, scope decides inheritance. They are not a list of three options and must not be collapsed into one.",
+    "mode": {
+      "question": "Are we learning, or committing?",
+      "decided_by": "A grant from the named accountable owner puts this in Learn mode. Commit mode is the default.",
+      "learn": {
+        "label": "Learn mode",
+        "intent": "We are exploring whether this product or feature is worth building. Stopping is a success."
+      },
+      "commit": {
+        "label": "Commit mode",
+        "intent": "We intend to build this."
+      },
+      "scope_of_learn_mode": "Learn mode is for PRODUCT or FEATURE exploration. A technical spike with no candidate product or feature behind it is not Step 6 at all and belongs at the team and work-management level. If there is nothing a vision could eventually be written about, this is the wrong skill."
+    },
+    "scope": {
+      "question": "Is this a new product, an increment on one we have, or a change to an existing vision?",
+      "decided_by": "The Step 0 scope test. It is a test, not a selection.",
+      "new": {
+        "label": "New product",
+        "inherits": "nothing"
+      },
+      "increment": {
+        "label": "Increment",
+        "inherits": "the parent vision's customer, market case, arc and boundaries"
+      },
+      "revision": {
+        "label": "Revision",
+        "inherits": "the parent vision itself, which this pass changes"
+      }
+    },
+    "artifact_naming": "One artifact, two modes. The record is a Product Vision in both; the mode says how complete it is at this point in its life, and promotion opens the remaining blocks on the same record rather than producing a different document."
+  },
+  "step_0": {
+    "order": [
+      "resume_check",
+      "scope",
+      "mode_intent",
+      "opportunity_or_parent",
+      "people",
+      "pacing"
+    ],
+    "scope_question": {
+      "id": "S0",
+      "label": "New or improvement",
+      "prompt": "Is this for a new product, or an improvement to an existing product?",
+      "control": "choice",
+      "values": [
+        {
+          "id": "new",
+          "label": "A new product"
+        },
+        {
+          "id": "improvement",
+          "label": "An improvement to an existing product"
+        }
+      ],
+      "asked": "first, before anything else, because it decides which questions get asked at all",
+      "why_we_are_asking": "An improvement inherits its customer, market case and arc from the product it builds on, so asking for them again wastes an hour and lets the two documents drift apart.",
+      "revision": "Not asked for. A revision is detected, not selected: either the statement check fails, or the pass enters from Step 20 carrying a vision-level change.",
+      "why_not_a_test": "An earlier version asked four diagnostic questions here, with does the parent statement still cover it as the decisive one. That solved for an improvement that is secretly a new product, at a moment when nobody can check it, and it depended on an artifact no existing product has. The sprawl check still exists - it is the statement check at F2 - it just runs where it can actually run.",
+      "examples": [
+        "A new product. Nothing exists that this extends.",
+        "An improvement to the Vision agent. It has no vision document yet, so no inheritance; backfilling its statement."
+      ]
+    },
+    "mode_intent": {
+      "note": "Step 0 records a mode INTENT only. The grant is a named step after triage, and it is the only thing that sets the mode. Never offer Learn mode to a Product Lead.",
+      "default": "commit"
+    },
+    "people": [
+      "product_lead",
+      "accountable_owner"
+    ],
+    "pacing": [
+      "coach",
+      "workshop"
+    ],
+    "pause_note": "This can be paused at any point and resumes exactly where it left off.",
+    "product_question": {
+      "id": "S0b",
+      "label": "Which product",
+      "prompt": "Which product does this improve?",
+      "asked_when": "S0 is improvement",
+      "control": "picker_with_lookup",
+      "source": {
+        "system": "the product register, or whatever holds the catalogue of existing products",
+        "detection": "by tool signature, as with the Opportunity Engine at A8",
+        "returns": [
+          "product_id",
+          "name",
+          "has_vision",
+          "has_statement",
+          "vision_ref"
+        ],
+        "when_not_connected": "Say so once and take the product name as free text. The lookup is a convenience; the product being named is the requirement."
+      },
+      "options": {
+        "from_register": "Every product in the register, searchable.",
+        "unavailable": {
+          "id": "information_unavailable",
+          "label": "Product information unavailable",
+          "helper": "The product exists but is not in the register, or the register cannot be reached.",
+          "then": "Take the name as free text and record why it was unavailable.",
+          "why_it_is_its_own_option": "Distinct from a new product and from a product with no vision. Collapsing them loses the reason, and the reason is usually that the register is incomplete, which is worth knowing."
+        }
+      },
+      "outcomes": {
+        "found_with_a_vision": "Link it and inherit. The statement check runs at F2.",
+        "found_without_a_vision": "Normal for anything built before this skill. Record `exists: false`, continue without inheritance, and offer the statement-only backfill: a stem and three to five focus areas for the parent, about fifteen minutes, which makes every future improvement on that product testable. Declining is fine and is recorded.",
+        "information_unavailable": "Record the name and the reason. No inheritance, no statement check, and the backfill is not offered because there is nothing to attach it to."
+      },
+      "why_a_separate_step": "One thing per question. Choosing new or improvement is one task; finding the product is another.",
+      "why_we_are_asking": "Which product decides what is inherited and what still has to be asked.",
+      "examples": [
+        "Vision agent — found, no vision document. Continuing without inheritance.",
+        "Product information unavailable — the Readiness pilot ran outside the register. Name recorded."
+      ],
+      "asked_in": [
+        "commit:increment",
+        "learn:increment"
+      ]
+    }
+  },
+  "blocks": {
+    "A": {
+      "label": "The customer and the problem",
+      "note": "One question in focus at a time. Always asked, never inherited unexamined: opportunities usually arrive framed by whoever raised them, which is often not Product.",
+      "questions": [
+        {
+          "id": "A1",
+          "label": "Target customer or user",
+          "prompt": "Who's the target customer or user for the solution you're exploring?",
+          "control": "short_text",
+          "placeholder": "A role, not a segment. Name the customer and the user separately if they are different people.",
+          "why_we_are_asking": "Everything after this is judged against a person. A segment cannot have a bad day.",
+          "examples": [
+            "Heads of claims operations at mid-size insurers",
+            "Paraplanners in a wealth advice firm"
+          ],
+          "quality_tests": [
+            "names_a_role_not_a_segment"
+          ],
+          "asked_in": [
+            "commit:new",
+            "learn:new"
+          ],
+          "prompt_commit": "Who's the target customer or user for the product you're defining?",
+          "prompt_note": "Use prompt in Learn mode and prompt_commit in Commit mode. Exploring is the wrong verb once intent is to build.",
+          "helper": "Customer and user are often not the same person. If they differ here, A3 asks which one we build for first.",
+          "specificity": {
+            "passes_when": "A job title or named role, not a segment, a market or a class of people",
+            "generic_markers": [
+              "leaders",
+              "businesses",
+              "organisations",
+              "organizations",
+              "companies",
+              "teams",
+              "enterprises",
+              "customers",
+              "users",
+              "everyone",
+              "stakeholders"
+            ],
+            "nudge": "That names a class of people rather than a person. If you could only build for one job title, which one? Example: Heads of claims operations at mid-size insurers."
+          }
+        },
+        {
+          "id": "A2",
+          "label": "One group or more",
+          "prompt": "Is that one group, or more than one? If more, which do we build for first?",
+          "control": "short_text",
+          "placeholder": "Name them and say which is primary. One group is a valid answer worth stating.",
+          "why_we_are_asking": "Asked here so the rest of the block describes somebody specific. Two groups with different realities are either two visions or one that names both, and an unresolved or at this point turns every answer after it into an average of two people.",
+          "examples": [
+            "Two: enterprise leaders setting an AI agenda, and function leaders maturing one capability. Primary: function leaders.",
+            "One. Same role, same reality."
+          ],
+          "asked_in": [
+            "commit:new",
+            "learn:new"
+          ],
+          "specificity": {
+            "passes_when": "Either one group stated plainly, or the groups named with a primary chosen",
+            "generic_markers": [
+              "both",
+              "various",
+              "several",
+              "across the business",
+              "and others",
+              "or"
+            ],
+            "nudge": "If there are two, which do we build for first? An unresolved or means the next six answers describe an average of two people and fit neither."
+          }
+        },
+        {
+          "id": "A3",
+          "label": "The challenge or opportunity",
+          "prompt": "What's hard or out of reach for them today?",
+          "control": "open_text",
+          "placeholder": "In their words. Not as the absence of your solution.",
+          "why_we_are_asking": "A1 named a person. This names the problem space. Everything after it - what makes it theirs, what they do today, what it costs - refers back to this, so it has to exist before any of them can be asked.",
+          "examples": [
+            "They cannot find situational precedent across three policy documents, so hard claims escalate",
+            "They are asked to show AI progress and have no defensible way to say what the organisation can absorb"
+          ],
+          "quality_tests": [
+            "stated_as_their_problem_not_our_feature",
+            "not_the_absence_of_a_solution"
+          ],
+          "asked_in": [
+            "commit:new",
+            "learn:new"
+          ],
+          "helper": "A problem they have, or something valuable they cannot get to. Same question either way.",
+          "specificity": {
+            "passes_when": "A specific thing they cannot do or cannot do well, in their terms",
+            "generic_markers": [
+              "digital transformation",
+              "efficiency",
+              "productivity",
+              "innovation",
+              "modernise",
+              "modernize",
+              "leverage",
+              "unlock",
+              "optimise",
+              "optimize"
+            ],
+            "nudge": "That reads at the level of the market rather than their desk. What specifically can they not do on a bad Tuesday? Example: they cannot find situational precedent across three policy documents, so hard claims escalate."
+          }
+        },
+        {
+          "id": "A4",
+          "label": "How much it matters to them",
+          "prompt": "How important is this to them, and why?",
+          "control": "choice_then_text",
+          "placeholder": "The why matters more than the how much. Accountability, exposure, a deadline, a number they are measured on.",
+          "why_we_are_asking": "Importance tells you whether they will act. The why is usually accountability: what stops them handing this to IT, a central AI team or a consultant and moving on.",
+          "examples": [
+            "Critical — they are accountable for cycle time and have been told to show AI progress this year",
+            "Medium Priority — it irritates them but nobody is measured on it"
+          ],
+          "asked_in": [
+            "commit:new",
+            "learn:new"
+          ],
+          "paired_with": "A7",
+          "pairing_note": "Asked on its own this returns Very every time. A7 tests it against what they have actually done. The gap between the two answers is the finding: stated as critical with nothing done about it means adoption, not capability, is the dominant risk.",
+          "values": [
+            {
+              "id": "critical",
+              "label": "Critical"
+            },
+            {
+              "id": "high",
+              "label": "High Priority"
+            },
+            {
+              "id": "medium",
+              "label": "Medium Priority"
+            },
+            {
+              "id": "low",
+              "label": "Low Priority"
+            },
+            {
+              "id": "not_sure",
+              "label": "Not Sure"
+            }
+          ],
+          "follow_up": {
+            "prompt": "Why?",
+            "required": true,
+            "placeholder": "Accountability, exposure, a deadline, a number they are measured on."
+          },
+          "not_sure_rule": "Not Sure raises a GAP of kind evidence: we do not know how much the customer cares. In Learn mode it is the strongest learning-question candidate there is, because it is cheaper to test than capability and it fails faster.",
+          "scale_caution": "Scales inflate. Everyone picks Critical or High. That is why A7 exists and why the pair is checked rather than the value alone.",
+          "specificity": {
+            "passes_when": "A reason tied to this person: an accountability, an exposure, a deadline, or a number they are measured on",
+            "generic_markers": [
+              "transform",
+              "potential",
+              "the risks of",
+              "important for the business",
+              "strategic",
+              "competitive advantage",
+              "falling behind",
+              "disruption"
+            ],
+            "nudge": "That is why the topic matters, and it would be true for almost any leader in the market. What is on the hook for them personally? Example: they committed to an AI agenda publicly and have to show progress at the next board cycle."
+          }
+        },
+        {
+          "id": "A5",
+          "label": "What they do today",
+          "prompt": "Walk me through what they actually do today when this comes up.",
+          "control": "open_text",
+          "placeholder": "The current process, in their terms. They are doing something today, so say what it is.",
+          "why_we_are_asking": "A current state written as the absence of your product tells you nothing. The real process is where the design constraints are.",
+          "examples": [
+            "They open the policy PDF, search it, give up, and ask the person who has been there longest",
+            "They commission a consulting assessment every eighteen months and guess in between"
+          ],
+          "quality_tests": [
+            "current_state_not_absence_of_solution"
+          ],
+          "asked_in": [
+            "commit:new",
+            "learn:new"
+          ],
+          "specificity": {
+            "passes_when": "An actual sequence of things they do, with the tools or people involved",
+            "generic_markers": [
+              "they have no way",
+              "there is no process",
+              "nothing exists",
+              "they cannot currently",
+              "lack of"
+            ],
+            "nudge": "That describes the absence of a solution. They are doing something today, even if it is bad. What is it? Example: they open the policy PDF, search it, give up, and ask whoever has been there longest."
+          }
+        },
+        {
+          "id": "A6",
+          "label": "What is at stake",
+          "prompt": "What's at stake if they don't solve this?",
+          "control": "open_text",
+          "placeholder": "What it costs them while it persists, and where it ends up. Name the consequence, who carries it, and roughly when.",
+          "why_we_are_asking": "A3 is what they say. This is what follows. Together they are the case for the problem being worth solving, and the gap between a Critical rating and a mild stake is usually the first thing a reviewer finds.",
+          "examples": [
+            "Hard claims keep taking forty minutes and escalating; the two people who hold the knowledge are both near retirement, so the backlog grows with volume",
+            "A year of AI investment pointed at the wrong capability, discovered at the annual review, and the board stops funding the programme"
+          ],
+          "specificity": {
+            "passes_when": "A named consequence, who carries it, and roughly when",
+            "generic_markers": [
+              "fall behind",
+              "lose competitive advantage",
+              "miss out",
+              "get left behind",
+              "lose ground",
+              "be disrupted",
+              "significant",
+              "substantial",
+              "costly",
+              "inefficient"
+            ],
+            "nudge": "Behind whom, and at what? Name what actually changes, for whom, and roughly when. Example: their peers run three scaled use cases by next year while they are still running pilots, so the board stops funding it."
+          },
+          "note": "A mild stake alongside Critical at A3 is worth asking about. One of the two answers is usually wrong.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ]
+        },
+        {
+          "id": "A7",
+          "label": "What they have tried before",
+          "prompt": "Have they likely previously tried to solve this?",
+          "control": "choice_then_text",
+          "placeholder": "Behaviour, not opinion. Nothing is a real answer and a useful one.",
+          "why_we_are_asking": "Behaviour, not opinion. A problem can be real, evidenced and expensive and still sit untouched for years. What someone has already spent is the strongest signal of what they will spend, and anything that persisted is the cheapest spec you will ever get.",
+          "probes": [
+            "Where does it sit against the other things on their plate this quarter?",
+            "If they do nothing, does it get worse or stay stable?",
+            "Is anyone's budget or objectives attached to fixing it?"
+          ],
+          "examples": [
+            "Yes — two regions built their own spreadsheets on their own time; one paid a contractor to index the library. Known.",
+            "Yes — they will have run a pilot or two that did not scale. Inferred.",
+            "No — it comes up in every ops review and has never had budget or a person against it. Known."
+          ],
+          "note": "A stated nothing moves adoption from a secondary risk to the dominant one, and that should show in the measures and in the Step 11 plan. In Learn mode it is usually the best learning question available.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "pairing_note": "The behavioural test of A3. The verifier compares the two and flags the gap.",
+          "values": [
+            {
+              "id": "yes",
+              "label": "Yes"
+            },
+            {
+              "id": "no",
+              "label": "No"
+            },
+            {
+              "id": "not_sure",
+              "label": "Not Sure"
+            }
+          ],
+          "follow_up": {
+            "required_when": [
+              "yes"
+            ],
+            "fields": [
+              {
+                "id": "how",
+                "prompt": "If so, how?",
+                "placeholder": "Spend, a build, someone's time, or something that persisted - a spreadsheet, a framework, a standing meeting."
+              },
+              {
+                "id": "basis",
+                "prompt": "Known or inferred?",
+                "control": "choice",
+                "values": [
+                  "known",
+                  "inferred"
+                ],
+                "helper": "Inferred is a legitimate answer at this stage. Labelling it here is what stops it reading as evidence later."
+              }
+            ]
+          },
+          "specificity": {
+            "passes_when": "A concrete thing they did, or an explicit No, with the basis marked",
+            "generic_markers": [
+              "some things",
+              "various initiatives",
+              "a few attempts",
+              "they have looked at"
+            ],
+            "nudge": "What specifically, and when? If the honest answer is nothing, say nothing, that is the more useful finding. And mark whether you know this or are inferring it."
+          }
+        },
+        {
+          "id": "A8",
+          "label": "What we know and what we are assuming",
+          "prompt": "Which of these do we know, and which are we assuming?",
+          "control": "claims_review",
+          "fields": [
+            {
+              "id": "claim",
+              "prompt": "The claim",
+              "auto": true
+            },
+            {
+              "id": "basis",
+              "prompt": "Known, inferred, or gap",
+              "control": "choice",
+              "values": [
+                "known",
+                "inferred",
+                "gap"
+              ]
+            },
+            {
+              "id": "source",
+              "prompt": "Source",
+              "required_when": [
+                "known"
+              ],
+              "placeholder": "Where it came from. A conversation, an export, a call, a document."
+            }
+          ],
+          "why_we_are_asking": "A vision gets quoted, and once quoted the difference between evidenced and assumed is invisible. Marking it here is what stops an inference being read as a finding in six months.",
+          "why_gaps_are_fine": "A gap is a legitimate answer and often the most useful one: it is what the exploration should go and close. An unmarked assumption is the only wrong answer here.",
+          "examples": [
+            "Leaders use ChatGPT and the internet today · known · client conversations, Q3",
+            "Personal credibility is what is at stake · inferred · no interviews yet",
+            "Nobody has made a formal attempt · gap · we have not asked anyone directly"
+          ],
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "auto_populate_from": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6",
+            "A7"
+          ],
+          "populate_note": "The skill lists the claims already made in this block, one per row. The person marks each one rather than regenerating the list. A question that asks someone to restate what they just said gets skipped or answered thinly.",
+          "specificity": {
+            "passes_when": "Every claim marked, and every known claim carrying a source",
+            "generic_markers": [
+              "we know",
+              "obviously",
+              "clearly",
+              "everyone knows",
+              "industry research"
+            ],
+            "nudge": "Which conversation, export or document? Industry research is a source only if you can name it. If you cannot, the honest mark is inferred."
+          },
+          "source_integration": {
+            "system": "the Opportunity Engine, or whatever holds the structured opportunities and their evidence",
+            "detection": "by tool signature, as in aipos-solution-framing",
+            "when_connected": {
+              "prefill": "Each claim is matched against the engine and arrives pre-marked, with the reference as its source. The person confirms or corrects rather than marking from scratch.",
+              "rule": "Never ask for a fact the engine holds. A claim the engine cannot support is inferred or a gap, not a known with a remembered source.",
+              "quality": "A known claim then carries a traceable reference rather than a recollection. Recollections do not survive a staff change."
+            },
+            "when_not_connected": {
+              "behaviour": "Say so once and continue on the person's account. Known still requires a named source - a conversation, an export, a call, a document.",
+              "caution": "A source given from memory is still a source, but it is weaker than a reference and should be re-grounded if the engine is connected later."
+            },
+            "outbound": {
+              "rule": "Every row marked gap is offered back to the Opportunity Engine as a research request, with the claim, why it matters and who owns it.",
+              "why": "A gap recorded in a document dies there. A gap handed to the system that gathers evidence is the start of closing it.",
+              "in_learn_mode": "A gap offered outbound is also the strongest learning-question candidate, so the two paths agree rather than compete."
+            }
+          }
+        },
+        {
+          "id": "A9",
+          "label": "Where this came from",
+          "prompt": "How did this reach us, from whom, and what did we change?",
+          "control": "two_column",
+          "columns": [
+            "As it came to us",
+            "As Product states it"
+          ],
+          "conditional_on": "an opportunity or request is linked",
+          "why_we_are_asking": "Step 1 signal sources are mostly not Product: sales calls, support tickets, CRM notes, leadership requests. Symptoms and solutions routinely arrive looking like problems.",
+          "tests_on_the_inherited_framing": [
+            "Whose words is this in, and what did they want when they wrote it?",
+            "Is it a problem, or a symptom of one?",
+            "Is it a solution wearing a problem's clothes?",
+            "Does the evidence support the problem as stated, or only that something is wrong?",
+            "Has anyone spoken to the person who has it?"
+          ],
+          "escalation": "When the restatement materially changes the problem, say so plainly: the thing Step 4 accepted is not the thing being written up. Flag it to the accountable owner. Do not silently re-gate.",
+          "feedback_loop": "Repeated rewrites of the same kind from the same source group are a signal about intake quality at Step 2.",
+          "examples": [
+            "As it came to us (Support): ticket volume on policy questions is up 40 percent\nAs Product states it: handlers cannot find situational precedent, so they escalate\nWhat changed: a symptom was reframed as the problem underneath it"
+          ],
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ]
+        },
+        {
+          "id": "A10",
+          "label": "The unmet need",
+          "prompt": "Which existing users, and what can they not do today?",
+          "control": "short_text",
+          "why_we_are_asking": "The customer is already established by the parent vision. What is new is a specific gap inside a user base we already serve.",
+          "examples": [
+            "Handlers working multi-document claims, about a fifth of volume, cannot submit a bundle"
+          ],
+          "asked_in": [
+            "commit:increment",
+            "learn:increment"
+          ]
+        },
+        {
+          "id": "A11",
+          "label": "What production tells us",
+          "prompt": "What does the live product show about this?",
+          "control": "short_text",
+          "placeholder": "Usage, failures, support volume, evaluation drift, feedback.",
+          "why_we_are_asking": "Increments arrive with the best evidence in the system and often the worst framing of it. Step 19 feeds Step 1, so the signal is already there.",
+          "examples": [
+            "Step 19 telemetry weeks 3 to 8: 18 percent abandon at upload, and tickets name the single-file limit"
+          ],
+          "asked_in": [
+            "commit:increment",
+            "learn:increment"
+          ]
+        }
+      ],
+      "title": "Understanding Your Target Customer and Their Current Reality",
+      "arc": "Who they are, then what is true for them, then where that came from."
+    },
+    "B": {
+      "label": "The opportunity for us",
+      "note": "B00 places this against what the business is already committed to. B0 names the kind of benefit and ranks it. B1 to B4 are Commit mode only and size, position and time the top one. The most fabricated block in any vision: every number carries a source or is marked as a gap.",
+      "anti_fabrication_rule": "A figure without a source is a GAP, not a figure. A 2.4 billion dollar market with nothing behind it fails. GAP, no sizing yet, owner <name>, next action <action>, passes. Otherwise the most confident-sounding section becomes the least reliable one.",
+      "questions": [
+        {
+          "id": "B00",
+          "label": "The outcome this serves",
+          "prompt": "Which of our committed outcomes would this serve?",
+          "control": "reference_then_text",
+          "asked_first_in_block": true,
+          "fields": [
+            {
+              "id": "outcome",
+              "prompt": "The outcome",
+              "control": "picker_or_text",
+              "placeholder": "Name it as the business names it. An OKR, a strategic priority, a number someone owns.",
+              "helper": "If nothing we are committed to is served by this, say so. That is a real answer.",
+              "asked_in": [
+                "commit:new",
+                "commit:increment",
+                "learn:new",
+                "learn:increment"
+              ]
+            },
+            {
+              "id": "owner",
+              "prompt": "Who owns it",
+              "placeholder": "The person accountable for that outcome.",
+              "helper": "Needed when you are making a case for capacity against it.",
+              "asked_in": [
+                "commit:new",
+                "commit:increment"
+              ]
+            }
+          ],
+          "why_we_are_asking": "A product team prioritises its capacity against defined outcomes. A vision that cannot be placed against one competes for capacity on enthusiasm and loses to things that can. Naming the owner also tells you who to talk to.",
+          "no_outcome_rule": "Nothing committed being served is a legitimate answer and an important one. It means this is a new bet rather than a contribution to an existing commitment, which is a different conversation with a different approver. Record it rather than reaching for the nearest plausible outcome.",
+          "relationship_to_B0": "B00 is the outcome we are committed to. B0 is the kind of benefit. Different questions: one is ours and specific, the other is a category.",
+          "examples": [
+            "Growth, and Customer Experience.",
+            "None of our committed outcomes. This is a new bet on a market we have not committed to yet.",
+            "Commit mode: Growth, owned by the CRO."
+          ],
+          "specificity": {
+            "passes_when": "A named outcome the business would recognise, or an explicit none",
+            "generic_markers": [
+              "growth",
+              "efficiency",
+              "customer satisfaction",
+              "innovation",
+              "digital transformation",
+              "strategic priorities"
+            ],
+            "nudge": "Name it as the business names it, with the number or the owner attached. If nothing committed is served, say none; that is a clearer answer than a plausible-sounding outcome nobody owns.",
+            "false_positive_note": "A named OKR will often hit the generic markers - Growth and Customer Experience are both real objects and vague words. The marker is a flag for the facilitator, not a verdict. When the outcome is genuinely named, spend the nudge on the contribution instead: naming an OKR is an association claim, and what it would move is what makes it prioritisable."
+          },
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "no_sizing_rule": "Do not ask how much the outcome would move. At preliminary vision stage nobody knows, and asking produces a guess that hardens into a forecast. Contribution is established at Step 12 with validation evidence behind it, and sized in Commit mode at B1.",
+          "field_scoping_note": "Fields carry their own asked_in. In Learn mode this is one field: which outcome. The owner matters when you are asking someone for capacity against that outcome, which is Commit mode and Step 12, not exploration."
+        },
+        {
+          "id": "B0",
+          "label": "Why this matters to our business",
+          "prompt": "How would solving this help our business?",
+          "control": "multi_choice_then_text",
+          "pattern_note": "The Vision Builder's impact-area pattern: Yes, Not Sure or No per category, then a why on each Yes, then a primary when more than one is live.",
+          "categories": [
+            {
+              "id": "revenue",
+              "label": "Revenue Growth",
+              "helper": "New or expanded revenue."
+            },
+            {
+              "id": "market_position",
+              "label": "Market Position",
+              "helper": "Share, differentiation, or a response to what competitors are doing."
+            },
+            {
+              "id": "dissatisfier",
+              "label": "Solve a Customer Dissatisfier",
+              "helper": "Removes a known source of customer pain or churn."
+            },
+            {
+              "id": "relationship",
+              "label": "Deepen Customer Relationships",
+              "helper": "Extends the relationship, or opens the door to more."
+            },
+            {
+              "id": "margin",
+              "label": "Margin or Efficiency",
+              "helper": "Our own cost base, delivery effort or cycle time."
+            },
+            {
+              "id": "capability",
+              "label": "Strategic Capability",
+              "helper": "Builds something we need regardless, or proves a pattern we will reuse."
+            },
+            {
+              "id": "other",
+              "label": "Other",
+              "helper": "Something these do not cover.",
+              "extra_field": {
+                "id": "name",
+                "prompt": "What is it?",
+                "required_when": [
+                  "yes"
+                ],
+                "placeholder": "Name the benefit in a few words."
+              },
+              "guard": "A Yes here needs the benefit named as well as a why. Other with no name is a tick that avoids the question."
+            }
+          ],
+          "values": [
+            "yes",
+            "not_sure",
+            "no"
+          ],
+          "follow_up": {
+            "prompt": "Why?",
+            "required_when": [
+              "yes"
+            ],
+            "placeholder": "One line per category. Clarity then dimension, not precision."
+          },
+          "why_we_are_asking": "Block A established what this means for the customer. This is why it matters to us, and naming the category before describing the benefit is what makes the answer comparable across visions.",
+          "helper": "We're not looking for precision here. We just want to understand why this may be a priority for our business.",
+          "examples": [
+            "Strategic Capability — Yes. It proves the Accelerator pattern we reuse across the family. Primary.",
+            "Deepen Customer Relationships — Yes. A readiness engagement is the natural front door to the rest of the work.",
+            "Revenue Growth — Not Sure. Possible as a paid engagement, no basis for sizing it yet.",
+            "Other — Yes. Gives our consultants a repeatable first conversation. Why: it shortens the time from first meeting to scoped work."
+          ],
+          "specificity": {
+            "passes_when": "Each Yes carries a why, and a primary is named when more than one is Yes",
+            "generic_markers": [
+              "significant value",
+              "huge opportunity",
+              "transformative",
+              "game-changing",
+              "massive",
+              "substantial benefits"
+            ],
+            "nudge": "Which category is the main reason? If everything is Yes and nothing is primary, the block has not discriminated and a reviewer cannot tell what this is really for."
+          },
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "other_feedback_loop": "Count Other across visions. A taxonomy reached for often is wrong, and the names people write in are the draft of the category it is missing. Review at the same time as the nudge counts.",
+          "prompt_note": "Solving disambiguates this: the problem from A3, not the product. The category list does the work of signalling a multi-select, so the prompt does not need to say which of these."
+        },
+        {
+          "id": "B0r",
+          "label": "Prioritise the benefits",
+          "prompt": "Put them in order, most important to us first.",
+          "control": "rank",
+          "asked_when": "more than one category at B0 is Yes",
+          "conditional": true,
+          "scope": "The Yes set only. Not Sure and No are not ranked.",
+          "ui": "Drag and drop in a screen. Asked as a question in conversation. Same field either way.",
+          "field": "ranking",
+          "primary": "Derived as the first item. Never stored separately, so the two cannot disagree.",
+          "feeds": "The order of focus areas in the statement at F1, as the Vision Builder's 1.9r ranking feeds its Vision.",
+          "why_it_is_not_ceremony": "A rank that feeds nothing is an interaction producing a number nobody reads. This one sets the order people read the vision in.",
+          "default_order_caution": "Shuffle or alphabetise the initial order. Presented in the skill's own order, a meaningful share of people accept the default, exactly as they would pick a highlighted 90 percent to finish.",
+          "resurface_at_F1": "Show the order again when the statement is written rather than applying it silently. An hour has passed and nobody should be surprised by an order they set and forgot.",
+          "why_we_are_asking": "Separate step because marking six categories with a why each is already one task. Ordering them is another.",
+          "examples": [
+            "1. Strategic Capability  2. Deepen Customer Relationships",
+            "1. Margin or Efficiency  2. Revenue Growth  3. Market Position"
+          ],
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ]
+        },
+        {
+          "id": "B1",
+          "label": "Size of the prize",
+          "prompt": "What is this worth if it works?",
+          "control": "open_text",
+          "placeholder": "TAM and SAM for a client offering. Affected cost base or revenue exposure for an internal one.",
+          "why_we_are_asking": "The owner and the roster are being asked to back a direction. Without a size, they are backing a feeling.",
+          "quality_tests": [
+            "every_figure_has_a_source_or_is_a_gap"
+          ],
+          "asked_in": [
+            "commit:new"
+          ],
+          "examples": [
+            "1.8M of annual handling cost sits in the claims in scope. Source: FY26 ops budget, lines 12 to 14.",
+            "GAP, no sizing yet. Owner: Dana. Next action: pull the segment figures from the FY26 plan by 17 Oct."
+          ],
+          "specificity": {
+            "passes_when": "A figure with a source, or an explicit gap with an owner",
+            "generic_markers": [
+              "large",
+              "huge",
+              "growing",
+              "multi-billion",
+              "significant market"
+            ],
+            "nudge": "Where does that number come from? If we do not have one yet, record it as a gap with an owner and a next action rather than a figure."
+          }
+        },
+        {
+          "id": "B2",
+          "label": "Strategic fit",
+          "prompt": "Why us, and why does this belong in this portfolio?",
+          "control": "open_text",
+          "why_we_are_asking": "A good opportunity that belongs to somebody else is still not ours. This is the question that stops a vision becoming a plausible distraction.",
+          "asked_in": [
+            "commit:new"
+          ],
+          "examples": [
+            "Claims is the one domain where we hold both the policy corpus and the workflow, so the integration cost that blocks everyone else is already paid."
+          ]
+        },
+        {
+          "id": "B3",
+          "label": "Competitive position",
+          "prompt": "What exists today, how would we differ, and what happens if we do not move?",
+          "control": "open_text",
+          "placeholder": "Include what we believe about this market that others appear not to.",
+          "why_we_are_asking": "Doing nothing is a choice with consequences, and saying them out loud is what makes the why-now answer real rather than rhetorical.",
+          "note": "What we believe that others do not is the one form of a principles section worth having, because it is differentiating and testable. It lives here rather than in a block of its own, where it would become platitudes.",
+          "asked_in": [
+            "commit:new"
+          ],
+          "examples": [
+            "Today: two vendors sell generic document QA, neither reaches the workflow\nHow we would differ: we own the handoff to the reviewer, not just retrieval\nIf we do nothing: the re-platforming team builds a weaker version inside the policy library and we inherit it\nWhat we believe others do not: the value is in the handoff, not in retrieval quality"
+          ]
+        },
+        {
+          "id": "B4",
+          "label": "Why now",
+          "prompt": "What makes this the moment, and what closes the window?",
+          "control": "open_text",
+          "why_we_are_asking": "Most visions are right about the what and wrong about the when. A why-now with no closing condition usually means the answer is actually not yet.",
+          "asked_in": [
+            "commit:new"
+          ],
+          "examples": [
+            "What makes it the moment: the policy library is being re-platformed this quarter, so the indexing work is paid for either way\nWhat closes the window: that programme ends in March"
+          ]
+        },
+        {
+          "id": "B5",
+          "label": "Incremental value, and why this next",
+          "prompt": "What is this worth on top of what the product already does, and why is it the next most valuable thing we could build?",
+          "control": "open_text",
+          "why_we_are_asking": "The market case is inherited. What is not inherited is the prioritisation: an increment always competes with the other increments we could build on the same product, and that comparison is almost never written down.",
+          "quality_tests": [
+            "names_what_it_beats"
+          ],
+          "asked_in": [
+            "commit:increment"
+          ],
+          "examples": [
+            "Worth: recovers the abandoned fifth of sessions\nChosen over: reviewer-side summarisation, which is larger but has no production signal behind it yet"
+          ],
+          "specificity": {
+            "passes_when": "Names what this increment was chosen over",
+            "generic_markers": [
+              "most valuable",
+              "highest impact",
+              "obvious next step",
+              "clear priority"
+            ],
+            "nudge": "What else could we have built on this product with the same effort, and why does this beat it? An increment with nothing named against it has not been prioritised, only chosen."
+          }
+        }
+      ],
+      "title": "The Opportunity for Us"
+    },
+    "C": {
+      "label": "The direction",
+      "questions": [
+        {
+          "id": "C1",
+          "label": "The change we are after",
+          "prompt": "What is different for them if we get this right?",
+          "control": "open_text",
+          "placeholder": "Describe the change in their world. Do not name the thing we would build.",
+          "why_we_are_asking": "This is the sentence the rest of the cycle is judged against. Written as an outcome it survives a change of approach, and the workflow, the dialogue flows and the evaluation cases all trace back to it. Written as a feature it goes stale the first time the design changes.",
+          "quality_tests": [
+            "no_solution_in_statement",
+            "a_change_not_an_activity"
+          ],
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "examples": [
+            "Claims that would have waited two days for a reviewer clear in minutes, or are escalated with a reason the handler can act on.",
+            "Advisers stop rekeying the same client facts into three systems."
+          ],
+          "specificity": {
+            "passes_when": "A change in the customer's world that survives a change of approach",
+            "generic_markers": [
+              "seamless",
+              "intuitive",
+              "powerful",
+              "best-in-class",
+              "world-class",
+              "delightful",
+              "frictionless",
+              "enable",
+              "empower"
+            ],
+            "nudge": "That describes the product rather than the change. If we solved this a completely different way, what would still have to be true for you to call it a win?"
+          },
+          "shape": "[the role] [does / stops doing / can now] [something specific], instead of [what they do today].",
+          "shape_note": "Give the shape, not an exhortation. Telling someone to describe the change without mentioning the product is abstract advice; the grammatical template is not. The customer is the subject and the product does not appear.",
+          "draws_on": "A4 already supplies the instead-of half. Point at it rather than asking for the whole sentence cold."
+        },
+        {
+          "id": "C2",
+          "label": "The arc, and what MVP proves",
+          "prompt": "Where does this go over the next two to three years, and what is MVP actually proving on the way there?",
+          "control": "two_part",
+          "parts": [
+            "The arc",
+            "What MVP proves"
+          ],
+          "why_we_are_asking": "Without an arc you cannot tell whether a scope decision is a step or a retreat. The PMLC runs MVP, then MMP, then V1.0, and this is what those increments are increments of.",
+          "asked_in": [
+            "commit:new"
+          ],
+          "examples": [
+            "Arc, year 1: situational precedent for handlers\nArc, year 2: drafted decisions with reviewer approval\nArc, year 3: the reviewer queue is exceptions only\nWhat MVP proves: that situational retrieval is good enough that handlers stop keeping private crib sheets"
+          ]
+        },
+        {
+          "id": "C5",
+          "label": "Where this sits in the arc",
+          "prompt": "Where does this fall in the parent product's arc?",
+          "control": "open_text",
+          "why_we_are_asking": "The arc is inherited. What is new is this increment's place in it, which is also the cheapest way to see whether it is on the path or a detour.",
+          "asked_in": [
+            "commit:increment"
+          ],
+          "examples": [
+            "Year one of the parent arc, inside situational precedent for handlers."
+          ]
+        },
+        {
+          "id": "C3",
+          "label": "Who absorbs the change",
+          "prompt": "Whose work gets harder, or just different, for that to happen?",
+          "control": "open_text",
+          "placeholder": "A1 has who gains. This is who pays for it.",
+          "why_we_are_asking": "Agentic products move work more often than they remove it. The role that absorbs the change is usually the one that sinks the rollout, and it is almost never in the first draft.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment"
+          ],
+          "examples": [
+            "Senior reviewers. Their queue becomes exceptions only, which is a different job rather than less work."
+          ]
+        },
+        {
+          "id": "C4",
+          "label": "Success measures",
+          "prompt": "How will we know this worked?",
+          "control": "measure_table",
+          "fields": [
+            "measure",
+            "baseline",
+            "baseline_source",
+            "target",
+            "by_when",
+            "horizon"
+          ],
+          "horizon_values": [
+            "near_term",
+            "vision"
+          ],
+          "why_we_are_asking": "A measure without a baseline cannot be judged later, so the baseline matters more than the target at this stage. Mark which measures are for this increment and which tell you the vision is being realised, because they are rarely the same measure.",
+          "quality_tests": [
+            "at_least_one_measure",
+            "primary_measure_has_baseline",
+            "baseline_has_source"
+          ],
+          "asked_in": [
+            "commit:new",
+            "commit:increment"
+          ],
+          "examples": [
+            "Time from claim submitted to decision · baseline 2.1 days (Q3 ops export) · target under 4 hours for 80 percent · by end of pilot · near_term",
+            "Share of handlers keeping a private crib sheet · baseline ~60 percent (Sept interviews, 4 of 7) · target under 10 percent · by year 1 · vision"
+          ],
+          "specificity": {
+            "passes_when": "At least one measure with a baseline and the source of that baseline",
+            "generic_markers": [
+              "improve",
+              "increase",
+              "reduce",
+              "better",
+              "faster"
+            ],
+            "nudge": "What is that today, and where would I find the number? If the answer is I would have to check, that is a gap with an owner rather than a baseline."
+          }
+        }
+      ],
+      "title": "The Direction and the Arc"
+    },
+    "D": {
+      "label": "The boundaries",
+      "questions": [
+        {
+          "id": "D1",
+          "label": "Adjacent, not ours",
+          "prompt": "What is the first thing someone will ask for once they see this working, that we are not doing?",
+          "control": "list",
+          "why_we_are_asking": "The in-scope list mostly restates the direction. The adjacent list is where next quarter's scope arguments are, and settling one costs a sentence now and a week later.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment"
+          ],
+          "examples": [
+            "Fraud scoring, owned by Risk",
+            "Policy authoring"
+          ]
+        },
+        {
+          "id": "D2",
+          "label": "What this will not do",
+          "prompt": "What will this deliberately not do, even though someone may ask for it?",
+          "control": "list",
+          "min_items": 1,
+          "why_we_are_asking": "Non-goals are the cheapest guardrail there is. Stated here they become refusal behaviour in the agent contract at Step 7 and boundary cases in the evaluation set at Step 9. Left unstated they arrive as a production incident.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "examples": [
+            "It will not decline a claim, declines always route to a person",
+            "It will not quote policy to a claimant, only to a handler"
+          ]
+        },
+        {
+          "id": "D3",
+          "label": "What a person decides",
+          "prompt": "What shouldn't it decide on its own?",
+          "control": "open_text",
+          "why_we_are_asking": "This is the line between an assistant and an actor, and it is a product decision rather than an engineering one. It sets the escalation paths in the agent contract, and it is the first thing Security and Compliance look for.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment",
+            "learn:new",
+            "learn:increment"
+          ],
+          "examples": [
+            "Any settlement above the threshold, and any decline. It stops, writes its reasoning, and hands off to the named reviewer.",
+            "Nothing goes to a client unseen. It drafts, the consultant sends."
+          ],
+          "shape": "[A person] always decides [the specific thing]. When the agent reaches it, it [stops / asks / routes to whom]. [Who] can take over, and they see [what].",
+          "elicitation": {
+            "note": "Do not ask abstractly. Name the decision points this product actually has and ask which a person must own.",
+            "prompts_by_kind": {
+              "advisory_or_assessment": [
+                "Does the verdict or rating reach the customer directly, or does someone review it first?",
+                "Can it tell someone they are not ready for something they have already committed to?",
+                "Can it produce a plan or sequence someone would spend money against, unreviewed?",
+                "Can it say anything about a named team or individual?"
+              ],
+              "acts_on_systems": [
+                "Which actions does it take without asking?",
+                "What is the largest thing it can do before a person sees it?",
+                "Can someone stop it mid-flow, and what do they see when they do?"
+              ],
+              "produces_content": [
+                "Does anything reach a third party unedited?",
+                "Who signs off before it carries our name or a client's?"
+              ]
+            }
+          },
+          "shape_note": "The same lesson as C1: give the shape and name the concrete decision points. Telling someone this is the line between an assistant and an actor is a goal, not a shape.",
+          "follow_up": {
+            "prompt": "And when it hits one of those, what should it do, stop, ask, or hand off to someone?",
+            "required": true,
+            "options_note": "Naming the three options makes it answerable. Open-ended, people describe the product instead."
+          },
+          "placeholder": "The calls that stay with a person.",
+          "formal_version_note": "Was: what must a person always decide, and what does the agent do when it gets there. Must, a person and gets there were doing work that plain words do better, and it was two questions wearing one."
+        },
+        {
+          "id": "D4",
+          "label": "What would make us pull it",
+          "prompt": "What would it have to do, once, for you to want it turned off?",
+          "control": "list",
+          "why_we_are_asking": "You are not writing evaluation criteria here, Step 9 does that. You are setting the intent they get written against, so the bar comes from the product rather than from whatever was convenient to measure.",
+          "note": "The positive half of a quality bar reliably restates the direction. Only the pull-it half earns its place.",
+          "asked_in": [
+            "commit:new",
+            "commit:increment"
+          ],
+          "examples": [
+            "Settles above threshold without an approval",
+            "Cites a policy clause that does not exist"
+          ]
+        }
+      ],
+      "title": "The Boundaries"
+    },
+    "E": {
+      "label": "Risk and routing",
+      "note": "Triage runs in every mode and every scope, increments included. A small increment on a safe product can still be the one that touches regulated data.",
+      "questions_ref": "triage_questions",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "title": "Risk and Who Needs to Review"
+    },
+    "F": {
+      "label": "The statement",
+      "note": "Authored last, from everything above. This is the part that travels: it gets quoted, shown, and used to align people who were not in the room.",
+      "questions": [
+        {
+          "id": "F1",
+          "label": "The statement",
+          "prompt": "In one stem and three to five focus areas, what is this product for?",
+          "control": "statement",
+          "format": {
+            "stem": "One sentence naming who it serves and what changes",
+            "focus_areas": "Three to five, verb-first, each traceable to something in blocks A to D"
+          },
+          "why_we_are_asking": "Everything above is the working-out. This is what people repeat. A vision that cannot be said in a breath will be paraphrased by others, and their paraphrase becomes the real vision.",
+          "house_format_note": "Same shape as the company AI Vision produced by ai-vision-builder, at product scope rather than company scope. Borrow the format discipline; the inputs differ, so the authoring is not delegated.",
+          "quality_tests": [
+            "no_solution_in_statement",
+            "every_focus_area_traces_to_a_block",
+            "sayable_in_one_breath"
+          ],
+          "becomes": "The scope test for every future increment on this product.",
+          "asked_in": [
+            "commit:new"
+          ],
+          "examples": [
+            "Stem: Claims handlers decide with the full policy picture in front of them, in minutes rather than days\n- Surface situational precedent at the moment of the decision\n- Route every exception with a reason the handler can act on\n- Keep every settlement above threshold with a person\n- Shrink the reviewer queue to genuine exceptions"
+          ],
+          "specificity": {
+            "passes_when": "A stem naming who it serves and what changes, and three to five focus areas each traceable to a block",
+            "generic_markers": [
+              "leverage",
+              "empower",
+              "revolutionise",
+              "revolutionize",
+              "best-in-class",
+              "seamless",
+              "end-to-end"
+            ],
+            "nudge": "Which block does that focus area trace back to? One that traces to nothing is an aspiration rather than a vision."
+          }
+        },
+        {
+          "id": "F2",
+          "label": "Statement check",
+          "prompt": "Does the parent vision's statement still cover this?",
+          "control": "yes_no_with_note",
+          "why_we_are_asking": "An increment does not get a new statement. If the parent statement no longer covers it, this is not an increment, it is a change to the parent vision.",
+          "on_no": "Stop and re-scope. This is a revision.",
+          "asked_in": [
+            "commit:increment",
+            "learn:increment"
+          ]
+        }
+      ],
+      "title": "Your Product Vision Statement"
+    },
+    "L": {
+      "label": "Learn mode only",
+      "questions": [
+        {
+          "id": "LQd",
+          "label": "What we are still figuring out",
+          "prompt": "Which parts of this are we still figuring out?",
+          "control": "multi_choice",
+          "asked_before": "LQ",
+          "source": "High-level cues about the product itself, not categories of risk. Risk categories belong to Step 11.",
+          "categories": [
+            {
+              "id": "what",
+              "label": "What",
+              "helper": "What the thing actually is."
+            },
+            {
+              "id": "how",
+              "label": "How",
+              "helper": "How it works, and what the experience is like.",
+              "note": "Mechanism and experience. Step 7 is how it works, Step 8 is what it feels like; both land here."
+            },
+            {
+              "id": "built_by_whom",
+              "label": "Built by whom",
+              "helper": "Whether we can build it ourselves, or need a partner or a vendor.",
+              "note": "Its own cue rather than part of How, because it is a different decision with different people on it - engineering leadership, partnerships, procurement - and it is independent: you can know exactly how something works and not know who should build it. Feasibility lives here: can we do this ourselves is what Step 11 tests under feasibility and economics.",
+              "boundary": "Whether one approach is open to us is exploration and belongs here. Choosing between two or three approaches is a canvas question, aipos-solution-framing panel 4."
+            },
+            {
+              "id": "for_whom",
+              "label": "For whom",
+              "helper": "Which customers, and which of them first."
+            },
+            {
+              "id": "for_how_much",
+              "label": "For how much",
+              "helper": "What it is worth, and what someone would pay."
+            },
+            {
+              "id": "other",
+              "label": "Other",
+              "helper": "Something these four do not cover.",
+              "extra_field": {
+                "id": "name",
+                "prompt": "What is it?",
+                "required_when": [
+                  "yes"
+                ],
+                "placeholder": "Name it in a few words."
+              },
+              "guard": "A Yes here needs it named. Other with no name is a tick that avoids the question.",
+              "likely_write_ins": "Whether to do it at all, and whether to build or partner, are the two that do not fit the four."
+            }
+          ],
+          "values": [
+            "yes",
+            "no"
+          ],
+          "primary_rule": "More than one is normal. Name the one this exploration is really for.",
+          "why_we_are_asking": "Saying which parts are open is what gives the learning question its subject. An exploration that is clear on what and unclear on how is a different build from one that is unsure who it is for.",
+          "examples": [
+            "Built by whom, primary. We know what it is and who it is for. We do not know whether we can build it to the standard this needs.",
+            "How, primary. We know what it is and who it is for. We do not know the right experience for guiding someone through it.",
+            "For whom and for how much. The thing is clear; the segment and the price are not.",
+            "Other — whether to do this at all. That is the real question, not what it is."
+          ],
+          "asked_in": [
+            "learn:new",
+            "learn:increment"
+          ],
+          "other_feedback_loop": "Count Other across Learn-mode visions and read the write-ins together. A cue reached for often is a cue missing from the four. Review with the B0 Other counts and the nudge counts.",
+          "routing_on_other": {
+            "canvas_not_exploration": {
+              "signal": "The answer is which of these two or three approaches should we take.",
+              "response": "That is a choice between options, not a thing to find out. Route to aipos-solution-framing panel 4.",
+              "contrast": "Whether an approach is open to us at all stays here, under Built by whom."
+            }
+          }
+        },
+        {
+          "id": "LQ",
+          "label": "What we need to learn",
+          "prompt": "What do we need to learn first?",
+          "control": "open_text",
+          "placeholder": "One question, answerable by the review-by date.",
+          "why_we_are_asking": "Commit mode asks where the product is going. Learn mode asks what we need to find out. The dimension picked at LQd says which kind of question this should be.",
+          "note": "When A3 or A4 is thin, the gap there is usually the best learning question available.",
+          "asked_in": [
+            "learn:new",
+            "learn:increment"
+          ],
+          "examples": [
+            "Can retrieval reach 70 percent exact-source accuracy on the sample set?",
+            "Will handlers open it twice in the first week without being asked?"
+          ],
+          "helper": "First carries before we commit, without needing to say it.",
+          "elicitation": "Draw the candidates from the answers already given rather than asking cold. A thin A6 or A8, or a live A4-against-A7 warning, is usually the best candidate in the record.",
+          "shape": "Can we [do X] well enough that [the customer does Y]?  or  Will [the customer] [do Y] when [condition]?",
+          "shape_note": "A plan is not a learning question. Create and test a workflow, experiment and optimise an approach are activities. The question is what you would know afterwards that you do not know now.",
+          "specificity": {
+            "passes_when": "A question with an answer someone could later report as yes or no",
+            "generic_markers": [
+              "create and test",
+              "experiment and optimi",
+              "build and learn",
+              "validate the approach",
+              "explore whether we can"
+            ],
+            "nudge": "That is a plan rather than a question. What would you know at the end that you do not know now? Shape: can we do X well enough that the customer does Y?"
+          },
+          "draws_on": "LQd. A question written against a different dimension than the one selected is the defect to catch here."
+        },
+        {
+          "id": "KC",
+          "label": "The kill condition",
+          "prompt": "What result would make you stop, rather than continue?",
+          "control": "open_text",
+          "placeholder": "Name the finding, not the feeling.",
+          "why_we_are_asking": "This is what a Learn-mode vision is rigorous about, in place of a direction and a baseline. A proof of concept with no stopping condition is an unreviewed product with a friendly name.",
+          "examples": [
+            "If retrieval cannot get above 70 percent on the sample set, the approach is wrong and we stop",
+            "If handlers do not open it twice in the first week, the problem is not the one we think it is"
+          ],
+          "asked_in": [
+            "learn:new",
+            "learn:increment"
+          ],
+          "shape": "If [observable thing] by [when], we stop.",
+          "specificity": {
+            "passes_when": "Something observable, with a rough threshold or window, that someone could later report as having happened or not",
+            "generic_markers": [
+              "like it",
+              "love it",
+              "positive feedback",
+              "good reception",
+              "well received",
+              "clear approach",
+              "doesn't work",
+              "isn't useful",
+              "no traction",
+              "poor results",
+              "satisfaction",
+              "csat",
+              "nps",
+              "happy with",
+              "satisfied"
+            ],
+            "nudge": "Liking is not acting, and it is the weakest signal available. What would they have to do, or fail to do? Shape: if [observable thing] by [when], we stop."
+          },
+          "pairs_with_warning": "When the A4-against-A7 warning is live, adoption is the dominant risk and an attitudinal kill condition cannot detect it. Say so: they like it and nobody moves is the exact outcome the warning predicts, and a liking test passes straight through it."
+        }
+      ],
+      "title": "Exploration"
+    }
+  },
+  "triage_questions": [
+    {
+      "id": "T1",
+      "trigger": "sensitive_data",
+      "label": "Sensitive data",
+      "prompt": "Will this process personal, financial, health, or client-confidential data?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Which data, and whose?",
+      "why_we_are_asking": "Data class is what decides whether Privacy holds a blocking review. It also shapes what the agent is allowed to retain between turns, which is a Step 7 decision that is much cheaper to make now.",
+      "engages": [
+        "data_privacy",
+        "security"
+      ],
+      "detail_examples": [
+        "Claimant personal and medical data, and bank details for settlement.",
+        "Only our own staff directory."
+      ]
+    },
+    {
+      "id": "T2",
+      "trigger": "autonomous_action",
+      "label": "Autonomous action",
+      "prompt": "Will the agent take actions with effect outside the system without a person approving each one?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Which actions, and what is the blast radius if one is wrong?",
+      "why_we_are_asking": "Sending, paying, booking, changing a record and closing a case are all actions with effect. This is the biggest driver of review depth, because an unsupervised action is the one failure mode a user cannot catch for us.",
+      "engages": [
+        "security",
+        "engineering"
+      ],
+      "detail_examples": [
+        "It writes the settlement to the payment system directly once approved.",
+        "It drafts only; a person sends everything."
+      ]
+    },
+    {
+      "id": "T3",
+      "trigger": "external_users",
+      "label": "External users",
+      "prompt": "Will people outside the organization interact with this directly, or receive its output unedited?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Who, and in what setting?",
+      "why_we_are_asking": "An internal tool with a bad day is an inconvenience. The same bad day in front of a client is an incident, so the evidence bar before release is different.",
+      "engages": [
+        "security",
+        "marketing"
+      ],
+      "detail_examples": [
+        "Claimants see its wording in the decision letter.",
+        "Internal only, staff on the corporate network."
+      ]
+    },
+    {
+      "id": "T4",
+      "trigger": "regulated_domain",
+      "label": "Regulated domain",
+      "prompt": "Does this operate in a regulated domain, or produce output that could be read as regulated advice or a regulated decision?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Which regime, and which part of the output falls under it?",
+      "why_we_are_asking": "Could be read as matters as much as is. Compliance decides this one rather than the risk tier, so a Yes or a Not Sure here engages them with a blocking review whatever else the vision says.",
+      "engages": [
+        "compliance"
+      ],
+      "detail_examples": [
+        "FCA consumer duty applies to anything that reads as advice to the claimant.",
+        "No regime touches internal triage notes."
+      ]
+    },
+    {
+      "id": "T5",
+      "trigger": "committed_spend",
+      "label": "Committed spend",
+      "prompt": "Will this direction need committed spend, headcount, or a vendor contract beyond the discovery budget?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Roughly what kind of commitment, and when would it have to be made?",
+      "why_we_are_asking": "The vision does not commit the spend, Step 12 does. But if the direction only works with a commitment, Finance should see it before the team spends a cycle designing against it.",
+      "engages": [
+        "finance"
+      ],
+      "detail_examples": [
+        "A vector database licence from Q1, roughly 40k a year.",
+        "Runs on existing infrastructure."
+      ]
+    },
+    {
+      "id": "T6",
+      "trigger": "brand_attribution",
+      "label": "Brand attribution",
+      "prompt": "Could this product's output be attributed publicly to the company, a client, or a named person?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Attributed to whom, and where would it show up?",
+      "why_we_are_asking": "When output carries someone's name, how the product sounds becomes part of what it is. Marketing moves from being informed to having a say in the vision itself.",
+      "engages": [
+        "marketing"
+      ],
+      "detail_examples": [
+        "The decision letter carries the company letterhead.",
+        "Output never leaves the handler's screen."
+      ]
+    },
+    {
+      "id": "T7",
+      "trigger": "workforce_impact",
+      "label": "Workforce impact",
+      "prompt": "Would this change what people do, how their work is evaluated, or how many of them are needed?",
+      "control": "yes_not_sure_no",
+      "detail_on": [
+        "yes",
+        "not_sure"
+      ],
+      "detail_prompt": "Whose work, and in what way?",
+      "why_we_are_asking": "This is engaged by the answer rather than by the risk tier. Getting People involved while the vision is still a draft is the difference between designing the change and announcing it.",
+      "engages": [
+        "people"
+      ],
+      "detail_examples": [
+        "Senior reviewers move to an exceptions-only queue, which changes how their work is measured.",
+        "Nobody's role or measurement changes."
+      ]
+    }
+  ],
+  "review": {
+    "intro": {
+      "headline": "Review and Shape",
+      "body": "The roster was set by the risk profile, not chosen. Reviewers who shape may change where the product is aimed. Reviewers who constrain may narrow it or rule an approach out. Everyone else is informed."
+    },
+    "reviewer_prompt": {
+      "headline": "Review the Product Vision",
+      "body": "You are reviewing as {reviewer_name}, with the right to {right}. Raise what you need to raise. The Product Lead has to disposition every raise before this can be finalized.",
+      "fields": [
+        "raise_text",
+        "severity",
+        "section_ref"
+      ],
+      "severity_options": [
+        "blocking",
+        "advisory"
+      ]
+    },
+    "disposition_prompt": {
+      "headline": "Close the Raises",
+      "body": "Each raise needs an answer on the record. Accepting means the vision changed, so name what changed.",
+      "options": [
+        {
+          "id": "accepted",
+          "requires": [
+            "change_ref"
+          ],
+          "label": "Accepted, the vision changed"
+        },
+        {
+          "id": "rejected",
+          "requires": [
+            "rationale"
+          ],
+          "label": "Not taken, with a reason"
+        },
+        {
+          "id": "deferred",
+          "requires": [
+            "deferred_to_step",
+            "rationale"
+          ],
+          "label": "Carried forward to a later step"
+        }
+      ],
+      "rule": "A blocking raise cannot be closed by the Product Lead alone when it was made by a constrain reviewer. Rejecting it needs that reviewer's acknowledgement or the accountable owner's call."
+    },
+    "readiness_panel": {
+      "headline": "Readiness",
+      "body": "Readiness is computed from the checks below. It is not a judgment call and there is no handle to drag.",
+      "ready_label": "Ready to finalize",
+      "not_ready_label": "Not ready, {blocking_open} blocking checks open"
+    },
+    "round_exhausted": {
+      "headline": "Time for a Decision, Not Another Round",
+      "body": "This has been through {rounds} rounds without converging. The open blocking raises are listed below. Schedule a decision session with {accountable_owner} and bring them as the agenda."
+    },
+    "two_mechanisms": {
+      "principle": "Step two has two motions, not one. The core team shapes the vision in a session; the extended stakeholders review it on a deadline. Same step, different mechanism, different artifact. Sending a review request to your own tech lead is the tell that the mechanisms were collapsed.",
+      "core_team_session": {
+        "applies_to": [
+          "engineering"
+        ],
+        "name": "Engineering Vision Ideation",
+        "artifact": "a session brief",
+        "shape": "What we are trying to do, what is still open, and what we most need their view on. Not a request for a response by a date.",
+        "output": "a changed vision, made in the room, not a list of comments returned afterwards",
+        "why_ideation": "Engineering brings possibilities, not just verification. The thing you are describing is hard but this adjacent thing is nearly free is a direction change, which is the shaping right they hold. For an agentic product, what current models can actually do is vision-level information and it arrives here or it arrives too late at the agent contract.",
+        "never": [
+          "Call it a dispatch, a review request or a sign-off",
+          "Give it a response deadline as though it were a document exchange",
+          "Write it in the register used for extended reviewers",
+          "State a claim more confidently than the record does. See generated_artifacts"
+        ],
+        "recording": "Changes made in the session are edits to the vision, with the session noted. They are not raises."
+      },
+      "extended_review_request": {
+        "applies_to": [
+          "security",
+          "data_privacy",
+          "compliance",
+          "finance",
+          "marketing",
+          "people",
+          "sales_cs",
+          "design",
+          "architecture"
+        ],
+        "artifact": "a review request",
+        "shape": "Who it is from, when it is needed, that a response is required, where the full record lives, what they can actually do, and two to four specific things to look at as questions rather than verdicts",
+        "output": "raises, each dispositioned on the record",
+        "written_for": "the reader, not the record. It is the one artifact in this process that leaves the room.",
+        "translate": "No skill vocabulary. Not Learn mode, shaping right, blocking, advisory, disposition, tier_2, triage, the record, or by my grant. Say what it means: you can change where this is aimed; your response is required; something that must be resolved versus something I should know.",
+        "never": [
+          "Relitigate a decision the author considered and kept. A point they held is posed as an open question, not a verdict reached in front of a third party",
+          "Carry conversational shorthand about a client or a function into writing",
+          "Assume the reader knows what the product is",
+          "State a claim more confidently than the record does. See generated_artifacts"
+        ],
+        "disclosure_rule": "When a grant routed past reviewers, say so plainly and name them. A reviewer who does not know they are standing in for three absent ones reviews differently.",
+        "self_check": "Would this read well if forwarded to someone outside the process?"
+      }
+    }
+  },
+  "learn_mode": {
+    "grant_prompt": {
+      "headline": "Grant Learn mode",
+      "body": "Learn mode is for exploring whether a product or feature is worth building, where stopping is a success. The record is still a Product Vision; Learn mode means the blocks that only matter at commitment are not asked yet. It is granted by the accountable owner, in their name, and recorded.",
+      "asked_of": "accountable_owner",
+      "asked_when": "after triage, never before",
+      "confirmation_question": "{owner_name}, grant Learn mode for this vision?",
+      "fields": [
+        {
+          "id": "grant_reason",
+          "prompt": "Why is this exploration rather than commitment?",
+          "required": true
+        },
+        {
+          "id": "review_by",
+          "prompt": "By what date will you look at this again?",
+          "control": "date",
+          "required": true,
+          "helper": "Not an expiry. A date on which you are asked whether this should continue as it is."
+        }
+      ],
+      "shows_first": "the computed roster, so the owner can see who the grant routes past",
+      "rule": "Only the named accountable owner can grant this. A bare proceed does not grant it, and the Product Lead cannot select it.",
+      "out_of_scope": "If this is a technical spike with no candidate product or feature behind it, do not grant Learn mode. It is not Step 6. Route it to the team's work management."
+    },
+    "signals_panel": {
+      "headline": "Promotion Signals",
+      "body": "Reported for {owner_name}. They do not promote and they do not block.",
+      "live_label": "{count} live. Promote to Commit mode, or record why this continues as exploration.",
+      "clear_label": "None live."
+    },
+    "promotion_prompt": {
+      "headline": "Promote to Commit mode",
+      "body": "Intent has changed: the exploration answered its question and this is heading for a commitment. The same record carries forward and the remaining blocks open. Triage and the scope test are both re-run.",
+      "timing_note": "Promote alongside Step 11 validation rather than after it. The blocks fill while the experiments run, and the measures come from the build itself.",
+      "keeps": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "C1",
+        "D2",
+        "D3",
+        "LQ",
+        "KC",
+        "all raises and dispositions"
+      ],
+      "opens": [
+        "B1 to B4",
+        "C2",
+        "C3",
+        "C4",
+        "D1",
+        "D4",
+        "F1",
+        "the full computed roster"
+      ],
+      "rule": "Only the accountable owner promotes. The skill reports the signals and asks.",
+      "one_way": "A vision promoted to Commit mode does not return to Learn mode. A new exploration starts a new record."
+    }
+  },
+  "finalize": {
+    "ratification_prompt": {
+      "headline": "Finalize",
+      "body": "Readiness is met and every blocking raise is closed. Finalizing is {accountable_owner}'s decision and is recorded in their name.",
+      "confirmation_question": "{owner_name}, ratify this Product Vision as the direction for the next phase?",
+      "rule": "Must be answered by the accountable owner, by name. A bare proceed does not ratify."
+    },
+    "handoff": {
+      "headline": "Handed Off",
+      "body": "Version {version} is what the next phase is built against. This is a handoff, not an approval to build. The decision to build is taken at the Validation Decision, and clearing it requires a vision in Commit mode.",
+      "carries_forward": [
+        {
+          "to": "Step 7, workflow and agent contract",
+          "items": [
+            "D3",
+            "D1",
+            "D2"
+          ]
+        },
+        {
+          "to": "Step 9, examples and evaluation cases",
+          "items": [
+            "D4",
+            "C4"
+          ]
+        },
+        {
+          "to": "Step 12, the Validation Decision",
+          "items": [
+            "C4",
+            "A4",
+            "B1"
+          ]
+        },
+        {
+          "to": "Step 13, the epic",
+          "items": [
+            "A1",
+            "C1",
+            "C4"
+          ]
+        },
+        {
+          "to": "every future increment on this product",
+          "items": [
+            "F1"
+          ]
+        }
+      ],
+      "next_label": "Next, Define the Preliminary Workflow and Agent Contract"
+    }
+  },
+  "revision_mode": {
+    "entered_from": "Step 20, when the next pass carries a vision-level change, or from the Step 0 scope test when an increment turns out to contradict the parent statement",
+    "intro": {
+      "headline": "Reviewing the Existing Vision",
+      "body": "This was ratified as version {version} on {ratified_date}. This pass is a review, so start from what is there and change what the evidence has moved. A blank page is almost never the right answer here.",
+      "body_note": "Production signal from Step 19 belongs in the change rationale."
+    },
+    "rules": [
+      "The ratified version is never overwritten, a new version supersedes it",
+      "Every change carries a rationale and the signal behind it",
+      "Triage is re-run, because a change in direction can change the risk tier and therefore the roster",
+      "The statement in block F is re-tested, because changing it is what makes this a revision rather than an increment",
+      "Unchanged blocks keep their original dispositions and do not need re-review"
+    ]
+  },
+  "content_rule": {
+    "every_question_carries_an_example": "Every question must carry at least one worked example showing the SHAPE of a good answer, not just a definition of it. Enforced by scripts/check_content.py. The first question a user meets is the one that most needs scaffolding, and it was the one missing it.",
+    "examples_must_scan": "An example shows the SHAPE of a good answer, so the shape has to be visible without parsing. A multi-part answer uses one labelled line per part. A single-part answer stays a sentence. Enforced loosely by scripts/check_content.py: an example over 35 words with no line break or separator is flagged, because that is almost always a shape hiding inside prose.",
+    "one_thing_per_question": "One question in focus at a time, per the Vision Builder experience spec. A question that asks for three or four things at once produces a run-on answer with the parts missing, and makes hedging easy. If a question needs more than one labelled line to answer, it is more than one question.",
+    "plain_prompts": "Prompts use plain words and stay on the customer. Abstractions like challenges or opportunities and explore solving make a question feel like a form. A prompt phrased as what are YOU trying to solve also invites the answer to drift back to the product, so keep the subject on the person.",
+    "clarity_then_dimension": "In Learn mode, ask for clarity first and dimension second, never precision. Name the kind of thing, then size it only where there is a basis. A wrong number at this stage is worse than no number, because it gets quoted. In Commit mode the discipline inverts: B1 requires a figure with a source or an explicit gap, because that is what a commitment decision rests on.",
+    "do_not_narrate_the_flow": "Say why we are asking. Never say what comes next. Announcing the following step makes the person manage the process instead of answering the question in front of them, and a conditional step announced in advance invites them to answer it early. The progress indicator already carries position; the facilitator does not need to repeat it.",
+    "give_the_shape": "When an answer misses, supply the shape of a right answer, not a restatement of the goal. Describe the change rather than the product is a goal. Subject is the customer, verb is a concrete change, instead of what they do today is a shape. The second one is actionable and the first is not.",
+    "translate_the_machine": "Verifier output is a record, not a script. Translate it before saying it: who must respond, who gets a say, who is told, and what each can actually do. Never read out computed roster, engagement, right, blocking or constrain as bare labels. Lead with what happens to the person, then the rule that produced it if it is needed at all.",
+    "voice_check": "Screen and facilitator copy is checked against the Accelerated Innovation voice rules: warm and direct, about the reader, commas rather than em dashes, Title Case headlines, sentence case body, no emoji. Four things to close before review is the system reporting its state. We're ready to move on, and before we do there are three quick questions, is the same information in the house voice.",
+    "ask_only_what_is_needed_now": "Do not ask what is not needed at this stage, even when it is knowable. The weaker version of this rule - do not ask what cannot be known - misses half the cases: an outcome's owner is perfectly knowable and still premature in Learn mode, because nobody is asking them for capacity yet. Market size, outcome contribution, expected uplift, effort estimates and outcome owners are all Commit-mode questions. In Learn mode ask WHICH, not HOW MUCH and not WHO SIGNS. This has been got wrong four times: TAM at B1, sizing at B6, contribution at B00, owner at B00. Field level asked_in exists for exactly this.",
+    "evidence_marks_survive_the_artifact": "Anything generated from the vision carries the vision's evidence marks. A8 records, for every claim, whether it is known, inferred or a gap, and with what source. A session brief, a review request, a summary, a slide or a paste into a chat that drops those marks is strictly worse than the record it came from: it converts an assumption into a finding, silently, in the one artifact that leaves the room. Never assert in a generated artifact what the record marks inferred, and never omit a gap that bears on what the reader is being asked to do. See generated_artifacts."
+  },
+  "nudge_protocol": {
+    "nudge_ceiling": 1,
+    "ceiling_is_global": "One nudge per question. Never two. The ceiling lives here and not on individual questions, so it cannot drift and no question can be made to deserve more pressure than another.",
+    "principle": "Ask for clarity. Do not require it if it does not yet exist.",
+    "rule": "When an answer trips its specificity test, nudge once using the question's own nudge text. Name what is missing and show the shape. Then stop.",
+    "after_the_nudge": "Accept whatever comes back, including the same answer. Record it, and if it is still general mark a gap of kind evidence saying plainly what we do not know yet. The absence of clarity at this stage is information, not a failure to correct: it tells you what the exploration has to find out.",
+    "in_learn_mode": "A gap raised this way is usually a strong learning-question candidate.",
+    "never": "Never nudge twice, never rephrase the nudge to try again, and never treat a held answer as non-compliance.",
+    "record": "Count nudges per question. A question needing a nudge on most visions is badly phrased, which is a finding about the prompt rather than about the people answering it."
+  },
+  "stage_complete": {
+    "label": "STAGE 1 OF 3 COMPLETE",
+    "headline": "Your Product Vision Is Taking Shape",
+    "body_with_open": "We're ready to move on. Before we do, there are {count} quick questions to close. Open any card to review or update what you've said.",
+    "body_clear": "We're ready to move on. Open any card to review or update what you've said.",
+    "items_are_questions": "Phrase each open item as a question, because that is what it is. What must a person always decide, not Human-in-the-loop posture is stated. The person answers questions; they do not close checks.",
+    "items_link_to_cards": "Each item navigates to the card that answers it, with the relevant rows highlighted.",
+    "excluded": "Checks the author cannot close are never listed: reviewer responses, raise dispositions and ratification are the next stage happening, not work on this screen. Listing them makes three things look like four.",
+    "button": "Open the Review Round →",
+    "button_rule": "The button stays enabled. Open items block finalising, not opening the round. A greyed-out button makes people close items carelessly to unlock it, which is the behaviour the checks exist to prevent.",
+    "button_helper": "You can open the round now. These need closing before it can be finalised.",
+    "secondary": "Pause and resume later"
+  },
+  "generated_artifacts": {
+    "rule": "Every artifact generated from a vision carries the evidence marks of the claims it repeats.",
+    "applies_to": [
+      "session brief",
+      "review request",
+      "summary",
+      "status update",
+      "slide or deck content",
+      "anything pasted into a chat or a doc from the record"
+    ],
+    "why": "A vision is marked at A8 precisely because a claim travels further than its basis. The marks exist for the moment the claim is read by someone who was not in the room, which is exactly the moment a generated artifact creates. Dropping them there defeats the control at the only point it was built for.",
+    "how_to_mark": {
+      "known": "State it plainly, and name the source in a short parenthetical. Example: they go to ChatGPT, search the web, or ask IT. (Known: Discovery sessions.)",
+      "inferred": "Hedge the sentence itself, then mark it. The hedge does the work, the mark explains it. Example: probably nothing formal. (Inferred, we have not asked anyone directly.)",
+      "gap": "Say what is not known, not nothing. A gap that bears on what the reader is being asked to do is often the most useful line in the artifact, and in a core-team session it is usually the thing most worth their hour."
+    },
+    "never": [
+      "Assert a claim the record marks inferred. Nobody has made a formal attempt is a finding; probably nothing formal, and we have not asked, is the record",
+      "Attach a source to a claim the record marks inferred",
+      "Drop a gap that bears on the decision the reader is being asked to make",
+      "Mark every line. Marks go on claims about the customer and the market, not on our own intent"
+    ],
+    "density": "Mark claims, not sentences. Three or four marks in a one-page brief reads as rigour; a mark on every line reads as hedging and gets skimmed past. If a paragraph is uniformly inferred, mark it once at the end.",
+    "self_check": "Read the generated artifact beside A8. Every claim that appears in both should carry the same confidence in both. A claim that gained confidence on the way out is the failure this rule exists to catch.",
+    "note": "Found on the first artifact generated from a marked record: a session brief asserted that nobody had made a formal attempt, which the record marks inferred."
+  }
+}

@@ -10,6 +10,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 | Skill | Use it for | Main boundary |
 |---|---|---|
 | [aipos-product-strategy](skills/aipos-product-strategy/SKILL.md) | Product vision and strategy: start, assess, or revise one Product Opportunity Brief | Graph optional; delegates experiments and initiative canvases; does not approve production scope |
+| [aipos-product-vision](skills/aipos-product-vision/SKILL.md) | PMLC Step 6: a Product Vision, or a Learn-mode vision, through draft, routed stakeholder review and ratification | Engagement is routed from risk and readiness is computed; ratification is not approval to build |
 | [aipos-exploration-planning](skills/aipos-exploration-planning/SKILL.md) | P1: evidence review, research gaps, exploration decision drafts | Requires live graph reads; does not record authoritative decisions |
 | [aipos-solution-framing](skills/aipos-solution-framing/SKILL.md) | P2: a one-page Solution Framing canvas, live in a workshop or with a PM, rendered as an image | Facts from the graph, decisions from the PM; recommends to a named owner, never decides |
 | [aipos-rapid-validation](skills/aipos-rapid-validation/SKILL.md) | P2: experiments, evidence, viability briefs, commitment preparation | Delegates canonical behavior authoring; prepares rather than grants approval |
