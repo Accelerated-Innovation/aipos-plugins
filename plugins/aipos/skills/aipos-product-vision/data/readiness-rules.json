@@ -1,7 +1,7 @@
 {
   "$schema_version": "2.0",
   "rules_id": "aipos-product-vision-readiness",
-  "rules_version": "2.0.0",
+  "rules_version": "2.1.0",
   "effective_date": "2026-10-03",
   "owner": "Product, Accelerated Innovation",
   "intent": "The checks that drive the readiness meter. Readiness is computed from the state of the record, never self-reported. Each check declares which mode and scope combinations ask it, so the matrix lives here as data rather than as branching inside the skill or a screen.",
@@ -129,7 +129,7 @@
       "id": "R7",
       "severity": "blocking",
       "name": "Every blocking reviewer has responded",
-      "test": "for each reviewer whose engagement is blocking at the computed tier, a response exists",
+      "test": "for each reviewer whose engagement is blocking at the computed tier, a response exists naming a responder and a date",
       "asked_in": [
         "commit:new",
         "commit:increment",
@@ -144,7 +144,7 @@
       "id": "R8",
       "severity": "blocking",
       "name": "Every blocking raise is dispositioned",
-      "test": "no raise with severity blocking lacks a disposition",
+      "test": "no raise with severity blocking lacks a disposition of a documented type carrying that type's required fields",
       "asked_in": [
         "commit:new",
         "commit:increment",
@@ -185,15 +185,15 @@
     {
       "id": "R16",
       "severity": "blocking",
-      "name": "Ratification carries a name",
-      "test": "status is not ratified, OR ratified_by names a person",
+      "name": "Ratification is the accountable owner's act",
+      "test": "status is not ratified, OR ratified_by names the accountable owner",
       "asked_in": [
         "commit:new",
         "commit:increment",
         "learn:new",
         "learn:increment"
       ],
-      "failure_message": "Marked ratified with nobody named as the ratifier. Ratification is a person's act.",
+      "failure_message": "Marked ratified by somebody other than the named accountable owner, or by nobody. Ratification is a person's act, and it is that person's.",
       "concerns": "ratification"
     },
     {
@@ -444,12 +444,12 @@
       "id": "L1",
       "severity": "blocking",
       "name": "The grant is recorded",
-      "test": "learn_mode.granted_by names the accountable owner AND granted_at AND grant_reason are present",
+      "test": "learn_mode.granted_by names the accountable owner AND granted_at AND grant_reason are present AND triage_at_grant records the triage as it stood at the grant",
       "asked_in": [
         "learn:new",
         "learn:increment"
       ],
-      "failure_message": "This is in Learn mode without a recorded grant. Only the named accountable owner can grant it, in their name, with a reason.",
+      "failure_message": "This is in Learn mode without a complete grant. Only the named accountable owner can grant it, in their name, with a reason, against a recorded triage.",
       "concerns": "the Learn mode grant",
       "action": "Record the grant with a reason, in the owner's name"
     },
@@ -554,6 +554,22 @@
       ],
       "failure_message": "This is a revision pass and some changes have no rationale recorded.",
       "concerns": "R15"
+    },
+    {
+      "id": "R18",
+      "severity": "blocking",
+      "name": "A revision names what it supersedes",
+      "test": "pass_type is not revision and scope is not revision, OR supersedes resolves",
+      "asked_in": [
+        "commit:new",
+        "commit:increment",
+        "learn:new",
+        "learn:increment"
+      ],
+      "failure_message": "Marked as a revision with nothing recorded as superseded.",
+      "note": "A revision with no predecessor is read as a new vision by every check that branches on the combination, so the lineage is not merely missing - it changes which checks run.",
+      "concerns": "lineage",
+      "action": "Link the vision this one supersedes"
     }
   ],
   "step_12": {

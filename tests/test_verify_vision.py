@@ -121,3 +121,147 @@ def test_the_data_files_are_valid_json_and_versioned():
         data = json.loads((SKILL / "data" / name).read_text(encoding="utf-8"))
         assert isinstance(data, dict) and data, name
         assert any(k.endswith("version") for k in data), f"{name} declares no version"
+
+
+# --------------------------------------------------------------------------
+# Each rule below is tested by the failure it prevents. All of these passed
+# before the Qodo review on PR #48: the record was malformed and the check
+# reported ready anyway, which is the only kind of verifier defect that
+# matters — one that fails open.
+# --------------------------------------------------------------------------
+
+def load(name):
+    return json.loads((pathlib.Path(__file__).resolve().parent / "fixtures" / "vision"
+                       / name).read_text(encoding="utf-8"))
+
+
+def report(vision, tmp_path):
+    path = tmp_path / "vision.json"
+    path.write_text(json.dumps(vision), encoding="utf-8")
+    proc = run("verify_vision.py", path, "--json")
+    assert proc.returncode in (0, 1), proc.stderr
+    return json.loads(proc.stdout)
+
+
+def failing(report_):
+    return {c["id"] for c in report_["readiness"]["checks"] if c["asked"] and not c["passed"]}
+
+
+def test_an_empty_learn_grant_stays_in_learn_mode_and_fails_loudly(tmp_path):
+    """`learn_mode: {}` used to read as falsey and select Commit mode, so a
+    half-started grant bypassed every Learn check — including the L1 failure
+    that would have reported it — and produced a Commit report with the wrong
+    question set and the wrong roster."""
+    vision = load("vision-commit-new-ready.json")
+    vision["learn_mode"] = {}
+    out = report(vision, tmp_path)
+    assert out["mode"] == "learn"
+    assert "L1" in failing(out)
+
+
+def test_an_unanswered_benefits_block_fails_its_blocking_check(tmp_path):
+    """V13 was four nested lambdas, and `all()` over an empty list is True, so
+    `B0: {}` satisfied a blocking check whose rule reads "B0 has a value for
+    every category"."""
+    vision = load("vision-commit-new-ready.json")
+    for empty in ({}, {"categories": []}):
+        vision["blocks"]["B0"] = empty
+        assert "V13" in failing(report(vision, tmp_path))
+
+
+def test_only_the_accountable_owner_can_ratify(tmp_path):
+    vision = load("vision-commit-new-ready.json")
+    vision["status"] = "ratified"
+    vision["ratified_by"] = {"name": "Someone Else"}
+    assert "R16" in failing(report(vision, tmp_path))
+    vision["ratified_by"] = {"name": vision["accountable_owner"]["name"]}
+    assert "R16" not in failing(report(vision, tmp_path))
+
+
+def test_a_learn_grant_without_its_triage_snapshot_fails(tmp_path):
+    """S1 compares the live triage against the snapshot taken when the grant was
+    made. Without the snapshot it says nothing, so a risk trigger going live
+    after a grant produced no signal at all — the opposite of what the snapshot
+    was added for."""
+    vision = load("vision-learn-new-ready.json")
+    vision["learn_mode"].pop("triage_at_grant")
+    assert "L1" in failing(report(vision, tmp_path))
+
+
+def test_a_review_by_that_is_not_a_date_fails(tmp_path):
+    vision = load("vision-learn-new-ready.json")
+    vision["learn_mode"]["review_by"] = "sometime"
+    assert "L2" in failing(report(vision, tmp_path))
+
+
+def test_a_response_needs_a_named_responder_and_a_real_date(tmp_path):
+    """A blocking reviewer's gate closed on a truthy timestamp and an ID,
+    without the record naming who responded."""
+    vision = load("vision-commit-new-ready.json")
+    reviews = vision.get("reviews") or []
+    assert reviews, "fixture carries no reviews"
+    reviews[0].pop("responder", None)
+    assert "R7" in failing(report(vision, tmp_path))
+    reviews[0]["responder"] = {"name": "Priya Raman"}
+    reviews[0]["responded_at"] = "whenever"
+    assert "R7" in failing(report(vision, tmp_path))
+
+
+def test_only_a_documented_disposition_closes_a_blocking_raise(tmp_path):
+    """Any truthy disposition closed a raise, so `{"type": "dismissed"}` — or a
+    rejection with no rationale — left the vision ready."""
+    vision = load("vision-commit-new-ready.json")
+    raises = [r for review in vision.get("reviews", []) for r in review.get("raises", [])
+              if r.get("severity") == "blocking"]
+    assert raises, "fixture carries no blocking raise"
+    for bad in ({"type": "dismissed"}, {"type": "rejected"}, {"type": "accepted"}):
+        raises[0]["disposition"] = bad
+        assert "R8" in failing(report(vision, tmp_path)), bad
+
+
+def test_a_linked_opportunity_has_to_be_accepted(tmp_path):
+    vision = load("vision-commit-new-ready.json")
+    vision["opportunity_ref"]["accepted"] = False
+    assert "R2" in failing(report(vision, tmp_path))
+
+
+def test_a_sizing_gap_needs_an_owner(tmp_path):
+    """V4's rule is "a gap with an owner". An ownerless gap is a note, not a
+    plan to close the most fabricated field in any vision."""
+    vision = load("vision-commit-new-ready.json")
+    vision["blocks"]["B1"] = {"figures": [], "gap": {"text": "No sizing yet."}}
+    assert "V4" in failing(report(vision, tmp_path))
+    vision["blocks"]["B1"]["gap"]["owner"] = "Dana Okoye"
+    assert "V4" not in failing(report(vision, tmp_path))
+
+
+def test_a_revision_names_what_it_supersedes(tmp_path):
+    """Without a predecessor the record is read as a new vision by every check
+    that branches on the combination, so the lineage is not merely missing — it
+    changes which checks run."""
+    vision = load("vision-revision.json")
+    vision["supersedes"] = None
+    assert "R18" in failing(report(vision, tmp_path))
+
+
+def test_the_product_language_warning_respects_word_boundaries(tmp_path):
+    """"rag" matched inside "storage" and "api" inside "rapid", which put a
+    false warning in the author's own to-do list and taught them to distrust it."""
+    vision = load("vision-commit-new-ready.json")
+    vision["blocks"]["C1"] = ("Reviewers reach a decision from the precedent they need at hand, "
+                              "rather than rapid guesswork over capital storage coverage.")
+    assert not [w for w in report(vision, tmp_path)["warnings"] if "C1 mentions" in w]
+    vision["blocks"]["C1"] = ("They open the dashboard and the chatbot answers from the api, "
+                              "which is the whole point of the platform we are building here.")
+    assert [w for w in report(vision, tmp_path)["warnings"] if "C1 mentions" in w]
+
+
+def test_questions_print_their_required_follow_ups(tmp_path):
+    """The skill says to ask from this output and nothing else, so a required
+    follow-up missing from it is a question that never gets asked. A4's reason,
+    A7's how and basis, and D3's stop-ask-or-hand-off were all absent."""
+    out = run("questions.py", "commit", "new").stdout
+    assert "Why?" in out, "A4's required reason is not printed"
+    assert "If so, how?" in out, "A7's follow-up is not printed"
+    assert "stop, ask, or hand off" in out, "D3's follow-up is not printed"
+    assert "Critical / High Priority" in out, "A4's choices are not printed"

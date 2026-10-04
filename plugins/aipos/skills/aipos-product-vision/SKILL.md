@@ -149,8 +149,8 @@ Do not use it for:
 |---|---|
 | `scripts/verify_vision.py` | Run after triage, after every review response, and before ratification. Computes mode, scope, tier, roster, readiness and promotion signals. Exit 1 on a blocking failure. |
 | `scripts/questions.py` | Prints the exact question set for a mode and scope. **Run it at Step 0 and ask from its output**, never from the block tables in this file - they list every question, including ones the current combination does not ask. |
-| `scripts/check_all.sh` | **Run after every change to `data/` or `scripts/`.** Content lint plus the fixture suite. A check added without fixture data turns the whole suite red, and it is easy to miss for several changes. |
-| `scripts/check_content.py` | Content lint. Fails if any question lacks a worked example; warns on dense examples and on quality tests with no nudge. Run after editing `flow-content.json`. |
+| `scripts/check_content.py` | Content lint. Fails if any question lacks a worked example, if a question carries its own nudge limit, if this file names a question id that no longer exists, or if the evidence-marks rule is missing from either side. **Run after every change to `data/`.** |
+| The fixture suite | `python -m pytest tests/test_verify_vision.py` in the plugin repository runs the lint and every fixture. **Run after every change to `scripts/`.** A check added without fixture data turns the suite red, and that went unnoticed for several changes once. |
 
 Run from the project folder:
 `python3 <this-skill-folder>/scripts/verify_vision.py product-vision/<slug>/vision.json --write`.

@@ -57,39 +57,57 @@ scope combination does not ask it, in which case the check reports `n/a`.
 
 ```json
 "blocks": {
-  "A1": "Claims handlers in first-notification, and senior reviewers who hold the exceptions queue.",
-  "A2": "They read three policy documents to answer one question, and keep a personal crib sheet …",
-  "A3": "Two teams built their own precedent spreadsheets and maintain them on their own time.",
-  "A4": [
-    { "claim": "Median cycle time 2.1 days", "source": "Q3 ops export", "strength": "strong" },
-    { "claim": "Reviewers would accept agent summaries", "source": "", "strength": "gap" }
+  "A1": "Leaders working to adopt and scale AI across their business or area of responsibility.",
+  "A2": "More than one, and we build for the business leader rather than the AI specialist.",
+  "A3": "They see the opportunity AI presents but are not sure what is needed to use it responsibly.",
+  "A4": { "value": "critical", "why": "They see AI's potential to transform the business, and the risk of doing it poorly." },
+  "A5": "They ask ChatGPT or Claude, search the web, or go to IT.",
+  "A6": "Competitive exposure if they are slow, and personal credibility if they get it wrong.",
+  "A7": { "value": "no", "how": null, "basis": "inferred" },
+  "A8": [
+    { "claim": "They go to ChatGPT and the internet today", "basis": "known", "source": "Discovery sessions, Q3" },
+    { "claim": "Personal credibility is what is at stake", "basis": "inferred", "source": null },
+    { "claim": "Nobody has made a formal attempt", "basis": "gap", "source": null }
   ],
-  "A5": {
-    "as_it_came": "Support: ticket volume on policy questions is up 40 percent.",
-    "as_product_states_it": "Handlers cannot find situational precedent, so they escalate.",
-    "source_group": "support",
-    "what_changed": "Symptom reframed as the underlying problem."
+  "A9": { "as_it_came": "…", "as_product_states_it": "…", "source_group": "…", "what_changed": "…" },
+  "B00": { "outcome": "Growth and Customer Experience", "none_committed": false },
+  "B0": {
+    "categories": [
+      { "id": "revenue", "value": "yes", "why": "A high-margin way to generate revenue." },
+      { "id": "market_position", "value": "yes", "why": "A robust set of accelerators positions us as experts." },
+      { "id": "other", "value": "yes", "name": "Land and expand", "why": "A strong first engagement." }
+    ],
+    "ranking": ["revenue", "market_position", "other"]
   },
-  "B1": { "figures": [{ "value": "1.8M annual handling cost", "source": "FY26 ops budget" }], "gap": null },
+  "B1": { "figures": [{ "value": "1.8M annual handling cost", "source": "FY26 ops budget" }],
+          "gap": null },
   "C2": { "arc": "Year one …", "mvp_proves": "That situational retrieval is good enough that …" },
   "F1": { "stem": "…", "focus_areas": ["…", "…", "…"] },
-  "F1i": true
+  "F2": true
 }
 ```
 
+`B1` with no figures carries `gap: {text, owner}` instead — V4 fails an unowned gap, because a gap
+with no owner is a note rather than a plan to close it.
+
 | Block key | Shape |
 |---|---|
-| `A1`, `A2`, `A3` | strings |
-| `A4` | list of `{claim, source, strength}`. `strength: "gap"` is how an unsourced claim passes V3 honestly |
-| `A5` | object; present only when something was inherited |
-| `A1i`, `A2i` | strings; increments only |
-| `B1` | object with `figures[]` each carrying a `source`, or a `gap`. **A figure with no source fails V4** |
-| `B2`, `B3`, `B4`, `B1i`, `B0L` | strings |
-| `C1`, `C2i`, `C3`, `D3` | strings |
+| `A1`, `A2`, `A3`, `A5`, `A6` | strings |
+| `A4` | object `{value, why}`; `value` is `critical`, `high`, `medium`, `low` or `not_sure`. Both halves required by V12 |
+| `A7` | object `{value, how, basis}`; a `yes` needs `how` and a `basis` of `known` or `inferred` (V2) |
+| `A8` | list of `{claim, basis, source}`. `basis` is `known`, `inferred` or `gap`; a `known` claim needs a `source` (V3). **This is the evidence record every generated artifact carries forward** |
+| `A9` | object `{as_it_came, as_product_states_it, source_group, what_changed}`; present only when something was inherited |
+| `A10`, `A11` | strings; increments only |
+| `B00` | object `{outcome, none_committed}`; one or the other (V14) |
+| `B0` | object `{categories[], ranking[]}`; every category in `flow-content.json` carries a `value`, the Yes set is ranked when there is more than one, and the top three carry a `why`. A Yes on `other` also needs `name` (V13) |
+| `B1` | object with `figures[]` each carrying a `source`, or `gap: {text, owner}`. **A figure with no source fails V4, and so does an unowned gap** |
+| `B2`, `B3`, `B4`, `B5`, `B0L` | strings |
+| `C1`, `C3`, `C5`, `D3` | strings |
 | `C2` | object `{arc, mvp_proves}`; both halves required by V7 |
 | `D1`, `D2`, `D4` | lists |
 | `F1` | object `{stem, focus_areas[]}`; three to five areas, enforced by V8 |
-| `F1i` | boolean; increments only. **`false` is a routing result, not a defect** — re-scope as a revision |
+| `F2` | boolean; increments only — does the parent's statement still cover this. **`false` is a routing result, not a defect**, and re-scopes as a revision |
+| `LQd` | object `{categories[], primary}`; Learn mode. More than one Yes needs a `primary` (L7) |
 
 ## measures
 
@@ -183,7 +201,8 @@ implements the tests; the data decides which combinations ask them.
 | R8 | blocking | Every blocking raise is dispositioned |
 | R9 | blocking | Rejected blocking constraints are acknowledged |
 | R10 | blocking | An accountable owner is named |
-| R16 | blocking | Ratification carries a name |
+| R16 | blocking | Ratification is the accountable owner's act |
+| R18 | blocking | A revision names what it supersedes |
 | V1 | blocking | The customer is named and their world described |
 | V2 | blocking | Customer urgency is evidenced behaviourally |
 | V3 | blocking | Evidence and gaps are separated |

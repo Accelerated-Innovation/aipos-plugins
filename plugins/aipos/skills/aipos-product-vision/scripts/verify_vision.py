@@ -31,6 +31,7 @@ Exit codes:
 
 import argparse
 import json
+import re
 import os
 import sys
 from datetime import date, datetime, timezone
@@ -83,7 +84,7 @@ def filled(value):
 def mode_of(vision):
     """Learn mode iff a grant block exists. Its validity is check L1, so an
     empty or unsigned block still puts the record in Learn mode and fails loudly."""
-    return "learn" if vision.get("learn_mode") else "commit"
+    return "learn" if vision.get("learn_mode") is not None else "commit"
 
 
 def scope_of(vision):
@@ -235,6 +236,51 @@ def compute_promotion_signals(vision, mode):
 # the check tests, keyed by id. Applicability comes from the data file.
 # --------------------------------------------------------------------------
 
+DISPOSITION_FIELDS = {          # documented in references/vision-schema.md
+    "accepted": ("change_ref",),
+    "rejected": ("rationale",),
+    "deferred": ("rationale", "deferred_to_step"),
+}
+
+
+def benefit_category_ids(_cache={}):
+    """The seven B0 categories, read from the content file so the check and the
+    question cannot drift apart."""
+    if not _cache:
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "data", "flow-content.json")
+        with open(path, encoding="utf-8") as handle:
+            content = json.load(handle)
+        for question in content["blocks"]["B"]["questions"]:
+            if question["id"] == "B0":
+                _cache["ids"] = [c["id"] for c in question["categories"]]
+    return _cache["ids"]
+
+
+def is_date(value):
+    """A date the rest of the script can compute with. L2 and S4 both read
+    review_by; a value that only looks filled passes readiness and is then
+    skipped by the date arithmetic, which is the worst of both."""
+    try:
+        date.fromisoformat(str(value))
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
+def disposition_closes(raise_):
+    """A raise is closed by a disposition of a documented type carrying that
+    type's required fields. Truthiness alone let {"type": "dismissed"} - or a
+    rejection with no rationale - close a blocking raise."""
+    d = raise_.get("disposition")
+    if not isinstance(d, dict):
+        return False
+    required = DISPOSITION_FIELDS.get(str(d.get("type", "")).lower())
+    if required is None:
+        return False
+    return all(filled(d.get(field)) for field in required)
+
+
 def build_tests(vision, roster, signals):
     blocks = vision.get("blocks", {}) or {}
     measures = vision.get("measures", []) or []
@@ -244,7 +290,11 @@ def build_tests(vision, roster, signals):
 
     raises, responded, rights = [], set(), {r["reviewer_id"]: r["right"] for r in roster}
     for review in vision.get("reviews", []):
-        if review.get("responded_at"):
+        # A response identifies a person and a date, and comes from someone the
+        # triage actually routed to. An arbitrary timestamp used to clear R7.
+        if (review.get("reviewer_id") in rights
+                and filled((review.get("responder") or {}).get("name"))
+                and is_date(review.get("responded_at"))):
             responded.add(review.get("reviewer_id"))
         for raise_ in review.get("raises", []):
             item = dict(raise_)
@@ -268,7 +318,7 @@ def build_tests(vision, roster, signals):
                 if r["engagement"] == "blocking" and r["reviewer_id"] not in responded]
 
     def open_raises(sev):
-        return [r for r in raises if r.get("severity") == sev and not r.get("disposition")]
+        return [r for r in raises if r.get("severity") == sev and not disposition_closes(r)]
 
     def unacknowledged_rejections():
         out = []
@@ -301,8 +351,14 @@ def build_tests(vision, roster, signals):
             bare = [f.get("value", "?") for f in figures if not filled(f.get("source"))]
             if bare:
                 return False, "Figures with no source: %s" % ", ".join(str(x) for x in bare[:3])
-            if not figures and not filled(val.get("gap")):
-                return False, "No figures and no gap recorded."
+            if not figures:
+                gap = val.get("gap")
+                gap = {"text": gap} if isinstance(gap, str) else (gap if isinstance(gap, dict) else {})
+                if not filled(gap.get("text")):
+                    return False, "No figures and no gap recorded."
+                if not filled(gap.get("owner")):
+                    return False, ("The sizing gap has no owner. An unowned gap is a note, not a "
+                                   "plan to close it.")
             return True, ""
         return True, "Free text; the rubric judges whether a figure carries a source."
 
@@ -317,10 +373,41 @@ def build_tests(vision, roster, signals):
             return False, "%d focus areas; the format is three to five." % len(areas)
         return True, ""
 
+    def revision_lineage_ok():
+        if vision.get("pass_type") != "revision" and scope_of(vision) != "revision":
+            return True, ""
+        return (filled(vision.get("supersedes")),
+                "Marked as a revision with nothing recorded as superseded.")
+
     def changed_without_rationale():
         if vision.get("pass_type") != "revision":
             return []
         return [c.get("block") for c in vision.get("changes", []) if not filled(c.get("rationale"))]
+
+    def benefits_ok():
+        """B0 is answered when every category the content file defines carries a
+        value. all() over an empty list is True, so the previous nested lambda
+        passed B0: {} - a blocking check satisfied by no answer at all."""
+        val = b("B0")
+        if not isinstance(val, dict):
+            return False, "B0 is empty."
+        rows = {c.get("id"): c for c in (val.get("categories") or []) if isinstance(c, dict)}
+        missing = [cid for cid in benefit_category_ids()
+                   if str(rows.get(cid, {}).get("value", "")).lower() not in ("yes", "not_sure", "no")]
+        if missing:
+            return False, "Unanswered: %s" % ", ".join(missing)
+        yes = [cid for cid in benefit_category_ids() if rows[cid].get("value") == "yes"]
+        if not yes:
+            return False, "No category is a reason we would do this."
+        ranking = [r for r in (val.get("ranking") or []) if r in rows]
+        if len(yes) > 1 and set(ranking) != set(yes):
+            return False, "The Yes set is unranked, or the ranking does not match it."
+        for cid in (ranking or yes)[:3]:
+            if not filled(rows[cid].get("why")):
+                return False, "No reason behind %s." % cid
+            if cid == "other" and not filled(rows[cid].get("name")):
+                return False, "Other is a Yes with no benefit named."
+        return True, ""
 
     def gaps_without_owners():
         return [g.get("id", "unnamed") for g in vision.get("gaps", [])
@@ -333,6 +420,25 @@ def build_tests(vision, roster, signals):
         if granted_by.strip().lower() != owner.strip().lower():
             return False, ("Granted by %s but the accountable owner is %s. Only the owner grants "
                            "Learn mode." % (granted_by, owner or "unnamed"))
+        if not isinstance(lm.get("triage_at_grant"), dict):
+            return False, ("The grant records no triage snapshot. Without one, a risk trigger that "
+                           "goes live afterwards produces no promotion signal.")
+        return True, ""
+
+    def ratification_ok():
+        """Ratification is the accountable owner's act. grant_ok() ten lines
+        above already held that line for the Learn grant; R16 did not hold it
+        here, so anyone could ratify a record that reported ready."""
+        if vision.get("status") != "ratified":
+            return True, ""
+        ratifier = (vision.get("ratified_by") or {}).get("name", "")
+        if not filled(ratifier):
+            return False, "Marked ratified with nobody named as the ratifier."
+        if not filled(owner):
+            return False, "Marked ratified with no accountable owner named."
+        if ratifier.strip().lower() != owner.strip().lower():
+            return False, ("Ratified by %s but the accountable owner is %s. Ratification is the "
+                           "owner's act." % (ratifier, owner))
         return True, ""
 
     def signals_ok():
@@ -347,7 +453,10 @@ def build_tests(vision, roster, signals):
             return filled((vision.get("parent_vision_ref") or {}).get("id")), ""
         opp = vision.get("opportunity_ref") or {}
         if filled(opp.get("id")):
-            return True, ""
+            if opp.get("accepted") is True:
+                return True, ""
+            return False, ("Opportunity %s is linked but not marked accepted. The rule is an "
+                           "accepted opportunity, or a note saying none exists." % opp.get("id"))
         return filled(vision.get("no_opportunity_note")), "No opportunity linked and no note explaining why."
 
     return {
@@ -374,7 +483,8 @@ def build_tests(vision, roster, signals):
         "R15": lambda: (not changed_without_rationale(),
                         ("Without rationale: %s" % ", ".join(str(x) for x in changed_without_rationale()))
                         if changed_without_rationale() else ""),
-        "R16": lambda: (vision.get("status") != "ratified" or filled((vision.get("ratified_by") or {}).get("name")), ""),
+        "R16": ratification_ok,
+        "R18": revision_lineage_ok,
 
         "V1":  lambda: (filled(b("A1")) and filled(b("A5")), ""),
         "V2":  lambda: ((lambda a: isinstance(a, dict) and filled(a.get("value"))
@@ -384,18 +494,7 @@ def build_tests(vision, roster, signals):
         "V12": lambda: (isinstance(b("A4"), dict) and filled(b("A4").get("value"))
                         and filled(b("A4").get("why")), ""),
         "V3":  evidence_ok,
-        "V13": lambda: ((lambda x: (isinstance(x, dict)
-                         and all(c.get("value") in ("yes", "not_sure", "no") for c in (x.get("categories") or []))
-                         and (lambda cats, rank: all(
-                                 filled(next((c.get("why") for c in cats if c.get("id") == cid), None))
-                                 for cid in (rank[:3] if rank else
-                                             [c["id"] for c in cats if c.get("value") == "yes"][:3])))(
-                                 x.get("categories") or [], x.get("ranking") or [])
-                         and (lambda yes: len(yes) < 2
-                              or [c for c in (x.get("ranking") or [])] and
-                                 set(x.get("ranking") or []) == set(yes))(
-                                 [c.get("id") for c in (x.get("categories") or [])
-                                  if c.get("value") == "yes"])))(b("B0")), ""),
+        "V13": benefits_ok,
         "V14": lambda: ((lambda x: isinstance(x, dict)
                          and (filled(x.get("outcome")) or x.get("none_committed") is True))(b("B00")), ""),
         "V4":  prize_ok,
@@ -422,7 +521,9 @@ def build_tests(vision, roster, signals):
                          and (sum(1 for c in (x.get("categories") or []) if c.get("value") == "yes") < 2
                               or filled(x.get("primary"))))(b("LQd")), ""),
         "L1":  grant_ok,
-        "L2":  lambda: (filled(lm.get("review_by")), ""),
+        "L2":  lambda: (is_date(lm.get("review_by")),
+                        "" if is_date(lm.get("review_by")) else
+                        "Not a date. A review-by the date arithmetic cannot read raises no signal."),
         "L3":  lambda: (filled(lm.get("learning_question")), ""),
         "L4":  lambda: (filled(lm.get("kill_condition")), ""),
         "L5":  lambda: (filled(b("D2")), ""),
@@ -482,7 +583,10 @@ def warnings_for(vision, mode, scope, signals):
         out.append("C1 is phrased as what the product does (%s). The customer should be the subject and the "
                    "product should not appear. The script cannot judge the rewrite, only the framing."
                    % ", ".join(framing))
-    hits = sorted({w for w in SOLUTION_HINTS if w in c1})
+    # Word boundaries: "rag" matched inside "storage" and "api" inside "rapid",
+    # which put a false warning in the author's own to-do list.
+    hits = sorted({w for w in SOLUTION_HINTS
+                   if re.search(r"\b%s\b" % re.escape(w), c1)})
     if hits:
         out.append("C1 mentions %s. Test it against the no-solution-in-statement rule; the script "
                    "cannot judge this." % ", ".join(hits))

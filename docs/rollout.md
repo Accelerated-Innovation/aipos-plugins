@@ -9,6 +9,32 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.5.1
+
+Fourteen defects found by review on the `aipos-product-vision` PR, before it shipped. Four let a
+control fail silently open, and the readiness rules now say what the verifier does rather than what
+it was meant to do.
+
+- **Learn mode.** A grant block with nothing in it (`learn_mode: {}`) selected Commit mode, bypassing
+  every Learn check including the one that would have reported the empty grant. It is now Learn mode
+  and fails L1. A grant must also carry `triage_at_grant`, or a risk trigger that goes live after the
+  grant produces no promotion signal.
+- **Blocking checks that passed on no answer.** `B0: {}` satisfied V13. An unowned sizing gap
+  satisfied V4. A linked but unaccepted opportunity satisfied R2. A revision with no predecessor was
+  read as a new vision — now R18.
+- **Governance gates.** Ratification must name the accountable owner, not just somebody (R16). A
+  review counts as a response only with a named responder, a real date and a routed reviewer (R7).
+  A blocking raise closes only on a documented disposition type carrying that type's fields (R8).
+  `review_by` must parse as a date (L2).
+- **Facilitation.** `questions.py` now prints required follow-ups and choice lists, so A4's reason,
+  A7's how and basis, and D3's stop-ask-or-hand-off are asked rather than skipped. The
+  product-language warning uses word boundaries — it was firing on "storage", "rapid" and "capital".
+- **References.** `vision-schema.md` documented v1 block shapes (`A4` as the claims list, `F1i` as
+  the statement check); a record written to it failed V3 and V12. It now matches the verifier.
+
+Existing records are unaffected: every shipped fixture already satisfied the stricter rules. Rules
+version 2.1.0.
+
 ## Updating to 1.5.0
 
 A fourteenth skill, `aipos-product-vision`, writes the PMLC Step 6 Product Vision and takes it
