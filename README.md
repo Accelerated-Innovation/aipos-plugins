@@ -4,7 +4,7 @@ One plugin for product strategy, evidence-based discovery, rapid validation, and
 delivery, from [Accelerated Innovation](https://acceleratedinnovation.com).
 
 AIPOS (AI Product Operating System) groups the work into pillars. The plugin keeps
-all thirteen skills together because behavior authoring, review, journey definition,
+all fourteen skills together because behavior authoring, review, journey definition,
 and scope selection support several pillars. Each skill owns a specific action
 and hands off when the requested work changes.
 
@@ -33,6 +33,7 @@ Describe the action and provide the relevant evidence or artifacts:
 | Request | Skill |
 |---|---|
 | “Start a new product from this idea, or revise our strategy after these results.” | `aipos-product-strategy` |
+| “Write the Product Vision for this product and take it through review.” | `aipos-product-vision` |
 | “Review the live opportunity graph for next quarter's research choices.” | `aipos-exploration-planning` |
 | “Run a solution design canvas for this opportunity with the team.” | `aipos-solution-framing` |
 | “Design a demand test for this opportunity.” | `aipos-rapid-validation` |
@@ -57,7 +58,7 @@ and delivery observation.
 
 An evidence-backed opportunity can go directly to Rules and scenarios. Epics,
 user stories, estimates, and a decision service are optional. Existing work can
-enter at the appropriate stage; this is not a compulsory sequence of thirteen calls.
+enter at the appropriate stage; this is not a compulsory sequence of fourteen calls.
 
 The [workflow guide](docs/workflow.md) explains ownership, handoffs, and examples.
 Product approval, local execution readiness, current authority, and implementation

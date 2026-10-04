@@ -1072,6 +1072,76 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "vision-step-six",
+      "prompt": "We're at Step 6. Write the Product Vision for the readiness accelerator and tell me who has to review it.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-vision",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "vision-learn-mode",
+      "prompt": "This is a two-week exploration, not a commitment. I want a vision at exploration depth before we spend engineering time.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-vision",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "vision-increment",
+      "prompt": "We're adding an improvement to an existing product. Does its vision still cover it, or does this need its own?",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-vision",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "vision-vs-strategy-brief",
+      "prompt": "We have an idea and no research. Draft our first Product Opportunity Brief: segment, need, differentiation, viability.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-strategy",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "vision-heldout-ratify",
+      "prompt": "Engineering and security have both responded on our product vision. Close the round and take it to ratification.",
+      "context": "",
+      "critical": true,
+      "split": "heldout",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-product-vision",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }

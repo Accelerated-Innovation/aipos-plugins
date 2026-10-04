@@ -1,0 +1,174 @@
+{
+  "schema_version": "2.0",
+  "slug": "claims-bulk-spike",
+  "title": "Bulk upload spike",
+  "pass_type": "new",
+  "scope": "increment",
+  "status": "in_review",
+  "version": "0.2",
+  "product_lead": {
+    "name": "Dana Okoye"
+  },
+  "accountable_owner": {
+    "name": "Marcus Hale",
+    "role": "Director of Product"
+  },
+  "blocks": {
+    "B0L": "If bundling works, the abandoned fifth comes back.",
+    "C1": "Handlers on multi-document claims get an answer without leaving the workflow.",
+    "D2": [
+      "Not shown outside the build team"
+    ],
+    "D3": "Output to the build team only.",
+    "F2": true,
+    "A8": [
+      {
+        "claim": "18 percent abandon",
+        "source": "Step 19 telemetry",
+        "basis": "known"
+      }
+    ],
+    "A10": "Handlers on multi-document claims.",
+    "A11": "18 percent abandon at upload, Step 19 telemetry.",
+    "A4": {
+      "value": "high",
+      "why": "The abandoned sessions show up directly in the ops lead's weekly completion number."
+    },
+    "A6": "Roughly a fifth of multi-document sessions restart from scratch. The backlog grows with volume, and the escalation queue is already the bottleneck in the ops review.",
+    "A7": {
+      "value": "yes",
+      "how": "They zip files and email them to themselves.",
+      "basis": "known"
+    },
+    "B0": {
+      "categories": [
+        {
+          "id": "revenue",
+          "value": "yes",
+          "why": "Recovers handling cost in the claims in scope."
+        },
+        {
+          "id": "market_position",
+          "value": "yes",
+          "why": "We hold the policy corpus and the workflow; others hold neither."
+        },
+        {
+          "id": "dissatisfier",
+          "value": "yes",
+          "why": "Removes the escalation wait handlers complain about."
+        },
+        {
+          "id": "relationship",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "margin",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "capability",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "other",
+          "value": "no",
+          "why": ""
+        }
+      ],
+      "ranking": [
+        "revenue",
+        "market_position",
+        "dissatisfier"
+      ]
+    },
+    "LQd": {
+      "categories": [
+        {
+          "id": "what",
+          "value": "no"
+        },
+        {
+          "id": "how",
+          "value": "yes"
+        },
+        {
+          "id": "for_whom",
+          "value": "no"
+        },
+        {
+          "id": "for_how_much",
+          "value": "no"
+        }
+      ]
+    },
+    "B00": {
+      "outcome": "Reduce cost-to-serve by 15 percent in FY26",
+      "contribution": "About a third of the gap, from the claims in scope",
+      "owner": "COO"
+    }
+  },
+  "measures": [],
+  "triage": {
+    "sensitive_data": "no",
+    "autonomous_action": "no",
+    "external_users": "no",
+    "regulated_domain": "no",
+    "committed_spend": "no",
+    "brand_attribution": "no",
+    "workforce_impact": "no"
+  },
+  "learn_mode": {
+    "granted_by": {
+      "name": "Marcus Hale"
+    },
+    "granted_at": "2026-10-01",
+    "grant_reason": "Two-week spike to find out whether retrieval is good enough to design around.",
+    "review_by": "2026-10-17",
+    "learning_question": "Can we attribute a clause to the right document in a bundle?",
+    "kill_condition": "Below 90 percent attribution, bundling is not viable.",
+    "real_users": false,
+    "production_data": false,
+    "spend_committed": false,
+    "triage_at_grant": {
+      "sensitive_data": "no",
+      "autonomous_action": "no",
+      "external_users": "no",
+      "regulated_domain": "no",
+      "committed_spend": "no",
+      "brand_attribution": "no",
+      "workforce_impact": "no"
+    }
+  },
+  "reviews": [
+    {
+      "reviewer_id": "engineering",
+      "responder": {
+        "name": "Sam Ide"
+      },
+      "responded_at": "2026-10-12",
+      "raises": []
+    }
+  ],
+  "gaps": [],
+  "changes": [],
+  "rounds": 1,
+  "confidence": 60,
+  "parent_vision_ref": {
+    "id": "VIS-claims-triage",
+    "version": "1.0",
+    "ratified": true,
+    "product": "Claims triage agent",
+    "exists": true
+  },
+  "_expect_exit": 0,
+  "core_team": {
+    "formed_with": [
+      "Dana Okoye, Product",
+      "Sam Ide, Engineering",
+      "Ola Ben, Design"
+    ]
+  }
+}

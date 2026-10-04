@@ -1,0 +1,168 @@
+{
+  "schema_version": "2.0",
+  "slug": "spike-badgrant",
+  "title": "Policy retrieval spike (bad grant)",
+  "pass_type": "new",
+  "scope": "new",
+  "status": "in_review",
+  "version": "0.2",
+  "product_lead": {
+    "name": "Dana Okoye"
+  },
+  "accountable_owner": {
+    "name": "Marcus Hale",
+    "role": "Director of Product"
+  },
+  "no_opportunity_note": "Roadmap intent, no accepted opportunity. Learn mode granted on that basis.",
+  "blocks": {
+    "B0L": "If retrieval is good enough, the whole claims triage direction opens up. If not, it closes early and cheaply.",
+    "C1": "Handlers find situational precedent without leaving the claim.",
+    "D2": [
+      "It will not be shown to anyone outside the build team"
+    ],
+    "D3": "Nothing is sent anywhere. Output goes to the build team only.",
+    "A1": "Claims handlers in first-notification.",
+    "A8": [
+      {
+        "claim": "Handlers keep private crib sheets",
+        "source": "Sept interviews, 4 of 7",
+        "basis": "known"
+      }
+    ],
+    "A3": "They cannot find situational precedent across three policy documents, so hard claims escalate and sit with a reviewer for days.",
+    "A4": {
+      "value": "critical",
+      "why": "Accountable for cycle time, and carrying the escalation backlog."
+    },
+    "A5": "They read three policy documents to answer one question and keep private crib sheets.",
+    "A6": "The backlog grows with volume, and the escalation queue is already the bottleneck in the ops review.",
+    "A7": {
+      "value": "yes",
+      "how": "Two teams built their own spreadsheets on their own time.",
+      "basis": "known"
+    },
+    "B0": {
+      "categories": [
+        {
+          "id": "revenue",
+          "value": "yes",
+          "why": "Recovers handling cost in the claims in scope."
+        },
+        {
+          "id": "market_position",
+          "value": "yes",
+          "why": "We hold the policy corpus and the workflow; others hold neither."
+        },
+        {
+          "id": "dissatisfier",
+          "value": "yes",
+          "why": "Removes the escalation wait handlers complain about."
+        },
+        {
+          "id": "relationship",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "margin",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "capability",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "other",
+          "value": "no",
+          "why": ""
+        }
+      ],
+      "ranking": [
+        "revenue",
+        "market_position",
+        "dissatisfier"
+      ]
+    },
+    "LQd": {
+      "categories": [
+        {
+          "id": "what",
+          "value": "no"
+        },
+        {
+          "id": "how",
+          "value": "yes"
+        },
+        {
+          "id": "for_whom",
+          "value": "no"
+        },
+        {
+          "id": "for_how_much",
+          "value": "no"
+        }
+      ]
+    },
+    "B00": {
+      "outcome": "Reduce cost-to-serve by 15 percent in FY26",
+      "contribution": "About a third of the gap, from the claims in scope",
+      "owner": "COO"
+    }
+  },
+  "measures": [],
+  "triage": {
+    "sensitive_data": "no",
+    "autonomous_action": "no",
+    "external_users": "no",
+    "regulated_domain": "no",
+    "committed_spend": "no",
+    "brand_attribution": "no",
+    "workforce_impact": "no"
+  },
+  "learn_mode": {
+    "granted_by": {
+      "name": "Dana Okoye"
+    },
+    "granted_at": "2026-10-01",
+    "grant_reason": "",
+    "review_by": "2026-10-17",
+    "learning_question": "Can retrieval reach 70 percent exact-source accuracy on the sample set?",
+    "kill_condition": "",
+    "real_users": false,
+    "production_data": false,
+    "spend_committed": false,
+    "triage_at_grant": {
+      "sensitive_data": "no",
+      "autonomous_action": "no",
+      "external_users": "no",
+      "regulated_domain": "no",
+      "committed_spend": "no",
+      "brand_attribution": "no",
+      "workforce_impact": "no"
+    }
+  },
+  "reviews": [
+    {
+      "reviewer_id": "engineering",
+      "responder": {
+        "name": "Sam Ide"
+      },
+      "responded_at": "2026-10-12",
+      "raises": []
+    }
+  ],
+  "gaps": [],
+  "changes": [],
+  "rounds": 1,
+  "confidence": 60,
+  "_expect_exit": 1,
+  "core_team": {
+    "formed_with": [
+      "Dana Okoye, Product",
+      "Sam Ide, Engineering",
+      "Ola Ben, Design"
+    ]
+  }
+}

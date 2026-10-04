@@ -1,0 +1,245 @@
+{
+  "schema_version": "2.0",
+  "slug": "claims-triage-no-urgency",
+  "title": "Claims triage agent (critical but untouched)",
+  "pass_type": "new",
+  "scope": "new",
+  "status": "in_review",
+  "version": "0.6",
+  "product_lead": {
+    "name": "Dana Okoye"
+  },
+  "accountable_owner": {
+    "name": "Marcus Hale",
+    "role": "Director of Product"
+  },
+  "opportunity_ref": {
+    "id": "OPP-241",
+    "accepted": true,
+    "source": "pdg"
+  },
+  "blocks": {
+    "B1": {
+      "figures": [
+        {
+          "value": "1.8M annual handling cost in scope",
+          "source": "FY26 ops budget, lines 12-14"
+        }
+      ],
+      "gap": null
+    },
+    "B2": "Claims is the one domain where we hold both the policy corpus and the workflow, so the integration cost that blocks competitors is already paid.",
+    "B3": "Two vendors sell generic document QA. Neither reaches the workflow. We believe the value is in the handoff to the reviewer, not in retrieval quality, which others appear to treat as the whole problem.",
+    "B4": "The policy library is being re-platformed this quarter, so the indexing work is paid for either way. After it closes, we rebuild it ourselves.",
+    "C1": "Claims that would have waited two days for a reviewer clear in minutes, or are escalated with a reason the handler can act on.",
+    "C2": {
+      "arc": "Year one, situational precedent for handlers. Year two, drafted decisions with reviewer approval. Year three, the reviewer queue is exceptions only.",
+      "mvp_proves": "That situational retrieval is good enough that handlers stop keeping private crib sheets."
+    },
+    "C3": "Senior reviewers. Their queue becomes exceptions only, which is a different job rather than less work.",
+    "D1": [
+      "Fraud scoring, owned by Risk",
+      "Policy authoring"
+    ],
+    "D2": [
+      "It will not decline a claim, declines always route to a person",
+      "It will not quote policy to a claimant"
+    ],
+    "D3": "A person always decides any settlement above the auto-settle threshold and any decline. On reaching one the agent stops, writes its reasoning, and routes to the named reviewer.",
+    "D4": [
+      "Settles above threshold without an approval",
+      "Cites a policy clause that does not exist"
+    ],
+    "F1": {
+      "stem": "Claims handlers decide with the full policy picture in front of them, in minutes rather than days.",
+      "focus_areas": [
+        "Surface situational precedent at the moment of the decision",
+        "Route every exception with a reason the handler can act on",
+        "Keep every settlement decision above threshold with a person",
+        "Shrink the reviewer queue to genuine exceptions"
+      ]
+    },
+    "A1": "Claims handlers in first-notification, and senior reviewers who hold the exceptions queue.",
+    "A8": [
+      {
+        "claim": "Median cycle time 2.1 days",
+        "source": "Q3 ops export claims_cycle_time.csv",
+        "basis": "known"
+      },
+      {
+        "claim": "Handlers want this",
+        "source": "4 interviews, Sept",
+        "basis": "known"
+      },
+      {
+        "claim": "Reviewers would accept agent-prepared summaries",
+        "source": "",
+        "basis": "gap"
+      }
+    ],
+    "A9": {
+      "as_it_came": "Support: ticket volume on policy questions is up 40 percent.",
+      "as_product_states_it": "Handlers cannot find situational precedent, so they escalate.",
+      "source_group": "support",
+      "what_changed": "Symptom reframed as the underlying problem."
+    },
+    "A3": "They cannot find situational precedent across three policy documents, so hard claims escalate and sit with a reviewer for days.",
+    "A4": {
+      "value": "critical",
+      "why": "Accountable for cycle time, and carrying the escalation backlog."
+    },
+    "A5": "Handlers read three policy documents to answer one question, and keep a personal crib sheet of precedents because the policy library is not searchable by situation. A hard claim costs them forty minutes.",
+    "A6": "The backlog grows with volume, and the escalation queue is already the bottleneck in the ops review.",
+    "A7": {
+      "value": "no",
+      "basis": "known"
+    },
+    "B0": {
+      "categories": [
+        {
+          "id": "revenue",
+          "value": "yes",
+          "why": "Recovers handling cost in the claims in scope."
+        },
+        {
+          "id": "market_position",
+          "value": "yes",
+          "why": "We hold the policy corpus and the workflow; others hold neither."
+        },
+        {
+          "id": "dissatisfier",
+          "value": "yes",
+          "why": "Removes the escalation wait handlers complain about."
+        },
+        {
+          "id": "relationship",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "margin",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "capability",
+          "value": "no",
+          "why": ""
+        },
+        {
+          "id": "other",
+          "value": "no",
+          "why": ""
+        }
+      ],
+      "ranking": [
+        "revenue",
+        "market_position",
+        "dissatisfier"
+      ]
+    },
+    "B00": {
+      "outcome": "Reduce cost-to-serve by 15 percent in FY26",
+      "contribution": "About a third of the gap, from the claims in scope",
+      "owner": "COO"
+    }
+  },
+  "measures": [
+    {
+      "id": "M1",
+      "primary": true,
+      "measure": "Time from claim submitted to decision",
+      "baseline": "2.1 days",
+      "baseline_source": "Q3 ops export, claims_cycle_time.csv",
+      "target": "Under 4 hours for 80 percent",
+      "by_when": "End of pilot",
+      "horizon": "near_term"
+    },
+    {
+      "id": "M2",
+      "measure": "Share of handlers keeping a private crib sheet",
+      "baseline": "estimated 60 percent",
+      "baseline_source": "Sept interviews, 4 of 7",
+      "target": "Under 10 percent",
+      "by_when": "Year 1",
+      "horizon": "vision"
+    }
+  ],
+  "triage": {
+    "sensitive_data": "yes",
+    "autonomous_action": "no",
+    "external_users": "no",
+    "regulated_domain": "no",
+    "committed_spend": "no",
+    "brand_attribution": "no",
+    "workforce_impact": "yes"
+  },
+  "reviews": [
+    {
+      "reviewer_id": "security",
+      "responder": {
+        "name": "Priya Raman"
+      },
+      "responded_at": "2026-10-14",
+      "raises": [
+        {
+          "id": "RS-1",
+          "severity": "blocking",
+          "section_ref": "D3",
+          "text": "No second control above threshold.",
+          "disposition": {
+            "type": "accepted",
+            "change_ref": "D3 rewritten",
+            "reviewer_acknowledged": true,
+            "owner_override": false
+          }
+        }
+      ]
+    },
+    {
+      "reviewer_id": "data_privacy",
+      "responder": {
+        "name": "Tom Vega"
+      },
+      "responded_at": "2026-10-15",
+      "raises": []
+    },
+    {
+      "reviewer_id": "people",
+      "responder": {
+        "name": "Ana Cruz"
+      },
+      "responded_at": "2026-10-15",
+      "raises": []
+    },
+    {
+      "reviewer_id": "engineering",
+      "responder": {
+        "name": "Sam Ide"
+      },
+      "responded_at": "2026-10-12",
+      "raises": []
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-reviewer-accept",
+      "kind": "evidence",
+      "text": "No evidence reviewers would accept agent summaries.",
+      "owner": "Dana Okoye",
+      "next_action": "Three reviewer interviews by 17 Oct"
+    }
+  ],
+  "changes": [],
+  "rounds": 2,
+  "confidence": 80,
+  "_expect_exit": 0,
+  "_note": "Passes every check. Exists to prove the A4-against-A7 warning fires without blocking.",
+  "core_team": {
+    "formed_with": [
+      "Dana Okoye, Product",
+      "Sam Ide, Engineering",
+      "Ola Ben, Design"
+    ]
+  }
+}

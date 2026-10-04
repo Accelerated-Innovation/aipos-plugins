@@ -1,6 +1,6 @@
 ---
 name: aipos-product-strategy
-description: "Create, assess, or revise a Product Opportunity Brief covering product vision, target segment, needs, differentiation, and business viability. Use for starting a new commercial or internal product, choosing its strategic focus, or changing strategy after research or product results. Specific experiments belong to rapid-validation; initiative canvases to solution-framing; epics to epic-create."
+description: "Create, assess, or revise a Product Opportunity Brief covering strategic intent, target segment, needs, differentiation, and business viability. Use for starting a new commercial or internal product, choosing its strategic focus, or changing strategy after research or product results. A Product Vision artifact, and PMLC Step 6, belong to product-vision; specific experiments to rapid-validation; initiative canvases to solution-framing; epics to epic-create."
 ---
 
 # AIPOS Product Strategy
@@ -20,6 +20,9 @@ Work with the PM, design, engineering, and relevant business stakeholders; do no
 invent their participation or treat the PM as the authority for every decision.
 
 Read `../../references/strategy-handoff.md` when work crosses skill boundaries.
+Delegate a requested Product Vision artifact, and PMLC Step 6, to `aipos-product-vision`:
+this brief holds the strategic choices a vision is written inside, not the vision's own
+draft, routed stakeholder review and ratification.
 Delegate experiment artifacts and findings to `aipos-rapid-validation`, an
 initiative canvas to `aipos-solution-framing`, graph-based capacity allocation to
 `aipos-exploration-planning`, and an explicitly requested epic to `aipos-epic-create`.
