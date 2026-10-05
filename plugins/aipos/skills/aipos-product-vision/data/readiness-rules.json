@@ -1,7 +1,7 @@
 {
   "$schema_version": "2.0",
   "rules_id": "aipos-product-vision-readiness",
-  "rules_version": "2.1.0",
+  "rules_version": "2.1.1",
   "effective_date": "2026-10-03",
   "owner": "Product, Accelerated Innovation",
   "intent": "The checks that drive the readiness meter. Readiness is computed from the state of the record, never self-reported. Each check declares which mode and scope combinations ask it, so the matrix lives here as data rather than as branching inside the skill or a screen.",
@@ -152,7 +152,8 @@
         "learn:increment"
       ],
       "failure_message": "Blocking raises are still open.",
-      "concerns": "open raises"
+      "concerns": "open raises",
+      "action": "Disposition each open blocking raise: accepted with the change it produced, rejected with a reason, or deferred to a named step"
     },
     {
       "id": "R9",
@@ -539,7 +540,8 @@
         "learn:increment"
       ],
       "failure_message": "Advisory raises are unanswered. They do not hold the record, but reviewers notice.",
-      "concerns": "R14"
+      "concerns": "R14",
+      "action": "Answer the advisory raises, or record why each one stands"
     },
     {
       "id": "R15",
