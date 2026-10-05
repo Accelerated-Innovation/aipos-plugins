@@ -265,3 +265,59 @@ def test_questions_print_their_required_follow_ups(tmp_path):
     assert "If so, how?" in out, "A7's follow-up is not printed"
     assert "stop, ask, or hand off" in out, "D3's follow-up is not printed"
     assert "Critical / High Priority" in out, "A4's choices are not printed"
+
+
+def todo(vision, tmp_path):
+    path = tmp_path / "vision.json"
+    path.write_text(json.dumps(vision), encoding="utf-8")
+    proc = run("verify_vision.py", path, "--todo")
+    assert proc.returncode in (0, 1), proc.stderr
+    return proc.stdout
+
+
+def with_open_raise(severity):
+    """A record that is otherwise ready, carrying one undispositioned raise of this
+    severity. Added rather than found, because the ready fixture carries no advisory
+    raise and inventing one in the fixture would change what every other test sees."""
+    vision = load("vision-commit-new-ready.json")
+    review = (vision.get("reviews") or [None])[0]
+    assert review, "fixture carries no reviews"
+    review.setdefault("raises", []).append({
+        "id": "T-1", "severity": severity, "section_ref": "C1",
+        "text": "Probe raise for the todo list.", "disposition": None,
+    })
+    return vision
+
+
+def test_an_open_blocking_raise_appears_in_the_authors_todo(tmp_path):
+    """R8 was excluded as a check the author cannot close. Waiting on a reviewer to
+    respond is not the author's to close; dispositioning the raise that reviewer left
+    is exactly their job. The todo said "Nothing to close. Ready to move on." on a
+    record with open raises that was not ready."""
+    out = todo(with_open_raise("blocking"), tmp_path)
+    assert "Nothing to close" not in out
+    assert "Disposition" in out, out
+
+
+def test_an_open_advisory_raise_reaches_the_owner(tmp_path):
+    """Advisory checks reached no list at all, so an advisory raise could sit open
+    forever with nothing anywhere saying so."""
+    out = todo(with_open_raise("advisory"), tmp_path)
+    assert "Your call as accountable owner" in out, out
+    assert "advisory raises" in out, out
+
+
+def test_a_clean_record_still_says_nothing_to_close(tmp_path):
+    """The opposite failure: a fix that reports work on a record that has none."""
+    out = todo(load("vision-commit-new-ready.json"), tmp_path)
+    assert out.startswith("Nothing to close"), out
+
+
+def test_waiting_on_a_reviewer_is_not_the_authors_todo(tmp_path):
+    """R7 stays excluded. The author cannot make somebody else respond, and listing it
+    turns a wait into a task."""
+    vision = load("vision-commit-new-ready.json")
+    for review in vision.get("reviews", []):
+        review.pop("responded_at", None)
+    out = todo(vision, tmp_path)
+    assert "Open the review round" not in out

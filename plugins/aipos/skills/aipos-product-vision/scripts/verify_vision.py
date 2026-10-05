@@ -695,18 +695,28 @@ def render_todo(computed, vision, rules):
 
     # Checks the author cannot close: they are satisfied by the next stage happening,
     # not by anything on this screen. Listing them makes three things look like four.
-    NEXT_STAGE = ("R7", "R8", "R9", "R16", "L6")
+    #
+    # R8 used to sit here and should not have. Waiting on a reviewer to respond (R7) is
+    # not the author's to close; dispositioning the raise that reviewer left is exactly
+    # the author's job. With R8 excluded and advisory checks never reaching any list,
+    # --todo reported "Nothing to close. Ready to move on." on a record that was not
+    # ready and had two open raises on it.
+    NEXT_STAGE = ("R7", "R9", "R16", "L6")
 
     for c in ready["checks"]:
-        if not c["asked"] or c["passed"] or c["severity"] != "blocking":
+        if not c["asked"] or c["passed"]:
             continue
         if c["id"] in NEXT_STAGE:
             continue
         meta = spec.get(c["id"], {})
         concerns = meta.get("concerns", c["id"])
-        close.append((concerns,
-                      meta.get("action") or meta.get("failure_message", c["name"]),
-                      c["detail"]))
+        item = (concerns,
+                meta.get("action") or meta.get("failure_message", c["name"]),
+                c["detail"])
+        # Blocking stops the vision, so it is a question to close. Advisory does not stop
+        # it and still has to be answered by somebody, so it is the owner's call rather
+        # than something that silently disappears.
+        (close if c["severity"] == "blocking" else decide).append(item)
         seen.add(concerns)
 
     for w in computed.get("warnings", []):
