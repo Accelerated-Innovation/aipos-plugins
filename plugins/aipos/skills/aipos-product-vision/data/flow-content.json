@@ -656,34 +656,29 @@
           "pattern_note": "The Vision Builder's impact-area pattern: Yes, Not Sure or No per category, then a why on each Yes, then a primary when more than one is live.",
           "categories": [
             {
-              "id": "revenue",
+              "id": "revenue_growth",
               "label": "Revenue Growth",
               "helper": "New or expanded revenue."
             },
             {
-              "id": "market_position",
-              "label": "Market Position",
-              "helper": "Share, differentiation, or a response to what competitors are doing."
+              "id": "customer_experience",
+              "label": "Improved Customer Experience",
+              "helper": "A better experience for the customers they serve."
             },
             {
-              "id": "dissatisfier",
-              "label": "Solve a Customer Dissatisfier",
-              "helper": "Removes a known source of customer pain or churn."
+              "id": "operating_margins",
+              "label": "Improved Operating Margins",
+              "helper": "Cost base, delivery effort or cycle time."
             },
             {
-              "id": "relationship",
-              "label": "Deepen Customer Relationships",
-              "helper": "Extends the relationship, or opens the door to more."
+              "id": "workforce_productivity",
+              "label": "Increased Workforce Productivity",
+              "helper": "More output, or the same output for less effort, from the people doing the work."
             },
             {
-              "id": "margin",
-              "label": "Margin or Efficiency",
-              "helper": "Our own cost base, delivery effort or cycle time."
-            },
-            {
-              "id": "capability",
-              "label": "Strategic Capability",
-              "helper": "Builds something we need regardless, or proves a pattern we will reuse."
+              "id": "risk_reduction",
+              "label": "Risk Reduction",
+              "helper": "Avoided exposure - operational, delivery, compliance or competitive."
             },
             {
               "id": "other",
@@ -715,8 +710,8 @@
           "why_we_are_asking": "Block A established what this means for the customer. This is why it matters to us, and naming the category before describing the benefit is what makes the answer comparable across visions.",
           "helper": "We're not looking for precision here. We just want to understand why this may be a priority for our business.",
           "examples": [
-            "Strategic Capability — Yes. It proves the Accelerator pattern we reuse across the family. Primary.",
-            "Deepen Customer Relationships — Yes. A readiness engagement is the natural front door to the rest of the work.",
+            "Risk Reduction — Yes. It removes the exposure we carry while readiness gaps stay unmapped. Primary.",
+            "Improved Customer Experience — Yes. A readiness engagement is the natural front door to the rest of the work.",
             "Revenue Growth — Not Sure. Possible as a paid engagement, no basis for sizing it yet.",
             "Other — Yes. Gives our consultants a repeatable first conversation. Why: it shortens the time from first meeting to scoped work."
           ],
