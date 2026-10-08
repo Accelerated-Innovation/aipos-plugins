@@ -96,45 +96,41 @@
     "B0": {
       "categories": [
         {
-          "id": "revenue",
+          "id": "revenue_growth",
           "value": "yes",
           "why": "Recovers handling cost in the claims in scope."
         },
         {
-          "id": "market_position",
-          "value": "yes",
-          "why": "We hold the policy corpus and the workflow; others hold neither."
-        },
-        {
-          "id": "dissatisfier",
+          "id": "customer_experience",
           "value": "yes",
           "why": "Removes the escalation wait handlers complain about."
         },
         {
-          "id": "relationship",
+          "id": "operating_margins",
           "value": "no",
           "why": ""
         },
         {
-          "id": "margin",
+          "id": "workforce_productivity",
           "value": "no",
           "why": ""
         },
         {
-          "id": "capability",
+          "id": "risk_reduction",
           "value": "no",
           "why": ""
         },
         {
           "id": "other",
-          "value": "no",
-          "why": ""
+          "value": "yes",
+          "name": "Market position",
+          "why": "We hold the policy corpus and the workflow; others hold neither."
         }
       ],
       "ranking": [
-        "revenue",
-        "market_position",
-        "dissatisfier"
+        "revenue_growth",
+        "customer_experience",
+        "other"
       ]
     },
     "B00": {
