@@ -211,6 +211,37 @@ contains thirteen skills. Start a new session. Existing `.govkit/` artifacts and
 feature packages need no conversion. There are no compatibility aliases or
 migration scripts.
 
+## Updating to 2.0.0
+
+**Breaking change to the `vision.json` record.** The B0 business-benefit categories are replaced.
+Any existing `vision.json` carrying the old ids fails check V13 until migrated, because V13
+requires a value for every category in `flow-content.json`.
+
+Old set (seven) to new set (six):
+
+| Old id | New id | Note |
+|---|---|---|
+| `revenue` | `revenue_growth` | renamed |
+| `margin` | `operating_margins` | renamed |
+| `dissatisfier` | `customer_experience` | folded in |
+| `relationship` | `customer_experience` | folded in |
+| — | `workforce_productivity` | new |
+| — | `risk_reduction` | new |
+| `market_position` | `other`, named | no canonical home; keep the reasoning as the `why` |
+| `capability` | `other`, named, or dropped | no canonical home |
+| `other` | `other` | unchanged |
+
+To migrate a record: rename `revenue` and `margin`, map `dissatisfier` and `relationship` onto
+`customer_experience` keeping whichever `why` still reads true, add `workforce_productivity` and
+`risk_reduction` with a value, move any `market_position` or `capability` reasoning into `other`
+with a `name`, and update `ranking` to the surviving ids. Re-run the verifier.
+
+`other` remains a single slot holding one named benefit. Where two old categories both need it,
+only one survives as a category and the other belongs in its `why`.
+
+**Not a change:** `other` could always be primary. Primary is `ranking[0]` and no rule excludes any
+category from it. The schema reference now says so explicitly rather than leaving it implied.
+
 ## Later updates
 
 Refresh the marketplace and update the installed plugin at its installed scope:

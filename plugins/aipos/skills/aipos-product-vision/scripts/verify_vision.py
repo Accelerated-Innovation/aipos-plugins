@@ -244,7 +244,7 @@ DISPOSITION_FIELDS = {          # documented in references/vision-schema.md
 
 
 def benefit_category_ids(_cache={}):
-    """The seven B0 categories, read from the content file so the check and the
+    """The B0 categories, read from the content file so the check and the
     question cannot drift apart."""
     if not _cache:
         path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),

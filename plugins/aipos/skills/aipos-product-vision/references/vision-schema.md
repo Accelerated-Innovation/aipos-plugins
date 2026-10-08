@@ -73,11 +73,11 @@ scope combination does not ask it, in which case the check reports `n/a`.
   "B00": { "outcome": "Growth and Customer Experience", "none_committed": false },
   "B0": {
     "categories": [
-      { "id": "revenue", "value": "yes", "why": "A high-margin way to generate revenue." },
-      { "id": "market_position", "value": "yes", "why": "A robust set of accelerators positions us as experts." },
+      { "id": "revenue_growth", "value": "yes", "why": "A high-margin way to generate revenue." },
+      { "id": "risk_reduction", "value": "yes", "why": "Removes exposure we carry while this stays manual." },
       { "id": "other", "value": "yes", "name": "Land and expand", "why": "A strong first engagement." }
     ],
-    "ranking": ["revenue", "market_position", "other"]
+    "ranking": ["other", "revenue_growth", "risk_reduction"]
   },
   "B1": { "figures": [{ "value": "1.8M annual handling cost", "source": "FY26 ops budget" }],
           "gap": null },
@@ -99,7 +99,7 @@ with no owner is a note rather than a plan to close it.
 | `A9` | object `{as_it_came, as_product_states_it, source_group, what_changed}`; present only when something was inherited |
 | `A10`, `A11` | strings; increments only |
 | `B00` | object `{outcome, none_committed}`; one or the other (V14) |
-| `B0` | object `{categories[], ranking[]}`; every category in `flow-content.json` carries a `value`, the Yes set is ranked when there is more than one, and the top three carry a `why`. A Yes on `other` also needs `name` (V13) |
+| `B0` | object `{categories[], ranking[]}`; every category in `flow-content.json` carries a `value`, the Yes set is ranked when there is more than one, and the top three carry a `why`. A Yes on `other` also needs `name` (V13). **Primary is `ranking[0]`, and any category may hold it, `other` included** |
 | `B1` | object with `figures[]` each carrying a `source`, or `gap: {text, owner}`. **A figure with no source fails V4, and so does an unowned gap** |
 | `B2`, `B3`, `B4`, `B5`, `B0L` | strings |
 | `C1`, `C3`, `C5`, `D3` | strings |
