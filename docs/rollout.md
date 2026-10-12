@@ -9,6 +9,20 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.5.2
+
+`verify_vision.py --todo` told the author there was nothing to do while their own record was not ready.
+
+- **An open blocking raise is now a question to close.** `R8` sat on the list of checks excluded as
+  "the author cannot close this". Waiting on a reviewer to respond is not the author's to close;
+  dispositioning the raise that reviewer left is exactly their job. `R7` stays excluded.
+- **Advisory checks reached no list at all.** The todo loop only considered blocking checks, so an
+  unanswered advisory raise could sit open indefinitely with nothing anywhere saying so. Failing
+  advisory checks now appear under the owner's call.
+- **`R8` and `R14` carry actions**, so the list reads as instructions rather than status.
+
+Found while dispositioning raises on the first vision run through the released skill. Rules 2.1.1.
+
 ## Updating to 1.5.1
 
 Fourteen defects found by review on the `aipos-product-vision` PR, before it shipped. Four let a
