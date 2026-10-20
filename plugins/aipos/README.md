@@ -1,6 +1,6 @@
 # AIPOS
 
-Thirteen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
+Fifteen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
 and Accelerated Development (P3) in one installation: `aipos@aipos`.
 
 ## Skill catalog
@@ -11,6 +11,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 |---|---|---|
 | [aipos-product-strategy](skills/aipos-product-strategy/SKILL.md) | Product vision and strategy: start, assess, or revise one Product Opportunity Brief | Graph optional; delegates experiments and initiative canvases; does not approve production scope |
 | [aipos-product-vision](skills/aipos-product-vision/SKILL.md) | PMLC Step 6: a Product Vision, or a Learn-mode vision, through draft, routed stakeholder review and ratification | Engagement is routed from risk and readiness is computed; ratification is not approval to build |
+| [aipos-portfolio-dashboard](skills/aipos-portfolio-dashboard/SKILL.md) | Inspect portfolio counts, filter opportunities, drill into records and compare outcomes | Supplied fixtures or connected reads; local HTML dashboard with filters and guided fixture queries, while live demo integration remains planned |
 | [aipos-exploration-planning](skills/aipos-exploration-planning/SKILL.md) | P1: evidence review, research gaps, exploration decision drafts | Requires live graph reads; does not record authoritative decisions |
 | [aipos-solution-framing](skills/aipos-solution-framing/SKILL.md) | P2: a one-page Solution Framing canvas, live in a workshop or with a PM, rendered as an image | Facts from the graph, decisions from the PM; recommends to a named owner, never decides |
 | [aipos-rapid-validation](skills/aipos-rapid-validation/SKILL.md) | P2: experiments, evidence, viability briefs, commitment preparation | Delegates canonical behavior authoring; prepares rather than grants approval |
@@ -30,6 +31,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 - Product strategy can start with an idea, supplied research, or an existing brief;
   no graph, tracker, customers, measurements, or backlog is required. It owns the
   connection between product results and strategy revision, not analytics execution.
+- Portfolio dashboard accepts response fixtures or captures the existing engine MCP tools (or explicitly selected REST reads). It renders all Harborlight case details and ten guided questions as a fixed offline snapshot, with source and capture time shown. The capture helper defaults to MCP and needs its optional SDK requirements; use it to refresh; open-ended AI chat and a native MCP App are not connected. See the [consumer plan](../../docs/plans/2026-10-19-portfolio-dashboard.md).
 - Exploration planning requires a live Product Definition Graph read connection.
   Equivalent MCP reads can provide opportunities, problems, lineage, evidence,
   linked work, and evidence text. Without it the skill reports what is missing.

@@ -4,7 +4,7 @@ One plugin for product strategy, evidence-based discovery, rapid validation, and
 delivery, from [Accelerated Innovation](https://acceleratedinnovation.com).
 
 AIPOS (AI Product Operating System) groups the work into pillars. The plugin keeps
-all fourteen skills together because behavior authoring, review, journey definition,
+all fifteen skills together because behavior authoring, review, journey definition,
 and scope selection support several pillars. Each skill owns a specific action
 and hands off when the requested work changes.
 
@@ -34,6 +34,7 @@ Describe the action and provide the relevant evidence or artifacts:
 |---|---|
 | “Start a new product from this idea, or revise our strategy after these results.” | `aipos-product-strategy` |
 | “Write the Product Vision for this product and take it through review.” | `aipos-product-vision` |
+| “Show this portfolio by product and lifecycle, or inspect a case.” | `aipos-portfolio-dashboard` |
 | “Review the live opportunity graph for next quarter's research choices.” | `aipos-exploration-planning` |
 | “Run a solution design canvas for this opportunity with the team.” | `aipos-solution-framing` |
 | “Design a demand test for this opportunity.” | `aipos-rapid-validation` |
@@ -78,3 +79,6 @@ The [consolidation plan](docs/plans/2026-09-19-aipos-plugin-consolidation.md) re
 the earlier release history.
 
 Licensed under [MIT](LICENSE).
+
+The portfolio dashboard can capture the local Harborlight graph through the engine read API
+and render a portable snapshot. See [capture and rendering](plugins/aipos/skills/aipos-portfolio-dashboard/references/rendering.md) for authentication and refresh commands.

@@ -1,6 +1,6 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All fourteen skills live in the `aipos`
+The pillars describe a product lifecycle. All fifteen skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
@@ -62,6 +62,7 @@ or business outcomes.
 |---|---|---|
 | Start, assess, or revise product strategy | `aipos-product-strategy` | One concise Product Opportunity Brief and next learning decision; delegates experiments and receives findings/results for strategy revision |
 | Write a Product Vision, or take one through review and ratification | `aipos-product-vision` | One vision record plus a to-do list; the reviewer roster is routed from a risk triage and readiness is computed; ratification records agreement on direction, never approval to build |
+| Inspect an existing portfolio, filter cases or compare recorded results | `aipos-portfolio-dashboard` | Read-only chat overview and offline fixture dashboard; live demo integration follows the [consumer plan](plans/2026-10-19-portfolio-dashboard.md) |
 | Allocate research attention using the live graph | `aipos-exploration-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
 | Facilitate a one-page Solution Framing canvas for one problem | `aipos-solution-framing` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
 | Test an opportunity or summarize experiment evidence | `aipos-rapid-validation` | Experiment artifacts and viability brief; delegates behavior definition and prepares the exact commitment package |
@@ -172,4 +173,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these fourteen skills.
+outside these fifteen skills.

@@ -1,0 +1,12 @@
+{
+  "source_mode": "connected-attempt",
+  "dataset_id": "harborlight-insurance-v1",
+  "rest_status": 502,
+  "response": {
+    "data": null,
+    "error": {
+      "code": "DEMO_STORE_UNAVAILABLE",
+      "message": "Demo portfolio store is unavailable"
+    }
+  }
+}

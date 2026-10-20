@@ -34,7 +34,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 #: Skills allowed third-party imports, and the file that declares them.
 DECLARED = {
     skill: skill_path(skill) / "scripts" / "requirements.txt"
-    for skill in ("aipos-map-render", "aipos-metrics-emit", "aipos-synthetic-data")
+    for skill in ("aipos-map-render", "aipos-metrics-emit", "aipos-synthetic-data", "aipos-portfolio-dashboard")
 }
 
 _STDLIB_DIR = pathlib.Path(sysconfig.get_paths()["stdlib"]).resolve()
@@ -90,7 +90,10 @@ def test_a_script_imports_only_stdlib_or_a_declared_dependency(path):
         elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
             imported.add(node.module.split(".")[0])
 
-    third_party = sorted(name for name in imported if not is_stdlib(name))
+    # A same-directory module ships with the caller and is available regardless of cwd.
+    # Its own imports are checked separately by this parametrized test.
+    third_party = sorted(name for name in imported
+                         if not is_stdlib(name) and not path.with_name(name + ".py").is_file())
     if not third_party:
         return
 

@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all fourteen `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all fifteen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 Everything merged to `main` is released: the version in
@@ -8,6 +8,36 @@ Everything merged to `main` is released: the version in
 and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
+
+## Updating to 1.9.0
+
+Adds `aipos-portfolio-dashboard`, a fifteenth skill, for inspecting the synthetic Harborlight
+portfolio in chat and rendering a portable offline HTML dashboard. It includes product,
+lifecycle and disposition filters, 32 case details, evidence, commitment history, measured
+outcomes and ten guided deterministic questions. Research allocation and repository map
+rendering retain their existing owners.
+
+The skill accepts its complete bundled `demo-portfolio.v0.2` fixture or captures the existing
+discovery-engine portfolio read tools over streamable HTTP MCP. Capture exhausts the catalog
+and all case details at one graph revision. The HTML identifies its actual transport, capture
+time and graph revision; rerun capture to refresh it. This is a fixed snapshot with guided
+queries, not a live or general AI chat interface.
+
+- The renderer requires only Python 3.11+. MCP capture additionally requires the packages in
+  the skill's `scripts/requirements.txt`; explicit `--transport rest` remains available.
+- MCP capture is the default and never falls back to REST after an error. Configure the chat
+  host for the engine endpoint and allow its three portfolio read tools. The engine's local
+  `auth-headers` helper supplies temporary credentials. Already-running chats may need a
+  host restart to discover newly configured tools.
+- Captures preserve the graph digest and add a separate snapshot checksum. Partial or mixed
+  revisions are refused. Optional narrative bodies are verified against graph resource
+  digests; missing narratives and account display names remain unavailable.
+- No API token is embedded in HTML and the consumer performs no graph writes. The MCP server
+  remains in discovery-engine; this skill supplies a client and renderer.
+
+This release combines the previously unpublished 1.6–1.8 local prototype increments. Existing
+released skills require no migration. The live local graph path requires discovery-engine
+feature 25; the bundled fixture works without it.
 
 ## Updating to 1.5.2
 

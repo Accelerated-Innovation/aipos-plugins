@@ -6,7 +6,7 @@ Thanks for helping improve AIPOS. This repo is a [Claude Code plugin marketplace
 
 ```
 .claude-plugin/marketplace.json   # marketplace catalog (one aipos entry)
-plugins/aipos/                    # all thirteen aipos-* skills
+plugins/aipos/                    # all fifteen aipos-* skills
   .claude-plugin/plugin.json      # plugin manifest (bump version on release)
   references/                     # plugin-wide references shared by several skills
   skills/<skill-name>/SKILL.md    # one folder per skill; loads automatically
@@ -116,3 +116,16 @@ Tags do not change what users install; they mark what each version was, so versi
 ## License
 
 By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
+
+### The portfolio prototype
+
+`viewers/portfolio/` owns the dependency-free HTML/CSS/JS source for the portfolio skill.
+Run `python viewers/portfolio/build.py` after source edits; `--check` checks packaged asset
+freshness. Run `node --test viewers/portfolio/model.test.mjs` for the ten deterministic query
+oracles and boundary cases. The root pytest suite checks packaging, renderer integrity and
+script escaping. No production graph or model calls are involved.
+
+Render with the skill's `scripts/render_dashboard.py` and inspect the HTML. The optional browser
+check is `node viewers/portfolio/check-page.mjs <absolute-html-path> <screenshot-directory>`; it
+reuses the journey viewer's pinned Playwright installation and the locally installed Chrome.
+The shipped renderer itself needs only Python 3.11+ and a browser.

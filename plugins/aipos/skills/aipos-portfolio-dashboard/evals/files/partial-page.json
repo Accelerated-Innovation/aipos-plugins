@@ -1,0 +1,208 @@
+{
+  "source_mode": "fixture",
+  "coverage": {
+    "summary": true,
+    "catalog_complete": false,
+    "detail_case_ids": [
+      "BI01",
+      "BI02",
+      "BI03",
+      "BI04",
+      "BI05",
+      "BI06",
+      "BI07",
+      "BI08",
+      "BR01",
+      "BR02",
+      "BR03",
+      "BR04",
+      "BR05",
+      "BR06",
+      "BR07",
+      "BR08",
+      "CL01",
+      "CL02",
+      "CL03",
+      "CL04",
+      "CL05",
+      "CL06",
+      "CL07",
+      "CL08",
+      "UW01",
+      "UW02",
+      "UW03",
+      "UW04",
+      "UW05",
+      "UW06",
+      "UW07",
+      "UW08"
+    ],
+    "notes": [
+      "Synthetic response examples for all 32 cases, the six deep stories and Q01\u2013Q10.",
+      "These are proposed API read fixtures, not graph seed records, executed transitions or a live API.",
+      "Supplementary dates, participants counts for UW03/CL03 and BI03 response percentage are authored fictional values.",
+      "Digest input is {contract_version,payloads without meta,resource_bodies,accounts}, canonical sorted compact UTF-8 JSON."
+    ]
+  },
+  "source": {
+    "repository": "Accelerated-Innovation/discovery-engine",
+    "files": {
+      "features/25_engine_insurance_portfolio_demo/portfolio.md": "sha256:02831155966470c5ba960592cf335048b7ad0749b101a4d78875b7902560d251",
+      "features/25_engine_insurance_portfolio_demo/read-contract.md": "sha256:42d77c077b8abf98978f7ddaa2984458ea7647d17ddeea1f6d7606407dde224b",
+      "features/25_engine_insurance_portfolio_demo/read-response.schema.json": "sha256:cde6d101af5908e3e09c6abf261155957133f1e553814953004d46a61acb823c"
+    }
+  },
+  "responses": {
+    "list": {
+      "filters": {
+        "product_id": null,
+        "phase": null,
+        "disposition": null
+      },
+      "offset": 0,
+      "limit": 2,
+      "total": 32,
+      "items": [
+        {
+          "case_id": "BI01",
+          "problem_id": "hi-prob-bi01",
+          "title": "Split invoices create reconciliation exceptions",
+          "record_kind": "proposal",
+          "primary_product_id": "BILLING",
+          "additional_product_ids": [],
+          "phase": "discovery",
+          "disposition": "open",
+          "phase_entered_on": "2026-10-16",
+          "assessments": {
+            "demand": null,
+            "feasibility": null
+          },
+          "latest_commitment": null
+        },
+        {
+          "case_id": "BI02",
+          "problem_id": "hi-prob-bi02",
+          "title": "Brokers cannot explain installment changes to customers",
+          "record_kind": "problem",
+          "primary_product_id": "BILLING",
+          "additional_product_ids": [
+            "BROKER"
+          ],
+          "phase": "exploration",
+          "disposition": "open",
+          "phase_entered_on": "2026-10-10",
+          "assessments": {
+            "demand": null,
+            "feasibility": null
+          },
+          "latest_commitment": null
+        }
+      ],
+      "meta": {
+        "contract_version": "demo-portfolio.v0.2",
+        "dataset_id": "harborlight-insurance-v1",
+        "dataset_version": "blueprint-examples.2",
+        "dataset_digest": "sha256:7dcb6de16a79e816833b1e43e84c593bb20a318c6a012186f1b375e1f5626897",
+        "snapshot_at": "2026-10-19T12:00:00Z",
+        "synthetic": true,
+        "read_revision": 2
+      }
+    }
+  },
+  "resource_bodies": {
+    "demo:harborlight-insurance-v1:bi01-intent": "Synthetic intent: Split invoices create reconciliation exceptions. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi02-intent": "Synthetic intent: Brokers cannot explain installment changes to customers. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi03-intent": "Synthetic intent: Customers miss payment reminders and lose coverage. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi04-intent": "Synthetic intent: Broker commissions require manual reconciliation. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi05-intent": "Synthetic intent: Payment failure reasons are difficult to act on. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi06-intent": "Synthetic intent: Failed collections lead to avoidable policy lapses. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi07-intent": "Synthetic intent: Reconciliation exceptions are difficult to assign. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:bi08-intent": "Synthetic intent: Refund approvals obscure responsibility. Owner demo:billing-owner. Outcome sought: reduce repeated manual work for billing specialists. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br01-intent": "Synthetic intent: Renewal details must be re-entered across submissions. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br02-intent": "Synthetic intent: Brokers cannot see why a quote is delayed. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br03-intent": "Synthetic intent: Submission documents are requested repeatedly. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br04-intent": "Synthetic intent: Delegated binding checks lack a clear audit trail. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br05-intent": "Synthetic intent: Carrier appetite is hard to match to a submission. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br06-intent": "Synthetic intent: Clients abandon document upload on mobile. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br07-intent": "Synthetic intent: Small brokers need multilingual renewal notices. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:br08-intent": "Synthetic intent: Brokers cannot compare quote wording consistently. Owner demo:broker-owner. Outcome sought: reduce repeated manual work for commercial brokers. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl01-intent": "Synthetic intent: Adjusters spend too much time chasing missing documents. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl02-intent": "Synthetic intent: First notice of loss repeats questions already answered. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl03-intent": "Synthetic intent: Claimants and brokers receive conflicting status updates. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl04-intent": "Synthetic intent: Adjusters cannot see repair-network availability. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl05-intent": "Synthetic intent: Recovery opportunities are missed during claim closure. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl06-intent": "Synthetic intent: Routine claim payments require repeated manual checks. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl07-intent": "Synthetic intent: Urgent claims lack a dependable fast-track path. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl08-intent": "Synthetic intent: The legacy document portal duplicates the claims workspace. Owner demo:claims-owner. Outcome sought: reduce repeated manual work for claims adjusters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw01-intent": "Synthetic intent: Submission queues hide the oldest actionable work. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw02-intent": "Synthetic intent: Underwriters cannot explain submission delays. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw03-intent": "Synthetic intent: Exposure data is copied manually between tools. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw04-intent": "Synthetic intent: Referral reasons vary between underwriting teams. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw05-intent": "Synthetic intent: Policy endorsements require repeated checks. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw06-intent": "Synthetic intent: Portfolio accumulations are discovered too late. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw07-intent": "Synthetic intent: Manual triage misroutes specialist submissions. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:uw08-intent": "Synthetic intent: Brokers wait too long for an instant bind indication. Owner demo:underwriting-owner. Outcome sought: reduce repeated manual work for underwriters. Why: more dependable service. Evidence needed: observed workflow and measured baseline. Decision informed: whether to investigate this problem further. This is an intended outcome, not a measured result.\n",
+    "demo:harborlight-insurance-v1:cl01-support-1": "Fictional support record from hi-acct-01: adjusters repeatedly ask for missing documents because requested items and received files are not visible in one place.\n",
+    "demo:harborlight-insurance-v1:cl01-support-2": "Fictional support record from hi-acct-02: adjusters repeatedly ask for missing documents because requested items and received files are not visible in one place.\n",
+    "demo:harborlight-insurance-v1:cl01-exploration": "Synthetic exploration decision hi-decision-cl01-explore, 2026-10-07: demo:claims-owner allocates 40 research hours through 2026-11-06. Six interviews planned, two sessions completed by the snapshot. No measured findings or build commitment.\n",
+    "demo:harborlight-insurance-v1:br03-demand-criterion": "Synthetic criterion declared 2026-09-22: task_success at least 70 percent, minimum 10 observations. The sample is a fictional concept test, not an industry estimate.\n",
+    "demo:harborlight-insurance-v1:br03-feasibility-criterion": "Synthetic BR03 feasibility question: can the needed carrier integration supply the required document or workflow data? A spike is planned; no feasibility result is recorded.\n",
+    "demo:harborlight-insurance-v1:uw03-demand-criterion": "Synthetic criterion declared 2026-09-23: task_success at least 70 percent, minimum 10 observations. The sample is a fictional concept test, not an industry estimate.\n",
+    "demo:harborlight-insurance-v1:uw03-feasibility-criterion": "Synthetic UW03 feasibility question: can the needed carrier integration supply the required document or workflow data? A spike is planned; no feasibility result is recorded.\n",
+    "demo:harborlight-insurance-v1:cl03-demand-criterion": "Synthetic criterion declared 2026-09-25: task_success at least 70 percent, minimum 10 observations. The sample is a fictional concept test, not an industry estimate.\n",
+    "demo:harborlight-insurance-v1:cl03-feasibility-criterion": "Synthetic CL03 feasibility question: can the needed carrier integration supply the required document or workflow data? A spike is planned; no feasibility result is recorded.\n",
+    "demo:harborlight-insurance-v1:uw08-demand-criterion": "Synthetic criterion declared 2026-09-27: task_success at least 70 percent, minimum 10 observations. The sample is a fictional concept test, not an industry estimate.\n",
+    "demo:harborlight-insurance-v1:uw08-feasibility-criterion": "Synthetic criterion declared 2026-09-29: an instant-bind indication must be available within 60 seconds.\n",
+    "demo:harborlight-insurance-v1:uw08-feasibility-spike": "Synthetic spike hi-uw08-feasibility completed 2026-10-09: this fictional carrier supplies only a daily export. That cannot support the proposed indication within 60 seconds. Demand passed; the integration approach failed feasibility.\n",
+    "demo:harborlight-insurance-v1:uw08-rejection": "Synthetic disposition decision, 2026-10-10: reject this instant-bind approach because daily carrier exports cannot meet the 60-second indication target. The concept test passed with 10 of 12 participants; customers did not reject the concept.\n",
+    "demo:harborlight-insurance-v1:bi03-sample-criterion": "Synthetic criterion declared 2026-09-18: at least 70 percent reminder response and at least 20 observations. Only 8 were collected; the result remains inconclusive despite 75 percent observed response.\n",
+    "demo:harborlight-insurance-v1:bi03-next-step": "Collect additional observations before making an investment decision. This is a proposed research action, not an approved commitment.\n",
+    "demo:harborlight-insurance-v1:bi04-baseline-v1": "Synthetic baseline hi-bi04-commit-v1: one fictional behavior, bi04.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:bi05-baseline-v1": "Synthetic baseline hi-bi05-commit-v1: one fictional behavior, bi05.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:bi06-baseline-v1": "Synthetic baseline hi-bi06-commit-v1: one fictional behavior, bi06.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:bi07-baseline-v1": "Synthetic baseline hi-bi07-commit-v1: one fictional behavior, bi07.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:bi08-baseline-v1": "Synthetic baseline hi-bi08-commit-v1: one fictional behavior, bi08.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:bi08-confirmation-failure": "Synthetic approval was recorded on 2026-10-09, but transition confirmation failed. The commitment is incomplete and never authorized work. No active promoted delivery link exists.\n",
+    "demo:harborlight-insurance-v1:br04-baseline-v1": "Synthetic baseline hi-br04-commit-v1: one fictional behavior, br04.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:br04-baseline-v2": "Synthetic baseline hi-br04-commit-v2: one fictional behavior, br04.rule.01, for the proposed workflow. Revision 2; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:br05-baseline-v1": "Synthetic baseline hi-br05-commit-v1: one fictional behavior, br05.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:br06-baseline-v1": "Synthetic baseline hi-br06-commit-v1: one fictional behavior, br06.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:cl04-baseline-v1": "Synthetic baseline hi-cl04-commit-v1: one fictional behavior, cl04.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:cl05-baseline-v1": "Synthetic baseline hi-cl05-commit-v1: one fictional behavior, cl05.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:cl06-baseline-v1": "Synthetic baseline hi-cl06-commit-v1: one fictional behavior, cl06.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:cl07-baseline-v1": "Synthetic baseline hi-cl07-commit-v1: one fictional behavior, cl07.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:cl07-counterevidence": "Synthetic counterevidence, 2026-09-29: the fast-track routing test omitted a claim category. The tested rule fails for that category. The commitment was invalidated on 2026-10-01; work is deferred pending new validation.\n",
+    "demo:harborlight-insurance-v1:cl08-baseline-v1": "Synthetic baseline hi-cl08-commit-v1: one fictional behavior, cl08.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:uw05-baseline-v1": "Synthetic baseline hi-uw05-commit-v1: one fictional behavior, uw05.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:uw06-baseline-v1": "Synthetic baseline hi-uw06-commit-v1: one fictional behavior, uw06.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:uw07-baseline-v1": "Synthetic baseline hi-uw07-commit-v1: one fictional behavior, uw07.rule.01, for the proposed workflow. Revision 1; not approval of real work.\n",
+    "demo:harborlight-insurance-v1:cl06-outcome-target": "Synthetic target declared 2026-07-20: mean_handling_time at most 12 minutes, minimum 60 observations per window. Compare the supplied windows; observed change does not prove causal attribution.\n",
+    "demo:harborlight-insurance-v1:bi06-outcome-target": "Synthetic target declared 2026-07-20: failed_collections at most 5 percent, minimum 400 observations per window. Compare the supplied windows; observed change does not prove causal attribution.\n"
+  },
+  "accounts": [
+    {
+      "account_id": "hi-acct-01",
+      "name": "Alder Coast Mutual"
+    },
+    {
+      "account_id": "hi-acct-02",
+      "name": "Cedar Vale Assurance"
+    },
+    {
+      "account_id": "hi-acct-03",
+      "name": "Juniper Commercial"
+    },
+    {
+      "account_id": "hi-acct-04",
+      "name": "Northfield Brokers"
+    },
+    {
+      "account_id": "hi-acct-05",
+      "name": "Stonebridge Risk Partners"
+    },
+    {
+      "account_id": "hi-acct-06",
+      "name": "Willow Regional Insurance"
+    }
+  ]
+}
