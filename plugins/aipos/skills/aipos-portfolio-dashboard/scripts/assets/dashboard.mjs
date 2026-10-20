@@ -2,6 +2,7 @@
 export const PHASES = ['discovery','exploration','validation','committed','delivery','live','learning','retired'];
 export const DISPOSITIONS = ['open','deferred','rejected','stopped'];
 export const CONTRACT = 'demo-portfolio.v0.2';
+export const OP_SYMBOL = Object.freeze({lte:'≤',gte:'≥',eq:'='});
 export const QUESTIONS = [
   ['Q01','Show the portfolio by product and lifecycle phase.'],
   ['Q02','Which claims opportunities are being explored?'],
@@ -29,6 +30,8 @@ export function validateBundle(bundle) {
   }
   const {summary, list, details} = bundle.responses || {};
   assert(summary && list && details, 'A complete summary, catalog and case details are required.');
+  assert(bundle.resource_bodies !== null && typeof bundle.resource_bodies === 'object' && !Array.isArray(bundle.resource_bodies), 'Resource bodies must be an object; use {} when narratives are unavailable.');
+  assert(Array.isArray(bundle.accounts), 'Accounts must be an array; use [] when account names are unavailable.');
   assert(summary.meta?.contract_version === CONTRACT, 'Unsupported portfolio contract version.');
   assert(summary.meta.synthetic === true, 'This prototype requires a synthetic snapshot.');
   assert(Number.isInteger(summary.meta.read_revision) && summary.meta.read_revision >= 0, 'Invalid read revision.');
@@ -138,7 +141,7 @@ export function answerQuestion(bundle,id) {
     }
     case 'Q09': {
       select([details.CL06.case,details.BI06.case]);
-      result.text=result.caseIds.map(c=>{const m=outcome(details[c]);if(!m) return `${c}: comparable measurements unavailable.`;const a=m.base.measurement,b=m.after.measurement;return `${c}: ${a.value} → ${b.value} ${a.unit}; target ≤${m.criterion.threshold} ${a.unit}, ${m.met?'met':'missed'}. Reduction ${Math.abs(m.change)} ${a.unit==='percent'?'percentage points':a.unit}${m.relative===null?'':` (${Math.abs(m.relative).toFixed(1)}% relative)`}. n=${a.n} and n=${b.n}. Baseline ${m.base.window.start_on}–${m.base.window.end_on}; follow-up ${m.after.window.start_on}–${m.after.window.end_on}.`;}).join('\n')+' Observed changes do not establish causation.';
+      result.text=result.caseIds.map(c=>{const m=outcome(details[c]);if(!m) return `${c}: comparable measurements unavailable.`;const a=m.base.measurement,b=m.after.measurement;const direction=m.change<0?'Reduction':m.change>0?'Increase':'No change';return `${c}: ${a.value} → ${b.value} ${a.unit}; target ${OP_SYMBOL[m.criterion.operator]??'?'}${m.criterion.threshold} ${a.unit}, ${m.met?'met':'missed'}. ${direction}: ${Math.abs(m.change)} ${a.unit==='percent'?'percentage points':a.unit}${m.relative===null?'':` (${Math.abs(m.relative).toFixed(1)}% relative)`}. n=${a.n} and n=${b.n}. Baseline ${m.base.window.start_on}–${m.base.window.end_on}; follow-up ${m.after.window.start_on}–${m.after.window.end_on}.`;}).join('\n')+' Observed changes do not establish causation.';
       result.refs=result.caseIds.flatMap(c=>details[c].findings.map(f=>f.provenance_reference));break;
     }
     case 'Q10': {const d=details.CL02;select([d.case]);result.text=`CL02 is a ${d.case.record_kind}. ${d.findings.length===0?'No measured evidence is recorded.':'Measured findings are available.'} Proposals are intentionally excluded from ranked opportunity reads. Missing evidence is not a zero result; no score or approval is inferred.`;result.refs=[...d.intent_refs,...d.thread_refs];break;}
@@ -213,7 +216,7 @@ function commitments(d){
   return cards;
 }
 function results(d){const m=outcome(d);if(!m)return [emptyMessage('No comparable baseline and follow-up pair is recorded for this case.')];const a=m.base.measurement,b=m.after.measurement;return [
-  el('div',{class:'record'},el('h3',{},pretty(a.metric)),el('p',{},`${a.value} → ${b.value} ${a.unit}`),badge(m.met?'passed':'failed'),el('p',{},`Target ${m.criterion.operator==='lte'?'≤':'≥'}${m.criterion.threshold} ${a.unit}: ${m.met?'met':'missed'}.`),el('p',{},`Change: ${m.change} ${a.unit==='percent'?'percentage points':a.unit}${m.relative===null?'':` (${m.relative.toFixed(1)}% relative)`}.`),el('p',{},`Baseline: ${m.base.window.start_on} — ${m.base.window.end_on}, n=${a.n}. Follow-up: ${m.after.window.start_on} — ${m.after.window.end_on}, n=${b.n}.`),reference(`${m.base.provenance_reference} · ${m.after.provenance_reference}`)),el('p',{class:'muted'},'These are synthetic observed changes. They do not establish causal attribution.'),showResource(m.criterion.criterion_ref)];}
+  el('div',{class:'record'},el('h3',{},pretty(a.metric)),el('p',{},`${a.value} → ${b.value} ${a.unit}`),badge(m.met?'passed':'failed'),el('p',{},`Target ${OP_SYMBOL[m.criterion.operator]??'?'}${m.criterion.threshold} ${a.unit}: ${m.met?'met':'missed'}.`),el('p',{},`Change: ${m.change} ${a.unit==='percent'?'percentage points':a.unit}${m.relative===null?'':` (${m.relative.toFixed(1)}% relative)`}.`),el('p',{},`Baseline: ${m.base.window.start_on} — ${m.base.window.end_on}, n=${a.n}. Follow-up: ${m.after.window.start_on} — ${m.after.window.end_on}, n=${b.n}.`),reference(`${m.base.provenance_reference} · ${m.after.provenance_reference}`)),el('p',{class:'muted'},'These are synthetic observed changes. They do not establish causal attribution.'),showResource(m.criterion.criterion_ref)];}
 function renderDetail(){
   if(!state.selected){replace('detail',el('div',{class:'detail-placeholder'},el('span',{class:'detail-icon','aria-hidden':'true'},'↗'),el('div',{},el('h2',{},'The story behind a case'),el('p',{},'Select an opportunity to explore its evidence, decisions and history.'))));return;}
   const d=state.bundle.responses.details[state.selected];const r=d.case;
@@ -247,6 +250,7 @@ async function load(bundle){
     const connected=bundle.source_mode==='connected';
     const transport=connected?bundle.source.transport.toUpperCase():null;
     $('source-mode').textContent=connected?`Graph via ${transport}`:'Example fixture';
+    $('source-label').textContent=connected?'CONNECTED CAPTURE':'FIXTURE MODE';
     $('chat-mode').textContent='Guided snapshot queries · 10 sample questions';
     $('source-summary').textContent=`${connected?transport+' capture':'Fixture'} · ${s.meta.dataset_version} · ${s.meta.snapshot_at.slice(0,10)} · read revision ${s.meta.read_revision}${connected?' · captured '+bundle.source.captured_at:''}`;
     $('source-details').textContent=JSON.stringify({source_mode:bundle.source_mode,...s.meta,...(connected?{capture:bundle.source,snapshot_digest:bundle.snapshot_digest}:{})},null,2)+'\n'+(connected?`Read through the local engine ${transport} interface. This page is a fixed capture; rerun the skill to refresh. Supplied narrative bodies are checked against graph references.`:'Read-only synthetic response fixtures. No graph or live API connection.');

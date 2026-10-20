@@ -9,6 +9,16 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.9.1
+
+Corrects the portfolio prototype before its first release: connected captures have an accurate
+source label, outcome answers preserve target operators and the direction of change, and
+malformed account/resource containers fail with a clear load error. Renderer, capture and
+asset packaging use UTF-8 explicitly across platforms. The catalog and evaluation fixtures now
+match the implemented behavior. No changes to the engine API or snapshot contract are required.
+
+The unreleased 1.9.0 work below is included in 1.9.1; existing released skills need no migration.
+
 ## Updating to 1.9.0
 
 Adds `aipos-portfolio-dashboard`, a fifteenth skill, for inspecting the synthetic Harborlight

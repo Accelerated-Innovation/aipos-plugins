@@ -140,7 +140,7 @@
       "id": 16,
       "name": "outcome-comparison",
       "prompt": "Compare CL06 and BI06 measured results.",
-      "expected_output": "CL06 18 to 11 minutes, target at most 12 met, n60 per window, decrease7 minutes about38.9 percent. BI06 8 to6.5 percent, targetatmost5 missed, n400 per window, decrease1.5 percentagepoints. Preserves baseline/followup windows and finding references; no causal claim.",
+      "expected_output": "CL06: 18 to 11 minutes; target at most 12 minutes met; n=60 per window; decrease of 7 minutes, about 38.9 percent relative to baseline. BI06: 8 to 6.5 percent; target at most 5 percent missed; n=400 per window; decrease of 1.5 percentage points. Preserves baseline/follow-up windows and finding references; no causal claim.",
       "files": [
         "files/portfolio.json"
       ]

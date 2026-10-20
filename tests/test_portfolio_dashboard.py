@@ -55,6 +55,16 @@ def test_packaged_viewer_matches_maintained_source():
     result=subprocess.run([sys.executable,str(ROOT/'viewers/portfolio/build.py'),'--check'],capture_output=True,text=True)
     assert result.returncode==0,result.stderr
 
+def test_render_and_build_do_not_depend_on_the_locale_encoding(tmp_path):
+    """Fail on implicit text encodings while exercising non-ASCII assets end to end."""
+    python=[sys.executable,'-X','utf8=0','-X','warn_default_encoding','-W','error::EncodingWarning']
+    target=tmp_path/'portfolio.html'
+    result=subprocess.run([*python,str(SKILL/'scripts/render_dashboard.py'),str(SKILL/'evals/files/portfolio.json'),'-o',str(target)],cwd=tmp_path,capture_output=True)
+    assert result.returncode==0,result.stderr.decode('utf-8')
+    assert '↗' in target.read_bytes().decode('utf-8')
+    result=subprocess.run([*python,str(ROOT/'viewers/portfolio/build.py'),'--check'],cwd=tmp_path,capture_output=True)
+    assert result.returncode==0,result.stderr.decode('utf-8')
+
 @pytest.fixture
 def collector():
     sys.path.insert(0,str(SKILL/'scripts'))
@@ -100,6 +110,29 @@ def test_connected_capture_without_narrative_bodies_is_valid(bundle,collector):
     captured=collector.capture_consistent(get,'http://127.0.0.1:18000','harborlight-insurance-v1')
     assert captured['resource_bodies']=={}
     renderer.validate(captured)
+
+@pytest.mark.parametrize('key,value',[
+    ('resource_bodies',None),('resource_bodies',[]),('resource_bodies',False),('resource_bodies','invalid'),
+    ('accounts',None),('accounts',{}),('accounts',False),('accounts','invalid'),
+])
+def test_connected_renderer_refuses_malformed_optional_data(bundle,collector,key,value):
+    """Valid checksums do not make malformed display containers renderable."""
+    get,_=fake_graph(bundle)
+    captured=collector.capture_consistent(get,'http://127.0.0.1:18000','harborlight-insurance-v1')
+    captured[key]=value
+    captured['snapshot_digest']=renderer.snapshot_digest(captured)
+    with pytest.raises(ValueError,match='Resource bodies must|Accounts must'):
+        renderer.render(captured)
+
+@pytest.mark.parametrize('key',['resource_bodies','accounts'])
+def test_connected_renderer_requires_display_containers(bundle,collector,key):
+    """Missing containers are distinct from valid empty account and narrative collections."""
+    get,_=fake_graph(bundle)
+    captured=collector.capture_consistent(get,'http://127.0.0.1:18000','harborlight-insurance-v1')
+    del captured[key]
+    captured['snapshot_digest']=renderer.snapshot_digest(captured)
+    with pytest.raises(ValueError,match='Resource bodies must|Accounts must'):
+        renderer.render(captured)
 
 def test_capture_discards_mixed_revision_and_restarts_whole_read(bundle,collector):
     get,paths=fake_graph(bundle)

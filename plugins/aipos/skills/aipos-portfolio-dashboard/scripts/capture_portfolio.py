@@ -168,7 +168,7 @@ def main():
             raise ValueError('Supply the local API bearer token in the requested environment variable.')
         if args.resources and args.output.resolve() == args.resources.resolve():
             raise ValueError('Output cannot overwrite the resource input.')
-        resources = json.loads(args.resources.read_text()) if args.resources else None
+        resources = json.loads(args.resources.read_text(encoding='utf-8')) if args.resources else None
         if resources is not None and not isinstance(resources, dict):
             raise ValueError('The resource file must be an object.')
         if args.transport == 'mcp':
@@ -179,7 +179,7 @@ def main():
         else:
             bundle = capture_consistent(reader(base, token), base, args.dataset, resources)
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(canonical(bundle))
+        args.output.write_text(canonical(bundle), encoding='utf-8')
     except ImportError:
         print('MCP capture requires scripts/requirements.txt. Install it in the capture interpreter; no REST fallback was used.', file=sys.stderr)
         return 1

@@ -24,6 +24,8 @@ def validate(bundle):
         if snapshot_digest(bundle)!=bundle.get('snapshot_digest'):raise ValueError('Captured snapshot digest mismatch.')
     responses=bundle.get('responses',{})
     if not all(key in responses for key in ['summary','list','details']):raise ValueError('A complete summary, catalog and details are required.')
+    if not isinstance(bundle.get('resource_bodies'),dict):raise ValueError('Resource bodies must be an object; use {} when narratives are unavailable.')
+    if not isinstance(bundle.get('accounts'),list):raise ValueError('Accounts must be an array; use [] when account names are unavailable.')
     summary=responses['summary'];listing=responses['list'];details=responses['details'];meta=summary['meta']
     if meta['contract_version']!=CONTRACT or meta['synthetic'] is not True:raise ValueError('Unsupported contract or non-synthetic snapshot.')
     if any(r['meta']!=meta for r in [listing,*details.values()]):raise ValueError('Mixed snapshot revisions.')
@@ -47,8 +49,8 @@ def validate(bundle):
 def render(bundle):
     validate(bundle)
     data=canonical(bundle).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026').replace('\u2028','\\u2028').replace('\u2029','\\u2029')
-    template=(ASSETS/'template.html').read_text()
-    values={'/*STYLE*/':(ASSETS/'style.css').read_text(),'/*DATA*/':data,'/*SCRIPT*/':(ASSETS/'dashboard.mjs').read_text()}
+    template=(ASSETS/'template.html').read_text(encoding='utf-8')
+    values={'/*STYLE*/':(ASSETS/'style.css').read_text(encoding='utf-8'),'/*DATA*/':data,'/*SCRIPT*/':(ASSETS/'dashboard.mjs').read_text(encoding='utf-8')}
     for marker,value in values.items():
         if template.count(marker)!=1:raise ValueError(f'Invalid template marker: {marker}')
         template=template.replace(marker,value)
@@ -58,8 +60,8 @@ def main():
     try:
         if args.fixture.stat().st_size>5000000:raise ValueError('Snapshot exceeds 5 MB.')
         if args.fixture.resolve()==args.output.resolve():raise ValueError('Output cannot overwrite the input fixture.')
-        html=render(json.loads(args.fixture.read_text()))
-        args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(html)
+        html=render(json.loads(args.fixture.read_text(encoding='utf-8')))
+        args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(html,encoding='utf-8')
     except (ValueError,KeyError,TypeError,OSError) as exc:print(f'Cannot render snapshot: {exc}',file=sys.stderr);return 1
     print(str(args.output.resolve()));return 0
 if __name__=='__main__':raise SystemExit(main())

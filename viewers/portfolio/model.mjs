@@ -2,6 +2,7 @@
 export const PHASES = ['discovery','exploration','validation','committed','delivery','live','learning','retired'];
 export const DISPOSITIONS = ['open','deferred','rejected','stopped'];
 export const CONTRACT = 'demo-portfolio.v0.2';
+export const OP_SYMBOL = Object.freeze({lte:'≤',gte:'≥',eq:'='});
 export const QUESTIONS = [
   ['Q01','Show the portfolio by product and lifecycle phase.'],
   ['Q02','Which claims opportunities are being explored?'],
@@ -29,6 +30,8 @@ export function validateBundle(bundle) {
   }
   const {summary, list, details} = bundle.responses || {};
   assert(summary && list && details, 'A complete summary, catalog and case details are required.');
+  assert(bundle.resource_bodies !== null && typeof bundle.resource_bodies === 'object' && !Array.isArray(bundle.resource_bodies), 'Resource bodies must be an object; use {} when narratives are unavailable.');
+  assert(Array.isArray(bundle.accounts), 'Accounts must be an array; use [] when account names are unavailable.');
   assert(summary.meta?.contract_version === CONTRACT, 'Unsupported portfolio contract version.');
   assert(summary.meta.synthetic === true, 'This prototype requires a synthetic snapshot.');
   assert(Number.isInteger(summary.meta.read_revision) && summary.meta.read_revision >= 0, 'Invalid read revision.');
@@ -138,7 +141,7 @@ export function answerQuestion(bundle,id) {
     }
     case 'Q09': {
       select([details.CL06.case,details.BI06.case]);
-      result.text=result.caseIds.map(c=>{const m=outcome(details[c]);if(!m) return `${c}: comparable measurements unavailable.`;const a=m.base.measurement,b=m.after.measurement;return `${c}: ${a.value} → ${b.value} ${a.unit}; target ≤${m.criterion.threshold} ${a.unit}, ${m.met?'met':'missed'}. Reduction ${Math.abs(m.change)} ${a.unit==='percent'?'percentage points':a.unit}${m.relative===null?'':` (${Math.abs(m.relative).toFixed(1)}% relative)`}. n=${a.n} and n=${b.n}. Baseline ${m.base.window.start_on}–${m.base.window.end_on}; follow-up ${m.after.window.start_on}–${m.after.window.end_on}.`;}).join('\n')+' Observed changes do not establish causation.';
+      result.text=result.caseIds.map(c=>{const m=outcome(details[c]);if(!m) return `${c}: comparable measurements unavailable.`;const a=m.base.measurement,b=m.after.measurement;const direction=m.change<0?'Reduction':m.change>0?'Increase':'No change';return `${c}: ${a.value} → ${b.value} ${a.unit}; target ${OP_SYMBOL[m.criterion.operator]??'?'}${m.criterion.threshold} ${a.unit}, ${m.met?'met':'missed'}. ${direction}: ${Math.abs(m.change)} ${a.unit==='percent'?'percentage points':a.unit}${m.relative===null?'':` (${Math.abs(m.relative).toFixed(1)}% relative)`}. n=${a.n} and n=${b.n}. Baseline ${m.base.window.start_on}–${m.base.window.end_on}; follow-up ${m.after.window.start_on}–${m.after.window.end_on}.`;}).join('\n')+' Observed changes do not establish causation.';
       result.refs=result.caseIds.flatMap(c=>details[c].findings.map(f=>f.provenance_reference));break;
     }
     case 'Q10': {const d=details.CL02;select([d.case]);result.text=`CL02 is a ${d.case.record_kind}. ${d.findings.length===0?'No measured evidence is recorded.':'Measured findings are available.'} Proposals are intentionally excluded from ranked opportunity reads. Missing evidence is not a zero result; no score or approval is inferred.`;result.refs=[...d.intent_refs,...d.thread_refs];break;}
