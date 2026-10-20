@@ -1,0 +1,51 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {canonical,validateBundle,verifyIntegrity,filterRows,caseAge,outcome,answerQuestion,matchQuestion} from './model.mjs';
+const path=new URL('../../plugins/aipos/skills/aipos-portfolio-dashboard/evals/files/portfolio.json',import.meta.url);
+const bundle=JSON.parse(readFileSync(path,'utf8'));
+const clone=()=>structuredClone(bundle);
+const answers=id=>answerQuestion(bundle,id);
+test('complete fixture has one consistent, integrity-checked snapshot',async()=>{validateBundle(bundle);await verifyIntegrity(bundle);assert.equal(bundle.responses.list.total,32);});
+test('Q01 counts unique opportunities and overlapping memberships distinctly',()=>{const s=bundle.responses.summary;assert.equal(s.total_cases,32);assert.equal(s.total_product_memberships,35);assert.deepEqual(Object.values(s.phase_counts),[4,5,9,4,4,3,2,1]);assert.match(answers('Q01').text,/35 product memberships/);});
+test('Q02 includes only open claims exploration and a partial study',()=>{assert.deepEqual(answers('Q02').caseIds,['CL01']);assert.match(answers('Q02').text,/2 of 6/);assert.equal(bundle.responses.details.CL01.findings.length,0);});
+test('Q03 finds evidence-backed demand and unresolved feasibility',()=>{assert.deepEqual(answers('Q03').caseIds,['BR03','CL03','UW03']);for(const id of answers('Q03').caseIds){const d=bundle.responses.details[id];assert.ok(d.findings.some(f=>d.case.assessments.demand.finding_refs.includes(f.provenance_reference)));}});
+test('Q04 explains feasibility rejection without inventing customer rejection',()=>{const a=answers('Q04');assert.deepEqual(a.caseIds,['UW08']);assert.match(a.text,/daily carrier exports/);assert.match(a.text,/60-second/);assert.match(a.text,/customers did not reject/);assert.ok(a.refs.includes('hi-event-uw08-rejected'));});
+test('Q05 selects latest incomplete/invalidated commitments, not superseded predecessors',()=>{assert.deepEqual(answers('Q05').caseIds,['BI08','CL07']);assert.deepEqual(bundle.responses.details.BR04.commitments.map(c=>c.status),['superseded','authorizing']);});
+test('Q06 counts shared cases once and product filters include additional membership',()=>{assert.deepEqual(answers('Q06').caseIds,['BI02','BR03','CL03']);assert.equal(filterRows(bundle.responses.list.items,{product:'BROKER'}).length,10);assert.equal(filterRows(bundle.responses.list.items,{product:'UNDERWRITING'}).length,9);});
+test('Q07 uses strict >30 against snapshot, excludes deferred',()=>{assert.deepEqual(answers('Q07').caseIds,['BI03','BI07','BR06','UW03','UW07']);assert.equal(caseAge(bundle.responses.details.BR06.case,bundle.responses.summary.meta.snapshot_at),62);assert.equal(caseAge({...bundle.responses.details.BR06.case,phase_entered_on:'2026-09-19'},bundle.responses.summary.meta.snapshot_at),30);});
+test('Q08 reads dated entry events rather than current phase',()=>{assert.deepEqual(answers('Q08').caseIds,['BI05','CL05']);const b=clone();b.responses.details.CL05.case.phase='learning';assert.deepEqual(answerQuestion(b,'Q08').caseIds,['BI05','CL05']);});
+test('Q09 preserves unit, target, sample and window semantics',()=>{const cl=outcome(bundle.responses.details.CL06),bi=outcome(bundle.responses.details.BI06);assert.equal(cl.change,-7);assert.equal(cl.met,true);assert.equal(bi.change,-1.5);assert.equal(bi.met,false);assert.equal(bi.base.measurement.n,400);assert.equal(bi.after.window.end_on,'2026-10-14');assert.match(answers('Q09').text,/percentage points/);});
+for(const [operator,value,threshold,target,direction,met] of [
+  ['lte',11,12,'≤12','Reduction: 7',true],
+  ['gte',24,20,'≥20','Increase: 6',true],
+  ['gte',11,20,'≥20','Reduction: 7',false],
+  ['eq',18,18,'=18','No change: 0',true],
+  ['eq',20,18,'=18','Increase: 2',false],
+]) test(`Q09 describes ${operator} with follow-up ${value} truthfully`,()=>{
+  const b=clone(),m=outcome(b.responses.details.CL06);
+  m.criterion.operator=operator;m.criterion.threshold=threshold;m.after.measurement.value=value;
+  const text=answerQuestion(b,'Q09').text.split('\n')[0];
+  assert.ok(text.includes(`target ${target} minutes, ${met?'met':'missed'}.`),text);
+  assert.ok(text.includes(`${direction} minutes`),text);
+  assert.match(text,/n=60 and n=60\. Baseline .*; follow-up/);
+});
+test('outcome refuses unit mismatch and insufficient sample',()=>{const d=structuredClone(bundle.responses.details.CL06);d.findings[1].measurement.unit='seconds';assert.equal(outcome(d),null);d.findings[1].measurement.unit='minutes';d.findings[1].measurement.n=10;assert.equal(outcome(d).met,false);});
+test('Q10 keeps missing evidence separate from measured zero',()=>{const d=bundle.responses.details.CL02;assert.equal(d.findings.length,0);assert.equal(d.case.latest_commitment,null);assert.equal(d.case.record_kind,'proposal');assert.ok(answers('Q10').refs.includes('hi-intent-cl02'));});
+test('combined filters, empty filters and title search are deterministic',()=>{const r=bundle.responses.list.items;assert.equal(filterRows(r,{phase:'retired',disposition:'open'}).length,0);assert.deepEqual(filterRows(r,{product:'CLAIMS',phase:'exploration',disposition:'open'}).map(x=>x.case_id),['CL01']);assert.equal(filterRows(r,{search:'cl02'})[0].case_id,'CL02');});
+test('mixed revisions, duplicate cases and partial pages are rejected',()=>{let b=clone();b.responses.details.CL02.meta.read_revision++;assert.throws(()=>validateBundle(b),/Mixed/);b=clone();b.responses.list.items.pop();assert.throws(()=>validateBundle(b),/Partial/);b=clone();b.responses.list.items[0]=b.responses.list.items[1];assert.throws(()=>validateBundle(b),/Duplicate/);});
+test('mutated resource bytes are refused by integrity validation',async()=>{const b=clone();b.resource_bodies[Object.keys(b.resource_bodies)[0]]+='changed';await assert.rejects(verifyIntegrity(b),/digest/);});
+test('guided prompt routing refuses writes and unsupported questions',()=>{assert.equal(matchQuestion('approve CL02'),'write');assert.equal(matchQuestion('why was UW08 rejected?'),'Q04');assert.equal(matchQuestion('what is the weather?'),null);assert.equal(matchQuestion('Q09'),'Q09');});
+function connected(){const b=clone();b.source_mode='connected';b.source={transport:'rest',api_base:'http://127.0.0.1:18000',captured_at:'2026-10-20T12:00:00Z'};b.accounts=[];for(const r of [b.responses.summary,b.responses.list,...Object.values(b.responses.details)])r.meta.dataset_digest='sha256:'+'a'.repeat(64);return b;}
+function seal(b){const {snapshot_digest,...raw}=b;b.snapshot_digest='sha256:'+createHash('sha256').update(canonical(raw)).digest('hex');return b;}
+for(const [key,values,message] of [
+  ['resource_bodies',[undefined,null,[],false,'invalid'],/Resource bodies must be an object/],
+  ['accounts',[undefined,null,{},false,'invalid'],/Accounts must be an array/],
+]) for(const value of values) test(`connected capture rejects ${key} = ${JSON.stringify(value)} before rendering`,()=>{
+  const b=connected();if(value===undefined)delete b[key];else b[key]=value;
+  seal(b);assert.throws(()=>validateBundle(b),message);
+});
+test('connected capture validates its own checksum and preserves separate graph digest',async()=>{const b=seal(connected());validateBundle(b);await verifyIntegrity(b);assert.equal(b.responses.summary.meta.dataset_digest,'sha256:'+'a'.repeat(64));b.source.captured_at='2026-10-21T12:00:00Z';await assert.rejects(verifyIntegrity(b),/digest/);});
+test('connected capture tolerates unavailable narrative without inventing reasons',async()=>{const b=connected();b.resource_bodies={};seal(b);validateBundle(b);await verifyIntegrity(b);assert.match(answerQuestion(b,'Q04').text,/unavailable/);assert.match(answerQuestion(b,'Q05').text,/Narrative unavailable/);});
+test('connected resource integrity remains mandatory even with a recomputed capture checksum',async()=>{const b=connected();b.resource_bodies[Object.keys(b.resource_bodies)[0]]+='changed';seal(b);validateBundle(b);await assert.rejects(verifyIntegrity(b),/Resource digest/);});

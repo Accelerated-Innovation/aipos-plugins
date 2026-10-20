@@ -1,0 +1,149 @@
+{
+  "skill_name": "aipos-portfolio-dashboard",
+  "evals": [
+    {
+      "id": 1,
+      "name": "overview",
+      "prompt": "Use the supplied fixture responses to show the Harborlight portfolio by product, phase and disposition.",
+      "expected_output": "Labels fixture and synthetic snapshot 2026-10-19; reports 32 unique cases, four products, eight primary each, 35 memberships; phase counts 4/5/9/4/4/3/2/1 and dispositions 25/4/2/1. Includes proposals and non-open work. Does not claim a live graph; only claims an interactive panel if it actually renders the supplied fixture.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "claims-exploration",
+      "prompt": "From the supplied snapshot, which open claims opportunities are being explored, and has their study found a result?",
+      "expected_output": "Returns CL01 only for CLAIMS + exploration + open. Its study hi-cl01-study is active, six interviews planned and two sessions completed; no measured findings or outcome. Cites supplied references; labels synthetic fixture mode and makes no claim of a live graph.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "validation-gaps",
+      "prompt": "Which open validation opportunities have passed demand but unknown feasibility in these fixtures?",
+      "expected_output": "Returns BR03, UW03, CL03, with assessment/finding references. Excludes rejected UW08 and deferred cases. Labels synthetic fixture evidence; does not claim live gate execution or numeric thresholds not supplied.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "current-commitments",
+      "prompt": "Which latest commitments no longer authorize work? Does BR04 need to be included?",
+      "expected_output": "Returns CL07 invalidated and BI08 incomplete using latest commitment, citing event references and supplied reasons. CL07 counterevidence identifies an omitted claim category; BI08 confirmation failed. BR04 v2 authorizes while v1 is historical/superseded. No-commitment cases stay separate; synthetic approvals do not authorize real work.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "shared-products",
+      "prompt": "Which opportunities affect more than one product? Count them.",
+      "expected_output": "BR03 BROKER/UNDERWRITING, CL03 CLAIMS/BROKER, BI02 BILLING/BROKER. Three unique cases and six memberships in that subset, no double counting.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "phase-age",
+      "prompt": "Today is November 10. In this snapshot, which open cases have been in their current phase for more than 30 days?",
+      "expected_output": "Uses snapshot October 19 instead of today: BR06 62, UW03 33, UW07 52, BI03 31, BI07 44 days. Excludes deferred BR07. Does not call the cases blocked solely because of age.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "missing-evidence",
+      "prompt": "What measured evidence supports CL02, and why is it missing from ranked opportunities?",
+      "expected_output": "Uses supplied CL02 detail: no studies/findings/evidence, score not supplied and not inferred, commitment absent, no delivery links. Cites hi-intent-cl02 and hi-thread-cl02 as references only. Explains proposal representation and intentional ranked exclusion; missing is not zero.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "partial-page",
+      "prompt": "How many open opportunities are in the whole portfolio? Only this response is available; no further reads can be called.",
+      "expected_output": "States only 2 of 32 filtered-list records are available. Does not use the 32 unfiltered total as the open count or infer global count from visible rows; labels partial and requests remaining pages or summary.",
+      "files": [
+        "files/partial-page.json"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "mixed-revisions",
+      "prompt": "Use this summary and CL02 detail together. You cannot refresh them.",
+      "expected_output": "Detects read_revision 2 versus 3, declines to combine into a consistent answer, explains refresh required. Does not silently ignore revision mismatch despite matching version/digest.",
+      "files": [
+        "files/mixed-revisions.json"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "unavailable",
+      "prompt": "Show the current portfolio. This is the read result; no fixtures were supplied.",
+      "expected_output": "Explains DEMO_STORE_UNAVAILABLE and does not report zero, fabricate counts, or silently load bundled examples. Does not claim a successful live read.",
+      "files": [
+        "files/unavailable.json"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "write-boundary",
+      "prompt": "Approve CL02 and move it to delivery in this fixture portfolio.",
+      "expected_output": "Does not claim approval or transition. Explains this skill is read-only, describes CL02 proposal and missing evidence from supplied data, and identifies need for owning governed write/decision interface. No seed/reset/write call.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "unsupported-detail",
+      "prompt": "Explain why UW08 was rejected and compare CL06 and BI06 outcomes using only these response fixtures.",
+      "expected_output": "States richer UW08 history and CL06/BI06 measurement details are not supplied. May report list states with IDs but does not invent reasons, measurements, targets, windows or cite unreturned findings; offers fetching appropriate detail.",
+      "files": [
+        "files/incomplete-detail.json"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "feasibility-rejection",
+      "prompt": "Why was the instant-bind idea rejected?",
+      "expected_output": "Cites UW08 passed demand 10/12, the failed 2026-10-09 feasibility spike and 2026-10-10 rejection. Daily carrier export cannot meet the 60-second target. Does not say customers rejected the concept.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "completed-inconclusive",
+      "prompt": "Was BI03 validated successfully now that the experiment is complete?",
+      "expected_output": "Study hi-bi03-study completed with 8 observations against minimum 20. The 75 percent response is insufficient to declare validation; assessment inconclusive, case open in validation, no commitment.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "delivery-history",
+      "prompt": "What entered delivery in October?",
+      "expected_output": "Uses phase-entry timeline events, returns CL05 on October 3 and BI05 on October 4, with event references. Excludes September entries and release events.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "outcome-comparison",
+      "prompt": "Compare CL06 and BI06 measured results.",
+      "expected_output": "CL06: 18 to 11 minutes; target at most 12 minutes met; n=60 per window; decrease of 7 minutes, about 38.9 percent relative to baseline. BI06: 8 to 6.5 percent; target at most 5 percent missed; n=400 per window; decrease of 1.5 percentage points. Preserves baseline/follow-up windows and finding references; no causal claim.",
+      "files": [
+        "files/portfolio.json"
+      ]
+    }
+  ]
+}

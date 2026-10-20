@@ -78,6 +78,10 @@ jobs:
           cache: npm
           cache-dependency-path: viewers/journey/package-lock.json
 
+      - name: Check portfolio query behavior
+        working-directory: .
+        run: node --test viewers/portfolio/model.test.mjs
+
       # Pinned by package-lock.json, so the rebuild below is reproducible.
       - name: Install viewer dependencies
         run: npm ci

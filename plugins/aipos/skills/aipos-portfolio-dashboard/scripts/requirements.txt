@@ -1,0 +1,3 @@
+# Optional client dependencies for --transport mcp. The server remains in discovery-engine.
+mcp==2.2.0
+httpx2==2.12.0

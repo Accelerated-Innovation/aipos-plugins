@@ -1142,6 +1142,76 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "portfolio-overview",
+      "prompt": "Show the insurance software portfolio by product and lifecycle phase.",
+      "context": "Supplied demo response fixtures.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-portfolio-dashboard",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "portfolio-detail",
+      "prompt": "Inspect CL02 and tell me what evidence and commitment records are available.",
+      "context": "The user is browsing a supplied portfolio snapshot.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-portfolio-dashboard",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "portfolio-outcomes",
+      "prompt": "Compare the recorded outcomes for these two portfolio cases.",
+      "context": "Connected portfolio read capabilities are available.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-portfolio-dashboard",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "portfolio-capacity-contrast",
+      "prompt": "Allocate next quarter’s research capacity across our opportunities.",
+      "context": "Live Product Definition Graph reads are available.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-exploration-planning",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "portfolio-map-contrast",
+      "prompt": "Render our repository feature packages and journeys as an interactive map.",
+      "context": "The inputs are acceptance.feature and workflow.json files.",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-map-render",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }

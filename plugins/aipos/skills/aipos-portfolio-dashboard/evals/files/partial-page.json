@@ -1,0 +1,76 @@
+{
+  "source_mode": "fixture",
+  "coverage": {
+    "summary": false,
+    "catalog_complete": false,
+    "detail_case_ids": [],
+    "notes": [
+      "Partial synthetic input: only the supplied two-row list page is available. No summary, further pages, or case details are supplied. The list total is reported metadata, not a fully captured catalog."
+    ]
+  },
+  "source": {
+    "repository": "Accelerated-Innovation/discovery-engine",
+    "files": {
+      "features/25_engine_insurance_portfolio_demo/portfolio.md": "sha256:02831155966470c5ba960592cf335048b7ad0749b101a4d78875b7902560d251",
+      "features/25_engine_insurance_portfolio_demo/read-contract.md": "sha256:42d77c077b8abf98978f7ddaa2984458ea7647d17ddeea1f6d7606407dde224b",
+      "features/25_engine_insurance_portfolio_demo/read-response.schema.json": "sha256:cde6d101af5908e3e09c6abf261155957133f1e553814953004d46a61acb823c"
+    }
+  },
+  "responses": {
+    "list": {
+      "filters": {
+        "product_id": null,
+        "phase": null,
+        "disposition": null
+      },
+      "offset": 0,
+      "limit": 2,
+      "total": 32,
+      "items": [
+        {
+          "case_id": "BI01",
+          "problem_id": "hi-prob-bi01",
+          "title": "Split invoices create reconciliation exceptions",
+          "record_kind": "proposal",
+          "primary_product_id": "BILLING",
+          "additional_product_ids": [],
+          "phase": "discovery",
+          "disposition": "open",
+          "phase_entered_on": "2026-10-16",
+          "assessments": {
+            "demand": null,
+            "feasibility": null
+          },
+          "latest_commitment": null
+        },
+        {
+          "case_id": "BI02",
+          "problem_id": "hi-prob-bi02",
+          "title": "Brokers cannot explain installment changes to customers",
+          "record_kind": "problem",
+          "primary_product_id": "BILLING",
+          "additional_product_ids": [
+            "BROKER"
+          ],
+          "phase": "exploration",
+          "disposition": "open",
+          "phase_entered_on": "2026-10-10",
+          "assessments": {
+            "demand": null,
+            "feasibility": null
+          },
+          "latest_commitment": null
+        }
+      ],
+      "meta": {
+        "contract_version": "demo-portfolio.v0.2",
+        "dataset_id": "harborlight-insurance-v1",
+        "dataset_version": "blueprint-examples.2",
+        "dataset_digest": "sha256:7dcb6de16a79e816833b1e43e84c593bb20a318c6a012186f1b375e1f5626897",
+        "snapshot_at": "2026-10-19T12:00:00Z",
+        "synthetic": true,
+        "read_revision": 2
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Harborlight · Portfolio explorer</title>
+<style>/*STYLE*/</style></head>
+<body>
+<a class="skip" href="#workspace">Skip to portfolio</a>
+<div class="shell">
+  <aside class="rail" aria-label="Workspace navigation">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">h</span><span>harborlight<span class="brand-sub">PRODUCT STUDIO</span></span></div>
+    <div class="rail-label">WORKSPACE</div>
+    <button class="nav-item current" id="nav-portfolio"><span aria-hidden="true">▦</span> Portfolio</button>
+    <button class="nav-item" id="nav-questions"><span aria-hidden="true">◌</span> Ask the portfolio</button>
+    <div class="rail-note"><span class="signal"></span> Prototype workspace<p>Explore the decisions<br>behind the work.</p></div>
+    <div class="rail-bottom"><div class="avatar">HT</div><div>Harborlight Technologies<small>Insurance software</small></div></div>
+  </aside>
+  <main id="workspace">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong>Portfolio</strong></div><div class="snapshot-pill"><span class="signal"></span> <span id="source-mode">Snapshot</span> · Synthetic <span id="header-date"></span></div></header>
+    <div class="page-heading"><div><div class="eyebrow">PRODUCT INTELLIGENCE</div><h1>A portfolio in motion.</h1><p>Follow the opportunities, evidence and decisions across your products.</p></div><button id="load-button" class="secondary">Open snapshot <span aria-hidden="true">↗</span></button><input type="file" id="file-input" accept=".json,application/json" hidden></div>
+    <div id="status" class="status" role="status">Checking the supplied snapshot…</div>
+    <div id="error" class="error" role="alert" hidden></div>
+    <div id="dashboard" hidden>
+      <section id="metrics" class="metrics" aria-label="Portfolio totals"></section>
+      <section class="phase-section" aria-label="Lifecycle phases"><div class="section-top"><h2>Across the lifecycle</h2><span id="phase-caption"></span></div><div id="phases" class="phase-track"></div></section>
+      <div class="work-grid">
+        <section class="portfolio-area" aria-label="Opportunity workspace">
+          <div class="panel catalog">
+            <div class="section-top catalog-top"><div><h2>Opportunity workspace</h2><p id="result-count" aria-live="polite"></p></div><button id="clear-filters" class="text-button">Clear filters</button></div>
+            <div class="filters"><label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Search opportunities</span><input id="search" placeholder="Search title or case ID" type="search"></label><label><span class="sr-only">Product</span><select id="product"><option value="">All products</option></select></label><label><span class="sr-only">Phase</span><select id="phase"><option value="">All phases</option></select></label><label><span class="sr-only">Disposition</span><select id="disposition"><option value="">All dispositions</option></select></label></div>
+            <div class="table-wrap"><table><thead><tr><th>Opportunity</th><th>Lifecycle</th><th>Commitment</th></tr></thead><tbody id="rows"></tbody></table><div id="empty" class="empty" hidden><span aria-hidden="true">⌕</span><h3>No matching opportunities</h3><p>Try another product, phase or disposition.</p><button id="empty-clear" class="secondary">Clear filters</button></div></div>
+            <div class="table-foot"><span>Shared opportunities appear once.</span><span id="selection-note">Select a case to inspect its records ↗</span></div>
+          </div>
+          <section id="detail" class="panel detail" aria-label="Selected opportunity" tabindex="-1"><div class="detail-placeholder"><span class="detail-icon" aria-hidden="true">↗</span><div><h2>The story behind a case</h2><p>Select an opportunity to explore its evidence, decisions and history.</p></div></div></section>
+        </section>
+        <aside class="panel chat" aria-labelledby="chat-title"><div class="chat-heading"><div class="chat-icon" aria-hidden="true">✳</div><div><h2 id="chat-title">Ask the portfolio</h2><p id="chat-mode">Guided snapshot queries · 10 sample questions</p></div></div><div class="chat-scope">Whole portfolio · this snapshot only</div>
+          <div id="conversation" class="conversation" role="log" aria-live="polite" aria-relevant="additions"><div class="assistant welcome"><div class="message-label">PORTFOLIO GUIDE</div><p>Start with a question. Each answer uses the records in this snapshot.</p><p class="muted">This local prototype uses prepared query logic. A live AI connection comes later.</p></div></div>
+          <details class="questions" open><summary>Explore the ten questions <span>↗</span></summary><div id="question-list"></div></details>
+          <form id="chat-form"><label for="chat-input" class="sr-only">Ask a supported portfolio question</label><div class="composer"><input id="chat-input" autocomplete="off" placeholder="Try “Why was UW08 rejected?”"><button type="submit" aria-label="Send question">↑</button></div><div class="composer-note">Read-only. Recorded approvals are fictional.</div></form>
+        </aside>
+      </div>
+      <footer class="source-footer"><div><span class="signal"></span> <span id="source-label"></span> <span id="source-summary"></span></div><details><summary>Snapshot provenance</summary><pre id="source-details"></pre></details></footer>
+    </div>
+  </main>
+</div>
+<script id="portfolio-data" type="application/json">/*DATA*/</script>
+<script type="module">/*SCRIPT*/</script>
+</body></html>
