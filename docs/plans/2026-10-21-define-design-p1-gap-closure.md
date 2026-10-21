@@ -98,11 +98,12 @@ open until the write half lands.
   this same slice.
 - [x] Review slice and Cluster Review board shipped (offline HTML snapshot, browser-checked;
   corrections prepared as pending hand-offs; trace-checked against merge/split canaries).
-- [ ] Full issue closure still requires the engine's correction path, per the issue's recorded
+- [x] Full issue closure: **acceptance amended 2026-10-21** to the review slice (the product
+  owner's decision, recorded in #61). Previously: closure required the engine's correction path, per the issue's recorded
   blocker. Verified 2026-10-21: the engine **retired** merge/split corrections without a
   replacement (ADR-AIG-031), and the direct endpoint advertises no correction tool, so this
-  blocker has no engine owner. Closing #61 needs either a new
-  engine correction path or a product decision to amend the issue's acceptance.
+  blocker has no engine owner. The product decision was to amend
+  #61's acceptance; a governed correction path is now an optional future engine dependency in #86.
 - [ ] The skill never applies a correction itself.
 
 ## Step 0: the live server — verified facts and pending verification
@@ -257,7 +258,7 @@ No current evals check when a view should appear or that the text fallback works
 - [~] 2. #59 agent contract (PR open) (tests first → references schema → skill → PR)
 - [~] 3. #57 prep — source-inventory slice in its PR; freshness half still blocked (tests + degraded-behavior cases + source-inventory slice; ship decision on
   verification)
-- [~] 4. #61 prep — review slice + board in its PR; closure blocked on a correction path that no longer exists (tests; review slice and board can precede the correction path)
+- [x] 4. #61 — review slice + board in PR #94; acceptance amended, closes on merge (tests; review slice and board can precede the correction path)
 - [~] 5. Shared panel contract reference (`references/panel-contract.md`, with #61's board; native MCP Apps not available — engine registers no UI resources) + view-appearance, text-fallback and host-rendering
   checks added with each view-bearing skill
 - [ ] 6. Write half of #60 after engine feature 19; #57's freshness half after the status read;
