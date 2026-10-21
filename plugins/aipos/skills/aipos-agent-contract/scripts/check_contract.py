@@ -45,7 +45,7 @@ def _cells(line: str) -> list[str]:
 
 
 def _is_rule(cells: list[str]) -> bool:
-    return all(re.fullmatch(r":?-{3,}:?", c) for c in cells if c)
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", c) for c in cells)
 
 
 def _split_sections(text: str) -> tuple[list[str], list[tuple[int, str, list[str]]]]:
@@ -124,7 +124,11 @@ def check_text(text: str) -> dict:
         if number not in seen:
             errors.append({"section": number, "message": f"section {number}. {SECTIONS[number]} is missing"})
     highest = 0
+    counted: set[int] = set()
     for number, title, _ in sections:
+        if number in counted:
+            errors.append({"section": number, "message": f"section {number} appears more than once"})
+        counted.add(number)
         if number not in SECTIONS:
             errors.append({"section": number, "message": f"unknown section '{number}. {title}'"})
             continue
@@ -166,6 +170,8 @@ def check_text(text: str) -> dict:
             row = row + [""] * (len(head) - len(row))
             label = row[0] or "(unnamed row)"
             values = {name: row[i] for name, i in index.items()}
+            if "Notes" in head:
+                values["Notes"] = row[head.index("Notes")]
             # A row carrying an owned TBD and nothing else in its required cells stands for an
             # entry known to exist but not yet describable: it needs no other cells.
             tbd_row = any(TBD_FULL.search(c) for c in row if _is_tbd(c)) and \
@@ -221,6 +227,9 @@ def _check_values(number: int, label: str, values: dict, errors: list) -> None:
         confirm = values["Human confirms"]
         if confirm and not _is_tbd(confirm) and confirm.lower() != "no" and not CONFIRM_YES.match(confirm):
             bad("'Human confirms' must be 'yes — <role>', 'no' or an owned TBD")
+        effects = {e.strip().lower() for e in effect.split(",")} if effect and not _is_tbd(effect) else set()
+        if confirm.lower() == "no" and effects & {"write", "external send"} and not values.get("Notes", "").strip():
+            bad("'Human confirms: no' on a write or external send needs Notes saying who decided that")
     elif number == 4:
         kind = values["Kind"]
         if kind and not _is_tbd(kind) and kind.lower() not in KINDS:

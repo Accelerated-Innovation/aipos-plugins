@@ -55,7 +55,9 @@ what nobody decided visible.
    in a short **Questions for review** list after the contract, not into it as a TBD, so a
    contract whose required fields are all settled can be complete.
 6. **Check it.** When the contract is written to a file, run
-   `python3 scripts/check_contract.py <file>` (standard library only) and report its status:
+   `python3 scripts/check_contract.py <file>` — the script is in this skill's own folder, so
+   resolve `scripts/` against the skill's base directory, not the user's working directory
+   (standard library only) and report its status:
    `complete`, `incomplete` (owned TBDs remain — list them as the to-do list), or `invalid`
    (structural errors — fix them first). When the contract stays in chat, apply the same rules
    by hand and say that the checker was not run. The checker validates structure; whether the

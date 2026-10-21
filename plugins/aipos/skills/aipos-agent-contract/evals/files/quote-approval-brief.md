@@ -6,7 +6,7 @@
   the discount policy and the standard contract clause library, both loaded into its context from
   the pricing policy repository at the start of each run (no tool fetches them; neither contains
   personal data).
-- **Tools:** `read_quote` (read only). `set_quote_status` changes the quote to approved or
+- **Tools:** `read_quote` (read only; no confirmation — the agent reads quotes without a person approving each read). `set_quote_status` changes the quote to approved or
   returned in CPQ — the deal desk manager confirms every status change. `send_approval_email`
   emails the account executive — the deal desk manager reviews each email before it goes.
 - **What it produces:** an approval recommendation for the deal desk manager, shown in the

@@ -184,3 +184,30 @@ def test_bare_tbds_inside_an_owned_tbd_row_are_covered_by_its_owner(checker):
     bare = (FIXTURES / "complete.agent-contract.md").read_text().replace(
         "| read_quote | Load the quote under review | read | no | |", "| read_quote | Load the quote under review | TBD | no | |")
     assert checker.check_text(bare)["status"] == "invalid"
+
+
+def test_a_row_of_empty_cells_is_not_a_table_separator(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| Input | Source | Contains personal data | Notes |\n|---|---|---|---|",
+        "| Input | Source | Contains personal data | Notes |\n| | | | |")
+    report = checker.check_text(text)
+    assert any(e["section"] == 1 for e in report["errors"]), report["errors"]
+
+
+def test_a_repeated_section_number_is_invalid(checker):
+    base = (FIXTURES / "complete.agent-contract.md").read_text()
+    outputs = base[base.index("## 3. Outputs"):base.index("## 4. Guardrails")]
+    report = checker.check_text(base.replace("## 4. Guardrails", outputs + "## 4. Guardrails"))
+    assert any(e["section"] == 3 and "more than once" in e["message"] for e in report["errors"])
+
+
+def test_an_unconfirmed_write_must_say_who_decided(checker):
+    base = (FIXTURES / "complete.agent-contract.md").read_text()
+    silent = base.replace("| set_quote_status | Mark the quote approved or returned | write | yes — Deal desk manager | |",
+                          "| set_quote_status | Mark the quote approved or returned | write | no | |")
+    report = checker.check_text(silent)
+    assert any(e["section"] == 2 and "who decided" in e["message"] for e in report["errors"])
+    owned = silent.replace("| set_quote_status | Mark the quote approved or returned | write | no | |",
+                           "| set_quote_status | Mark the quote approved or returned | write | no | Decided by the sales operations lead |")
+    owned = owned.replace("| Status change review | set_quote_status | Deal desk manager | The approve or return decision |\n", "")
+    assert checker.check_text(owned)["status"] == "complete"
