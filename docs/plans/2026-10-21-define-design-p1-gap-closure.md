@@ -76,13 +76,14 @@ open until the write half lands.
 
 - [x] Routing and eval cases first (including the `no-status-tool-means-unknown` case), shown
   failing. (PR for #57)
-- [ ] Source inventory (which listed sources are connected, which aren't, with drafted connector
-  requests) is the useful-now slice and does not require building any connector. Authoritative
+- [x] Source inventory (which listed sources are connected, which aren't, with drafted connector
+  requests) is the useful-now slice — shipped in PR #93 — and does not require building any connector. Authoritative
   freshness monitoring is separate and depends on the engine's ingestion-status read.
-- [x] Source-inventory slice shipped: five fields per source, each with its own basis and
+- Source-inventory slice detail: five fields per source, each with its own basis and
   `unknown` fallback; drafted connector requests; never starts ingestion (trace-checked).
-- [x] Verify whether the live engine already exposes an ingestion-status read (Step 0): it does
-  not (engine source `1a8919d`; not advertised by the hosted-demo connector). If it truly doesn't, keep `blocked: engine` and use the existing dependency entry in #86 — do not open
+- [ ] Verify whether the live engine already exposes an ingestion-status read (Step 0): engine
+  source `1a8919d` has none, and the hosted-demo read connector does not advertise one; a check
+  against the direct endpoint is still pending. If it truly doesn't, keep `blocked: engine` and use the existing dependency entry in #86 — do not open
   a duplicate engine issue.
 - [ ] "Freshness unknown" is the documented fallback, not a claim that freshness monitoring is
   complete.
