@@ -69,7 +69,7 @@
           "\\bcurl\\b",
           "\\bwget\\b",
           "\\bnc\\b",
-          "urllib\\.request|requests\\.(get|post|put|patch|delete)\\(|http\\.client",
+          "urllib\\.request|requests\\.(request|get|post|put|patch|delete)\\(|http\\.client",
           "/v1/ingestion",
           "start_ingestion"
         ]
@@ -108,7 +108,7 @@
           "\\bcurl\\b",
           "\\bwget\\b",
           "\\bnc\\b",
-          "urllib\\.request|requests\\.(get|post|put|patch|delete)\\(|http\\.client"
+          "urllib\\.request|requests\\.(request|get|post|put|patch|delete)\\(|http\\.client"
         ]
       }
     }

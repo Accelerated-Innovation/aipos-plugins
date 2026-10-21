@@ -252,3 +252,12 @@ def test_a_url_inside_a_local_file_write_is_not_a_network_call(traces):
     assert traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["passed"]
     events.insert(-1, use("Bash", command="curl -X POST https://engine.invalid/merge"))
     assert not traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["passed"]
+
+
+def test_requests_request_counts_as_a_network_call(traces):
+    case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
+    events, _ = clean_run()
+    events[1] = use("Skill", skill="aipos:aipos-problem-clustering")
+    calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
+    events.insert(-1, use("Bash", command="python3 -c \"import requests; requests.request('POST', 'https://engine.invalid/merge')\""))
+    assert any("forbidden pattern" in v for v in traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["violations"])

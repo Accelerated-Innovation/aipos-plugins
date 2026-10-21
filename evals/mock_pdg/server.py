@@ -63,6 +63,7 @@ from __future__ import annotations
 import inspect
 import json
 import os
+from datetime import datetime
 import sys
 from pathlib import Path
 
@@ -137,7 +138,7 @@ class Graph:
 
     def _by_creation(self) -> list:
         # Persistent engine order: newest first by creation time. Not a ranking.
-        return sorted(self.problems, key=lambda p: p["created_at"], reverse=True)
+        return sorted(self.problems, key=lambda p: _instant(p["created_at"]), reverse=True)
 
     def _by_rank(self) -> list:
         return sorted(self.problems, key=lambda p: (p["composite_score"], p["opportunity"]["strategic_weight"]),
@@ -214,7 +215,8 @@ class Graph:
             for e in p["evidence"]
         ]
         # Newest first. Where the engine puts an unknown date is not verified; it goes last here.
-        items.sort(key=lambda r: (r["occurred_at"] is not None, r["occurred_at"] or ""), reverse=True)
+        dated = sorted((r for r in items if r["occurred_at"]), key=lambda r: _instant(r["occurred_at"]), reverse=True)
+        items = dated + [r for r in items if not r["occurred_at"]]
         return {"problem_id": p["problem_id"], "items": items, "total": len(items)}
 
     def list_opportunities(self, offset: int = 0, limit: int = 20) -> dict:
@@ -307,6 +309,11 @@ class Graph:
         raise ToolFailure(
             "EVIDENCE_TEXT_UNAVAILABLE", f"No text available for {provenance_reference!r}"
         )
+
+
+def _instant(stamp: str) -> datetime:
+    """Compare timestamps as instants: the engine writes `+00:00`, fixtures often `Z`."""
+    return datetime.fromisoformat(stamp.replace("Z", "+00:00"))
 
 
 def _log_call(name: object, arguments: object, *, is_error: bool, code: str | None) -> None:
@@ -442,6 +449,11 @@ def handle(graph: Graph, message: dict) -> dict | None:
                        "isError": True})
         method = getattr(graph, name)
         accepted = inspect.signature(method).parameters
+        if not isinstance(args, dict):
+            _log_call(name, args, is_error=True, code="VALIDATION_ERROR")
+            return ok({"content": [{"type": "text", "text":
+                                    f"Error executing tool {name}: VALIDATION_ERROR: arguments must be an object"}],
+                       "isError": True})
         known = {k: v for k, v in args.items() if k in accepted}  # the engine ignores unknown arguments
         # The MCP SDK prefixes every tool error; the engine's code follows it.
         prefix = f"Error executing tool {name}: "

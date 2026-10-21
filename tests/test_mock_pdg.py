@@ -426,3 +426,27 @@ def test_links_for_an_unknown_problem_are_empty_not_an_error(graph):
 def test_unknown_arguments_are_ignored_as_the_engine_ignores_them(graph, mock):
     reply = _call(mock, graph, "get_problem", {"problem_id": TRIAGE, "include_text": True})
     assert reply["result"]["isError"] is False
+
+
+def test_ordering_compares_instants_not_text(mock):
+    """Engine timestamps use `+00:00`, fixtures often `Z`; a text sort would misorder a mix."""
+    fixture = mock.load_fixture(FIXTURE)
+    fixture["problems"][0]["created_at"] = "2026-10-11T08:00:00+01:00"   # 07:00Z: newest
+    fixture["problems"][1]["created_at"] = "2026-10-11T06:30:00Z"        # older, though text sorts later
+    graph = mock.Graph(fixture)
+    first, second = [r["problem_id"] for r in graph.list_problems(limit=2)["items"]]
+    assert (first, second) == (fixture["problems"][0]["problem_id"], fixture["problems"][1]["problem_id"])
+    evidence = fixture["problems"][0]["evidence"]
+    evidence[0]["occurred_at"], evidence[1]["occurred_at"] = "2026-09-01T09:00:00+02:00", "2026-09-01T07:30:00Z"
+    rows = mock.Graph(fixture).list_evidence(fixture["problems"][0]["problem_id"])["items"]
+    order = [r["provenance_reference"] for r in rows]
+    assert order.index(evidence[1]["provenance_reference"]) < order.index(evidence[0]["provenance_reference"])
+    assert rows[-1]["occurred_at"] is None or all(r["occurred_at"] for r in rows)
+
+
+@pytest.mark.parametrize("arguments", [["problem_id"], "problem_id", 7])
+def test_non_object_arguments_are_refused_without_stopping_the_server(graph, mock, arguments):
+    reply = mock.handle(graph, {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                                "params": {"name": "get_problem", "arguments": arguments}})
+    assert reply["result"]["isError"] is True
+    assert "VALIDATION_ERROR" in reply["result"]["content"][0]["text"]
