@@ -9,7 +9,7 @@ Pillar 1 "Define & Design" (steps 1–10, gates G1–G2). Sequenced in the 2026-
 adds per-skill view specs and acceptance-honesty rules on top of the tests-first criteria each issue
 already carries.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status:** In progress — Step 0 verified (below); #60 package slice in PR #91.
+**Status:** In progress — Step 0 verified (below); #60 package slice in PR #91; #59 in its own PR.
 
 ## Context
 
@@ -61,12 +61,14 @@ open until the write half lands.
 
 ### 2. #59 `aipos-agent-contract` — shared schema in references
 
-- [ ] Routing and eval cases first, shown failing.
-- [ ] Contract schema in `plugins/aipos/references/agent-contract.md` (six sections; tool side
+- [x] Routing and eval cases first, shown failing. (PR for #59)
+- [x] Contract schema in `plugins/aipos/references/agent-contract.md` (six sections; tool side
   effects with confirmation status; escalations naming trigger + human role; TBDs with owners,
   never invented) so `dialogue-flow`, `feature-create` and `risk-review` cite it rather than copy
   it.
-- [ ] Completeness-checker pytest against fixtures, if a checker script is bundled.
+- [x] Completeness-checker pytest against fixtures, if a checker script is bundled.
+- Note: `dialogue-flow` (#63) and `risk-review` (#52) do not exist yet; they will cite the schema
+  when built. `feature-create` and `workflow-create` cite it now.
 
 **Done** = full issue; nothing blocks it.
 
@@ -243,7 +245,7 @@ No current evals check when a view should appear or that the text fallback works
   ingestion-status or correction tool; #86 updated. Mock behaviour alignment is a separate change.
 - [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-19 mocks deferred to the
   write-integration slice
-- [ ] 2. #59 agent contract (tests first → references schema → skill → PR)
+- [~] 2. #59 agent contract (PR open) (tests first → references schema → skill → PR)
 - [ ] 3. #57 prep (tests + degraded-behavior cases + source-inventory slice; ship decision on
   verification)
 - [ ] 4. #61 prep (tests; review slice and board can precede the correction path)

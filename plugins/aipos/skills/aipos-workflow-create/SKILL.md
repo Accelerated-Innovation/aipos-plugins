@@ -41,6 +41,8 @@ Use this skill for:
 Do not use it for:
 
 - Writing Rules or scenarios — that is `aipos-feature-create`
+- Defining what an agent actor may do — its tools, guardrails, escalations and human checkpoints
+  — that is `aipos-agent-contract`; the actor's `id` is the contract's agent ID
 - Deciding which behavior ships in which release — that is `aipos-feature-slice`
 - Rendering the views — that is `aipos-map-render`
 - Drawing or editing a diagram by hand. There is no diagram to edit; there is a source file

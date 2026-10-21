@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all sixteen `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all seventeen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 Everything merged to `main` is released: the version in
@@ -8,6 +8,16 @@ Everything merged to `main` is released: the version in
 and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
+
+## Updating to 1.11.0
+
+Adds `aipos-agent-contract`, a seventeenth skill, for step 7: one contract per agent — inputs,
+tools with their side effects (read, write, external send) and human-confirmation status,
+outputs, guardrails, escalation triggers with the human role each goes to, and human
+checkpoints. Anything not decided is a TBD with an owner, never invented. The schema lives once
+in `references/agent-contract.md`; the skill bundles a standard-library completeness checker.
+`aipos-feature-create` now derives agent eval coverage from a contract when one exists, and
+`aipos-workflow-create` points agent actors to their contract. No migration is needed.
 
 ## Updating to 1.10.0
 

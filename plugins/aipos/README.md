@@ -1,6 +1,6 @@
 # AIPOS
 
-Sixteen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
+Seventeen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
 and Accelerated Development (P3) in one installation: `aipos@aipos`.
 
 ## Skill catalog
@@ -13,6 +13,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 | [aipos-product-vision](skills/aipos-product-vision/SKILL.md) | PMLC Step 6: a Product Vision, or a Learn-mode vision, through draft, routed stakeholder review and ratification | Engagement is routed from risk and readiness is computed; ratification is not approval to build |
 | [aipos-portfolio-dashboard](skills/aipos-portfolio-dashboard/SKILL.md) | Inspect portfolio counts, filter opportunities, drill into records and compare outcomes | Fixtures or captured local graph snapshots via MCP or explicit REST; fixed offline dashboard with filters and guided queries, refreshed by rerunning capture |
 | [aipos-opportunity-package](skills/aipos-opportunity-package/SKILL.md) | Package a graph problem into the four-part Structured Opportunity for gate 1 | Live Product Definition Graph reads over MCP or a supplied graph-style record; read-only, packages only, never writes |
+| [aipos-agent-contract](skills/aipos-agent-contract/SKILL.md) | Write or review one agent's contract: inputs, tools with side effects and confirmation status, outputs, guardrails, escalation and human checkpoints | Notes, a workflow or a feature brief; TBDs owned, never invented; schema in `references/agent-contract.md`, bundled stdlib completeness checker |
 | [aipos-exploration-planning](skills/aipos-exploration-planning/SKILL.md) | P1: evidence review, research gaps, exploration decision drafts | Requires live graph reads; does not record authoritative decisions |
 | [aipos-solution-framing](skills/aipos-solution-framing/SKILL.md) | P2: a one-page Solution Framing canvas, live in a workshop or with a PM, rendered as an image | Facts from the graph, decisions from the PM; recommends to a named owner, never decides |
 | [aipos-rapid-validation](skills/aipos-rapid-validation/SKILL.md) | P2: experiments, evidence, viability briefs, commitment preparation | Delegates canonical behavior authoring; prepares rather than grants approval |

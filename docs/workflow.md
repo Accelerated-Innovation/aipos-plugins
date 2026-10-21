@@ -1,6 +1,6 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All sixteen skills live in the `aipos`
+The pillars describe a product lifecycle. All seventeen skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
@@ -70,6 +70,7 @@ or business outcomes.
 | Create an epic or initiative brief | `aipos-epic-create` | Optional planning artifact; can hand off decomposition to feature-create |
 | Author new acceptance criteria or materialize an approved baseline | `aipos-feature-create` | Canonical Rules, scenarios, and feature package; new drafts go to refine, approved baselines retain their behavior unchanged |
 | Review existing specifications | `aipos-feature-refine` | 3 Amigos findings, evidence gaps, proposed edits; routes reviewed repo packages to readiness |
+| Define what one agent may do, what needs approval, and when it escalates | `aipos-agent-contract` | One contract per agent in the shared schema (`references/agent-contract.md`); TBDs owned, never invented; read by dialogue flows, eval cases (feature-create) and AI risk review |
 | Describe a journey's actors, transitions, and handoffs | `aipos-workflow-create` | `workflow.json` references existing behavior; hands view generation to map-render |
 | Choose the smallest usable release | `aipos-feature-slice` | Proposed behavior selection with prerequisites; returns to commitment preparation for approval |
 | Render a corpus, its journeys, or compare advisory assessments | `aipos-map-render` | One offline HTML page: feature map plus an interactive L1/L2/L3 journey diagram showing which scenarios specify a journey and which journeys a feature change affects; requests assessment from refine, readiness, or slice as appropriate |
@@ -174,4 +175,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these sixteen skills.
+outside these seventeen skills.
