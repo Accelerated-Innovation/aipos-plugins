@@ -100,7 +100,8 @@ open until the write half lands.
   corrections prepared as pending hand-offs; trace-checked against merge/split canaries).
 - [ ] Full issue closure still requires the engine's correction path, per the issue's recorded
   blocker. Verified 2026-10-21: the engine **retired** merge/split corrections without a
-  replacement (ADR-AIG-031), so this blocker has no engine owner. Closing #61 needs either a new
+  replacement (ADR-AIG-031), and the direct endpoint advertises no correction tool, so this
+  blocker has no engine owner. Closing #61 needs either a new
   engine correction path or a product decision to amend the issue's acceptance.
 - [ ] The skill never applies a correction itself.
 
