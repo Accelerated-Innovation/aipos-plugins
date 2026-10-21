@@ -63,8 +63,14 @@
         ],
         "forbidden_builtin_tools": [
           "Write",
-          "Edit",
-          "Bash"
+          "Edit"
+        ],
+        "forbidden_command_patterns": [
+          "\\bcurl\\b",
+          "\\bwget\\b",
+          "https?://",
+          "/v1/ingestion",
+          "start_ingestion"
         ]
       }
     }

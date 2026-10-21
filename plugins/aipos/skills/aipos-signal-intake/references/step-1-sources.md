@@ -19,11 +19,12 @@ A `source_system` found in the graph that is not on this list (for example `reop
 findings or `servicenow`) is reported in an "Also in the graph" row: it is evidence the graph
 holds, not a step 1 source, and it does not fill a missing one.
 
-What the engine itself can say, as verified on 2026-10-21 (discovery-engine `1a8919d`): only
-Gong and Zendesk are wired for ingestion; no Jira/ADO, CRM, product-usage or eval-drift
-ingestion exists; and **no ingestion-status read** — connection state, last ingestion, or volume
-— is exposed over MCP or REST. Re-check this when the engine changes; do not repeat it as a
-current fact without saying when it was verified.
+**Engine background, for drafted requests only.** When this skill was written (engine source
+checked 2026-10-21), the engine had ingestion connectors only for Gong and Zendesk, none for
+Jira/ADO, CRM, product usage or eval drift, and no ingestion-status read over MCP or REST. That
+is what the engine *code* could do then — not what any deployment has connected now. Never use
+it to fill a Connection, Last ingestion or Volume cell; it belongs only in a drafted request's
+"Known blockers", stated with its date so a reader can re-check it.
 
 ## Drafting a connector request
 

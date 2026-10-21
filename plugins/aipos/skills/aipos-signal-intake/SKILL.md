@@ -19,7 +19,7 @@ stands in for another.
 
 | Field | Authoritative basis | Without it |
 |---|---|---|
-| Connection | An ingestion-status read, or a supplied inventory naming the source (attributed to whoever supplied it) | `unknown` |
+| Connection | An ingestion-status read, or a supplied inventory naming the source (attributed to whoever supplied it) — never graph records, never what the engine's code supports | `unknown` |
 | Records in graph | `list_evidence` across the problems read, grouped by `source_system` | `not checked` |
 | Last ingestion | An ingestion-status read, or a supplied status note (attributed, unverified) | `unknown — no ingestion-status read` |
 | Volume in window | An ingestion-status read, or a supplied status note (attributed, unverified) | `unknown` |
@@ -51,7 +51,10 @@ stands in for another.
    Do not call `get_evidence_text`: this report needs no evidence text, and each call is a
    logged disclosure.
 3. **Fill each field from its own basis**, attributing supplied facts to their source ("per the
-   admin inventory of 2026-10-20"). Supplied records are never described as engine reads.
+   admin inventory of 2026-10-20"). Supplied material — an inventory, a status note, or a capture
+   of graph reads someone else made — is labelled supplied (and synthetic when it says so), never
+   described as a read made in this session. With no basis for a field, the cell says `unknown`
+   and names the missing input; `connected` and `not connected` both need a basis.
 4. **Flag staleness only with both halves.** When last ingestion and an agreed cadence are both
    known, compute the age against today's date and flag the source when the age exceeds the
    cadence. Say which half came from where.
