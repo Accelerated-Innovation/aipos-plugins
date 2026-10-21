@@ -68,7 +68,8 @@
         "forbidden_command_patterns": [
           "\\bcurl\\b",
           "\\bwget\\b",
-          "https?://",
+          "\\bnc\\b",
+          "urllib\\.request|requests\\.(get|post|put|patch|delete)\\(|http\\.client",
           "/v1/ingestion",
           "start_ingestion"
         ]
@@ -106,7 +107,8 @@
         "forbidden_command_patterns": [
           "\\bcurl\\b",
           "\\bwget\\b",
-          "https?://"
+          "\\bnc\\b",
+          "urllib\\.request|requests\\.(get|post|put|patch|delete)\\(|http\\.client"
         ]
       }
     }

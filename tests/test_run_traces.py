@@ -240,3 +240,15 @@ def test_a_malformed_call_cap_is_rejected_when_the_case_loads(traces, caps):
     case = {"id": "x", "skill": "aipos-opportunity-package", "prompt": "p",
             "expect": {"max_tool_calls": caps}}
     assert any("max_tool_calls" in p for p in traces.validate_case(case))
+
+
+def test_a_url_inside_a_local_file_write_is_not_a_network_call(traces):
+    """Found in a real trace: a heredoc writing a hand-off file contained a record link."""
+    case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
+    events, calls = clean_run()
+    events[1] = use("Skill", skill="aipos:aipos-problem-clustering")
+    calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
+    events.insert(-1, use("Bash", command="cat > handoff.md <<'EOF'\nsee https://fixture.invalid/gong/call-7781\nEOF"))
+    assert traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["passed"]
+    events.insert(-1, use("Bash", command="curl -X POST https://engine.invalid/merge"))
+    assert not traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["passed"]

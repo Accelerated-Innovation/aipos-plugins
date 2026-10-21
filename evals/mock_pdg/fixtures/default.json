@@ -4,9 +4,9 @@
     {
       "_case": "The ticket-triage example. Rich, recent, mixed sources; readable excerpts for two tickets and one call; one ticket with no text; reops records carry no readable text; a study outcome with null date and null url. No volume and no routing baseline anywhere in the graph.",
       "problem_id": "fixture:prb-ticket-triage",
+      "created_at": "2026-10-08T09:00:00Z",
       "title": "[SYNTHETIC] Support tickets arrive uncategorized and are routed to the wrong team",
       "composite_score": 0.82,
-      "lineage_ref": "fixture:lin-ticket-triage",
       "schema_version": 1,
       "personas": [
         {
@@ -21,12 +21,6 @@
           "name": "Enterprise Admin",
           "confidence": 0.52
         }
-      ],
-      "originating_sources": [
-        "reops:study-int-2026-07",
-        "zendesk:view-triage-audit-2026-08",
-        "gong:call-5530",
-        "reops:study-ts-07:fnd-0002"
       ],
       "evidence": [
         {
@@ -130,9 +124,9 @@
     {
       "_case": "Already promoted: an active promoted Aha! link plus a severed Jira link. The skill must say so before facilitating.",
       "problem_id": "fixture:prb-invoice-dup",
+      "created_at": "2026-10-05T09:00:00Z",
       "title": "[SYNTHETIC] Duplicate vendor invoices reach payment before anyone notices",
       "composite_score": 0.77,
-      "lineage_ref": "fixture:lin-invoice-dup",
       "schema_version": 1,
       "personas": [
         {
@@ -143,10 +137,6 @@
           "name": "Controller",
           "confidence": 0.61
         }
-      ],
-      "originating_sources": [
-        "servicenow:queue-ap-2026",
-        "zendesk:view-vendor-2026"
       ],
       "evidence": [
         {
@@ -225,18 +215,15 @@
     {
       "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
       "problem_id": "fixture:prb-renewal-quotes",
+      "created_at": "2026-10-02T09:00:00Z",
       "title": "[SYNTHETIC] Renewal quotes take days to assemble",
       "composite_score": 0.74,
-      "lineage_ref": "fixture:lin-renewal-quotes",
       "schema_version": 1,
       "personas": [
         {
           "name": "Account Executive",
           "confidence": 0.8
         }
-      ],
-      "originating_sources": [
-        "gong:call-7781"
       ],
       "evidence": [
         {
@@ -268,18 +255,15 @@
     {
       "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
       "problem_id": "fixture:prb-pricing-approvals",
+      "created_at": "2026-10-01T09:00:00Z",
       "title": "[SYNTHETIC] Pricing exceptions need three approvals before a quote can go out",
       "composite_score": 0.71,
-      "lineage_ref": "fixture:lin-pricing-approvals",
       "schema_version": 1,
       "personas": [
         {
           "name": "Deal Desk Analyst",
           "confidence": 0.77
         }
-      ],
-      "originating_sources": [
-        "gong:call-7781"
       ],
       "evidence": [
         {
@@ -311,18 +295,15 @@
     {
       "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
       "problem_id": "fixture:prb-redline-loss",
+      "created_at": "2026-09-30T09:00:00Z",
       "title": "[SYNTHETIC] Contract redlines get lost between email threads",
       "composite_score": 0.68,
-      "lineage_ref": "fixture:lin-redline-loss",
       "schema_version": 1,
       "personas": [
         {
           "name": "Legal Ops Specialist",
           "confidence": 0.7
         }
-      ],
-      "originating_sources": [
-        "gong:call-7781"
       ],
       "evidence": [
         {
@@ -354,18 +335,15 @@
     {
       "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
       "problem_id": "fixture:prb-renewal-risk",
+      "created_at": "2026-10-03T09:00:00Z",
       "title": "[SYNTHETIC] Customer success cannot see renewal risk until it is too late",
       "composite_score": 0.65,
-      "lineage_ref": "fixture:lin-renewal-risk",
       "schema_version": 1,
       "personas": [
         {
           "name": "Customer Success Manager",
           "confidence": 0.73
         }
-      ],
-      "originating_sources": [
-        "gong:call-7781"
       ],
       "evidence": [
         {
@@ -397,18 +375,15 @@
     {
       "_case": "One of FIVE ranked problems whose evidence and originating source are the same single call. Five rows, one source.",
       "problem_id": "fixture:prb-quote-templates",
+      "created_at": "2026-10-06T09:00:00Z",
       "title": "[SYNTHETIC] Quote templates are out of date with current pricing",
       "composite_score": 0.6,
-      "lineage_ref": "fixture:lin-quote-templates",
       "schema_version": 1,
       "personas": [
         {
           "name": "Account Executive",
           "confidence": 0.66
         }
-      ],
-      "originating_sources": [
-        "gong:call-7781"
       ],
       "evidence": [
         {
@@ -440,20 +415,15 @@
     {
       "_case": "Aging evidence: 2022-2024 only, plus one null occurred_at (unknown, NOT old) and a null record_url.",
       "problem_id": "fixture:prb-month-end",
+      "created_at": "2026-10-10T09:00:00Z",
       "title": "[SYNTHETIC] Month-end reports require manual spreadsheet stitching",
       "composite_score": 0.58,
-      "lineage_ref": "fixture:lin-month-end",
       "schema_version": 1,
       "personas": [
         {
           "name": "Financial Analyst",
           "confidence": 0.83
         }
-      ],
-      "originating_sources": [
-        "salesforce:case-set-2022",
-        "reops:study-2023-fin",
-        "zendesk:view-reporting"
       ],
       "evidence": [
         {
@@ -509,18 +479,15 @@
     {
       "_case": "Future contract: schema_version 2 on the problem and its opportunity row. A consumer must stop, not guess.",
       "problem_id": "fixture:prb-schema-next",
+      "created_at": "2026-09-28T09:00:00Z",
       "title": "[SYNTHETIC] A problem served under a newer schema version",
       "composite_score": 0.41,
-      "lineage_ref": "fixture:lin-schema-next",
       "schema_version": 2,
       "personas": [
         {
           "name": "Operations Manager",
           "confidence": 0.5
         }
-      ],
-      "originating_sources": [
-        "zendesk:view-ops"
       ],
       "evidence": [
         {

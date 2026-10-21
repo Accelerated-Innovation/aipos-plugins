@@ -22,8 +22,14 @@ Same seven tools, same arguments, same response shapes as the engine
 | `get_work_item_links(problem_id)` | `ProblemLinksResponse` (`promoted` = any ACTIVE `promoted` link) |
 | `get_evidence_text(provenance_reference, problem_id=None)` | `EvidenceExcerptResponse` |
 
-Errors are tool results with `isError: true` and text `<CODE>: <message>` —
-`PROBLEM_NOT_FOUND`, `VALIDATION_ERROR`, `EVIDENCE_TEXT_UNAVAILABLE`, `LINKS_UNAVAILABLE`.
+Errors are tool results with `isError: true` and text
+`Error executing tool <name>: <CODE>: <message>` (the MCP SDK's prefix, then the engine's code) —
+`PROBLEM_NOT_FOUND`, `LINEAGE_NOT_FOUND`, `VALIDATION_ERROR`, `EVIDENCE_TEXT_UNAVAILABLE`,
+`LINKS_UNAVAILABLE`. Read with the engine's live behaviour (verified 2026-10-21):
+`list_problems` is in creation order, not a ranking — rank with `list_opportunities`;
+`get_problem` and `get_lineage` name evidence by bare external record id, `list_evidence` by
+`source:id`, newest first; `lineage_ref` is the problem id; unknown arguments are ignored; and
+`get_work_item_links` answers an unknown problem with an empty, unpromoted result.
 `tests/test_mock_pdg.py` pins every field set to the engine's models; change the test first when
 the engine's contract changes.
 
@@ -69,18 +75,17 @@ canary's shape; when the engine publishes a tool, pin its contract here like the
   disclosure). A second pass against the direct endpoint `https://opportunity.aidlc.org/mcp/`
   (authenticated by an interactive OAuth login) confirmed the same tool list, input schemas and
   field sets, including work-item link rows.
-- **Behaviour the mock does not yet follow** (engine source at discovery-engine `1a8919d`,
-  confirmed live on the direct endpoint where marked): errors on the wire carry the SDK prefix
-  `Error executing tool <name>: ` before `CODE: message` (seen live); `get_lineage` on an
-  unknown problem is `LINEAGE_NOT_FOUND` (seen live); `get_work_item_links` on an unknown problem
-  returns an empty, `promoted: false` result (seen live); `list_problems` is ordered by creation time in persistent mode,
-  not by score (seen live); `list_opportunities` holds only scored problems, so it is not 1:1
-  with `list_problems`; `evidence_references` and `source_evidence_refs` are bare external IDs
-  while `list_evidence` uses `source:id` (seen live); `lineage_ref` equals `problem_id` and
-  `originating_sources` has one `source:id` per evidence record (seen live); `get_evidence_text`
-  is always advertised by the engine. Aligning the mock changes tests that existing skills
-  rely on, so it is a separate change; until then a skill must not depend on these mock-only
-  invariants.
+- **Behaviour aligned** with the engine (verified live where marked): the SDK error prefix (live);
+  `LINEAGE_NOT_FOUND` (live); an empty, unpromoted links result for an unknown problem (live);
+  `list_problems` in creation order, not by score (live); bare external ids in
+  `evidence_references` and `source_evidence_refs` against `source:id` in `list_evidence` (live);
+  `lineage_ref` equal to `problem_id` and one `source:id` originating source per evidence record
+  (live); evidence newest first (live); unknown arguments ignored (engine source).
+- **Still different, deliberately or unverified:** every fixture problem is scored, so
+  `list_opportunities` covers all of them (the engine lists only scored problems); a non-string
+  argument returns `VALIDATION_ERROR` rather than the SDK's schema message; where the engine
+  places a null `occurred_at` is unverified (last here); `MOCK_PDG_EVIDENCE_TEXT=off` has no engine
+  equivalent (the engine always advertises `get_evidence_text`) and is kept to test degradation.
 
 ## What the default fixture exercises
 

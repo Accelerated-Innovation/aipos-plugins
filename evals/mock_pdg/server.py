@@ -27,7 +27,16 @@ Behaviour mirrored because skills must handle it:
     source with no readable text -> EVIDENCE_TEXT_UNAVAILABLE
   * when evidence text is not configured the tool is *not advertised at all*
   * when links are not configured get_work_item_links is advertised but raises LINKS_UNAVAILABLE
-  * errors are tool results with isError=true and text "<CODE>: <message>"
+  * errors are tool results with isError=true and text "Error executing tool <name>: <CODE>: <message>"
+    (the MCP SDK's prefix, then the engine's code)
+  * get_lineage on an unknown problem -> LINEAGE_NOT_FOUND; get_work_item_links on an unknown
+    problem -> an empty, unpromoted result (not an error)
+  * list_problems is in creation order, newest first (not a ranking); list_opportunities is ranked
+  * get_problem / get_lineage name evidence by bare external record id; list_evidence uses
+    `source:id` and lists newest first; originating_sources holds one `source:id` per evidence
+    record; lineage_ref equals problem_id
+  * unknown arguments are ignored, as the engine's read tools ignore them
+  (all verified against the live engine on 2026-10-21)
 
 Configuration (environment):
   MOCK_PDG_FIXTURE         path to a fixture JSON (default: fixtures/default.json)
@@ -51,6 +60,7 @@ anywhere Python 3.9+ does and never adds a dependency to the plugin.
 
 from __future__ import annotations
 
+import inspect
 import json
 import os
 import sys
@@ -125,16 +135,29 @@ class Graph:
 
     # --- tools ----------------------------------------------------------------
 
+    def _by_creation(self) -> list:
+        # Persistent engine order: newest first by creation time. Not a ranking.
+        return sorted(self.problems, key=lambda p: p["created_at"], reverse=True)
+
+    def _by_rank(self) -> list:
+        return sorted(self.problems, key=lambda p: (p["composite_score"], p["opportunity"]["strategic_weight"]),
+                      reverse=True)
+
+    @staticmethod
+    def _bare_refs(p: dict) -> list:
+        # get_problem and get_lineage name evidence by bare external record id.
+        return [e["external_record_id"] for e in p["evidence"]]
+
     def list_problems(self, offset: int = 0, limit: int = 20) -> dict:
         offset, limit = self._page(offset, limit)
-        window = self.problems[offset:offset + limit]
+        window = self._by_creation()[offset:offset + limit]
         return {
             "items": [
                 {
                     "problem_id": p["problem_id"],
                     "title": p["title"],
                     "composite_score": p["composite_score"],
-                    "lineage_ref": p["lineage_ref"],
+                    "lineage_ref": p["problem_id"],
                     "personas": self._personas(p),
                     "schema_version": p["schema_version"],
                 }
@@ -151,18 +174,25 @@ class Graph:
             "problem_id": p["problem_id"],
             "title": p["title"],
             "composite_score": p["composite_score"],
-            "evidence_references": [e["provenance_reference"] for e in p["evidence"]],
+            "evidence_references": self._bare_refs(p),
             "personas": self._personas(p),
-            "lineage_ref": p["lineage_ref"],
+            "lineage_ref": p["problem_id"],
             "schema_version": p["schema_version"],
         }
 
     def get_lineage(self, problem_id: str) -> dict:
-        p = self._problem(problem_id)
+        try:
+            p = self._problem(problem_id)
+        except ToolFailure as failure:
+            if failure.code != "PROBLEM_NOT_FOUND":
+                raise
+            raise ToolFailure("LINEAGE_NOT_FOUND", f"Lineage for problem {problem_id!r} not found") from None
         return {
             "problem_id": p["problem_id"],
-            "source_evidence_refs": [e["provenance_reference"] for e in p["evidence"]],
-            "originating_sources": list(p["originating_sources"]),
+            "source_evidence_refs": self._bare_refs(p),
+            # One `source:id` per evidence record, source lowercased.
+            "originating_sources": [f'{e["source_system"].lower()}:{e["external_record_id"]}'
+                                    for e in p["evidence"]],
             "schema_version": p["schema_version"],
         }
 
@@ -183,11 +213,13 @@ class Graph:
             }
             for e in p["evidence"]
         ]
+        # Newest first. Where the engine puts an unknown date is not verified; it goes last here.
+        items.sort(key=lambda r: (r["occurred_at"] is not None, r["occurred_at"] or ""), reverse=True)
         return {"problem_id": p["problem_id"], "items": items, "total": len(items)}
 
     def list_opportunities(self, offset: int = 0, limit: int = 20) -> dict:
         offset, limit = self._page(offset, limit)
-        window = self.problems[offset:offset + limit]
+        window = self._by_rank()[offset:offset + limit]
         return {
             "items": [
                 {
@@ -210,7 +242,13 @@ class Graph:
     def get_work_item_links(self, problem_id: str) -> dict:
         if os.environ.get("MOCK_PDG_LINKS", "").lower() == "off":
             raise ToolFailure("LINKS_UNAVAILABLE", "Work-item links are not configured")
-        p = self._problem(problem_id)
+        try:
+            p = self._problem(problem_id)
+        except ToolFailure as failure:
+            if failure.code != "PROBLEM_NOT_FOUND":
+                raise
+            # The engine answers an unknown problem with an empty, unpromoted result.
+            return {"problem_id": problem_id, "promoted": False, "links": [], "total": 0, "schema_version": 1}
         links = [self._link(p, x) for x in p.get("links", [])]
         promoted = any(x["status"] == "active" and x["link_type"] == "promoted" for x in links)
         return {
@@ -402,14 +440,19 @@ def handle(graph: Graph, message: dict) -> dict | None:
             return ok({"content": [{"type": "text", "text":
                                     f"CANARY_INVOKED: {name} is a canary on a mock; nothing was recorded"}],
                        "isError": True})
+        method = getattr(graph, name)
+        accepted = inspect.signature(method).parameters
+        known = {k: v for k, v in args.items() if k in accepted}  # the engine ignores unknown arguments
+        # The MCP SDK prefixes every tool error; the engine's code follows it.
+        prefix = f"Error executing tool {name}: "
         try:
-            payload = getattr(graph, name)(**args)
+            payload = method(**known)
         except ToolFailure as failure:
             _log_call(name, args, is_error=True, code=failure.code)
-            return ok({"content": [{"type": "text", "text": str(failure)}], "isError": True})
-        except TypeError as exc:  # unexpected or missing arguments
+            return ok({"content": [{"type": "text", "text": prefix + str(failure)}], "isError": True})
+        except TypeError as exc:  # missing required arguments
             _log_call(name, args, is_error=True, code="VALIDATION_ERROR")
-            return ok({"content": [{"type": "text", "text": f"VALIDATION_ERROR: {exc}"}],
+            return ok({"content": [{"type": "text", "text": f"{prefix}VALIDATION_ERROR: {exc}"}],
                        "isError": True})
         _log_call(name, args, is_error=False, code=None)
         return ok({
