@@ -31,6 +31,8 @@ chat-panel (view) specs agreed on 2026-10-21.
 ## Sequencing and what "done" means per skill
 
 Order: **#60 package slice → #59 → (#57, #61 prep in parallel) → remaining blocked halves.**
+The Step 0 live-server pass runs in parallel and does **not** block #60's package slice — it
+gates the mock-contract updates and the blocked-skill ship decisions, not the package build.
 
 The two unblocked skills go first, in wave order. The two blocked skills get their tests and mock
 fixtures written now — their specs already define graceful degradation — but their wave and
@@ -91,9 +93,11 @@ open until the write half lands.
 
 ## Step 0: the live server — verified facts and pending verification
 
-The engine's read service is hosted at `https://opportunity.aidlc.org/mcp/`
-([ADR-AIG-038](https://github.com/Accelerated-Innovation/discovery-engine/blob/main/demos/insurance/HOSTED.md),
-hosted Harborlight demo). On 2026-10-21 the plan author verified directly:
+The engine's read service is hosted at `https://opportunity.aidlc.org/mcp/` (hosted Harborlight
+demo; `demos/insurance/HOSTED.md` and decision record
+`docs/backend/architecture/ADR/ADR-AIG-038-explicit-hosted-demo-target.md` in the private
+`discovery-engine` repo — cite paths, not URLs, since the repo is not publicly readable). On
+2026-10-21 the plan author verified directly:
 
 - **Live and reachable** — streamable-HTTP MCP endpoint (uvicorn/FastMCP), responds to `initialize`.
 - **OAuth 2.0 Bearer required.** RFC 9728 protected-resource metadata names Keycloak realm
@@ -112,6 +116,10 @@ login):
   `tests/test_mock_pdg.py`. Compare the mock's **supported subset** — extra live tools don't make
   the mock wrong, and `tools/list` establishes advertised input schemas, not response shapes.
   Where the shared subset differs, change the test and mock **first**, then the skill.
+- [ ] Response shapes, not just input schemas: make one authenticated representative call per
+  shared read tool and capture the response shape; compare against `evals/mock_pdg` fixtures and
+  `tests/test_mock_pdg.py` **before** changing the mock — otherwise the mock can remain
+  compatible with stale fields. If the engine publishes a response-schema source, prefer it.
 - [ ] While connected: check specifically for an ingestion-status read (#57) and any merge/split
   correction path (#61). Update #86's engine-dependency list with what is found rather than
   assuming absence.
@@ -161,7 +169,7 @@ generated chart is enough otherwise.
 |---|---|---|
 | [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) `aipos-problem-clustering` | **Cluster Review board** (best fit in this set) | One row per candidate problem: masked supporting quotes, suggested merges/splits with evidence references, persona and workflow tags. PM compares and confirms; confirmations are prepared for the engine's correction path and shown as pending, never applied. Plain-text list is the fallback. **Can ship with the review slice** — it doesn't need the correction-path tool; full issue closure does. |
 | [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) `aipos-opportunity-package` | **Structured Opportunity card + confirm panel** | The card displays the four-part package with cited evidence and needs no write capability. The propose action's confirm panel (full dry-run preview, exact destination, one explicit yes, then read-back) ships with the write half, after feature 17. |
-| [#57](https://github.com/Accelerated-Innovation/aipos-plugins/issues/57) `aipos-signal-intake` | **Source-health table panel** (low priority) | Source-by-source: connected or not, last ingestion, volume in window, drafted connector request. A plain table is nearly as good; build the panel only if the engine gains the status read and PMs ask. Reporting missing sources does not require building those connectors. |
+| [#57](https://github.com/Accelerated-Innovation/aipos-plugins/issues/57) `aipos-signal-intake` | **Source-health table panel** (low priority) | Source-by-source: connected or not, last ingestion, volume in window, drafted connector request. A plain table is nearly as good; build the panel only if the engine gains the status read and PMs ask. Reporting missing sources does not require building those connectors. Before implementing the panel, verify the ingestion-status **response fields** (connection state, last ingestion, volume for the selected window) with a representative authenticated call; define freshness semantics per field and give each field its own fallback ("connection unknown", "last ingestion unknown", "volume unknown") rather than relying solely on the blanket "freshness unknown". |
 | [#59](https://github.com/Accelerated-Innovation/aipos-plugins/issues/59) `aipos-agent-contract` | None | The contract is a document to review, not something to inspect visually. Text/file. |
 
 ### View testing
@@ -170,20 +178,22 @@ No current evals check when a view should appear or that the text fallback works
 `evals/` on 2026-10-21). Each view-bearing skill adds:
 
 - [ ] Eval cases for when the view should appear and when plain text is correct.
-- [ ] Panel appearance and interactivity need actual host/rendering checks — text-only evals
+- [ ] Host-rendering check: render the panel in an MCP-Apps-capable host (or the repo's viewer
+  harness) and record the evidence in the skill's completion criteria — text-only evals
   cannot establish that a panel mounted or worked.
 
 ## Work-item summary
 
-- [ ] 0. Live-server verification pass (needs a Bearer token: `tools/list` diff vs mock;
-  ingestion-status and correction-path checks; update #86)
+- [ ] 0. Live-server verification pass — parallel, non-blocking for #60's package slice (needs
+  a Bearer token: `tools/list` and response-shape diff vs mock; ingestion-status and
+  correction-path checks; update #86)
 - [ ] 1. #60 package slice (tests first → skill → PR); feature-17 mocks deferred to the
   write-integration slice
 - [ ] 2. #59 agent contract (tests first → references schema → skill → PR)
 - [ ] 3. #57 prep (tests + degraded-behavior cases + source-inventory slice; ship decision on
   verification)
 - [ ] 4. #61 prep (tests; review slice and board can precede the correction path)
-- [ ] 5. Shared panel contract reference + view-appearance and text-fallback evals added with each
-  view-bearing skill
+- [ ] 5. Shared panel contract reference + view-appearance, text-fallback and host-rendering
+  checks added with each view-bearing skill
 - [ ] 6. Write half of #60 after engine feature 17; #57's freshness half after the status read;
   #61's full closure after the correction path
