@@ -140,7 +140,7 @@ def check_text(text: str) -> dict:
         highest = max(highest, number)
 
     confirmed: list[str] = []
-    checkpoints_before: set[str] = set()
+    checkpoints_before: list[str] = []
     for number, _, body in sections:
         if number not in SECTIONS:
             continue
@@ -195,10 +195,13 @@ def check_text(text: str) -> dict:
                 if tools[-1]["confirmation"]["value"] == "yes":
                     confirmed.append(values["Tool"].strip("` "))
             if number == 6 and values["Before"] and not _is_tbd(values["Before"]):
-                checkpoints_before.add(values["Before"].strip("` "))
+                checkpoints_before.append(values["Before"])
 
     for tool in confirmed:
-        if tool.strip("` ") not in checkpoints_before:
+        # The tool name anywhere in a Before cell, as a whole identifier: `send` never matches
+        # `send_approval_email`.
+        named = re.compile(r"(?<![A-Za-z0-9_])" + re.escape(tool.strip("` ")) + r"(?![A-Za-z0-9_])")
+        if not any(named.search(cell) for cell in checkpoints_before):
             errors.append({"section": 6, "message": f"{tool} is human-confirmed but has no checkpoint row "
                                                     "naming it in 'Before'"})
 
@@ -257,7 +260,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--require-complete", action="store_true",
                         help="exit 1 when the contract is valid but still has TBDs")
     args = parser.parse_args(argv)
-    report = check_text(args.contract.read_text(encoding="utf-8"))
+    try:
+        text = args.contract.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        print(f"Cannot read {args.contract}: {exc}", file=sys.stderr)
+        return 2
+    report = check_text(text)
     print(json.dumps(report, indent=2, ensure_ascii=False))
     if report["status"] == "invalid":
         return 2

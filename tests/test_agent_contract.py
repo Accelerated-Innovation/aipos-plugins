@@ -211,3 +211,22 @@ def test_an_unconfirmed_write_must_say_who_decided(checker):
                            "| set_quote_status | Mark the quote approved or returned | write | no | Decided by the sales operations lead |")
     owned = owned.replace("| Status change review | set_quote_status | Deal desk manager | The approve or return decision |\n", "")
     assert checker.check_text(owned)["status"] == "complete"
+
+
+def test_a_checkpoint_names_its_tool_anywhere_in_before_but_not_as_a_fragment(checker):
+    base = (FIXTURES / "complete.agent-contract.md").read_text()
+    prose = base.replace("| Email review | send_approval_email |", "| Email review | each `send_approval_email` call |")
+    assert checker.check_text(prose)["status"] == "complete"
+    fragment = base.replace("| Email review | send_approval_email |", "| Email review | send_approval |")
+    assert any("send_approval_email" in e["message"] for e in checker.check_text(fragment)["errors"])
+
+
+def test_an_unreadable_contract_exits_2(checker, tmp_path):
+    script = skill_path("aipos-agent-contract") / "scripts" / "check_contract.py"
+    missing = subprocess.run([sys.executable, str(script), str(tmp_path / "nope.md")],
+                             capture_output=True, text=True, timeout=30)
+    binary = tmp_path / "bad.md"; binary.write_bytes(b"\xff\xfe\x00bad")
+    undecodable = subprocess.run([sys.executable, str(script), str(binary)],
+                                 capture_output=True, text=True, timeout=30)
+    for run in (missing, undecodable):
+        assert run.returncode == 2 and "Cannot read" in run.stderr and "Traceback" not in run.stderr
