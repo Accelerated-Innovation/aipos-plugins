@@ -74,13 +74,15 @@ open until the write half lands.
 
 ### 3. #57 `aipos-signal-intake` — prep now; ship decision after verification
 
-- [ ] Routing and eval cases first (including the `no-status-tool-means-unknown` case), shown
-  failing.
+- [x] Routing and eval cases first (including the `no-status-tool-means-unknown` case), shown
+  failing. (PR for #57)
 - [ ] Source inventory (which listed sources are connected, which aren't, with drafted connector
   requests) is the useful-now slice and does not require building any connector. Authoritative
   freshness monitoring is separate and depends on the engine's ingestion-status read.
-- [ ] Verify whether the live engine already exposes an ingestion-status read (Step 0). If it
-  truly doesn't, keep `blocked: engine` and use the existing dependency entry in #86 — do not open
+- [x] Source-inventory slice shipped: five fields per source, each with its own basis and
+  `unknown` fallback; drafted connector requests; never starts ingestion (trace-checked).
+- [x] Verify whether the live engine already exposes an ingestion-status read (Step 0): it does
+  not (engine source `1a8919d`; not advertised by the hosted-demo connector). If it truly doesn't, keep `blocked: engine` and use the existing dependency entry in #86 — do not open
   a duplicate engine issue.
 - [ ] "Freshness unknown" is the documented fallback, not a claim that freshness monitoring is
   complete.
@@ -246,7 +248,7 @@ No current evals check when a view should appear or that the text fallback works
 - [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-19 mocks deferred to the
   write-integration slice
 - [~] 2. #59 agent contract (PR open) (tests first → references schema → skill → PR)
-- [ ] 3. #57 prep (tests + degraded-behavior cases + source-inventory slice; ship decision on
+- [~] 3. #57 prep — source-inventory slice in its PR; freshness half still blocked (tests + degraded-behavior cases + source-inventory slice; ship decision on
   verification)
 - [ ] 4. #61 prep (tests; review slice and board can precede the correction path)
 - [ ] 5. Shared panel contract reference + view-appearance, text-fallback and host-rendering

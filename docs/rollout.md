@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all seventeen `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all eighteen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 Everything merged to `main` is released: the version in
@@ -8,6 +8,16 @@ Everything merged to `main` is released: the version in
 and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
+
+## Updating to 1.12.0
+
+Adds `aipos-signal-intake`, an eighteenth skill, for step 1 coverage: every step 1 signal source
+(Gong, Zendesk, Jira/ADO tickets, CRM notes, product usage, eval drift) in one table with
+connection state, records present in the graph, last ingestion and volume in the window — each
+from its own basis, each `unknown` without one — and a drafted connector request for each
+missing source. It is read-only and never starts an ingestion run. Freshness stays **unknown**
+until the engine exposes an ingestion-status read; this release reports records present in the
+graph and supplied inventories, not authoritative freshness. No migration is needed.
 
 ## Updating to 1.11.0
 
