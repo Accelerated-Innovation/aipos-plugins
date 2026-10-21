@@ -13,7 +13,7 @@ version. The earlier [1.0.1 release record](release-check.md) is historical.
 
 Routing fix: `aipos-map-render` and `aipos-workflow-create` now say which goes first when a journey
 diagram is requested for a journey with no `workflow.json` — workflow-create authors the source and
-hands rendering to map-render. Descriptions only; no behavior or file-format change.
+hands rendering to map-render. Skill descriptions only: routing selection changes; no executable behavior (scripts) or file-format change.
 
 ## Updating to 1.13.0
 
