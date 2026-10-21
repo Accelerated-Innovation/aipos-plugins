@@ -228,6 +228,26 @@ def first_prompt(case: dict) -> str:
     return case["prompt"]
 
 
+def _text(value: object) -> str:
+    if value is None:
+        return ""
+    return value.decode("utf-8", "replace") if isinstance(value, bytes) else str(value)
+
+
+def _events(stdout: str, *, partial: bool) -> list[dict]:
+    """Stream events. A killed session's last line can be cut off; only then is it skipped."""
+    events = []
+    for line in stdout.splitlines():
+        if not line.strip():
+            continue
+        try:
+            events.append(json.loads(line))
+        except json.JSONDecodeError:
+            if not partial:
+                raise
+    return events
+
+
 def run_case(case: dict, *, model: str, out: Path, budget: float | None, timeout: float) -> dict:
     # Absolute, and outside the session's working directory: the mock runs elsewhere, and the
     # model must not be able to read the config that names the canaries.
@@ -244,21 +264,30 @@ def run_case(case: dict, *, model: str, out: Path, budget: float | None, timeout
         config.write_text(json.dumps(mcp_config(case, call_log)))
         events: list[dict] = []
         session = None
+        timed_out = False
         for turn, prompt in enumerate([first_prompt(case), *(case.get("follow_ups") or [])]):
             cmd = command(prompt, model=model, config=config, max_turns=case.get("max_turns", 25),
                           budget=budget, resume=session)
-            run = subprocess.run(cmd, cwd=work, capture_output=True, text=True, timeout=timeout,
-                                 stdin=subprocess.DEVNULL)
-            (out / f"stream.{turn}.jsonl").write_text(run.stdout)
-            (out / f"stderr.{turn}.txt").write_text(run.stderr)
-            turn_events = [json.loads(line) for line in run.stdout.splitlines() if line.strip()]
+            try:
+                run = subprocess.run(cmd, cwd=work, capture_output=True, text=True, timeout=timeout,
+                                     stdin=subprocess.DEVNULL)
+                stdout, stderr, finished = run.stdout, run.stderr, run.returncode == 0
+            except subprocess.TimeoutExpired as expired:
+                stdout, stderr = _text(expired.stdout), _text(expired.stderr)
+                finished, timed_out = False, True
+            (out / f"stream.{turn}.jsonl").write_text(stdout)
+            (out / f"stderr.{turn}.txt").write_text(stderr)
+            turn_events = _events(stdout, partial=timed_out)
             events.extend(turn_events)
             init = init_event(turn_events)
             session = (init or {}).get("session_id") or session
-            if run.returncode != 0 or session is None:
+            if not finished or session is None:
                 break
         calls = [json.loads(line) for line in call_log.read_text().splitlines() if line.strip()]
         verdict = evaluate(events, calls, case["expect"], invoke=case.get("invoke", "natural"))
+        if timed_out:
+            verdict["passed"] = False
+            verdict["violations"].append(f"session timed out after {timeout:g}s; partial stream kept")
         verdict.update({"case": case["id"], "skill": case["skill"], "requested_model": model,
                         "at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         (out / "verdict.json").write_text(json.dumps(verdict, indent=2))

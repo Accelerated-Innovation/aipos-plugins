@@ -1,6 +1,8 @@
 # Plan: Close the four P1 skill gaps in Define & Design
 
 **Date:** 2026-10-21
+**Naming note:** the source issues call governed MCP writes "engine feature 17"; in the engine they
+are feature 19 (ADR-AIG-030) — feature 17 is study findings. This plan uses 19.
 **Source:** The four P1 new-skill items from the AIPOS skills-to-PDLC gap backlog
 ([tracking issue #86](https://github.com/Accelerated-Innovation/aipos-plugins/issues/86)) that sit in
 Pillar 1 "Define & Design" (steps 1–10, gates G1–G2). Sequenced in the 2026-10-21 planning session;
@@ -15,7 +17,7 @@ Five skills in the backlog scored P1. Four of them live in Pillar 1 (Define & De
 
 | Issue | Skill | Step | Wave | Recorded blocker |
 |---|---|---|---|---|
-| [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) | `aipos-opportunity-package` | 4 → G1 | 2 | engine feature 17 (write half only) |
+| [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) | `aipos-opportunity-package` | 4 → G1 | 2 | engine feature 19 (write half only) |
 | [#59](https://github.com/Accelerated-Innovation/aipos-plugins/issues/59) | `aipos-agent-contract` | 7 | 3 | nothing |
 | [#57](https://github.com/Accelerated-Innovation/aipos-plugins/issues/57) | `aipos-signal-intake` | 1 | 3 | engine ingestion-status read tool, E9 connectors |
 | [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) | `aipos-problem-clustering` | 2 | 3 | engine correction path (merge/split) |
@@ -47,12 +49,12 @@ ships a slice says so, and the issue stays open with the remaining half restated
 - [x] Build the package half of the skill; the issue explicitly permits the package output to ship
   before the write half. (PR #91 — plus a native tool-use trace that the skill declines
   advertised write canaries.)
-- [ ] **Write-integration slice (separate):** extend `evals/mock_pdg` with the feature 17 tools
+- [ ] **Write-integration slice (separate):** extend `evals/mock_pdg` with the feature 19 (ADR-AIG-030) tools
   (`find_similar_problems`, `propose_problem`, `attach_intent` with `dry_run` and
   `idempotency_key`), pin them in `tests/test_mock_pdg.py`, and define them **only against a
   verified engine contract** — the hosted server is read-only (see Step 0), so these mocks wait for
   a contract to verify against, not the mock author's guess.
-- [ ] Write half (propose after dry-run preview + one explicit yes) follows engine feature 17.
+- [ ] Write half (propose after dry-run preview + one explicit yes) follows engine feature 19.
 
 **Done for the package slice** = the package output ships and passes its evals. The issue stays
 open until the write half lands.
@@ -106,7 +108,7 @@ demo; `demos/insurance/HOSTED.md` and decision record
   advertises `client_credentials`, `password` and device-code grants.
 - **The hosted configuration is read-only.** (Re-confirmed in engine source on 2026-10-21:
   `ENGINE_MCP_WRITE_ENABLED=false` in every deployed environment.) The engine's hosted-demo docs state OIDC is required
-  and the two MCP write flags stay disabled in the application configuration. So feature 17 write
+  and the two MCP write flags stay disabled in the application configuration. So feature 19 write
   tools are **not** verifiable against this server; the write halves of #60 (and any write view)
   wait on engine work regardless of what `tools/list` shows.
 
@@ -199,7 +201,7 @@ generated chart is enough otherwise.
 | Skill | View | Spec and dependency boundary |
 |---|---|---|
 | [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) `aipos-problem-clustering` | **Cluster Review board** (best fit in this set) | One row per candidate problem: masked supporting quotes, suggested merges/splits with evidence references, persona and workflow tags. PM compares and confirms; confirmations are prepared for the engine's correction path and shown as pending, never applied. Plain-text list is the fallback. **Can ship with the review slice** — it doesn't need the correction-path tool; full issue closure does. |
-| [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) `aipos-opportunity-package` | **Structured Opportunity card + confirm panel** | The card displays the four-part package with cited evidence and needs no write capability. The propose action's confirm panel (full dry-run preview, exact destination, one explicit yes, then read-back) ships with the write half, after feature 17. |
+| [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) `aipos-opportunity-package` | **Structured Opportunity card + confirm panel** | The card displays the four-part package with cited evidence and needs no write capability. The propose action's confirm panel (full dry-run preview, exact destination, one explicit yes, then read-back) ships with the write half, after feature 19. |
 | [#57](https://github.com/Accelerated-Innovation/aipos-plugins/issues/57) `aipos-signal-intake` | **Source-health table panel** (low priority) | Source-by-source: connected or not, last ingestion, volume in window, drafted connector request. A plain table is nearly as good; build the panel only if the engine gains the status read and PMs ask. Reporting missing sources does not require building those connectors. Before implementing the panel, verify the ingestion-status **response fields** (connection state, last ingestion, volume for the selected window) with a representative authenticated call; define freshness semantics per field and give each field its own fallback ("connection unknown", "last ingestion unknown", "volume unknown") rather than relying solely on the blanket "freshness unknown". |
 | [#59](https://github.com/Accelerated-Innovation/aipos-plugins/issues/59) `aipos-agent-contract` | None | The contract is a document to review, not something to inspect visually. Text/file. |
 
@@ -219,7 +221,7 @@ No current evals check when a view should appear or that the text fallback works
   engine source; direct-endpoint check pending) — parallel, non-blocking for #60's package slice (needs
   a Bearer token: `tools/list` and response-shape diff vs mock; ingestion-status and
   correction-path checks; update #86)
-- [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-17 mocks deferred to the
+- [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-19 mocks deferred to the
   write-integration slice
 - [ ] 2. #59 agent contract (tests first → references schema → skill → PR)
 - [ ] 3. #57 prep (tests + degraded-behavior cases + source-inventory slice; ship decision on
@@ -227,5 +229,5 @@ No current evals check when a view should appear or that the text fallback works
 - [ ] 4. #61 prep (tests; review slice and board can precede the correction path)
 - [ ] 5. Shared panel contract reference + view-appearance, text-fallback and host-rendering
   checks added with each view-bearing skill
-- [ ] 6. Write half of #60 after engine feature 17; #57's freshness half after the status read;
+- [ ] 6. Write half of #60 after engine feature 19; #57's freshness half after the status read;
   #61's full closure after the correction path

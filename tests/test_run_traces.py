@@ -180,3 +180,19 @@ def test_the_runner_keeps_its_config_out_of_the_sessions_reach(traces, tmp_path,
     traces.run_case(case, model="m", out=pathlib.Path("relative/out"), budget=None, timeout=5)
     assert seen == {"config_in_cwd": False, "log_absolute": True,
                     "prompt": "/aipos:aipos-opportunity-package p"}
+
+
+def test_a_timed_out_session_fails_its_case_keeps_its_partial_stream_and_does_not_crash(traces, tmp_path, monkeypatch):
+    partial = json.dumps(init()) + "\n" + '{"type": "assist'  # cut off mid-line by the kill
+
+    def fake_run(cmd, cwd, timeout, **kwargs):
+        raise traces.subprocess.TimeoutExpired(cmd, timeout, output=partial, stderr="")
+
+    monkeypatch.setattr(traces.subprocess, "run", fake_run)
+    case = {"id": "c", "skill": "aipos-opportunity-package", "prompt": "p", "follow_ups": ["again"],
+            "expect": {"skill_loaded": "aipos-opportunity-package"}}
+    verdict = traces.run_case(case, model="m", out=tmp_path / "out", budget=None, timeout=5)
+    assert verdict["passed"] is False
+    assert any("timed out after 5" in v for v in verdict["violations"])
+    assert (tmp_path / "out" / "stream.0.jsonl").read_text() == partial
+    assert not (tmp_path / "out" / "stream.1.jsonl").exists(), "a timed-out case stops; it does not run follow-ups"
