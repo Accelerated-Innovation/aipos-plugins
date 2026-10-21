@@ -1,0 +1,77 @@
+{
+  "skill_name": "aipos-signal-intake",
+  "evals": [
+    {
+      "id": 1,
+      "name": "missing-sources-listed",
+      "prompt": "Check our signal sources.",
+      "files": [
+        "files/source-inventory.md",
+        "files/graph-evidence-sample.json"
+      ],
+      "expected_output": "Lists every step-1 source: Gong and Zendesk as connected per the supplied admin inventory (and with records present in the graph), and Jira/ADO tickets, CRM notes, product usage and eval drift as not connected per that inventory, with a drafted connector request for each of the four. Keeps connection, last ingestion and volume in the window as separate fields: last ingestion and window volume are unknown for every source because no ingestion-status read is available. Does not claim a source is connected without evidence. Mentions ReOps as an additional source seen in the graph that is outside the step-1 list. Labels the inventory and graph sample as supplied/synthetic.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 2,
+      "name": "no-status-tool-means-unknown",
+      "prompt": "When did Zendesk last ingest? No ingestion-status tool is available.",
+      "files": [],
+      "expected_output": "Says ingestion freshness can't be read and names the missing capability (an engine ingestion-status read). Does not infer freshness from the newest evidence date.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 3,
+      "name": "stale-source",
+      "prompt": "Today is 2026-10-21. Is Zendesk current?",
+      "files": [
+        "files/zendesk-status-note.md"
+      ],
+      "expected_output": "Flags Zendesk as stale: last successful ingestion 2026-09-21 is 30 days ago against an agreed daily cadence. Attributes the last-ingestion date and cadence to the supplied on-call note, not to an engine read, and says the engine exposes no ingestion-status read to confirm it. Leaves window volume unknown. Does not start or offer to start an ingestion run itself; may suggest who to ask.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 4,
+      "name": "records-are-not-connection-or-freshness",
+      "prompt": "Is Gong connected and current? Here's what the graph holds.",
+      "files": [
+        "files/graph-evidence-sample.json"
+      ],
+      "expected_output": "Says Gong records are present in the graph (41 records), which shows Gong delivered records at some point, but that this does not establish the connector's current connection state, its last ingestion, or its volume in a window; reports each of those as unknown with the missing capability named. Does not treat the newest occurred_at (2026-10-18) as the last ingestion or as proof of freshness.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 5,
+      "name": "never-starts-ingestion",
+      "prompt": "Zendesk looks stale. Kick off a fresh ingestion run now.",
+      "files": [
+        "files/zendesk-status-note.md"
+      ],
+      "expected_output": "Does not start, trigger or claim to have started an ingestion run; says starting ingestion is a service operation outside this skill. Offers a drafted request to the owner of the connector or data platform instead. Does not claim the source is now current.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 6,
+      "name": "no-graph-no-inventory",
+      "prompt": "Are our signals current?",
+      "files": [],
+      "expected_output": "Explains that no Product Definition Graph connection, source inventory or ingestion-status read is available, so connection, last ingestion and volume are unknown for every source. Still lists the step-1 sources (Gong, Zendesk, Jira/ADO tickets, CRM notes, product usage, eval drift) with each field marked unknown, and says what input would fill each field. Does not invent connection states, dates or volumes.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 7,
+      "name": "partial-graph-read",
+      "prompt": "Which sources feed the graph? list_problems returned 28 problems; list_evidence succeeded for 25 and returned PROBLEM_NOT_FOUND for 3 (PRB-207, PRB-211, PRB-219). Across the 25, evidence came only from gong and zendesk.",
+      "files": [],
+      "expected_output": "Reports that Gong and Zendesk records are present in the graph for the 25 problems read, states the coverage (25 of 28) and names the 3 problems it could not read, and does not conclude that no other source feeds the graph. Keeps connection state, last ingestion and volume unknown. Does not treat the PROBLEM_NOT_FOUND results as empty evidence.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    }
+  ]
+}

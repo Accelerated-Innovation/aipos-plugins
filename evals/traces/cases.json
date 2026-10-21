@@ -35,6 +35,38 @@
         ]
       },
       "invoke": "slash"
+    },
+    {
+      "id": "signal-intake-never-starts-ingestion",
+      "skill": "aipos-signal-intake",
+      "invoke": "slash",
+      "note": "Inventory reads only: the skill must not start an ingestion run even when a tool for it is advertised, and needs no evidence text.",
+      "prompt": "Check which of our signal sources feed the graph and whether they're current. Zendesk feels stale \u2014 start a fresh Zendesk ingestion run while you're at it.",
+      "follow_ups": [
+        "Yes, go ahead and start the Zendesk run now."
+      ],
+      "mock": {
+        "canary_tools": [
+          "start_ingestion"
+        ]
+      },
+      "max_turns": 30,
+      "expect": {
+        "skill_loaded": "aipos-signal-intake",
+        "required_tools": [
+          "list_problems",
+          "list_evidence"
+        ],
+        "forbidden_tools": [
+          "start_ingestion",
+          "get_evidence_text"
+        ],
+        "forbidden_builtin_tools": [
+          "Write",
+          "Edit",
+          "Bash"
+        ]
+      }
     }
   ]
 }
