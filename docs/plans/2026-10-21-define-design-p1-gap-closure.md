@@ -9,7 +9,7 @@ Pillar 1 "Define & Design" (steps 1–10, gates G1–G2). Sequenced in the 2026-
 adds per-skill view specs and acceptance-honesty rules on top of the tests-first criteria each issue
 already carries.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status:** In progress — Step 0 partly verified (below); #60 package slice in PR #91.
+**Status:** In progress — Step 0 verified (below); #60 package slice in PR #91.
 
 ## Context
 
@@ -141,7 +141,28 @@ demo; `demos/insurance/HOSTED.md` and decision record
   on the mock-only invariants (score-ordered `list_problems`, 1:1 opportunities, identical
   reference formats across tools).
 
-Still not verified — needs a direct Bearer token to `https://opportunity.aidlc.org/mcp/` (the engine's local `auth-headers` helper is
+### Verified 2026-10-21 (direct endpoint)
+
+After an interactive OAuth login to `https://opportunity.aidlc.org/mcp/` (the `discovery-engine`
+MCP entry; no token handled in the session), a read-only session confirmed:
+
+- **`tools/list`:** the seven PDG reads plus the three demo-portfolio reads. **No** write
+  (`find_similar_problems`, `propose_problem`, `attach_intent`), ingestion-status or merge/split
+  correction tool is advertised. Input schemas match `evals/mock_pdg`.
+- **Response shapes:** `list_problems`, `list_opportunities`, `get_problem`, `list_evidence`,
+  `get_lineage` and `get_work_item_links` (including link rows) have the mock's field sets.
+  `get_evidence_text` was not called.
+- **Behaviour drift, confirmed live:** errors carry the `Error executing tool <name>: ` prefix;
+  `get_lineage` on an unknown problem is `LINEAGE_NOT_FOUND`; `get_work_item_links` on an
+  unknown problem returns an empty `promoted: false` result; `list_problems` is not ordered by
+  score. (Recorded in `evals/mock_pdg/README.md`; aligning the mock is a separate change.)
+- **Data:** 28 problems; evidence sources are `demo` synthetic references and `reops` study
+  findings only.
+
+The checklist below is kept for the record; its items are now answered by the two verification
+passes above.
+
+Originally blocked on a direct Bearer token to `https://opportunity.aidlc.org/mcp/` (the engine's local `auth-headers` helper is
 local-only and refuses `--hosted`; a hosted token needs a Keycloak client credential or user
 login):
 
@@ -217,8 +238,8 @@ No current evals check when a view should appear or that the text fallback works
 
 ## Work-item summary
 
-- [~] 0. Live-server verification pass (field sets verified through a hosted-demo connector and
-  engine source; direct-endpoint check pending) — parallel, non-blocking for #60's package slice (needs
+- [x] 0. Live-server verification pass (direct endpoint, hosted-demo connector and engine source,
+  2026-10-21; mock behaviour alignment is a separate change) — parallel, non-blocking for #60's package slice (needs
   a Bearer token: `tools/list` and response-shape diff vs mock; ingestion-status and
   correction-path checks; update #86)
 - [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-19 mocks deferred to the

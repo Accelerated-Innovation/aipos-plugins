@@ -66,13 +66,14 @@ canary's shape; when the engine publishes a tool, pin its contract here like the
   ingestion-status or correction tool advertised) have the same key sets as this mock for
   `list_problems`, `list_opportunities`, `get_problem`, `list_evidence`, `get_lineage` and
   `get_work_item_links`. `get_evidence_text` was not called (each call is an access-logged
-  disclosure). The connector's URL was not visible to the verifying session, so this is not
-  claimed as a check of a specific deployment.
+  disclosure). A second pass against the direct endpoint `https://opportunity.aidlc.org/mcp/`
+  (authenticated by an interactive OAuth login) confirmed the same tool list, input schemas and
+  field sets, including work-item link rows.
 - **Behaviour the mock does not yet follow** (engine source at discovery-engine `1a8919d`,
-  confirmed where live samples showed it): errors on the wire carry the SDK prefix
-  `Error executing tool <name>: ` before `CODE: message`; `get_lineage` on an unknown problem
-  is `LINEAGE_NOT_FOUND`; `get_work_item_links` on an unknown problem returns an empty,
-  `promoted: false` result; `list_problems` is ordered by creation time in persistent mode,
+  confirmed live on the direct endpoint where marked): errors on the wire carry the SDK prefix
+  `Error executing tool <name>: ` before `CODE: message` (seen live); `get_lineage` on an
+  unknown problem is `LINEAGE_NOT_FOUND` (seen live); `get_work_item_links` on an unknown problem
+  returns an empty, `promoted: false` result (seen live); `list_problems` is ordered by creation time in persistent mode,
   not by score (seen live); `list_opportunities` holds only scored problems, so it is not 1:1
   with `list_problems`; `evidence_references` and `source_evidence_refs` are bare external IDs
   while `list_evidence` uses `source:id` (seen live); `lineage_ref` equals `problem_id` and
