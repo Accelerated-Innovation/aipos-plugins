@@ -81,9 +81,10 @@ open until the write half lands.
   freshness monitoring is separate and depends on the engine's ingestion-status read.
 - Source-inventory slice detail: five fields per source, each with its own basis and
   `unknown` fallback; drafted connector requests; never starts ingestion (trace-checked).
-- [ ] Verify whether the live engine already exposes an ingestion-status read (Step 0): engine
-  source `1a8919d` has none, and the hosted-demo read connector does not advertise one; a check
-  against the direct endpoint is still pending. If it truly doesn't, keep `blocked: engine` and use the existing dependency entry in #86 — do not open
+- [x] Verify whether the live engine already exposes an ingestion-status read (Step 0): it does
+  not — engine source `1a8919d` has none, and neither the direct endpoint
+  (`https://opportunity.aidlc.org/mcp/`, 2026-10-21) nor the hosted-demo connector advertises one.
+  Since it truly doesn't, keep `blocked: engine` and use the existing dependency entry in #86 — do not open
   a duplicate engine issue.
 - [ ] "Freshness unknown" is the documented fallback, not a claim that freshness monitoring is
   complete.
