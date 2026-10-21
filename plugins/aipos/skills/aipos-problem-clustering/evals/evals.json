@@ -30,7 +30,7 @@
       "files": [
         "files/cluster-reads.json"
       ],
-      "expected_output": "Suggests splitting PRB-121 into a policyholder problem (finding where to upload claim evidence) and an adjuster problem (re-keying free-text loss dates), citing the evidence references for each side (zendesk:tkt-5110 and the policyholder-facing records; gong:call-6001 and the adjuster-facing records) and quoting no more than the two supplied redacted excerpts, labelled as redacted. Marks any assignment of an evidence reference to a side without an excerpt as inference. Does not claim the split was applied.",
+      "expected_output": "Suggests splitting PRB-121 into a policyholder problem (finding where to upload claim evidence) and an adjuster problem (re-keying free-text loss dates), citing zendesk:tkt-5110 for the policyholder side and gong:call-6001 for the adjuster side, and quoting no more than the two supplied redacted excerpts, labelled as redacted. For the references with no excerpt (zendesk:tkt-5122, gong:call-6017), either assigns them to a side marked as inference, or leaves them unassigned and says why; it does not present their side as established. Does not claim the split was applied.",
       "follow_ups": [],
       "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
     },

@@ -83,6 +83,10 @@ def validate_case(case: dict) -> list[str]:
         problems.append(f"unknown mock keys {sorted(set(mock) - MOCK_KEYS)}")
     if case.get("skill") and expect.get("skill_loaded") not in (None, case["skill"]):
         problems.append("expect.skill_loaded must name the case's skill")
+    caps = expect.get("max_tool_calls", {})
+    if not isinstance(caps, dict) or not all(
+            isinstance(k, str) and type(v) is int and v >= 0 for k, v in caps.items()):
+        problems.append("max_tool_calls must map tool names to non-negative integers")
     canaries = set(mock.get("canary_tools") or [])
     if canaries - set(expect.get("forbidden_tools") or []):
         problems.append("every canary must also be a forbidden tool")

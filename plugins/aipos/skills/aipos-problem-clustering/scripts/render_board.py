@@ -28,6 +28,7 @@ ASSETS = Path(__file__).resolve().parent / "assets"
 CONTRACT = "cluster-review.v1"
 MODES = {"connected", "supplied"}
 STATUSES = {"suggested", "pending"}
+BASES = {"E", "I"}
 MAX_EXCERPTS = 5
 MAX_EXCERPT_CHARS = 1500
 
@@ -52,6 +53,8 @@ def validate(review: dict) -> dict:
         label = s.get("id", "?")
         if s.get("status") not in STATUSES:
             raise ValueError(f"suggestion {label}: status {s.get('status')!r} — only suggested or pending; nothing is applied here")
+        if s.get("basis") not in BASES:
+            raise ValueError(f"suggestion {label}: basis must be E (the cited records show it) or I (inferred)")
         if not s.get("rationale"):
             raise ValueError(f"suggestion {label}: needs a rationale")
         problems = s.get("problems") or []

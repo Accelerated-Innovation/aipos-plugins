@@ -232,3 +232,11 @@ def test_a_per_tool_call_cap_is_enforced_on_server_calls(traces):
     calls.append({"tool": "get_evidence_text"})
     verdict = traces.evaluate(events, calls, expect, plugin_path=PLUGIN)
     assert verdict["violations"] == ["get_evidence_text reached the server 3 times (cap 2)"]
+
+
+@pytest.mark.parametrize("caps", [{"get_evidence_text": "2"}, {"get_evidence_text": -1},
+                                  {"get_evidence_text": True}, ["get_evidence_text"]])
+def test_a_malformed_call_cap_is_rejected_when_the_case_loads(traces, caps):
+    case = {"id": "x", "skill": "aipos-opportunity-package", "prompt": "p",
+            "expect": {"max_tool_calls": caps}}
+    assert any("max_tool_calls" in p for p in traces.validate_case(case))

@@ -224,3 +224,11 @@ def test_packaged_assets_match_the_viewer_source():
     run = subprocess.run([sys.executable, str(ROOT / "viewers" / "cluster-review" / "build.py"), "--check"],
                          capture_output=True, text=True, timeout=30)
     assert run.returncode == 0, run.stdout + run.stderr
+
+
+@pytest.mark.parametrize("basis", [None, "", "A", "e"])
+def test_every_suggestion_says_whether_it_is_evidence_or_inference(board, review, basis):
+    bad = suggestion(review, problems=RENEWAL[:2], basis=basis,
+                     evidence={RENEWAL[0]: ["gong:call-7781"], RENEWAL[1]: ["gong:call-7781"]})
+    with pytest.raises(ValueError, match="basis"):
+        board.validate(bad)
