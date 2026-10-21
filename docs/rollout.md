@@ -13,7 +13,7 @@ version. The earlier [1.0.1 release record](release-check.md) is historical.
 
 Routing fix: `aipos-map-render` and `aipos-workflow-create` now say which goes first when a journey
 diagram is requested for a journey with no `workflow.json` — workflow-create authors the source and
-hands rendering to map-render. Skill descriptions only: routing selection changes; no executable behavior (scripts) or file-format change.
+hands rendering to map-render. `aipos-map-render` also says that a scored map of unreviewed draft packages means draft-quality scores from feature-refine, and that complexity scoring comes from feature-slice only when asked for. Skill descriptions only: routing selection changes; no executable behavior (scripts) or file-format change.
 
 ## Updating to 1.13.0
 
