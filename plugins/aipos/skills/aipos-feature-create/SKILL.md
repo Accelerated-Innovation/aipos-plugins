@@ -230,6 +230,12 @@ quality policy is a gap to resolve, not permission to invent acceptance behavior
 
 Record the answer as `multi_agent: true|false` in `eval_criteria.yaml`. **Never infer it from the spec, even when the answer looks obvious** — the team's explicit answer is the record. If the PM defers, leave `multi_agent` unset and list the question as an open gap. Asking here means refine confirms the flag instead of discovering it missing, and batch scoring downstream can read it from the record.
 
+**Agent contracts.** When the feature's agent has a contract (`../../references/agent-contract.md`),
+derive evaluation coverage from it: each tool, guardrail and escalation trigger it lists needs a
+scenario or criterion that exercises it. Cite the contract by agent ID and revision rather than
+restating it. A TBD in the contract is an open gap here too — never fill it to make a scenario
+complete.
+
 **Inheritance.** If the parent epic carries evaluation criteria, show them briefly and say:
 
 > These evaluation expectations already exist at the epic level. I'll apply the relevant ones here and adjust as needed.

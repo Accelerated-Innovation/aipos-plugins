@@ -1254,6 +1254,62 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "agent-contract",
+      "prompt": "Write the agent contract for our quote-approval agent: tools, guardrails and escalation.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-agent-contract",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "agent-authority-contract",
+      "prompt": "Spell out what our claims-intake agent may do on its own, which actions need a person to approve, and when it hands off to a human.",
+      "context": "",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-agent-contract",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "workflow-contrast",
+      "prompt": "Map the customer journey for quote approval with actors and handoffs.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-workflow-create",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "agent-scenarios-contrast",
+      "prompt": "Write Gherkin acceptance scenarios for the quote-approval agent feature.",
+      "context": "",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-feature-create",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }

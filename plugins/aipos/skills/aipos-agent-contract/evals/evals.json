@@ -1,0 +1,54 @@
+{
+  "skill_name": "aipos-agent-contract",
+  "evals": [
+    {
+      "id": 1,
+      "name": "write-tools-need-confirmation-status",
+      "prompt": "The agent can read quotes and send approval emails. Draft its contract.",
+      "files": [],
+      "expected_output": "Lists the email send as an external send (a write outside the agent's boundary) and states whether a human confirms it, marking it TBD with an owner if the user hasn't said. Does not assume sending is safe. Lists reading quotes as a read.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 2,
+      "name": "missing-escalation-is-tbd",
+      "prompt": "Draft the contract for our quote-approval agent. It reads quotes and recommends approve or return. We haven't decided what happens when the agent can't answer.",
+      "files": [],
+      "expected_output": "Marks the escalation section TBD with an owner and explains what's needed to close it (a concrete trigger and the human role it goes to). Does not invent an escalation path, trigger, or approver role.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 3,
+      "name": "complete-contract",
+      "prompt": "Write the agent contract from these notes.",
+      "files": [
+        "files/quote-approval-brief.md"
+      ],
+      "expected_output": "Produces a contract with all six sections in order \u2014 Inputs, Tools, Outputs, Guardrails, Escalation, Human checkpoints \u2014 using the supplied facts. Lists read_quote as read with no confirmation, set_quote_status as a write and send_approval_email as an external send, each confirmed by the deal desk manager, with a matching human-checkpoint row for each confirmed tool. Records both escalations with their trigger and human role (deal desk manager; legal counsel). Notes the citation rule is enforced only by model instruction. Marks the quote record as containing personal data. Leaves no TBDs, because the notes settle every field, and states the contract is complete against the shared schema. Invents no tool, rule, role or escalation not in the notes.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 4,
+      "name": "handoff",
+      "prompt": "Draft the contract for the quote-approval agent from these notes, and tell me who uses it next.",
+      "files": [
+        "files/quote-approval-brief.md"
+      ],
+      "expected_output": "Names dialogue flows (step 8) and the AI risk review as consumers of the contract, and eval cases authored through aipos-feature-create; says each reads the shared contract schema rather than a copy and treats remaining TBDs as open gaps. Does not claim to have produced dialogue flows, eval cases or a risk review itself.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 5,
+      "name": "vague-escalation-is-not-a-path",
+      "prompt": "Write the contract for our claims-intake agent. It reads claim forms and creates claim records in our claims system. If it's ever unsure, it should escalate to a human.",
+      "files": [],
+      "expected_output": "Does not accept 'escalate to a human when unsure' as a complete escalation: asks for or marks TBD (with an owner) the concrete trigger and the human role it goes to. Lists creating claim records as a write and marks whether a human confirms it as TBD with an owner unless stated. Notes claim forms likely carry personal data, marking it TBD or asking rather than asserting.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    }
+  ]
+}
