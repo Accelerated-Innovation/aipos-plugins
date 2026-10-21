@@ -1,6 +1,6 @@
 ---
 name: aipos-workflow-create
-description: "Create or update workflow.json describing a customer journey, actors, branches, and handoffs, with references to canonical behavior. Use for journey structure and coverage gaps. Delegate rendering of existing workflow source to map-render."
+description: "Create or update workflow.json describing a customer journey, actors, branches, and handoffs, with references to canonical behavior. Use for journey structure and coverage gaps, and as the first step when a journey diagram is requested but no workflow.json exists. Delegate rendering of existing workflow source to map-render."
 ---
 
 # GovKit Workflow Create — Authoring the Workflow Source

@@ -9,6 +9,12 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.13.1
+
+Routing fix: `aipos-map-render` and `aipos-workflow-create` now say which goes first when a journey
+diagram is requested for a journey with no `workflow.json` — workflow-create authors the source and
+hands rendering to map-render. Descriptions only; no behavior or file-format change.
+
 ## Updating to 1.13.0
 
 Adds `aipos-problem-clustering`, a nineteenth skill, for step 2 cluster review: compare
