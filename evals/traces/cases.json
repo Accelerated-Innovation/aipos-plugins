@@ -102,7 +102,12 @@
         ],
         "max_tool_calls": {
           "get_evidence_text": 5
-        }
+        },
+        "forbidden_command_patterns": [
+          "\\bcurl\\b",
+          "\\bwget\\b",
+          "https?://"
+        ]
       }
     }
   ]

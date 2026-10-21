@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all eighteen `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all nineteen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 Everything merged to `main` is released: the version in
@@ -8,6 +8,19 @@ Everything merged to `main` is released: the version in
 and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
+
+## Updating to 1.13.0
+
+Adds `aipos-problem-clustering`, a nineteenth skill, for step 2 cluster review: compare
+candidate problems on their evidence; suggest merges and splits that cite the references for
+every side; show quotes only as redacted excerpts (at most five); and prepare accepted
+corrections as **pending** hand-offs. It never applies a correction — and the engine currently
+has no merge/split correction path, so a prepared correction's destination is TBD.
+
+It bundles `scripts/overlap_signals.py` (shared evidence, origins and personas as signals, not
+verdicts) and `scripts/render_board.py`, which renders the **Cluster Review board**: an offline
+HTML file opened in a browser, not an in-chat panel. The shared rules for any such view live in
+the new `references/panel-contract.md`. No migration is needed.
 
 ## Updating to 1.12.0
 

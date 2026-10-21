@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cluster Review · draft</title>
+<style>/*STYLE*/</style></head>
+<body>
+<main id="board" hidden>
+  <header class="top">
+    <div><p class="eyebrow">AIPOS · step 2 · draft review</p><h1>Cluster Review</h1></div>
+    <p class="pill"><span class="draft">Draft</span> <span id="source"></span></p>
+  </header>
+  <p class="notice" role="note">Offline snapshot, not a live view. Corrections prepared here are <strong>pending hand-offs</strong>: nothing is applied, sent or written, and no engine correction path exists to apply them.</p>
+  <p id="coverage" class="muted"></p>
+  <p id="stale" class="warn" role="status" hidden>This capture is more than a day old. Re-read the graph before relying on it; prepared corrections are marked stale.</p>
+
+  <section aria-labelledby="problems-heading">
+    <h2 id="problems-heading">Candidate problems</h2>
+    <div class="scroll"><table>
+      <thead><tr><th scope="col"><span class="sr">Compare</span></th><th scope="col">Problem</th><th scope="col">Personas</th><th scope="col">Evidence</th><th scope="col">Workflow tags</th><th scope="col">Overlaps</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <p id="no-problems" class="muted" hidden>No candidate problems in this review.</p>
+  </section>
+
+  <section aria-labelledby="compare-heading">
+    <h2 id="compare-heading">Compare</h2>
+    <div id="compare" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="suggestions-heading">
+    <h2 id="suggestions-heading">Suggested merges and splits</h2>
+    <div id="suggestions"></div>
+    <p id="no-suggestions" class="muted" hidden>No suggestions in this review.</p>
+  </section>
+
+  <section aria-labelledby="excerpts-heading">
+    <h2 id="excerpts-heading">Redacted excerpts <small id="excerpt-count"></small></h2>
+    <div id="excerpts"></div>
+  </section>
+
+  <section aria-labelledby="prepared-heading">
+    <h2 id="prepared-heading" tabindex="-1">Prepared corrections — pending, not applied</h2>
+    <p id="prepared-empty" class="muted">None prepared. Use “Prepare correction” on a suggestion.</p>
+    <ul id="prepared-list"></ul>
+    <div id="handoff-wrap" hidden>
+      <label for="handoff">Hand-off (copy to the person who owns problem corrections)</label>
+      <textarea id="handoff" rows="10" readonly></textarea>
+      <button type="button" id="copy">Copy hand-off</button> <span id="copy-status" role="status"></span>
+    </div>
+  </section>
+</main>
+<p id="error" class="warn" role="alert" hidden></p>
+<script type="application/json" id="review-data">/*DATA*/</script>
+<script type="module">/*SCRIPT*/</script>
+</body>
+</html>

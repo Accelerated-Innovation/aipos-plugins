@@ -48,7 +48,7 @@ DEFAULT_OUT = ROOT / ".claude" / "traces"
 BASE_ALLOWED = ["Skill", "Read", "Glob", "Grep", f"mcp__{SERVER}"]
 CASE_KEYS = {"id", "skill", "prompt", "invoke", "follow_ups", "files", "mock", "max_turns", "expect", "note"}
 EXPECT_KEYS = {"skill_loaded", "forbidden_tools", "required_tools", "forbidden_builtin_tools",
-               "forbidden_command_patterns"}
+               "forbidden_command_patterns", "max_tool_calls"}
 MOCK_KEYS = {"fixture", "canary_tools", "evidence_text", "links"}
 
 
@@ -175,6 +175,10 @@ def evaluate(events: list[dict], calls: list[dict], expect: dict, *, plugin_path
     for pattern in expect.get("forbidden_command_patterns") or []:
         if any(re.search(pattern, c) for c in commands):
             violations.append(f"a shell command matched forbidden pattern {pattern}")
+    for name, cap in (expect.get("max_tool_calls") or {}).items():
+        count = reached.count(name)
+        if count > cap:
+            violations.append(f"{name} reached the server {count} times (cap {cap})")
     for name in expect.get("required_tools") or []:
         if name not in reached:
             violations.append(f"required read {name} never reached the server")

@@ -6,7 +6,7 @@ Thanks for helping improve AIPOS. This repo is a [Claude Code plugin marketplace
 
 ```
 .claude-plugin/marketplace.json   # marketplace catalog (one aipos entry)
-plugins/aipos/                    # all eighteen aipos-* skills
+plugins/aipos/                    # all nineteen aipos-* skills
   .claude-plugin/plugin.json      # plugin manifest (bump version on release)
   references/                     # plugin-wide references shared by several skills
   skills/<skill-name>/SKILL.md    # one folder per skill; loads automatically
@@ -121,6 +121,22 @@ Tags do not change what users install; they mark what each version was, so versi
 ## License
 
 By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
+
+### The Cluster Review board
+
+`viewers/cluster-review/` owns the dependency-free source of `aipos-problem-clustering`'s
+offline board. Run `python viewers/cluster-review/build.py` after source edits (`--check` is
+the pytest freshness gate) and `node --test viewers/cluster-review/model.test.mjs` for the
+board logic. To drive a rendered board in Chrome:
+
+```bash
+python plugins/aipos/skills/aipos-problem-clustering/scripts/render_board.py \
+  viewers/cluster-review/fixtures/demo-review.json -o /tmp/board.html
+node viewers/cluster-review/check-page.mjs /tmp/board.html [screenshot-dir]
+```
+
+It reuses the journey viewer's pinned Playwright and the local Chrome. The board is an offline
+snapshot; see `plugins/aipos/references/panel-contract.md` before adding another view.
 
 ### The portfolio prototype
 
