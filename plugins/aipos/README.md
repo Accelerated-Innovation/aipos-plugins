@@ -1,6 +1,6 @@
 # AIPOS
 
-Seventeen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
+Eighteen focused skills supporting product strategy, Continuous Discovery (P1), Rapid Validation (P2),
 and Accelerated Development (P3) in one installation: `aipos@aipos`.
 
 ## Skill catalog
@@ -12,6 +12,7 @@ Pillars describe lifecycle use. They do not create separate copies of a skill.
 | [aipos-product-strategy](skills/aipos-product-strategy/SKILL.md) | Product vision and strategy: start, assess, or revise one Product Opportunity Brief | Graph optional; delegates experiments and initiative canvases; does not approve production scope |
 | [aipos-product-vision](skills/aipos-product-vision/SKILL.md) | PMLC Step 6: a Product Vision, or a Learn-mode vision, through draft, routed stakeholder review and ratification | Engagement is routed from risk and readiness is computed; ratification is not approval to build |
 | [aipos-portfolio-dashboard](skills/aipos-portfolio-dashboard/SKILL.md) | Inspect portfolio counts, filter opportunities, drill into records and compare outcomes | Fixtures or captured local graph snapshots via MCP or explicit REST; fixed offline dashboard with filters and guided queries, refreshed by rerunning capture |
+| [aipos-signal-intake](skills/aipos-signal-intake/SKILL.md) | Step 1 coverage: every signal source with connection, records in graph, last ingestion and window volume, each with its own basis, plus drafted connector requests | Graph reads over MCP and supplied inventories; read-only, never starts ingestion; freshness stays unknown without an engine ingestion-status read |
 | [aipos-opportunity-package](skills/aipos-opportunity-package/SKILL.md) | Package a graph problem into the four-part Structured Opportunity for gate 1 | Live Product Definition Graph reads over MCP or a supplied graph-style record; read-only, packages only, never writes |
 | [aipos-agent-contract](skills/aipos-agent-contract/SKILL.md) | Write or review one agent's contract: inputs, tools with side effects and confirmation status, outputs, guardrails, escalation and human checkpoints | Notes, a workflow or a feature brief; TBDs owned, never invented; schema in `references/agent-contract.md`, bundled stdlib completeness checker |
 | [aipos-exploration-planning](skills/aipos-exploration-planning/SKILL.md) | P1: evidence review, research gaps, exploration decision drafts | Requires live graph reads; does not record authoritative decisions |

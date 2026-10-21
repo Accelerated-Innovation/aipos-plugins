@@ -196,3 +196,29 @@ def test_a_timed_out_session_fails_its_case_keeps_its_partial_stream_and_does_no
     assert any("timed out after 5" in v for v in verdict["violations"])
     assert (tmp_path / "out" / "stream.0.jsonl").read_text() == partial
     assert not (tmp_path / "out" / "stream.1.jsonl").exists(), "a timed-out case stops; it does not run follow-ups"
+
+
+def test_forbidden_command_patterns_catch_only_matching_shell_commands(traces):
+    expect = {k: v for k, v in EXPECT.items() if k != "forbidden_builtin_tools"}
+    expect["forbidden_command_patterns"] = [r"\bcurl\b", r"/v1/ingestion"]
+    events, calls = clean_run()
+    events.insert(-1, use("Bash", command="ls -la references/"))
+    assert traces.evaluate(events, calls, expect, plugin_path=PLUGIN)["passed"]
+    events.insert(-1, use("Bash", command="curl -X POST https://engine.invalid/v1/ingestion/runs"))
+    verdict = traces.evaluate(events, calls, expect, plugin_path=PLUGIN)
+    assert verdict["violations"] == [r"a shell command matched forbidden pattern \bcurl\b",
+                                     "a shell command matched forbidden pattern /v1/ingestion"]
+
+
+def test_the_session_directory_name_does_not_leak_the_case(traces, tmp_path, monkeypatch):
+    seen = {}
+
+    def fake_run(cmd, cwd, **kwargs):
+        seen["cwd"] = pathlib.Path(cwd).name
+        return traces.subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(traces.subprocess, "run", fake_run)
+    case = {"id": "never-starts-ingestion", "skill": "aipos-opportunity-package", "prompt": "p",
+            "expect": {}}
+    traces.run_case(case, model="m", out=tmp_path / "out", budget=None, timeout=5)
+    assert "ingestion" not in seen["cwd"]

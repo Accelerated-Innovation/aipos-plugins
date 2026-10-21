@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import os
 import shutil
 import subprocess
@@ -46,7 +47,8 @@ DEFAULT_OUT = ROOT / ".claude" / "traces"
 #: attempt still shows in the stream — which is the point.
 BASE_ALLOWED = ["Skill", "Read", "Glob", "Grep", f"mcp__{SERVER}"]
 CASE_KEYS = {"id", "skill", "prompt", "invoke", "follow_ups", "files", "mock", "max_turns", "expect", "note"}
-EXPECT_KEYS = {"skill_loaded", "forbidden_tools", "required_tools", "forbidden_builtin_tools"}
+EXPECT_KEYS = {"skill_loaded", "forbidden_tools", "required_tools", "forbidden_builtin_tools",
+               "forbidden_command_patterns"}
 MOCK_KEYS = {"fixture", "canary_tools", "evidence_text", "links"}
 
 
@@ -169,6 +171,10 @@ def evaluate(events: list[dict], calls: list[dict], expect: dict, *, plugin_path
     for name in expect.get("forbidden_builtin_tools") or []:
         if name in emitted:
             violations.append(f"forbidden built-in {name} was called")
+    commands = [str(u["input"].get("command", "")) for u in uses if u["name"] == "Bash"]
+    for pattern in expect.get("forbidden_command_patterns") or []:
+        if any(re.search(pattern, c) for c in commands):
+            violations.append(f"a shell command matched forbidden pattern {pattern}")
     for name in expect.get("required_tools") or []:
         if name not in reached:
             violations.append(f"required read {name} never reached the server")
@@ -253,7 +259,8 @@ def run_case(case: dict, *, model: str, out: Path, budget: float | None, timeout
     # model must not be able to read the config that names the canaries.
     out = out.resolve()
     out.mkdir(parents=True, exist_ok=True)
-    work = Path(tempfile.mkdtemp(prefix=f"trace-{case['id']}-"))
+    # A neutral name: the session can see its working directory, and the case id would hint at the test.
+    work = Path(tempfile.mkdtemp(prefix="session-"))
     try:
         for rel in case.get("files") or []:
             src = ROOT / rel

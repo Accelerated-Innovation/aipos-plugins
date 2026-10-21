@@ -1310,6 +1310,48 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "signals-current",
+      "prompt": "Are our customer signals up to date? Which sources aren't feeding the graph?",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-signal-intake",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "signal-sources-gap",
+      "prompt": "List which of our step 1 signal sources are connected to the discovery engine and draft connector requests for the missing ones.",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-signal-intake",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "planning-contrast",
+      "prompt": "Which evidenced problems deserve exploration capacity next quarter?",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-exploration-planning",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }
