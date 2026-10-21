@@ -238,10 +238,9 @@ No current evals check when a view should appear or that the text fallback works
 
 ## Work-item summary
 
-- [x] 0. Live-server verification pass (direct endpoint, hosted-demo connector and engine source,
-  2026-10-21; mock behaviour alignment is a separate change) — parallel, non-blocking for #60's package slice (needs
-  a Bearer token: `tools/list` and response-shape diff vs mock; ingestion-status and
-  correction-path checks; update #86)
+- [x] 0. Live-server verification pass — done 2026-10-21 against the direct endpoint, the
+  hosted-demo connector and engine source: `tools/list` and response shapes match the mock; no
+  ingestion-status or correction tool; #86 updated. Mock behaviour alignment is a separate change.
 - [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-19 mocks deferred to the
   write-integration slice
 - [ ] 2. #59 agent contract (tests first → references schema → skill → PR)
