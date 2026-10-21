@@ -39,7 +39,9 @@ connected server nor supplied records, stop and say what is missing.
    `list_evidence` and `get_lineage`. Record coverage — how many read out of how many, and every
    failed read by problem and error code. A failed read is not an empty one. A response with a
    `schema_version` other than 1 stops the review for that problem rather than being guessed at.
-2. **Find the overlaps.** When the session can run Python, save the reads as a
+2. **Find the overlaps.** (Bundled scripts are in this skill's own `scripts/` folder; resolve
+   that path against the skill's base directory, not the user's working directory.) When the
+   session can run Python, save the reads as a
    `cluster-reads.v1` capture and run `python3 scripts/overlap_signals.py <reads> -o <review>`:
    it lists shared evidence, shared originating sources and shared personas per pair. Otherwise
    compute the same overlaps by hand. **An overlap is where to look, not a verdict**: several
