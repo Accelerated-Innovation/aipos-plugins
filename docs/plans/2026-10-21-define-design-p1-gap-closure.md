@@ -258,7 +258,7 @@ No current evals check when a view should appear or that the text fallback works
 - [~] 2. #59 agent contract (PR open) (tests first → references schema → skill → PR)
 - [~] 3. #57 prep — source-inventory slice in its PR; freshness half still blocked (tests + degraded-behavior cases + source-inventory slice; ship decision on
   verification)
-- [x] 4. #61 — review slice + board in PR #94; acceptance amended, closes on merge (tests; review slice and board can precede the correction path)
+- [x] 4. #61 — review slice + board in PR #94; acceptance amended, closes on merge
 - [~] 5. Shared panel contract reference (`references/panel-contract.md`, with #61's board; native MCP Apps not available — engine registers no UI resources) + view-appearance, text-fallback and host-rendering
   checks added with each view-bearing skill
 - [ ] 6. Write half of #60 after engine feature 19; #57's freshness half after the status read;
