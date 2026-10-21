@@ -1352,6 +1352,48 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "review-clusters",
+      "prompt": "Review this week's candidate problems and suggest merges.",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-problem-clustering",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "cluster-split",
+      "prompt": "PRB-121 seems to mix two different user groups. Should we split it, and on what evidence?",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-problem-clustering",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "planning-contrast-2",
+      "prompt": "Prepare our planning agenda from research coverage gaps.",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-exploration-planning",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }

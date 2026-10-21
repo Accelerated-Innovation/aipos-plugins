@@ -1,0 +1,273 @@
+{
+ "contract": "cluster-reads.v1",
+ "source": {
+  "mode": "supplied",
+  "synthetic": true,
+  "server": null,
+  "captured_at": "2026-10-21T16:00:00+00:00",
+  "note": "[SYNTHETIC] Graph-style reads supplied for evaluation; not evidence, not a live read."
+ },
+ "coverage": {
+  "problems_listed": 3,
+  "problems_total": 3,
+  "failed": []
+ },
+ "problems": [
+  {
+   "problem": {
+    "problem_id": "PRB-104",
+    "title": "[SYNTHETIC] Renewal quotes sit in review until an agent chases status by hand",
+    "composite_score": 0.78,
+    "evidence_references": [
+     "tkt-3391",
+     "call-4981",
+     "tkt-3420"
+    ],
+    "personas": [
+     {
+      "name": "Renewal Agent",
+      "confidence": 0.88
+     }
+    ],
+    "lineage_ref": "PRB-104",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "PRB-104",
+    "items": [
+     {
+      "provenance_reference": "zendesk:tkt-3391",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-3391",
+      "occurred_at": "2026-09-14T10:12:00+00:00",
+      "record_url": "https://fixture.invalid/zendesk/tkt-3391",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "gong:call-4981",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-4981",
+      "occurred_at": "2026-09-18T14:40:00+00:00",
+      "record_url": "https://fixture.invalid/gong/call-4981",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-3420",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-3420",
+      "occurred_at": "2026-09-20T08:05:00+00:00",
+      "record_url": "https://fixture.invalid/zendesk/tkt-3420",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 3
+   },
+   "lineage": {
+    "problem_id": "PRB-104",
+    "source_evidence_refs": [
+     "tkt-3391",
+     "call-4981",
+     "tkt-3420"
+    ],
+    "originating_sources": [
+     "zendesk:tkt-3391",
+     "gong:call-4981",
+     "zendesk:tkt-3420"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "PRB-117",
+    "title": "[SYNTHETIC] Agents cannot see where a renewal quote is in review",
+    "composite_score": 0.64,
+    "evidence_references": [
+     "tkt-3391",
+     "tkt-3502",
+     "call-5012"
+    ],
+    "personas": [
+     {
+      "name": "Renewal Agent",
+      "confidence": 0.81
+     },
+     {
+      "name": "Team Lead",
+      "confidence": 0.55
+     }
+    ],
+    "lineage_ref": "PRB-117",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "PRB-117",
+    "items": [
+     {
+      "provenance_reference": "zendesk:tkt-3391",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-3391",
+      "occurred_at": "2026-09-14T10:12:00+00:00",
+      "record_url": "https://fixture.invalid/zendesk/tkt-3391",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-3502",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-3502",
+      "occurred_at": "2026-09-29T11:30:00+00:00",
+      "record_url": "https://fixture.invalid/zendesk/tkt-3502",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "gong:call-5012",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-5012",
+      "occurred_at": "2026-10-02T16:00:00+00:00",
+      "record_url": "https://fixture.invalid/gong/call-5012",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 3
+   },
+   "lineage": {
+    "problem_id": "PRB-117",
+    "source_evidence_refs": [
+     "tkt-3391",
+     "tkt-3502",
+     "call-5012"
+    ],
+    "originating_sources": [
+     "zendesk:tkt-3391",
+     "zendesk:tkt-3502",
+     "gong:call-5012"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "PRB-121",
+    "title": "[SYNTHETIC] Claims intake forms are confusing",
+    "composite_score": 0.59,
+    "evidence_references": [
+     "tkt-5110",
+     "tkt-5122",
+     "call-6001",
+     "call-6017"
+    ],
+    "personas": [
+     {
+      "name": "Policyholder",
+      "confidence": 0.71
+     },
+     {
+      "name": "Claims Adjuster",
+      "confidence": 0.66
+     }
+    ],
+    "lineage_ref": "PRB-121",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "PRB-121",
+    "items": [
+     {
+      "provenance_reference": "zendesk:tkt-5110",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-5110",
+      "occurred_at": "2026-10-03T09:00:00+00:00",
+      "record_url": "https://fixture.invalid/zendesk/tkt-5110",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-5122",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-5122",
+      "occurred_at": "2026-10-05T13:20:00+00:00",
+      "record_url": "https://fixture.invalid/zendesk/tkt-5122",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "gong:call-6001",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-6001",
+      "occurred_at": "2026-10-07T15:45:00+00:00",
+      "record_url": "https://fixture.invalid/gong/call-6001",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "gong:call-6017",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-6017",
+      "occurred_at": "2026-10-09T10:10:00+00:00",
+      "record_url": "https://fixture.invalid/gong/call-6017",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 4
+   },
+   "lineage": {
+    "problem_id": "PRB-121",
+    "source_evidence_refs": [
+     "tkt-5110",
+     "tkt-5122",
+     "call-6001",
+     "call-6017"
+    ],
+    "originating_sources": [
+     "zendesk:tkt-5110",
+     "zendesk:tkt-5122",
+     "gong:call-6001",
+     "gong:call-6017"
+    ],
+    "schema_version": 1
+   }
+  }
+ ],
+ "excerpts": [
+  {
+   "provenance_reference": "zendesk:tkt-5110",
+   "problem_id": "PRB-121",
+   "source_system": "zendesk",
+   "excerpt": "[SYNTHETIC, redacted] [NAME]: I filled in the claim form twice and still can't find where to upload the photos of the damage.",
+   "origin": "source",
+   "redaction_applied": true,
+   "anchored": true,
+   "truncated": false,
+   "schema_version": 1
+  },
+  {
+   "provenance_reference": "gong:call-6001",
+   "problem_id": "PRB-121",
+   "source_system": "gong",
+   "excerpt": "[SYNTHETIC, redacted] Adjuster: every intake form comes in with the loss date in free text, so I re-key it into the claims system before I can assign it.",
+   "origin": "source",
+   "redaction_applied": true,
+   "anchored": true,
+   "truncated": false,
+   "schema_version": 1
+  }
+ ],
+ "_tbd": "Workflow tags are not exposed by the graph; none are supplied."
+}
