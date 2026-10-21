@@ -46,6 +46,40 @@ exercised on every run. Going live is swapping the registration, not changing th
 | `MOCK_PDG_FIXTURE` | Serve a different fixture file |
 | `MOCK_PDG_EVIDENCE_TEXT=off` | `get_evidence_text` is not advertised (the engine's behaviour when evidence text is unconfigured) |
 | `MOCK_PDG_LINKS=off` | `get_work_item_links` raises `LINKS_UNAVAILABLE` — unknown, not "not promoted" |
+| `MOCK_PDG_ACCESS_LOG=<path>` | JSON lines: every `get_evidence_text` call, refusals included |
+| `MOCK_PDG_CALL_LOG=<path>` | JSON lines: every `tools/call` — name, arguments, outcome |
+| `MOCK_PDG_CANARY_TOOLS=a,b` | Advertise **canaries**: names a skill must never call (see below) |
+
+## Canaries are not contracts
+
+A canary is a tool name a skill must never call — a write it has no authority for, or a tool
+whose engine contract has not been verified — advertised so that declining it is observable.
+Its input schema is deliberately open, every call is refused with `CANARY_INVOKED` and logged,
+and nothing it returns can pass for a record. `evals/run_traces.py` uses canaries and the call
+log to check tool behaviour in real Claude Code sessions. Never build a skill against a
+canary's shape; when the engine publishes a tool, pin its contract here like the seven reads.
+
+## Verification against the engine — 2026-10-21
+
+- **Field sets match.** Read responses captured through an authenticated, connected read
+  connector serving the Harborlight demo (seven PDG reads plus three demo reads; no write,
+  ingestion-status or correction tool advertised) have the same key sets as this mock for
+  `list_problems`, `list_opportunities`, `get_problem`, `list_evidence`, `get_lineage` and
+  `get_work_item_links`. `get_evidence_text` was not called (each call is an access-logged
+  disclosure). The connector's URL was not visible to the verifying session, so this is not
+  claimed as a check of a specific deployment.
+- **Behaviour the mock does not yet follow** (engine source at discovery-engine `1a8919d`,
+  confirmed where live samples showed it): errors on the wire carry the SDK prefix
+  `Error executing tool <name>: ` before `CODE: message`; `get_lineage` on an unknown problem
+  is `LINEAGE_NOT_FOUND`; `get_work_item_links` on an unknown problem returns an empty,
+  `promoted: false` result; `list_problems` is ordered by creation time in persistent mode,
+  not by score (seen live); `list_opportunities` holds only scored problems, so it is not 1:1
+  with `list_problems`; `evidence_references` and `source_evidence_refs` are bare external IDs
+  while `list_evidence` uses `source:id` (seen live); `lineage_ref` equals `problem_id` and
+  `originating_sources` has one `source:id` per evidence record (seen live); `get_evidence_text`
+  is always advertised by the engine. Aligning the mock changes tests that existing skills
+  rely on, so it is a separate change; until then a skill must not depend on these mock-only
+  invariants.
 
 ## What the default fixture exercises
 
