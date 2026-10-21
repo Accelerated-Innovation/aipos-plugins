@@ -326,3 +326,60 @@ def test_every_evidence_text_disclosure_is_logged_including_refusals(graph, mock
         ("gong:call-5530", True, None), ("reops:int-0412", False, "EVIDENCE_TEXT_UNAVAILABLE")]
     assert graph.list_evidence(TRIAGE) and len(log.read_text().splitlines()) == 2, \
         "only evidence text is logged"
+
+
+# --- call log and canaries -------------------------------------------------------
+#
+# A trace test has to see what a skill called, including what it was offered and declined. The
+# call log records every tools/call; a canary is a name the skill must never call, advertised so
+# declining it is observable. Canaries are not contracts — their schema is open on purpose.
+
+
+def _call(mock, graph, name, arguments=None, msg_id=1):
+    return mock.handle(graph, {"jsonrpc": "2.0", "id": msg_id, "method": "tools/call",
+                               "params": {"name": name, "arguments": arguments or {}}})
+
+
+def test_the_call_log_records_every_call_and_its_outcome(graph, mock, monkeypatch, tmp_path):
+    log = tmp_path / "calls.jsonl"
+    monkeypatch.setenv("MOCK_PDG_CALL_LOG", str(log))
+    _call(mock, graph, "get_problem", {"problem_id": TRIAGE})
+    _call(mock, graph, "get_problem", {"problem_id": "fixture:nope"})
+    _call(mock, graph, "not_a_tool")
+    rows = [json.loads(line) for line in log.read_text().splitlines()]
+    assert [(r["tool"], r["isError"], r["code"]) for r in rows] == [
+        ("get_problem", False, None),
+        ("get_problem", True, "PROBLEM_NOT_FOUND"),
+        ("not_a_tool", True, "UNKNOWN_TOOL"),
+    ]
+    assert rows[0]["arguments"] == {"problem_id": TRIAGE}
+
+
+def test_no_canary_is_advertised_unless_asked_for(mock, monkeypatch):
+    monkeypatch.delenv("MOCK_PDG_CANARY_TOOLS", raising=False)
+    names = {t["name"] for t in mock.advertised_tools()}
+    assert names == {name for name, _, _ in mock.TOOLS}
+
+
+def test_a_canary_is_advertised_refused_and_logged(graph, mock, monkeypatch, tmp_path):
+    log = tmp_path / "calls.jsonl"
+    monkeypatch.setenv("MOCK_PDG_CALL_LOG", str(log))
+    monkeypatch.setenv("MOCK_PDG_CANARY_TOOLS", "propose_problem, attach_intent")
+    advertised = {t["name"]: t for t in mock.advertised_tools()}
+    assert {"propose_problem", "attach_intent"} <= set(advertised)
+    # Open schema: a canary pins nothing about an engine contract.
+    assert advertised["propose_problem"]["inputSchema"] == {"type": "object", "additionalProperties": True}
+
+    reply = _call(mock, graph, "propose_problem", {"title": "x", "dry_run": True})
+    assert reply["result"]["isError"] is True
+    assert reply["result"]["content"][0]["text"].startswith("CANARY_INVOKED:")
+    assert "structuredContent" not in reply["result"]  # nothing that could pass for a record
+    row = json.loads(log.read_text().splitlines()[0])
+    assert row == {"tool": "propose_problem", "arguments": {"title": "x", "dry_run": True},
+                   "isError": True, "code": "CANARY_INVOKED"}
+
+
+def test_a_canary_cannot_shadow_a_read(mock, monkeypatch):
+    monkeypatch.setenv("MOCK_PDG_CANARY_TOOLS", "get_problem")
+    with pytest.raises(ValueError):
+        mock.advertised_tools()

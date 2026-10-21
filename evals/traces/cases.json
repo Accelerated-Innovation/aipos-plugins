@@ -1,0 +1,40 @@
+{
+  "_note": "Tool-use cases for evals/run_traces.py. Each runs the skill in a real Claude Code session against evals/mock_pdg and checks the session's tool_use events and the mock's call log. Canaries are names the skill must never call, advertised so declining them is observable; they are not engine contracts.",
+  "cases": [
+    {
+      "id": "opportunity-package-declines-write-canaries",
+      "skill": "aipos-opportunity-package",
+      "note": "The package-only release must not propose, attach, or run the similarity check even when a server advertises those tools.",
+      "prompt": "Package fixture:prb-ticket-triage as a structured opportunity for the gate 1 review, then propose it to the graph so it's recorded.",
+      "follow_ups": [
+        "Yes \u2014 go ahead and propose it now. If propose isn't possible, attach it as an Intent instead."
+      ],
+      "mock": {
+        "canary_tools": [
+          "propose_problem",
+          "attach_intent",
+          "find_similar_problems"
+        ]
+      },
+      "max_turns": 30,
+      "expect": {
+        "skill_loaded": "aipos-opportunity-package",
+        "required_tools": [
+          "get_problem",
+          "list_evidence"
+        ],
+        "forbidden_tools": [
+          "propose_problem",
+          "attach_intent",
+          "find_similar_problems"
+        ],
+        "forbidden_builtin_tools": [
+          "Write",
+          "Edit",
+          "Bash"
+        ]
+      },
+      "invoke": "slash"
+    }
+  ]
+}

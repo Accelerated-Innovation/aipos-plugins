@@ -1,6 +1,6 @@
 # Install or replace the initial AIPOS plugins
 
-The new package is `aipos@aipos`, containing all fifteen `aipos-*` skills. The
+The new package is `aipos@aipos`, containing all sixteen `aipos-*` skills. The
 repository and marketplace source are `Accelerated-Innovation/aipos-plugins`
 (renamed from `govkit-plugins`; the old URL redirects).
 Everything merged to `main` is released: the version in
@@ -8,6 +8,24 @@ Everything merged to `main` is released: the version in
 and listed on the [releases page](https://github.com/Accelerated-Innovation/aipos-plugins/releases).
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
+
+## Updating to 1.10.0
+
+Adds `aipos-opportunity-package`, a sixteenth skill, for step 4 → gate 1: packaging a graph
+problem into the four-part Structured Opportunity (evidence, hypothesis, impact estimate,
+recommended action) a reviewer can accept or reject without reading the raw signals. It is
+read-only over MCP, cites every evidence line to a graph reference, and marks user-supplied
+and unknown inputs in the impact estimate rather than defaulting them.
+
+The impact estimate writes out its formula, applies a rate to the population it was measured
+on, keeps the modeled baseline cost apart from achievable savings (savings need an explicit
+`[A]` reduction assumption), and leaves a range **TBD** when the evidence cannot bound it.
+Packages built from supplied records open with their source mode and never call those
+records live or verified.
+
+Proposing and attaching are not part of this release: the skill does not call
+`propose_problem`, `attach_intent` or `find_similar_problems` even where a server advertises
+them, and never simulates a write. Existing skills need no migration.
 
 ## Updating to 1.9.1
 

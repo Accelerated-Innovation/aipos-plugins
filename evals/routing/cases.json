@@ -1212,6 +1212,48 @@
           "handoffs": []
         }
       ]
+    },
+    {
+      "id": "package-opportunity",
+      "prompt": "Package PRB-104 as a structured opportunity for the gate 1 review.",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-opportunity-package",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "gate-one-package",
+      "prompt": "Turn our top evidenced problem into the one-pager the gate 1 reviewer can accept or reject without reading the raw signals.",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": true,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-opportunity-package",
+          "handoffs": []
+        }
+      ]
+    },
+    {
+      "id": "framing-contrast",
+      "prompt": "Frame solution options for PRB-104 on a one-page canvas.",
+      "context": "A live Product Definition Graph MCP server is connected (use evals/mock_pdg in tests).",
+      "critical": false,
+      "split": "development",
+      "allowed": [
+        {
+          "action": "skill",
+          "skill": "aipos-solution-framing",
+          "handoffs": []
+        }
+      ]
     }
   ]
 }

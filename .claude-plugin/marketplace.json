@@ -40,7 +40,8 @@
         "development-token",
         "synthetic-data",
         "metrics",
-        "portfolio-dashboard"
+        "portfolio-dashboard",
+        "opportunity-package"
       ],
       "source": "./plugins/aipos",
       "category": "productivity"

@@ -6,7 +6,7 @@ Thanks for helping improve AIPOS. This repo is a [Claude Code plugin marketplace
 
 ```
 .claude-plugin/marketplace.json   # marketplace catalog (one aipos entry)
-plugins/aipos/                    # all fifteen aipos-* skills
+plugins/aipos/                    # all sixteen aipos-* skills
   .claude-plugin/plugin.json      # plugin manifest (bump version on release)
   references/                     # plugin-wide references shared by several skills
   skills/<skill-name>/SKILL.md    # one folder per skill; loads automatically
@@ -53,6 +53,11 @@ python evals/run_evals.py --skill aipos-feature-create --execute   # real calls,
 ```
 
 `--execute` is required to spend anything. The skill's `SKILL.md` becomes the system prompt and a **different** model grades the response against the case's `expected_output`. Results and full traces land in `.claude/hillclimb/<skill>/<variant>/` (gitignored) — read the traces, not just the score. Details and the limits of what a passing run proves: [`evals/README.md`](evals/README.md).
+
+A model-graded case grades what a response *says*. A claim about what a skill *calls* — never
+writes, never applies a correction, declines an advertised tool — needs a tool-use trace:
+`evals/run_traces.py` runs the skill in a real Claude Code session against the mock read server
+and checks the calls it made ([details](evals/README.md#tool-use-traces)).
 
 It is deliberately **not** a required check. The merge gate stays offline and key-free; the eval job is `workflow_dispatch`. Run it when a change touches coaching behaviour and paste the result into the PR.
 
