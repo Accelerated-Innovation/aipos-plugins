@@ -17,11 +17,15 @@ recommended action) a reviewer can accept or reject without reading the raw sign
 read-only over MCP, cites every evidence line to a graph reference, and marks user-supplied
 and unknown inputs in the impact estimate rather than defaulting them.
 
-The write half (propose and attach, with the duplicate check, dry-run preview and explicit
-yes) is a deferred engine write integration: this release does not invoke `propose_problem`
-or `attach_intent` even where a deployment advertises them, states that proposing is not
-implemented, and never simulates a write. Existing skills need no
-migration.
+The impact estimate writes out its formula, applies a rate to the population it was measured
+on, keeps the modeled baseline cost apart from achievable savings (savings need an explicit
+`[A]` reduction assumption), and leaves a range **TBD** when the evidence cannot bound it.
+Packages built from supplied records open with their source mode and never call those
+records live or verified.
+
+Proposing and attaching are not part of this release: the skill does not call
+`propose_problem`, `attach_intent` or `find_similar_problems` even where a server advertises
+them, and never simulates a write. Existing skills need no migration.
 
 ## Updating to 1.9.1
 

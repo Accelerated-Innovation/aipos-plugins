@@ -179,6 +179,27 @@ repetition and any transport/truncation errors. Compare against the baseline und
 the same frozen claims. A changed substantive requirement needs a documented rubric
 revision and matched regrade; it must not silently erase a failed result.
 
+## Tool-use traces
+
+A model-graded case cannot show what a skill *called*: the subject has no tools, so "never
+proposes" or "never applies a correction" can only be claimed, not observed.
+[`run_traces.py`](run_traces.py) runs a skill in a real Claude Code session (`claude -p --bare`,
+this checkout's plugin via `--plugin-dir`, the mock read server attached) and checks the
+session's tool_use events and the mock's call log against each case in
+[`traces/cases.json`](traces/cases.json): the skill loaded, required reads reached the server,
+and no forbidden tool — including advertised **canaries** — was called by the model or reached
+the server.
+
+```bash
+python evals/run_traces.py                                        # dry run, free
+python evals/run_traces.py --skill aipos-opportunity-package \
+    --execute --model claude-opus-5 --max-budget-usd 3            # real sessions
+```
+
+Bare mode authenticates with `ANTHROPIC_API_KEY` only. Streams, stderr, the server call log and
+a verdict per run land in `.claude/traces/`. A trace pass shows what one session did with the
+offered tools; it is not a guarantee about every session, so report the reps you ran.
+
 ## What a real run cost
 
 Measured on `aipos-rapid-validation`, 4 cases, `claude-opus-5` judged by `claude-sonnet-5`:

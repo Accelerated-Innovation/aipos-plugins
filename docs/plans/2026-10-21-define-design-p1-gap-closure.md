@@ -7,7 +7,7 @@ Pillar 1 "Define & Design" (steps 1–10, gates G1–G2). Sequenced in the 2026-
 adds per-skill view specs and acceptance-honesty rules on top of the tests-first criteria each issue
 already carries.
 **Status legend:** `[ ]` not started · `[~]` in progress · `[x]` done
-**Status:** Not started.
+**Status:** In progress — Step 0 partly verified (below); #60 package slice in PR #91.
 
 ## Context
 
@@ -42,10 +42,11 @@ ships a slice says so, and the issue stays open with the remaining half restated
 
 ### 1. #60 `aipos-opportunity-package` — package slice first
 
-- [ ] Routing cases and eval cases for the four-part package (evidence, hypothesis, impact
-  estimate, recommended action), shown failing in the PR.
-- [ ] Build the package half of the skill; the issue explicitly permits the package output to ship
-  before the write half.
+- [x] Routing cases and eval cases for the four-part package (evidence, hypothesis, impact
+  estimate, recommended action), shown failing in the PR. (PR #91)
+- [x] Build the package half of the skill; the issue explicitly permits the package output to ship
+  before the write half. (PR #91 — plus a native tool-use trace that the skill declines
+  advertised write canaries.)
 - [ ] **Write-integration slice (separate):** extend `evals/mock_pdg` with the feature 17 tools
   (`find_similar_problems`, `propose_problem`, `attach_intent` with `dry_run` and
   `idempotency_key`), pin them in `tests/test_mock_pdg.py`, and define them **only against a
@@ -103,12 +104,42 @@ demo; `demos/insurance/HOSTED.md` and decision record
 - **OAuth 2.0 Bearer required.** RFC 9728 protected-resource metadata names Keycloak realm
   `discovery` (`https://opportunity.aidlc.org/auth/realms/discovery`, scope `openid`), which
   advertises `client_credentials`, `password` and device-code grants.
-- **The hosted configuration is read-only.** The engine's hosted-demo docs state OIDC is required
+- **The hosted configuration is read-only.** (Re-confirmed in engine source on 2026-10-21:
+  `ENGINE_MCP_WRITE_ENABLED=false` in every deployed environment.) The engine's hosted-demo docs state OIDC is required
   and the two MCP write flags stay disabled in the application configuration. So feature 17 write
   tools are **not** verifiable against this server; the write halves of #60 (and any write view)
   wait on engine work regardless of what `tools/list` shows.
 
-Not yet verified — blocked on a Bearer token (the engine's local `auth-headers` helper is
+### Verified 2026-10-21 (second pass)
+
+- **Live reads, field sets.** An authenticated claude.ai read connector serving the Harborlight
+  demo advertised the seven PDG reads plus `get_demo_portfolio`, `list_demo_opportunities` and
+  `get_demo_opportunity` — no write, ingestion-status or correction tool. Representative calls
+  to the six non-disclosing reads returned the same key sets as `evals/mock_pdg` and
+  `tests/test_mock_pdg.py`; input schemas match. `get_evidence_text` was deliberately not called.
+  The connector's URL is not visible to the verifying session, so this is recorded as "a
+  connected hosted-demo read connector", not as proof about `opportunity.aidlc.org` itself. The
+  locally configured direct entries for that URL were disabled or needed an interactive OAuth
+  login, and no token was handled.
+- **Engine source** (`discovery-engine` `1a8919d`, clean, equal to origin HEAD):
+  - Governed MCP writes (ADR-AIG-030) are engine **feature 19** (feature 17 is study findings).
+    `find_similar_problems`, `propose_problem`, `attach_intent` are implemented and merged,
+    all behind `ENGINE_MCP_WRITE_ENABLED`, which is `false` everywhere deployed.
+  - **No ingestion-status read** over MCP or REST. Only Gong and Zendesk are wired for
+    ingestion; no Jira/ADO, CRM, product-usage or eval-drift ingestion exists. `/health`
+    lists evidence-text sources with credentials — not ingestion state.
+  - **Merge/split corrections were retired without replacement** (ADR-AIG-031; the workflows
+    corrections router was deleted 2026-10-09). #61's "correction path" blocker therefore has
+    no engine owner today — see #61 below.
+  - **No MCP Apps support**: no `ui://` resources or `_meta.ui` anywhere in the engine.
+  - Excerpts are redacted server-side and capped at 1,500 characters; the five-excerpt cap is
+    an AIPOS convention (solution-framing `opportunity-source.md`), not an engine rule.
+- **Mock behaviour drift** (not field sets) is recorded in `evals/mock_pdg/README.md`; aligning
+  it touches tests existing skills rely on and is a separate change. New skills must not depend
+  on the mock-only invariants (score-ordered `list_problems`, 1:1 opportunities, identical
+  reference formats across tools).
+
+Still not verified — needs a direct Bearer token to `https://opportunity.aidlc.org/mcp/` (the engine's local `auth-headers` helper is
 local-only and refuses `--hosted`; a hosted token needs a Keycloak client credential or user
 login):
 
@@ -184,10 +215,11 @@ No current evals check when a view should appear or that the text fallback works
 
 ## Work-item summary
 
-- [ ] 0. Live-server verification pass — parallel, non-blocking for #60's package slice (needs
+- [~] 0. Live-server verification pass (field sets verified through a hosted-demo connector and
+  engine source; direct-endpoint check pending) — parallel, non-blocking for #60's package slice (needs
   a Bearer token: `tools/list` and response-shape diff vs mock; ingestion-status and
   correction-path checks; update #86)
-- [ ] 1. #60 package slice (tests first → skill → PR); feature-17 mocks deferred to the
+- [~] 1. #60 package slice (PR #91) (tests first → skill → PR); feature-17 mocks deferred to the
   write-integration slice
 - [ ] 2. #59 agent contract (tests first → references schema → skill → PR)
 - [ ] 3. #57 prep (tests + degraded-behavior cases + source-inventory slice; ship decision on

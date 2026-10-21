@@ -20,7 +20,8 @@ a package:
    nothing quoted unmasked.
 2. **Hypothesis** — the falsifiable statement of what solving this problem would
    change, for whom.
-3. **Impact estimate** — with its inputs and range stated; unknown inputs marked `[A]`.
+3. **Impact estimate** — with its inputs, its basis and its range stated; an assumed
+   input is marked `[A]`, and a range the evidence cannot bound is **TBD**.
 4. **Recommended action** — what the reviewer is being asked to approve, and what
    would have to be true for it to be a mistake.
 
@@ -33,19 +34,21 @@ below; any server exposing equivalent reads works — map the names and nothing 
 changes.
 
 A session may instead supply graph-style records directly (files, pasted records,
-fixtures). That is **supplied-fixture mode**: work from the supplied facts, label the
-material synthetic or supplied as it is labelled, and never claim a live graph read.
-Supplied facts carry the same `[E]` weight as tool observations — with the fixture
-labelled, not hidden. If neither a live server nor supplied records exist, stop and say
-what is missing.
+fixtures). That is **supplied mode**. Supplied records are what the session was given,
+not what the graph holds: work from them, but never call them live, current or
+verified, and never claim a graph read — whatever the user says about where they came
+from. Open the package with its **source mode** — `connected` (reads made in this
+session against a named server) or `supplied` (records given in the session, and
+`synthetic` when they say so) — so a reviewer knows what the evidence is before reading
+it. If neither a live server nor supplied records exist, stop and say what is missing.
 
 | Tool | What it feeds |
 |---|---|
-| `get_problem` | The candidate: statement, descriptors, state |
-| `list_evidence` | The evidence behind the candidate, with fitness descriptors |
-| `get_lineage` | Why the candidate ranks where it does — the "says who?" answer |
-| `list_problems` | The inventory, to place the candidate and name neighbours |
-| `list_opportunities` | The ranked list the candidate sits in |
+| `get_problem` | The candidate: title, composite score, personas, evidence references |
+| `list_evidence` | The evidence behind the candidate: provenance references, dates, and a study finding's measurement |
+| `get_lineage` | Where the candidate came from — the "says who?" answer |
+| `list_problems` | The inventory, to name neighbours (its order is not a ranking) |
+| `list_opportunities` | The ranked list the candidate sits in, with score components |
 | `get_work_item_links` | Delivery work already touching the candidate |
 | `get_evidence_text` | A redacted excerpt, fetched only when the package turns on exact words |
 
@@ -63,7 +66,8 @@ package beyond the quoted fragment the action needs.
 
 Every claim in the package carries the AIPOS provenance convention:
 
-- `[E]` — evidence-backed: traceable to a tool call in this session
+- `[E]` — evidence-backed: traceable to a tool call in this session, or in supplied
+  mode to a named field of a supplied record (the source mode says which)
 - `[I]` — inferred: a reasonable reading of `[E]` material, stated as inference
 - `[A]` — assumption: not in the graph; named so the reviewer can challenge it
 
@@ -76,6 +80,11 @@ problem record field). Evidence the graph cannot show is a gap in the package, n
 gap in the graph — write it as what is missing, never as zero. Nothing is quoted
 unmasked: masked references only, per the disclosure rules above.
 
+Attribute each finding only to the record that states it. A figure from one study
+finding is that finding's, not "the sources'". A reference that appears only in lineage
+or `originating_sources`, with no evidence record behind it in this session, supports
+nothing: name it as listed but unread, never as corroboration.
+
 ### Hypothesis
 
 One falsifiable statement. If the reviewer cannot say what evidence would disprove it,
@@ -84,13 +93,24 @@ informs it, but no graph contains it.
 
 ### Impact estimate
 
-State the inputs and the range, always. An estimate without its inputs is a number
-impersonating evidence. Inputs the graph or a supplied record provides are `[E]`;
-inputs the user supplies are attributed to the user and marked `[A]` unless the
-record supports them; unknown inputs are named as unknown — never silently
-defaulted to zero, one, or all. When inputs are too incomplete to bound the
-estimate, say the range is **TBD** and name the missing inputs; do not invent
-bounds to avoid an unquantified answer.
+State the inputs and the basis — the formula, written out — always. An estimate
+without its inputs is a number impersonating evidence. Inputs cited to evidence are
+`[E]`; inputs with no evidence reference, including figures the user volunteers, are
+attributed to whoever supplied them and marked `[A]`; unknown inputs are named as
+unknown — never silently defaulted to zero, one, or all.
+
+- **Use the right denominator.** A rate applies to the population it was measured on.
+  If 41% of reviews need a chase, cost the chased reviews, not every review. Say when a
+  statistic is a stand-in for the one the formula needs (a median used as a mean is an
+  `[A]`).
+- **Baseline is not savings.** What the problem costs today (the modeled baseline) and
+  what solving it would return (the achievable impact) are different numbers. Savings
+  need an explicit reduction assumption, marked `[A]` with who should validate it;
+  without one, report the baseline and state the impact as **TBD**.
+- **A range only where the evidence bounds it.** Give bounds the inputs support, or
+  clearly labelled scenarios that each state their assumption. When nothing bounds the
+  estimate, the range is **TBD** with the missing inputs named — never invent bounds to
+  avoid an unquantified answer.
 
 ### Recommended action
 
@@ -98,27 +118,20 @@ The concrete ask: what the reviewer is approving, what it costs (owner, budget,
 horizon where the graph or session supplies them), and what would make it wrong.
 Recommended actions the session invented are `[A]` and say so.
 
-## The write half (deferred — not implemented in this release)
+## Proposing and attaching are not part of this release
 
-The engine's MCP write tools (feature 17: `find_similar_problems`, `propose_problem`,
-`attach_intent`) do not exist in this release's scope: **this release does not invoke
-`propose_problem` or `attach_intent`, even where a deployment advertises them.**
-Asked to propose or attach, the skill produces the package, states that the write
-integration is deferred, and stops short of writing — it never simulates a write or
-claims one.
+This release reads and packages. It never calls `propose_problem`, `attach_intent`,
+`find_similar_problems` or any other tool that proposes, attaches, records or changes
+graph state, **even where the connected server advertises them** and even after the user
+says yes. Those tools belong to the engine's governed-write work (ADR-AIG-030), whose
+contracts this release has not been verified against.
 
-The rules below are the requirements the write integration must meet before it
-ships — they describe required behavior, not enabled functionality:
-
-1. **Duplicate check before propose.** Run `find_similar_problems` and present strong
-   matches before proposing. A similarity **outage is not an empty result** — if the
-   check didn't run, the package ships without a proposal and says so. Never propose
-   while the similarity check is unavailable.
-2. **Dry-run preview and one explicit yes.** Writes happen only after the user has
-   seen the dry-run preview (with `recorded:false`) and said yes once. One yes per
-   write; a yes to the package is not a yes to the write.
-3. **Identity is never an argument.** The skill passes no user identity into a write;
-   identity comes from the authenticated session, not from the conversation.
+Asked to propose or attach: produce the package, say that proposing and attaching are
+not part of this release so nothing was recorded, and hand the package to the human who
+owns gate 1. Never show a simulated write, a dry-run preview or a confirmation prompt
+for a write this skill cannot make. If the user reports that a duplicate or similarity
+check failed or was unavailable, say the check did not run and that an outage is not an
+empty result — the package must not imply there are no duplicates.
 
 ## Where this sits
 
