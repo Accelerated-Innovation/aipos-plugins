@@ -63,7 +63,8 @@ def validate(review: dict) -> dict:
             raise ValueError(f"suggestion {label}: unknown problems {unknown}")
         if s.get("kind") == "merge":
             evidence = s.get("evidence") or {}
-            if len(problems) < 2 or set(evidence) != set(problems) or not all(evidence[p] for p in problems):
+            if len(set(problems)) < 2 or len(set(problems)) != len(problems) or set(evidence) != set(problems) \
+                    or not all(evidence[p] for p in problems):
                 raise ValueError(f"suggestion {label}: a merge cites evidence for every problem it joins")
             for problem, refs in evidence.items():
                 stray = sorted(set(refs) - held[problem])

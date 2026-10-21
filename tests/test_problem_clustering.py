@@ -232,3 +232,9 @@ def test_every_suggestion_says_whether_it_is_evidence_or_inference(board, review
                      evidence={RENEWAL[0]: ["gong:call-7781"], RENEWAL[1]: ["gong:call-7781"]})
     with pytest.raises(ValueError, match="basis"):
         board.validate(bad)
+
+
+def test_a_merge_needs_two_different_problems(board, review):
+    same = suggestion(review, problems=[RENEWAL[0], RENEWAL[0]], evidence={RENEWAL[0]: ["gong:call-7781"]})
+    with pytest.raises(ValueError, match="merge"):
+        board.validate(same)

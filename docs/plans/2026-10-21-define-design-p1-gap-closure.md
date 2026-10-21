@@ -20,7 +20,7 @@ Five skills in the backlog scored P1. Four of them live in Pillar 1 (Define & De
 | [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) | `aipos-opportunity-package` | 4 → G1 | 2 | engine feature 19 (write half only) |
 | [#59](https://github.com/Accelerated-Innovation/aipos-plugins/issues/59) | `aipos-agent-contract` | 7 | 3 | nothing |
 | [#57](https://github.com/Accelerated-Innovation/aipos-plugins/issues/57) | `aipos-signal-intake` | 1 | 3 | engine ingestion-status read tool, E9 connectors |
-| [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) | `aipos-problem-clustering` | 2 | 3 | engine correction path (merge/split) |
+| [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) | `aipos-problem-clustering` | 2 | 3 | engine correction path (merge/split) — retired by the engine; #61 amended to close on the review slice |
 
 The fifth P1, `aipos-research-plan` (#58), sits in Pillar 2 (Rapid Validation) and is out of scope
 here.
@@ -99,12 +99,11 @@ open until the write half lands.
 - [x] Review slice and Cluster Review board shipped (offline HTML snapshot, browser-checked;
   corrections prepared as pending hand-offs; trace-checked against merge/split canaries).
 - [x] Full issue closure: **acceptance amended 2026-10-21** to the review slice (the product
-  owner's decision, recorded in #61). Previously: closure required the engine's correction path, per the issue's recorded
-  blocker. Verified 2026-10-21: the engine **retired** merge/split corrections without a
-  replacement (ADR-AIG-031), and the direct endpoint advertises no correction tool, so this
-  blocker has no engine owner. The product decision was to amend
-  #61's acceptance; a governed correction path is now an optional future engine dependency in #86.
-- [ ] The skill never applies a correction itself.
+  owner's decision, recorded in #61); #61 closes when PR #94 merges. The engine retired
+  merge/split corrections without a replacement (ADR-AIG-031), and the direct endpoint advertises
+  no correction tool. A governed correction path is an optional future engine dependency in #86,
+  not a condition of closure.
+- [x] The skill never applies a correction itself (trace-checked against merge/split canaries).
 
 ## Step 0: the live server — verified facts and pending verification
 
@@ -233,7 +232,7 @@ generated chart is enough otherwise.
 
 | Skill | View | Spec and dependency boundary |
 |---|---|---|
-| [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) `aipos-problem-clustering` | **Cluster Review board** (best fit in this set) | One row per candidate problem: masked supporting quotes, suggested merges/splits with evidence references, persona and workflow tags. PM compares and confirms; confirmations are prepared for the engine's correction path and shown as pending, never applied. Plain-text list is the fallback. **Can ship with the review slice** — it doesn't need the correction-path tool; full issue closure does. |
+| [#61](https://github.com/Accelerated-Innovation/aipos-plugins/issues/61) `aipos-problem-clustering` | **Cluster Review board** (best fit in this set) | One row per candidate problem: masked supporting quotes, suggested merges/splits with evidence references, persona and workflow tags. PM compares and confirms; confirmations are prepared as pending hand-offs, never applied. Plain-text list is the fallback. Shipped with the review slice (PR #94); no correction-path tool is needed. |
 | [#60](https://github.com/Accelerated-Innovation/aipos-plugins/issues/60) `aipos-opportunity-package` | **Structured Opportunity card + confirm panel** | The card displays the four-part package with cited evidence and needs no write capability. The propose action's confirm panel (full dry-run preview, exact destination, one explicit yes, then read-back) ships with the write half, after feature 19. |
 | [#57](https://github.com/Accelerated-Innovation/aipos-plugins/issues/57) `aipos-signal-intake` | **Source-health table panel** (low priority) | Source-by-source: connected or not, last ingestion, volume in window, drafted connector request. A plain table is nearly as good; build the panel only if the engine gains the status read and PMs ask. Reporting missing sources does not require building those connectors. Before implementing the panel, verify the ingestion-status **response fields** (connection state, last ingestion, volume for the selected window) with a representative authenticated call; define freshness semantics per field and give each field its own fallback ("connection unknown", "last ingestion unknown", "volume unknown") rather than relying solely on the blanket "freshness unknown". |
 | [#59](https://github.com/Accelerated-Innovation/aipos-plugins/issues/59) `aipos-agent-contract` | None | The contract is a document to review, not something to inspect visually. Text/file. |
@@ -262,4 +261,4 @@ No current evals check when a view should appear or that the text fallback works
 - [~] 5. Shared panel contract reference (`references/panel-contract.md`, with #61's board; native MCP Apps not available — engine registers no UI resources) + view-appearance, text-fallback and host-rendering
   checks added with each view-bearing skill
 - [ ] 6. Write half of #60 after engine feature 19; #57's freshness half after the status read;
-  #61's full closure after the correction path
+  #61 closes with the review slice (acceptance amended).
