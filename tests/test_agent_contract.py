@@ -105,3 +105,82 @@ def test_the_cli_reports_json_and_exit_codes(checker):
     assert incomplete.returncode == 0 and json.loads(incomplete.stdout)["status"] == "incomplete"
     assert run("with-tbds", "--require-complete").returncode == 1
     assert run("missing-section").returncode == 2
+
+
+def test_text_after_the_contract_is_not_read_as_part_of_it(checker):
+    """Found by running the checker on a real eval response: a summary heading and its own table
+    after section 6 were parsed as checkpoint rows. A contract ends at a non-contract heading."""
+    text = (FIXTURES / "complete.agent-contract.md").read_text()
+    text = text.replace("| set_quote_status |", "| `set_quote_status` |")  # backticked names still match
+    text += ("\n---\n\n## Status\n\n**Incomplete** — two open TBDs.\n\n"
+             "| # | TBD | Owner |\n|---|---|---|\n| 1 | Policy source | Sales operations lead |\n")
+    report = checker.check_text(text)
+    assert report["status"] == "complete", report["errors"]
+
+
+def test_only_the_first_table_in_a_section_is_the_sections_table(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "## 5. Escalation", "Reference only:\n\n| A | B |\n|---|---|\n| x | y |\n\n## 5. Escalation")
+    # The stray table follows section 4's table, separated by prose; it must not be merged into it.
+    assert checker.check_text(text)["status"] == "complete"
+
+
+def test_a_tbd_in_an_optional_column_still_counts(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| Quote references a non-standard contract term | Legal counsel | Stops and holds the quote | |",
+        "| Quote references a non-standard contract term | Legal counsel | Stops and holds the quote | "
+        "TBD — owner: Legal counsel; needed: the test for a non-standard term |")
+    report = checker.check_text(text)
+    assert report["status"] == "incomplete"
+    assert [(t["section"], t["owner"]) for t in report["tbds"]] == [(5, "Legal counsel")]
+
+
+def test_a_tbd_line_beside_a_sections_table_counts(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "## 3. Outputs",
+        "TBD — owner: Sales operations lead; needed: which tool supplies the discount policy\n\n## 3. Outputs")
+    report = checker.check_text(text)
+    assert [(t["section"], t["owner"]) for t in report["tbds"]] == [(2, "Sales operations lead")]
+    unowned = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "## 3. Outputs", "TBD: the policy tool\n\n## 3. Outputs")
+    assert any(e["section"] == 2 and "owner" in e["message"] for e in checker.check_text(unowned)["errors"])
+
+
+def test_a_row_that_is_an_owned_tbd_needs_no_other_cells(checker):
+    """An entry known to exist but not yet describable is one row carrying an owned TBD."""
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| Quote references a non-standard contract term | Legal counsel | Stops and holds the quote | |",
+        "| Quote references a non-standard contract term | Legal counsel | Stops and holds the quote | |\n"
+        "| | | | TBD — owner: Sales operations lead; needed: what happens when an escalation goes unanswered |")
+    report = checker.check_text(text)
+    assert report["status"] == "incomplete", report["errors"]
+    assert [(t["section"], t["owner"]) for t in report["tbds"]] == [(5, "Sales operations lead")]
+
+
+def test_mentioning_a_tbd_is_not_declaring_one(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| Approval recommendation | Deal desk manager | Summary with policy citations | |",
+        "| Approval recommendation | Deal desk manager | Summary with policy citations | see the TBD in §2 |")
+    assert checker.check_text(text)["status"] == "complete"
+
+
+def test_personal_data_may_carry_a_detail_after_yes_or_no(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| Quote record | CPQ system | yes |", "| Quote record | CPQ system | yes — customer name and contact |")
+    assert checker.check_text(text)["status"] == "complete"
+    bad = text.replace("yes — customer name and contact", "probably")
+    assert checker.check_text(bad)["status"] == "invalid"
+
+
+def test_bare_tbds_inside_an_owned_tbd_row_are_covered_by_its_owner(checker):
+    text = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| read_quote | Load the quote under review | read | no | |",
+        "| read_quote | Load the quote under review | read | no | |\n"
+        "| TBD — owner: Sales operations lead; needed: whether the recommendation is written back | | TBD | TBD | |")
+    report = checker.check_text(text)
+    assert report["status"] == "incomplete", report["errors"]
+    assert len(report["tbds"]) == 1
+    # Outside such a row, a bare TBD is still an error.
+    bare = (FIXTURES / "complete.agent-contract.md").read_text().replace(
+        "| read_quote | Load the quote under review | read | no | |", "| read_quote | Load the quote under review | TBD | no | |")
+    assert checker.check_text(bare)["status"] == "invalid"

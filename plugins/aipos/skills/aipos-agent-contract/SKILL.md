@@ -50,7 +50,10 @@ what nobody decided visible.
    `TBD — owner: <role>; needed: <what closes it>`. The owner is who can decide it — the
    contract's Owner when the user has not said. A whole unknown section is one TBD line. An
    invented tool, approver, threshold or escalation path is the worst defect a contract can
-   have, because it reads as decided.
+   have, because it reads as decided. A TBD marks a field the schema requires and the facts do
+   not settle. A further question — a corner case nobody raised, a second-level fallback — goes
+   in a short **Questions for review** list after the contract, not into it as a TBD, so a
+   contract whose required fields are all settled can be complete.
 6. **Check it.** When the contract is written to a file, run
    `python3 scripts/check_contract.py <file>` (standard library only) and report its status:
    `complete`, `incomplete` (owned TBDs remain — list them as the to-do list), or `invalid`
@@ -58,7 +61,9 @@ what nobody decided visible.
    by hand and say that the checker was not run. The checker validates structure; whether the
    content is true is for the reviewers.
 7. **Hand off.** Close with who reads the contract next — dialogue flows, eval cases through
-   `aipos-feature-create`, and the AI risk review — and the open TBDs each of them inherits.
+   `aipos-feature-create`, and the AI risk review. Say that each reads this contract against
+   the shared schema in `../../references/agent-contract.md`, not a copy of it, and list the open
+   TBDs each of them inherits.
 
 ## Output
 

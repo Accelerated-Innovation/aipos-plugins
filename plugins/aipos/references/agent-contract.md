@@ -51,8 +51,11 @@ TBD — owner: <role or named person>; needed: <the decision or fact that closes
 ```
 
 The owner is who can close it, not who noticed it. When the user has not said who that is, the
-owner is the contract's Owner. A whole section the user cannot fill is one TBD line under its
-heading; a single unknown cell is a TBD in that cell. An invented tool, side effect, escalation
+owner is the contract's Owner. A TBD sits at three sizes: a single unknown cell is a TBD in that
+cell; an entry known to exist but not yet describable (a tool nobody has named, an escalation
+nobody has designed) is one table row carrying the TBD, with its other cells empty; a whole
+section the user cannot fill is one TBD line under its heading. A TBD is declared where a cell
+or line *starts* with `TBD`; a cross-reference such as "see the TBD in Tools" is not another one. An invented tool, side effect, escalation
 path or approver is a defect — worse than a TBD, because it reads as decided.
 
 ## 1. Inputs
@@ -60,7 +63,7 @@ path or approver is a defect — worse than a TBD, because it reads as decided.
 | Input | Source | Contains personal data | Notes |
 |---|---|---|---|
 
-`Contains personal data` is `yes`, `no` or a TBD.
+`Contains personal data` is `yes`, `no` (either may add `— <detail>`) or a TBD.
 
 ## 2. Tools
 

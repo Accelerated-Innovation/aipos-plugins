@@ -49,12 +49,18 @@ def _is_rule(cells: list[str]) -> bool:
 
 
 def _split_sections(text: str) -> tuple[list[str], list[tuple[int, str, list[str]]]]:
-    header, sections, current = [], [], None
+    """Header lines, then each numbered section's lines. Any other `##` heading after the first
+    section ends the contract, so a summary written after it is never read as section 6."""
+    header, sections, current, ended = [], [], None, False
     for line in text.splitlines():
         match = HEADING.match(line)
-        if match:
+        if match and not ended:
             current = (int(match["number"]), match["title"], [])
             sections.append(current)
+        elif line.startswith("## ") and sections:
+            ended = True
+        elif ended:
+            continue
         elif current is None:
             header.append(line)
         else:
@@ -63,15 +69,26 @@ def _split_sections(text: str) -> tuple[list[str], list[tuple[int, str, list[str
 
 
 def _table(lines: list[str]) -> tuple[list[str], list[list[str]]] | None:
-    rows = [_cells(line) for line in lines if line.strip().startswith("|")]
+    """The section's table is its first contiguous run of pipe rows."""
+    rows: list[list[str]] = []
+    for line in lines:
+        if line.strip().startswith("|"):
+            rows.append(_cells(line))
+        elif rows:
+            break
     if len(rows) < 2 or not _is_rule(rows[1]):
         return None
     return rows[0], rows[2:]
 
 
+def _is_tbd(cell: str) -> bool:
+    """A cell or line declares a TBD when it starts with one; "see the TBD in §2" only mentions it."""
+    return cell.lstrip("*_`> -").startswith("TBD")
+
+
 def _tbd(cell: str, section: int, tbds: list, errors: list, where: str) -> bool:
-    """True when the cell is a TBD (owned or not). Owned TBDs are collected; others are errors."""
-    if "TBD" not in cell:
+    """True when the cell declares a TBD (owned or not). Owned TBDs are collected; others are errors."""
+    if not _is_tbd(cell):
         return False
     match = TBD_FULL.search(cell)
     if match:
@@ -134,6 +151,9 @@ def check_text(text: str) -> dict:
                 errors.append({"section": number, "message": "section needs its table or an owned TBD"})
             continue
         head, rows = table
+        for line in content:
+            if not line.strip().startswith("|"):
+                _tbd(line, number, tbds, errors, "section text")
         index = {name: head.index(name) for name in COLUMNS[number] if name in head}
         for name in COLUMNS[number]:
             if name not in index:
@@ -146,20 +166,29 @@ def check_text(text: str) -> dict:
             row = row + [""] * (len(head) - len(row))
             label = row[0] or "(unnamed row)"
             values = {name: row[i] for name, i in index.items()}
-            for name, value in values.items():
+            # A row carrying an owned TBD and nothing else in its required cells stands for an
+            # entry known to exist but not yet describable: it needs no other cells.
+            tbd_row = any(TBD_FULL.search(c) for c in row if _is_tbd(c)) and \
+                all(not values[n] or _is_tbd(values[n]) for n in index)
+            for i, value in enumerate(row[:len(head)]):
+                name = head[i]
                 where = f"{label} / {name}"
-                if _tbd(value, number, tbds, errors, where):
+                if tbd_row and _is_tbd(value) and not TBD_FULL.search(value):
+                    continue  # a bare TBD inside an owned TBD row is covered by that row's owner
+                if _tbd(value, number, tbds, errors, where) or name not in index:
                     continue
-                if not value:
+                if not value and not tbd_row:
                     noun = {"Side effect": "side effect", "Human confirms": "confirmation status",
                             "Trigger": "trigger", "Goes to (human role)": "human role"}.get(name, name)
                     errors.append({"section": number, "message": f"{label}: missing {noun}"})
+            if tbd_row:
+                continue
             _check_values(number, label, values, errors)
             if number == 2:
                 tools.append(_tool(values))
                 if tools[-1]["confirmation"]["value"] == "yes":
-                    confirmed.append(values["Tool"])
-            if number == 6 and values["Before"] and "TBD" not in values["Before"]:
+                    confirmed.append(values["Tool"].strip("` "))
+            if number == 6 and values["Before"] and not _is_tbd(values["Before"]):
                 checkpoints_before.add(values["Before"].strip("` "))
 
     for tool in confirmed:
@@ -181,36 +210,36 @@ def _check_values(number: int, label: str, values: dict, errors: list) -> None:
 
     if number == 1:
         value = values["Contains personal data"]
-        if value and "TBD" not in value and value.lower() not in YES_NO:
-            bad("'Contains personal data' must be yes, no or an owned TBD")
+        if value and not _is_tbd(value) and re.split(DASH, value, maxsplit=1)[0].strip().lower() not in YES_NO:
+            bad("'Contains personal data' must be yes, no (optionally '— <detail>') or an owned TBD")
     elif number == 2:
         effect = values["Side effect"]
-        if effect and "TBD" not in effect:
+        if effect and not _is_tbd(effect):
             unknown = [e for e in (p.strip().lower() for p in effect.split(",")) if e not in SIDE_EFFECTS]
             if unknown:
                 bad(f"unknown side effect {unknown}; use read, write or external send")
         confirm = values["Human confirms"]
-        if confirm and "TBD" not in confirm and confirm.lower() != "no" and not CONFIRM_YES.match(confirm):
+        if confirm and not _is_tbd(confirm) and confirm.lower() != "no" and not CONFIRM_YES.match(confirm):
             bad("'Human confirms' must be 'yes — <role>', 'no' or an owned TBD")
     elif number == 4:
         kind = values["Kind"]
-        if kind and "TBD" not in kind and kind.lower() not in KINDS:
+        if kind and not _is_tbd(kind) and kind.lower() not in KINDS:
             bad("'Kind' must be 'must never' or 'must always'")
 
 
 def _tool(values: dict) -> dict:
     effect, confirm = values["Side effect"], values["Human confirms"]
-    effects = [] if (not effect or "TBD" in effect) else [e.strip().lower() for e in effect.split(",")]
+    effects = [] if (not effect or _is_tbd(effect)) else [e.strip().lower() for e in effect.split(",")]
     match = CONFIRM_YES.match(confirm) if confirm else None
     if match:
         confirmation = {"value": "yes", "role": match["role"].strip()}
     elif confirm.lower() == "no":
         confirmation = {"value": "no", "role": None}
-    elif "TBD" in confirm:
+    elif _is_tbd(confirm):
         confirmation = {"value": "TBD", "role": None}
     else:
         confirmation = {"value": None, "role": None}
-    return {"tool": values["Tool"], "side_effects": effects, "confirmation": confirmation}
+    return {"tool": values["Tool"].strip("` "), "side_effects": effects, "confirmation": confirmation}
 
 
 def main(argv: list[str] | None = None) -> int:
