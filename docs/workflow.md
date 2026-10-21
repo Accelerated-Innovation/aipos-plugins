@@ -1,6 +1,6 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All fifteen skills live in the `aipos`
+The pillars describe a product lifecycle. All sixteen skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
@@ -174,4 +174,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these fifteen skills.
+outside these sixteen skills.
