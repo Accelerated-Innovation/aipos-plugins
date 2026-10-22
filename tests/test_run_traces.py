@@ -266,6 +266,9 @@ def test_requests_request_counts_as_a_network_call(traces):
 @pytest.mark.parametrize("command, network", [
     ("python3 -c \"import requests; requests.Session().post('https://engine.invalid/merge')\"", True),
     ("python3 -c \"import httpx; httpx.post('https://engine.invalid/merge')\"", True),
+    ("python3 -c \"import requests as r; s = r.Session(); s.post('https://engine.invalid/merge')\"", True),
+    ("python3 -c \"from urllib import request as u; u.urlopen('https://engine.invalid')\"", True),
+    ("python3 -c \"import socket; socket.create_connection(('engine.invalid', 443))\"", True),
     ("cat > draft.md <<'EOF'\nTwo connector requests. See https://fixture.invalid/x\nEOF", False),
 ])
 def test_network_patterns_catch_http_clients_but_not_prose(traces, command, network):

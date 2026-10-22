@@ -68,6 +68,7 @@
         "forbidden_command_patterns": [
           "\\bcurl\\b",
           "\\bwget\\b",
+          "\\b(import|from)\\s+(requests|httpx|aiohttp|urllib3|socket|urllib\\.request|http\\.client)\\b|\\bfrom\\s+urllib\\s+import\\s+request\\b",
           "\\bnc\\b",
           "urllib\\.request|http\\.client|requests\\.(Session\\(\\)\\.)?(request|get|post|put|patch|delete|head|options)\\(|\\b(httpx|aiohttp|urllib3)\\.",
           "/v1/ingestion",
@@ -107,6 +108,7 @@
         "forbidden_command_patterns": [
           "\\bcurl\\b",
           "\\bwget\\b",
+          "\\b(import|from)\\s+(requests|httpx|aiohttp|urllib3|socket|urllib\\.request|http\\.client)\\b|\\bfrom\\s+urllib\\s+import\\s+request\\b",
           "\\bnc\\b",
           "urllib\\.request|http\\.client|requests\\.(Session\\(\\)\\.)?(request|get|post|put|patch|delete|head|options)\\(|\\b(httpx|aiohttp|urllib3)\\."
         ]
