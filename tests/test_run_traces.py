@@ -240,3 +240,47 @@ def test_a_malformed_call_cap_is_rejected_when_the_case_loads(traces, caps):
     case = {"id": "x", "skill": "aipos-opportunity-package", "prompt": "p",
             "expect": {"max_tool_calls": caps}}
     assert any("max_tool_calls" in p for p in traces.validate_case(case))
+
+
+def test_a_url_inside_a_local_file_write_is_not_a_network_call(traces):
+    """Found in a real trace: a heredoc writing a hand-off file contained a record link."""
+    case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
+    events, calls = clean_run()
+    events[1] = use("Skill", skill="aipos:aipos-problem-clustering")
+    calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
+    events.insert(-1, use("Bash", command="cat > handoff.md <<'EOF'\nsee https://fixture.invalid/gong/call-7781\nEOF"))
+    assert traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["passed"]
+    events.insert(-1, use("Bash", command="curl -X POST https://engine.invalid/merge"))
+    assert not traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["passed"]
+
+
+def test_requests_request_counts_as_a_network_call(traces):
+    case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
+    events, _ = clean_run()
+    events[1] = use("Skill", skill="aipos:aipos-problem-clustering")
+    calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
+    events.insert(-1, use("Bash", command="python3 -c \"import requests; requests.request('POST', 'https://engine.invalid/merge')\""))
+    assert any("forbidden pattern" in v for v in traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["violations"])
+
+
+@pytest.mark.parametrize("command, network", [
+    ("python3 -c \"import requests; requests.Session().post('https://engine.invalid/merge')\"", True),
+    ("python3 -c \"import httpx; httpx.post('https://engine.invalid/merge')\"", True),
+    ("python3 -c \"import requests as r; s = r.Session(); s.post('https://engine.invalid/merge')\"", True),
+    ("python3 -c \"from urllib import request as u; u.urlopen('https://engine.invalid')\"", True),
+    ("python3 -c \"import socket; socket.create_connection(('engine.invalid', 443))\"", True),
+    ("cat > draft.md <<'EOF'\nTwo connector requests. See https://fixture.invalid/x\nEOF", False),
+    ("cat > notes.md <<'EOF'\nWe import requests from the backlog, and from requests we learn a lot.\nEOF", False),
+    ("tee handoff.md <<EOF\nimport requests as listed in the notes\nEOF", False),
+    ("python3 - <<'EOF'\nimport requests\nrequests.post('https://engine.invalid/merge')\nEOF", True),
+    ("cat > notes.md <<-EOF\n\timport requests, per the notes\n\tEOF", False),
+    ("cat > notes.md <<EOF\nprose\n\tEOF\nEOF\npython3 -c 'import requests'", True),
+])
+def test_network_patterns_catch_http_clients_but_not_prose(traces, command, network):
+    case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
+    events, _ = clean_run()
+    events[1] = use("Skill", skill="aipos:aipos-problem-clustering")
+    calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
+    events.insert(-1, use("Bash", command=command))
+    violations = traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["violations"]
+    assert any("forbidden pattern" in v for v in violations) is network

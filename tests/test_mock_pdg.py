@@ -119,25 +119,47 @@ def test_an_excerpt_has_the_engine_shape_and_the_only_origin_the_engine_has(grap
 # --- one graph, no disagreement ----------------------------------------------
 
 
-def test_every_tool_agrees_about_a_problems_evidence(graph):
-    """The engine derives all of these from one graph; the mock must not let them diverge."""
+def test_every_tool_agrees_about_a_problems_evidence_in_the_engines_formats(graph):
+    """One graph, three formats (verified on the live engine, 2026-10-21): get_problem and
+    get_lineage give bare external record ids; list_evidence gives `source:id` references; and
+    each originating source is `source:id` for one evidence record. They must name the same set."""
     for pid in all_problem_ids(graph):
+        rows = graph.list_evidence(pid)["items"]
         detail = graph.get_problem(pid)["evidence_references"]
-        lineage = graph.get_lineage(pid)["source_evidence_refs"]
-        listed = [row["provenance_reference"] for row in graph.list_evidence(pid)["items"]]
-        assert detail == lineage == listed
+        lineage = graph.get_lineage(pid)
+        assert set(detail) == set(lineage["source_evidence_refs"]) == {r["external_record_id"] for r in rows}
+        assert sorted(lineage["originating_sources"]) == sorted(
+            f'{r["source_system"].lower()}:{r["external_record_id"]}' for r in rows)
+        assert all(":" in r["provenance_reference"] for r in rows)
 
 
-def test_an_opportunity_is_a_scored_problem_one_to_one(graph):
-    problems = [r["problem_id"] for r in graph.list_problems(limit=100)["items"]]
+def test_the_lineage_ref_is_the_problem_id(graph):
+    for row in graph.list_problems(limit=100)["items"]:
+        assert row["lineage_ref"] == row["problem_id"]
+        assert graph.get_problem(row["problem_id"])["lineage_ref"] == row["problem_id"]
+
+
+def test_evidence_is_listed_newest_first(graph):
+    for pid in all_problem_ids(graph):
+        dated = [r["occurred_at"] for r in graph.list_evidence(pid)["items"] if r["occurred_at"]]
+        assert dated == sorted(dated, reverse=True)
+
+
+def test_an_opportunity_is_a_scored_problem(graph):
+    problems = {r["problem_id"] for r in graph.list_problems(limit=100)["items"]}
     opportunities = [r["problem_id"] for r in graph.list_opportunities(limit=100)["items"]]
-    assert problems == opportunities
-    assert len(set(problems)) == len(problems)
+    assert set(opportunities) <= problems
+    assert len(set(opportunities)) == len(opportunities)
 
 
-def test_ranking_is_highest_composite_first(graph):
-    scores = [r["composite_score"] for r in graph.list_problems(limit=100)["items"]]
+def test_opportunities_are_ranked_and_problems_are_not(graph):
+    """list_opportunities ranks by composite score; list_problems is in creation order, newest
+    first (verified live: its order is not the score order). A consumer must not read a rank
+    from list_problems."""
+    scores = [r["composite_score"] for r in graph.list_opportunities(limit=100)["items"]]
     assert scores == sorted(scores, reverse=True)
+    listed = [r["composite_score"] for r in graph.list_problems(limit=100)["items"]]
+    assert listed != sorted(listed, reverse=True), "the fixture must make the difference observable"
 
 
 def test_promoted_keys_off_active_promoted_links_only(graph):
@@ -310,7 +332,8 @@ def test_it_speaks_mcp_over_stdio():
     assert set(found["structuredContent"]) == PROBLEM_DETAIL
     missing = replies[4]["result"]
     assert missing["isError"] is True
-    assert missing["content"][0]["text"].startswith("PROBLEM_NOT_FOUND: ")
+    # The MCP SDK wraps every tool error; the code follows the prefix (verified live).
+    assert missing["content"][0]["text"].startswith("Error executing tool get_problem: PROBLEM_NOT_FOUND: ")
 
 
 def test_every_evidence_text_disclosure_is_logged_including_refusals(graph, mock, monkeypatch, tmp_path):
@@ -383,3 +406,47 @@ def test_a_canary_cannot_shadow_a_read(mock, monkeypatch):
     monkeypatch.setenv("MOCK_PDG_CANARY_TOOLS", "get_problem")
     with pytest.raises(ValueError):
         mock.advertised_tools()
+
+
+
+# --- behaviour verified on the live engine, 2026-10-21 -------------------------------
+
+
+def test_lineage_for_an_unknown_problem_is_lineage_not_found(graph, mock):
+    with pytest.raises(mock.ToolFailure) as caught:
+        graph.get_lineage("fixture:nope")
+    assert caught.value.code == "LINEAGE_NOT_FOUND"
+
+
+def test_links_for_an_unknown_problem_are_empty_not_an_error(graph):
+    assert graph.get_work_item_links("fixture:nope") == {
+        "problem_id": "fixture:nope", "promoted": False, "links": [], "total": 0, "schema_version": 1}
+
+
+def test_unknown_arguments_are_ignored_as_the_engine_ignores_them(graph, mock):
+    reply = _call(mock, graph, "get_problem", {"problem_id": TRIAGE, "include_text": True})
+    assert reply["result"]["isError"] is False
+
+
+def test_ordering_compares_instants_not_text(mock):
+    """Engine timestamps use `+00:00`, fixtures often `Z`; a text sort would misorder a mix."""
+    fixture = mock.load_fixture(FIXTURE)
+    fixture["problems"][0]["created_at"] = "2026-10-11T08:00:00+01:00"   # 07:00Z: newest
+    fixture["problems"][1]["created_at"] = "2026-10-11T06:30:00Z"        # older, though text sorts later
+    graph = mock.Graph(fixture)
+    first, second = [r["problem_id"] for r in graph.list_problems(limit=2)["items"]]
+    assert (first, second) == (fixture["problems"][0]["problem_id"], fixture["problems"][1]["problem_id"])
+    evidence = fixture["problems"][0]["evidence"]
+    evidence[0]["occurred_at"], evidence[1]["occurred_at"] = "2026-09-01T09:00:00+02:00", "2026-09-01T07:30:00Z"
+    rows = mock.Graph(fixture).list_evidence(fixture["problems"][0]["problem_id"])["items"]
+    order = [r["provenance_reference"] for r in rows]
+    assert order.index(evidence[1]["provenance_reference"]) < order.index(evidence[0]["provenance_reference"])
+    assert rows[-1]["occurred_at"] is None or all(r["occurred_at"] for r in rows)
+
+
+@pytest.mark.parametrize("arguments", [["problem_id"], "problem_id", 7])
+def test_non_object_arguments_are_refused_without_stopping_the_server(graph, mock, arguments):
+    reply = mock.handle(graph, {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                                "params": {"name": "get_problem", "arguments": arguments}})
+    assert reply["result"]["isError"] is True
+    assert "VALIDATION_ERROR" in reply["result"]["content"][0]["text"]
