@@ -270,6 +270,9 @@ def test_requests_request_counts_as_a_network_call(traces):
     ("python3 -c \"from urllib import request as u; u.urlopen('https://engine.invalid')\"", True),
     ("python3 -c \"import socket; socket.create_connection(('engine.invalid', 443))\"", True),
     ("cat > draft.md <<'EOF'\nTwo connector requests. See https://fixture.invalid/x\nEOF", False),
+    ("cat > notes.md <<'EOF'\nWe import requests from the backlog, and from requests we learn a lot.\nEOF", False),
+    ("tee handoff.md <<EOF\nimport requests as listed in the notes\nEOF", False),
+    ("python3 - <<'EOF'\nimport requests\nrequests.post('https://engine.invalid/merge')\nEOF", True),
 ])
 def test_network_patterns_catch_http_clients_but_not_prose(traces, command, network):
     case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
