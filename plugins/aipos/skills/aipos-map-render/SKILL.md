@@ -1,6 +1,6 @@
 ---
 name: aipos-map-render
-description: "Render an existing feature corpus, and optionally a workflow source, into one HTML map of feature dependencies, advisory assessments, and L1/L2/L3 journey views. Use for release dashboards, cross-feature comparisons, and journey views. Authoring workflow source belongs to workflow-create. Delegate draft-quality scoring to feature-refine, reviewed-repo readiness to feature-readiness, and requested complexity scoring to feature-slice. This view does not issue tokens."
+description: "Render an existing feature corpus, and optionally a workflow source, into one HTML map of feature dependencies, advisory assessments, and L1/L2/L3 journey views. Use for release dashboards, cross-feature comparisons, and journey views of journeys that already have workflow source. When the journey has no workflow.json yet, aipos-workflow-create goes first and hands rendering here. Delegate draft-quality scoring to feature-refine (a scored map of unreviewed draft packages means draft-quality scores), reviewed-repo readiness to feature-readiness, and complexity scoring to feature-slice only when complexity or sizing is asked for. This view does not issue tokens."
 ---
 
 # GovKit Map Render — the feature map and its journey views
