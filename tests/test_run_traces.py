@@ -273,6 +273,8 @@ def test_requests_request_counts_as_a_network_call(traces):
     ("cat > notes.md <<'EOF'\nWe import requests from the backlog, and from requests we learn a lot.\nEOF", False),
     ("tee handoff.md <<EOF\nimport requests as listed in the notes\nEOF", False),
     ("python3 - <<'EOF'\nimport requests\nrequests.post('https://engine.invalid/merge')\nEOF", True),
+    ("cat > notes.md <<-EOF\n\timport requests, per the notes\n\tEOF", False),
+    ("cat > notes.md <<EOF\nprose\n\tEOF\nEOF\npython3 -c 'import requests'", True),
 ])
 def test_network_patterns_catch_http_clients_but_not_prose(traces, command, network):
     case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]

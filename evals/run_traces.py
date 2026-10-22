@@ -132,13 +132,27 @@ def init_event(events: list[dict]) -> dict | None:
     return next((e for e in events if e.get("type") == "system" and e.get("subtype") == "init"), None)
 
 
-_FILE_HEREDOC = re.compile(r"\b(cat|tee)\b[^\n]*<<-?\s*(['\"]?)(\w+)\2[^\n]*\n(.*?)\n\3\b", re.S)
+_FILE_HEREDOC = re.compile(r"\b(?:cat|tee)\b.*<<(-?)\s*(['\"]?)(\w+)\2")
 
 
 def _executable_text(command: str) -> str:
     """Drop the bodies of heredocs that only write a local file (cat/tee), so words in a document
-    being written are not read as code. A heredoc fed to an interpreter is still scanned."""
-    return _FILE_HEREDOC.sub(lambda m: m.group(0).split("\n", 1)[0], command)
+    being written are not read as code. A heredoc fed to an interpreter is still scanned, and so is
+    an unterminated one. With `<<-` the terminator may be indented with tabs."""
+    lines, kept, i = command.split("\n"), [], 0
+    while i < len(lines):
+        kept.append(lines[i])
+        match = _FILE_HEREDOC.search(lines[i])
+        if match:
+            dash, terminator = match.group(1), match.group(3)
+            end = next((j for j in range(i + 1, len(lines))
+                        if (lines[j].lstrip("\t") if dash else lines[j]) == terminator), None)
+            if end is not None:
+                kept.append(lines[end])
+                i = end + 1
+                continue
+        i += 1
+    return "\n".join(kept)
 
 
 def evaluate(events: list[dict], calls: list[dict], expect: dict, *, plugin_path: Path = PLUGIN,
