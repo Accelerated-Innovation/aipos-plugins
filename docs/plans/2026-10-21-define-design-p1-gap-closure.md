@@ -92,7 +92,7 @@ open until the write half lands.
 ### 4. #61 `aipos-problem-clustering` — prep now; review slice can precede the correction path
 
 - [x] Routing and eval cases first (including `no-correction-path`), shown failing. (PR for #61)
-- [ ] The review slice — inspect clusters, compare masked quotes, suggest merges/splits with
+- [x] The review slice — inspect clusters, compare masked quotes, suggest merges/splits with
   evidence, prepare the correction for hand-off — is non-mutating by design and does not require a
   merge/split execution tool to be useful. The Cluster Review board (view spec below) can ship as
   this same slice.
