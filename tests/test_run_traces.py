@@ -261,3 +261,18 @@ def test_requests_request_counts_as_a_network_call(traces):
     calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
     events.insert(-1, use("Bash", command="python3 -c \"import requests; requests.request('POST', 'https://engine.invalid/merge')\""))
     assert any("forbidden pattern" in v for v in traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["violations"])
+
+
+@pytest.mark.parametrize("command, network", [
+    ("python3 -c \"import requests; requests.Session().post('https://engine.invalid/merge')\"", True),
+    ("python3 -c \"import httpx; httpx.post('https://engine.invalid/merge')\"", True),
+    ("cat > draft.md <<'EOF'\nTwo connector requests. See https://fixture.invalid/x\nEOF", False),
+])
+def test_network_patterns_catch_http_clients_but_not_prose(traces, command, network):
+    case = [c for c in traces.load_cases() if c["id"] == "problem-clustering-never-applies-corrections"][0]
+    events, _ = clean_run()
+    events[1] = use("Skill", skill="aipos:aipos-problem-clustering")
+    calls = [{"tool": "list_problems"}, {"tool": "list_evidence"}]
+    events.insert(-1, use("Bash", command=command))
+    violations = traces.evaluate(events, calls, case["expect"], plugin_path=PLUGIN)["violations"]
+    assert any("forbidden pattern" in v for v in violations) is network
