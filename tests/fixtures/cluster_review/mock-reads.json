@@ -1,0 +1,538 @@
+{
+ "contract": "cluster-reads.v1",
+ "source": {
+  "mode": "supplied",
+  "synthetic": true,
+  "server": "opportunity-engine-mock",
+  "captured_at": "2026-10-21T18:00:00+00:00",
+  "note": "[SYNTHETIC] Reads captured from evals/mock_pdg for tests; not evidence."
+ },
+ "coverage": {
+  "problems_listed": 8,
+  "problems_total": 8,
+  "failed": []
+ },
+ "problems": [
+  {
+   "problem": {
+    "problem_id": "fixture:prb-ticket-triage",
+    "title": "[SYNTHETIC] Support tickets arrive uncategorized and are routed to the wrong team",
+    "composite_score": 0.82,
+    "evidence_references": [
+     "reops:int-0412",
+     "reops:int-0415",
+     "reops:int-0419",
+     "zendesk:tkt-88121",
+     "zendesk:tkt-88340",
+     "zendesk:tkt-88417",
+     "gong:call-5530",
+     "reops:study-ts-07:fnd-0002"
+    ],
+    "personas": [
+     {
+      "name": "Support Agent",
+      "confidence": 0.91
+     },
+     {
+      "name": "Support Team Lead",
+      "confidence": 0.74
+     },
+     {
+      "name": "Enterprise Admin",
+      "confidence": 0.52
+     }
+    ],
+    "lineage_ref": "fixture:lin-ticket-triage",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-ticket-triage",
+    "items": [
+     {
+      "provenance_reference": "reops:int-0412",
+      "source_system": "reops",
+      "source_type": "interview_note",
+      "external_record_id": "int-0412",
+      "occurred_at": "2026-07-08T15:00:00Z",
+      "record_url": "https://fixture.invalid/reops/int-0412",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "reops:int-0415",
+      "source_system": "reops",
+      "source_type": "interview_note",
+      "external_record_id": "int-0415",
+      "occurred_at": "2026-07-09T14:30:00Z",
+      "record_url": "https://fixture.invalid/reops/int-0415",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "reops:int-0419",
+      "source_system": "reops",
+      "source_type": "interview_note",
+      "external_record_id": "int-0419",
+      "occurred_at": "2026-07-14T16:00:00Z",
+      "record_url": "https://fixture.invalid/reops/int-0419",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-88121",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-88121",
+      "occurred_at": "2026-08-02T09:12:00Z",
+      "record_url": "https://fixture.invalid/zendesk/tkt-88121",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-88340",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-88340",
+      "occurred_at": "2026-08-05T11:40:00Z",
+      "record_url": "https://fixture.invalid/zendesk/tkt-88340",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-88417",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-88417",
+      "occurred_at": "2026-08-06T08:05:00Z",
+      "record_url": "https://fixture.invalid/zendesk/tkt-88417",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "gong:call-5530",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-5530",
+      "occurred_at": "2026-06-18T17:00:00Z",
+      "record_url": "https://fixture.invalid/gong/call-5530",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "reops:study-ts-07:fnd-0002",
+      "source_system": "reops",
+      "source_type": "study_finding",
+      "external_record_id": "study-ts-07:fnd-0002",
+      "occurred_at": "2026-08-20T00:00:00+00:00",
+      "record_url": null,
+      "schema_version": 1,
+      "measurement": {
+       "metric": "misrouted_ticket_rate",
+       "value": 32.0,
+       "unit": "percent",
+       "currency": null,
+       "n": 400,
+       "method": "log_analysis"
+      }
+     }
+    ],
+    "total": 8
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-ticket-triage",
+    "source_evidence_refs": [
+     "reops:int-0412",
+     "reops:int-0415",
+     "reops:int-0419",
+     "zendesk:tkt-88121",
+     "zendesk:tkt-88340",
+     "zendesk:tkt-88417",
+     "gong:call-5530",
+     "reops:study-ts-07:fnd-0002"
+    ],
+    "originating_sources": [
+     "reops:study-int-2026-07",
+     "zendesk:view-triage-audit-2026-08",
+     "gong:call-5530",
+     "reops:study-ts-07:fnd-0002"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-invoice-dup",
+    "title": "[SYNTHETIC] Duplicate vendor invoices reach payment before anyone notices",
+    "composite_score": 0.77,
+    "evidence_references": [
+     "servicenow:INC-20931",
+     "servicenow:INC-21007",
+     "zendesk:tkt-80155"
+    ],
+    "personas": [
+     {
+      "name": "AP Clerk",
+      "confidence": 0.88
+     },
+     {
+      "name": "Controller",
+      "confidence": 0.61
+     }
+    ],
+    "lineage_ref": "fixture:lin-invoice-dup",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-invoice-dup",
+    "items": [
+     {
+      "provenance_reference": "servicenow:INC-20931",
+      "source_system": "servicenow",
+      "source_type": "incident",
+      "external_record_id": "INC-20931",
+      "occurred_at": "2026-05-11T10:00:00Z",
+      "record_url": "https://fixture.invalid/servicenow/INC-20931",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "servicenow:INC-21007",
+      "source_system": "servicenow",
+      "source_type": "incident",
+      "external_record_id": "INC-21007",
+      "occurred_at": "2026-06-02T10:00:00Z",
+      "record_url": "https://fixture.invalid/servicenow/INC-21007",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-80155",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-80155",
+      "occurred_at": "2026-06-20T13:00:00Z",
+      "record_url": "https://fixture.invalid/zendesk/tkt-80155",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 3
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-invoice-dup",
+    "source_evidence_refs": [
+     "servicenow:INC-20931",
+     "servicenow:INC-21007",
+     "zendesk:tkt-80155"
+    ],
+    "originating_sources": [
+     "servicenow:queue-ap-2026",
+     "zendesk:view-vendor-2026"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-renewal-quotes",
+    "title": "[SYNTHETIC] Renewal quotes take days to assemble",
+    "composite_score": 0.74,
+    "evidence_references": [
+     "gong:call-7781"
+    ],
+    "personas": [
+     {
+      "name": "Account Executive",
+      "confidence": 0.8
+     }
+    ],
+    "lineage_ref": "fixture:lin-renewal-quotes",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-renewal-quotes",
+    "items": [
+     {
+      "provenance_reference": "gong:call-7781",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-7781",
+      "occurred_at": "2026-08-27T15:00:00Z",
+      "record_url": "https://fixture.invalid/gong/call-7781",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 1
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-renewal-quotes",
+    "source_evidence_refs": [
+     "gong:call-7781"
+    ],
+    "originating_sources": [
+     "gong:call-7781"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-pricing-approvals",
+    "title": "[SYNTHETIC] Pricing exceptions need three approvals before a quote can go out",
+    "composite_score": 0.71,
+    "evidence_references": [
+     "gong:call-7781"
+    ],
+    "personas": [
+     {
+      "name": "Deal Desk Analyst",
+      "confidence": 0.77
+     }
+    ],
+    "lineage_ref": "fixture:lin-pricing-approvals",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-pricing-approvals",
+    "items": [
+     {
+      "provenance_reference": "gong:call-7781",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-7781",
+      "occurred_at": "2026-08-27T15:00:00Z",
+      "record_url": "https://fixture.invalid/gong/call-7781",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 1
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-pricing-approvals",
+    "source_evidence_refs": [
+     "gong:call-7781"
+    ],
+    "originating_sources": [
+     "gong:call-7781"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-redline-loss",
+    "title": "[SYNTHETIC] Contract redlines get lost between email threads",
+    "composite_score": 0.68,
+    "evidence_references": [
+     "gong:call-7781"
+    ],
+    "personas": [
+     {
+      "name": "Legal Ops Specialist",
+      "confidence": 0.7
+     }
+    ],
+    "lineage_ref": "fixture:lin-redline-loss",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-redline-loss",
+    "items": [
+     {
+      "provenance_reference": "gong:call-7781",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-7781",
+      "occurred_at": "2026-08-27T15:00:00Z",
+      "record_url": "https://fixture.invalid/gong/call-7781",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 1
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-redline-loss",
+    "source_evidence_refs": [
+     "gong:call-7781"
+    ],
+    "originating_sources": [
+     "gong:call-7781"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-renewal-risk",
+    "title": "[SYNTHETIC] Customer success cannot see renewal risk until it is too late",
+    "composite_score": 0.65,
+    "evidence_references": [
+     "gong:call-7781"
+    ],
+    "personas": [
+     {
+      "name": "Customer Success Manager",
+      "confidence": 0.73
+     }
+    ],
+    "lineage_ref": "fixture:lin-renewal-risk",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-renewal-risk",
+    "items": [
+     {
+      "provenance_reference": "gong:call-7781",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-7781",
+      "occurred_at": "2026-08-27T15:00:00Z",
+      "record_url": "https://fixture.invalid/gong/call-7781",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 1
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-renewal-risk",
+    "source_evidence_refs": [
+     "gong:call-7781"
+    ],
+    "originating_sources": [
+     "gong:call-7781"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-quote-templates",
+    "title": "[SYNTHETIC] Quote templates are out of date with current pricing",
+    "composite_score": 0.6,
+    "evidence_references": [
+     "gong:call-7781"
+    ],
+    "personas": [
+     {
+      "name": "Account Executive",
+      "confidence": 0.66
+     }
+    ],
+    "lineage_ref": "fixture:lin-quote-templates",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-quote-templates",
+    "items": [
+     {
+      "provenance_reference": "gong:call-7781",
+      "source_system": "gong",
+      "source_type": "call_transcript",
+      "external_record_id": "call-7781",
+      "occurred_at": "2026-08-27T15:00:00Z",
+      "record_url": "https://fixture.invalid/gong/call-7781",
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 1
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-quote-templates",
+    "source_evidence_refs": [
+     "gong:call-7781"
+    ],
+    "originating_sources": [
+     "gong:call-7781"
+    ],
+    "schema_version": 1
+   }
+  },
+  {
+   "problem": {
+    "problem_id": "fixture:prb-month-end",
+    "title": "[SYNTHETIC] Month-end reports require manual spreadsheet stitching",
+    "composite_score": 0.58,
+    "evidence_references": [
+     "salesforce:5003x-2201",
+     "reops:int-0107",
+     "zendesk:tkt-40211",
+     "zendesk:tkt-40388"
+    ],
+    "personas": [
+     {
+      "name": "Financial Analyst",
+      "confidence": 0.83
+     }
+    ],
+    "lineage_ref": "fixture:lin-month-end",
+    "schema_version": 1
+   },
+   "evidence": {
+    "problem_id": "fixture:prb-month-end",
+    "items": [
+     {
+      "provenance_reference": "salesforce:5003x-2201",
+      "source_system": "salesforce",
+      "source_type": "case",
+      "external_record_id": "5003x-2201",
+      "occurred_at": "2022-11-03T10:00:00Z",
+      "record_url": "https://fixture.invalid/salesforce/5003x-2201",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "reops:int-0107",
+      "source_system": "reops",
+      "source_type": "interview_note",
+      "external_record_id": "int-0107",
+      "occurred_at": "2023-06-14T10:00:00Z",
+      "record_url": "https://fixture.invalid/reops/int-0107",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-40211",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-40211",
+      "occurred_at": "2024-02-19T10:00:00Z",
+      "record_url": "https://fixture.invalid/zendesk/tkt-40211",
+      "schema_version": 1,
+      "measurement": null
+     },
+     {
+      "provenance_reference": "zendesk:tkt-40388",
+      "source_system": "zendesk",
+      "source_type": "support_ticket",
+      "external_record_id": "tkt-40388",
+      "occurred_at": null,
+      "record_url": null,
+      "schema_version": 1,
+      "measurement": null
+     }
+    ],
+    "total": 4
+   },
+   "lineage": {
+    "problem_id": "fixture:prb-month-end",
+    "source_evidence_refs": [
+     "salesforce:5003x-2201",
+     "reops:int-0107",
+     "zendesk:tkt-40211",
+     "zendesk:tkt-40388"
+    ],
+    "originating_sources": [
+     "salesforce:case-set-2022",
+     "reops:study-2023-fin",
+     "zendesk:view-reporting"
+    ],
+    "schema_version": 1
+   }
+  }
+ ]
+}

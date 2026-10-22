@@ -1,6 +1,6 @@
 # The AIPOS skill workflow
 
-The pillars describe a product lifecycle. All eighteen skills live in the `aipos`
+The pillars describe a product lifecycle. All nineteen skills live in the `aipos`
 plugin so a handoff does not require another installation. Start at the action the
 user requests and the state of the available artifacts.
 
@@ -64,6 +64,7 @@ or business outcomes.
 | Write a Product Vision, or take one through review and ratification | `aipos-product-vision` | One vision record plus a to-do list; the reviewer roster is routed from a risk triage and readiness is computed; ratification records agreement on direction, never approval to build |
 | Inspect an existing portfolio, filter cases or compare recorded results | `aipos-portfolio-dashboard` | Read-only chat overview and fixed offline dashboard from fixtures or local graph captures via MCP or explicit REST; rerun capture to refresh ([consumer plan](plans/2026-10-19-portfolio-dashboard.md)) |
 | Check which step 1 signal sources feed the graph and how current they are | `aipos-signal-intake` | Source-by-source table with a basis per field and drafted connector requests; read-only, never starts ingestion; freshness unknown until the engine exposes an ingestion-status read |
+| Review extracted problem clusters and suggest merges or splits | `aipos-problem-clustering` | Evidence-cited suggestions and pending correction hand-offs (no engine correction path exists today); plain text, or an offline Cluster Review board |
 | Package one graph problem as a Structured Opportunity for gate 1 | `aipos-opportunity-package` | Read-only four-part package (evidence, hypothesis, impact estimate, recommended action) for the gate 1 reviewer; proposing or attaching to the graph is not part of this release |
 | Allocate research attention using the live graph | `aipos-exploration-planning` | Evidence-backed planning pack and draft exploration log; the governed interface records decisions |
 | Facilitate a one-page Solution Framing canvas for one problem | `aipos-solution-framing` | `canvas.json` plus a rendered image; facts from the graph, decisions from the PM; hands the panel-6 plan to rapid-validation and the statement and metrics to epic-create when an epic is wanted |
@@ -176,4 +177,4 @@ yet due, and 100 is not permission to implement.
 
 Changes to committed behavior go through refine's proposed change package and
 reapproval path. Human product decisions and application implementation are
-outside these eighteen skills.
+outside these nineteen skills.

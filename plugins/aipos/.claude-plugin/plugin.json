@@ -1,7 +1,7 @@
 {
   "name": "aipos",
-  "description": "AIPOS skills for product strategy, evidence-based discovery, rapid validation, and governed AI-assisted delivery. Create and evolve product opportunity briefs, write and ratify product visions, plan exploration, facilitate solution framing canvases, test assumptions, define and refine behavior, select release scope, prepare commitment packages, write agent contracts, report signal-source coverage, check repository readiness, inspect portfolio lifecycle records, visualize work, generate synthetic data, and emit delivery metrics. Skills support the pillars and their handoffs in one installation; product approval remains with the accountable authority.",
-  "version": "1.12.0",
+  "description": "AIPOS skills for product strategy, evidence-based discovery, rapid validation, and governed AI-assisted delivery. Create and evolve product opportunity briefs, write and ratify product visions, plan exploration, facilitate solution framing canvases, test assumptions, define and refine behavior, select release scope, prepare commitment packages, write agent contracts, report signal-source coverage, review problem clusters, check repository readiness, inspect portfolio lifecycle records, visualize work, generate synthetic data, and emit delivery metrics. Skills support the pillars and their handoffs in one installation; product approval remains with the accountable authority.",
+  "version": "1.13.0",
   "author": {
     "name": "Accelerated Innovation"
   },
@@ -36,6 +36,7 @@
     "portfolio-dashboard",
     "opportunity-package",
     "agent-contract",
-    "signal-intake"
+    "signal-intake",
+    "problem-clustering"
   ]
 }

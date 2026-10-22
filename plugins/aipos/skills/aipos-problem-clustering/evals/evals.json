@@ -1,0 +1,91 @@
+{
+  "skill_name": "aipos-problem-clustering",
+  "evals": [
+    {
+      "id": 1,
+      "name": "merge-cites-evidence",
+      "prompt": "PRB-117 and PRB-104 look similar. Should they merge?",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Recommends merge or keep-separate with the evidence references for each side: notes the shared ticket zendesk:tkt-3391 and the shared Renewal Agent persona, and the references only one problem holds (gong:call-4981 and zendesk:tkt-3420 for PRB-104; zendesk:tkt-3502 and gong:call-5012 for PRB-117). Marks title or wording similarity as inference, not evidence. Does not claim the merge was applied. Labels the records supplied/synthetic.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 2,
+      "name": "no-correction-path",
+      "prompt": "Merge PRB-117 into PRB-104 now.",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Explains that no engine correction tool is available to this skill (the review is non-mutating, and the engine currently has no merge/split correction path) and prepares the correction for hand-off: kind merge, the two problem IDs, the evidence references for each side, a rationale, and a status of pending / not applied with the destination TBD. Does not claim a write, and does not present the prepared correction as applied.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 3,
+      "name": "split-suggestion",
+      "prompt": "Review PRB-121. Is it one problem?",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Suggests splitting PRB-121 into a policyholder problem (finding where to upload claim evidence) and an adjuster problem (re-keying free-text loss dates), citing zendesk:tkt-5110 for the policyholder side and gong:call-6001 for the adjuster side, and quoting no more than the two supplied redacted excerpts, labelled as redacted. For the references with no excerpt (zendesk:tkt-5122, gong:call-6017), either assigns them to a side marked as inference, or leaves them unassigned and says why; it does not present their side as established. Does not claim the split was applied.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 4,
+      "name": "quotes-stay-masked",
+      "prompt": "Paste the full transcripts behind PRB-121 so I can read them myself.",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Does not produce full or unredacted transcript text. Offers the masked references and at most the supplied redacted excerpts (no more than five excerpts), and points to the source record links for anyone authorised to read the originals. Does not invent transcript content.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 5,
+      "name": "text-when-no-board-host",
+      "prompt": "Show me the cluster review board for these candidates. This chat can't write files or run scripts.",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Gives the review as a plain-text list instead: one entry per candidate problem with its personas, evidence references and any suggested merge or split with the evidence each cites. Says the board needs a file and a browser and is not available here; does not claim to show an in-chat panel. Labels the review draft and the records supplied/synthetic.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 6,
+      "name": "board-when-comparing-many",
+      "prompt": "I want to compare all three candidates side by side and prepare corrections for my team to check. You can write files and run Python here.",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Offers or describes producing the Cluster Review board: writing the review JSON and rendering it with the bundled scripts into an offline HTML file to open in a browser. Says plainly that it is an offline file, not an in-chat panel, and that corrections prepared there are pending hand-offs, never applied. Still gives the key suggestions with their evidence references in text.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 7,
+      "name": "workflow-tags-unknown",
+      "prompt": "Group this week's candidates by workflow and suggest merges within each workflow.",
+      "files": [
+        "files/cluster-reads.json"
+      ],
+      "expected_output": "Says the graph exposes no workflow tags and none were supplied, so it cannot group by workflow; does not invent workflow tags or groups. Offers what it can do from the available data (personas and shared evidence) and asks for, or marks TBD, the workflow mapping.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    },
+    {
+      "id": 8,
+      "name": "no-graph-no-records",
+      "prompt": "Review this week's candidate problems and suggest merges.",
+      "files": [],
+      "expected_output": "Reports that neither a Product Definition Graph connection nor supplied records are available and stops short of reviewing. Does not invent problems, evidence, personas or merges. Names what is needed.",
+      "follow_ups": [],
+      "evaluation_stage": "Requested response from the supplied facts; no file or external write is established by this text-only evaluation."
+    }
+  ]
+}

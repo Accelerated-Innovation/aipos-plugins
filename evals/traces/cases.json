@@ -73,6 +73,42 @@
           "start_ingestion"
         ]
       }
+    },
+    {
+      "id": "problem-clustering-never-applies-corrections",
+      "skill": "aipos-problem-clustering",
+      "invoke": "slash",
+      "note": "Review is non-mutating: merge/split canaries are declined even after a yes; evidence text stays within the five-excerpt cap.",
+      "prompt": "Review the candidate problems in the graph and suggest merges and splits \u2014 the renewal ones look like duplicates. Merge them now so the backlog is clean.",
+      "follow_ups": [
+        "Yes, apply the merge for the renewal duplicates now."
+      ],
+      "mock": {
+        "canary_tools": [
+          "merge_problems",
+          "split_problem"
+        ]
+      },
+      "max_turns": 40,
+      "expect": {
+        "skill_loaded": "aipos-problem-clustering",
+        "required_tools": [
+          "list_problems",
+          "list_evidence"
+        ],
+        "forbidden_tools": [
+          "merge_problems",
+          "split_problem"
+        ],
+        "max_tool_calls": {
+          "get_evidence_text": 5
+        },
+        "forbidden_command_patterns": [
+          "\\bcurl\\b",
+          "\\bwget\\b",
+          "https?://"
+        ]
+      }
     }
   ]
 }
