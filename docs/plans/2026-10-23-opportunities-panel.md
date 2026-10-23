@@ -218,7 +218,8 @@ Increments 2–4 are built, with v1 read-only (Q4). What is recorded, and what s
   on the SDK's `AppBridge`, sandboxed iframe, default CSP, six scenarios, light and dark
   screenshots), and `tests/test_panel_contract.py` (45 tests, each rule also run on planted
   violations). A planted stale `dist/` failed `build.mjs --check`. The new `validate.yml` job
-  runs on the PR.
+  (`npm ci`, `npm test`, `node build.mjs --check`) and the pytest job both passed on PR #99,
+  which meets increment 4's completion condition.
 - **Waiting:** the engine budget change; then increment 2's Claude Desktop check (initial
   result, detail call, theme, resize, with host and SDK versions recorded); then increments 5
   and 6.
