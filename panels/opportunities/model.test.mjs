@@ -17,10 +17,19 @@ test('rows keep engine order, score components and only active work-item links',
   const rows = toRows(mcp('list-opportunities'));
   assert.deepEqual(rows.map(r => [r.rank, r.problemId, r.score]), [[1, 'p-1', 4.5], [2, 'p-2', 3.25]]);
   assert.deepEqual(rows[0].components, {evidence_strength: 1, revenue_impact: 2, persona_breadth: 3, recency: 4, validation_signal: 5});
-  // The fixture also holds a severed link (OPP-99); only the active one is shown.
   assert.deepEqual(rows[0].links.map(l => l.reference), ['aha:OPP-12']);
   assert.equal(rows[0].links[0].url, 'https://aha.test/OPP-12');
   assert.deepEqual(rows[1].links, []);
+});
+
+test('a link that is not active is never shown as a work item', () => {
+  // The engine already returns active links only (its fixture severs OPP-99 before the capture);
+  // the panel does not rely on that.
+  const page = mcp('list-opportunities');
+  const active = page.items[0].links[0];
+  const severed = {...active, link_id: 'link-2', external_record_id: 'OPP-99', external_reference: 'aha:OPP-99', status: 'severed'};
+  const [row] = toRows({...page, items: [{...page.items[0], links: [active, severed]}]});
+  assert.deepEqual(row.links.map(l => l.reference), ['aha:OPP-12']);
 });
 
 test('the published REST sample shapes into the same rows as its MCP data', () => {

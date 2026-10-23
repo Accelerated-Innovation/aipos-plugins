@@ -267,7 +267,9 @@ async function loadMore() {
       state.list = mergePage(state.list, result.data);
       state.readAt = now();
       render();
-      return document.querySelector(`#rows tr:nth-child(${before + 1}) .open`)?.focus() ?? $('more').focus();
+      // Focus the first new row wherever the current sort put it; if a filter hides it, More.
+      const firstNew = state.list.rows[before];
+      return ((firstNew && $(`open-${firstNew.problemId}`)) || $('more')).focus();
     } catch (error) {
       state.more.error = {code: 'MALFORMED_RESULT', message: error.message};
     }

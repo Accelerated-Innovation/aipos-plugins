@@ -202,7 +202,7 @@ Increments 2–4 are built, with v1 read-only (Q4). What is recorded, and what s
   esbuild `0.28.2`, both exact in `package.json` and locked. The default entry point bundles
   145 KB larger.
 - **Reproducible build:** `npm ci && node build.mjs` in `panels/opportunities/`. Version 0.1.0
-  is **449,270 bytes** (complete HTML, licence notices included). A clean `npm ci` in a separate
+  is **449,252 bytes** (complete HTML, licence notices included). A clean `npm ci` in a separate
   copy rebuilt it byte for byte. It fits the proposed 1 MiB limit, **not** today's 256,000.
 - **Licences:** the SDK's prebuilt bundle contains zod, `@modelcontextprotocol/core` and
   `client` (Apache-2.0, MIT for earlier contributions), `@cfworker/json-schema` and
@@ -214,7 +214,7 @@ Increments 2–4 are built, with v1 read-only (Q4). What is recorded, and what s
   and `PROBLEM_NOT_FOUND`, `INSUFFICIENT_SCOPE` and `INVALID_TOKEN`. An engine error arrives as
   `isError` with the text `Error executing tool <name>: <CODE>: <message>` and no
   `structuredContent`. The bridge parses the code from that text.
-- **Checks:** `model.test.mjs` and `bridge.test.mjs` (31 tests), `check-page.mjs` (the mock host
+- **Checks:** `model.test.mjs` and `bridge.test.mjs` (32 tests), `check-page.mjs` (the mock host
   on the SDK's `AppBridge`, sandboxed iframe, default CSP, six scenarios, light and dark
   screenshots), and `tests/test_panel_contract.py` (45 tests, each rule also run on planted
   violations). A planted stale `dist/` failed `build.mjs --check`. The new `validate.yml` job
@@ -241,7 +241,7 @@ in Claude Desktop, the engine's server entry in
 ## Open questions
 
 1. Land the engine budget change for the selected SDK: proposed ceiling 1 MiB. The complete
-   bundle is measured (449,270 bytes at 0.1.0); host loading is confirmed by increment 2's
+   bundle is measured (449,252 bytes at 0.1.0); host loading is confirmed by increment 2's
    Claude Desktop check after the change. The bridge implementation is decided.
 2. The official SVG artwork for the mark (`BRAND.md` "Open items"). The panel ships without a mark
    until it arrives.

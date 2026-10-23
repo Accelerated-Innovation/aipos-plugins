@@ -111,20 +111,23 @@ try {
     assert.equal(await text(frame.locator('#coverage')), '1 loaded of 2 opportunities.');
     const first = await text(frame.locator('[data-row="p-1"]'));
     assert.match(first, /Exports time out on large accounts[\s\S]*4\.50[\s\S]*aha:OPP-12/);
-    assert.doesNotMatch(first, /OPP-99/, 'a severed link is not shown as active');
     assert.equal(await frame.locator('#empty').isVisible(), false);
     assert.match(await text(frame.locator('#version')), /^Opportunities panel \d+\.\d+\.\d+$/);
     const font = await frame.locator('body').evaluate(el => getComputedStyle(el).fontFamily);
     assert.match(font, /Trebuchet MS/, 'the host font is used');
 
-    // More: the next page through the host, appended, focus on the first new row
+    // More: the next page through the host, appended, focus on the first new row. Sorted by
+    // title the new row lands first, so focus must follow the row, not its position.
     assert.equal(await text(frame.locator('#more')), 'Load the next 1');
+    await frame.locator('#sort').selectOption('title');
     await frame.locator('#more').click();
     await frame.locator('[data-row="p-2"]').waitFor();
     assert.equal(await frame.locator('#more').isVisible(), false);
     assert.equal(await text(frame.locator('#coverage')), '2 opportunities.');
+    assert.deepEqual(await frame.locator('#rows tr').evaluateAll(rows => rows.map(r => r.dataset.row)), ['p-2', 'p-1']);
     assert.equal(await frame.locator('#open-p-2').evaluate(el => el === document.activeElement), true);
     assert.ok((await host()).calls.includes(key('list_opportunities', {offset: 1, limit: 1})));
+    await frame.locator('#sort').selectOption('rank');
 
     // Filter, work-item filter, sort
     await frame.locator('#search').fill('bulk');
