@@ -65,9 +65,15 @@ the conversation.
    show personas, lineage, and evidence **as provenance references** (source, record link, study
    measurement when present). **No evidence text:** `get_evidence_text` is not allowed, and the
    engine refuses to serve a panel that names it.
-4. **Hand back.** Selected opportunities plus an action ("draft Aha! records", "package for
-   gate 1") become a `ui/message` to the conversation. The skill and its confirmation step take
-   it from there. No write tool is ever called from the panel.
+4. **Hand back** (in v1 only if decision Q4 says so; see "Open questions"). Selected
+   opportunities plus an action ("draft Aha! records", "package for gate 1") become a
+   `ui/message` to the conversation. The skill and its confirmation step take it from there. If
+   it is in v1, increment 2 defines the payload and the consumer contract:
+   - the message text the model reads;
+   - the `problem_id`s it carries;
+   - which skill picks it up.
+
+   No write tool is ever called from the panel.
 5. **Fallbacks.** Show empty states for an empty list (no scoring run yet), errors for a refused
    or failed call (show the engine's code: `INSUFFICIENT_SCOPE`, `INVALID_TOKEN`), and a stale
    label (capture time, past 24 hours) per `plugins/aipos/references/panel-contract.md`.
@@ -118,7 +124,9 @@ This is the primary control; the engine's load-time scan is only a tripwire.
   file, comments and bundled code included. The forbidden list mirrors discovery-engine's
   `src/engine/api/mcp/panels.py` `ENGINE_TOOL_NAMES`; the test cites that file so the two are
   updated together.
-- `build.py --check` passes: the committed `dist/` is what the source builds.
+- `build.py --check` passes: the committed `dist/` is what the source builds. This and the
+  model's `node --test` need their own `validate.yml` steps, added in increment 4; the existing
+  Node steps cover only `viewers/`.
 
 ## Increments and acceptance
 
@@ -126,8 +134,8 @@ This is the primary control; the engine's load-time scan is only a tripwire.
 |---|---|---|
 | 1 — Brand and plan | `panels/BRAND.md`; this plan | Reviewed and merged |
 | 2 — Model and fixtures | `model.mjs` (rows, filters, sort, paging state, provenance), fixtures from discovery-engine's published samples (`opportunities.json`, `problem-detail.json`, `problem-evidence.json`), the bridge decision | `node --test panels/opportunities/model.test.mjs`; fixtures cite their source paths and SHA-256 |
-| 3 — Page, bridge, build | `template.html`, `app.mjs`, `style.css`, `bridge.mjs`, `build.py` producing `dist/opportunities.html`; a mock-host page for local checks | `check-page.mjs` drives the mock host with Playwright (reusing the journey viewer's pinned install): open, filter, drill in, hand back, error and empty states, keyboard only; light and dark screenshots |
-| 4 — Contract test and CI | `tests/test_panel_contract.py`; `build.py --check` and `node --test` wired into `validate.yml` | Each check proven able to fail (a planted forbidden name, an external URL, an oversized file) |
+| 3 — Page, bridge, build | `template.html`, `app.mjs`, `style.css`, `bridge.mjs`, `build.py` producing `dist/opportunities.html`; a mock-host page for local checks | `check-page.mjs` drives the mock host with Playwright (reusing the journey viewer's pinned install): open, filter, drill in, error and empty states, a partial host-context update, keyboard only; hand back **only if Q4 put it in v1**, asserting the exact `ui/message` payload; light and dark screenshots |
+| 4 — Contract test and CI | `tests/test_panel_contract.py`; **new `validate.yml` steps** for `python panels/opportunities/build.py --check` and `node --test panels/opportunities/model.test.mjs`. Today's Node steps test only the viewers | Each check proven able to fail (a planted forbidden name, an external URL, an oversized file, a stale `dist/`); the increment is not done until the new steps run on a PR |
 | 5 — Release | Tag `panels-opportunities-v<version>`; `gh release` with `opportunities.html` and its SHA-256 in the notes | Release published; SHA-256 recomputed from the downloaded asset |
 | 6 — Pin and verify in a host | discovery-engine bump PR (its `DEPLOYMENT.md` part F1); the engine run with `ENGINE_MCP_PANELS_ENABLED=true` (stdio for Claude Desktop, or the hosted engine via F2) | `/health` shows `bound` at the release version; the panel renders in Claude Desktop in light and dark; drill-in and hand-back work against the real engine |
 
@@ -152,6 +160,8 @@ switch. For a local demo in Claude Desktop, the engine's server entry in
    until it arrives.
 3. Brand book discrepancies for the brand owner (`BRAND.md` "Source notes"): the secondary blue
    and yellow RGB values against their hex codes, and the wordmark minimum size.
-4. Whether hand-back actions ship in v1 or the first release is read-only browsing.
+4. **Hand-back in v1, or read-only browsing first? Decide before increment 2**, because
+   increment 3's tests depend on it. If yes, increment 2 also defines the `ui/message` payload
+   and the receiving skill's contract.
 5. Which host versions to verify against: Claude Desktop is the demo host; check whether Claude
    Code renders MCP App panels before relying on it.

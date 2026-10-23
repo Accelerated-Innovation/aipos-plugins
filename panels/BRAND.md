@@ -18,13 +18,14 @@ These come from the release contract in discovery-engine's
 bound by the engine.
 
 - **No external requests:** no web fonts, CDN scripts, remote images or `fetch` to anything but
-  the host bridge. The resource declares no CSP origins, so the host applies the spec's default
-  policy:
-  - scripts and styles inline only;
-  - images `self` and `data:`;
-  - no `connect-src`;
-  - nothing else, fonts included.
-- One self-contained HTML file, **at most 256,000 bytes**, valid UTF-8.
+  the host bridge. This is the engine's rule.
+- **One self-contained HTML file, at most 256,000 bytes, valid UTF-8**, with every script and
+  style inline. This is also the engine's rule: it serves one pinned file and nothing beside it.
+- **The CSP the host applies.** The resource declares no CSP origins, so hosts apply the MCP Apps
+  default policy (spec 2026-01-26). That allows scripts and styles from `self` and inline, images
+  from `self` and `data:`, no connections (`connect-src 'none'`), and no fonts (`font-src` is
+  absent, so `default-src 'none'` applies). The inline-only rule comes from the engine, not from
+  this policy.
 - Names no engine tool other than the ones the panel may call. For the opportunities panel those
   are `list_opportunities`, `get_problem` and `list_evidence`.
 
@@ -53,6 +54,9 @@ whose RGB and hex disagree.
   `--color-background-primary`, `--color-text-primary`, `--color-border-primary`,
   `--color-ring-primary`, `--font-sans` and their siblings. Read them at `ui/initialize`, and
   again on `ui/notifications/host-context-changed`.
+- `ui/notifications/host-context-changed` carries a **partial** context, for example a theme
+  change without `styles.variables`. **Merge each update into the panel's current host context**;
+  never replace it, or a theme-only update discards the surface and font variables.
 - Hosts may omit any variable. Fall back to the brand neutrals: `#f2f2f2` or white in light
   mode, `#1a1a1a` in dark. Never true black, and never true white for large dark-mode surfaces
   (p. 22).
@@ -75,13 +79,35 @@ So the panel's accent is **purple in light mode and light blue in dark mode**, w
 for light-mode headings. Define them once as CSS custom properties per theme; never hard-code
 a brand colour in a component.
 
+**Check against the surface actually resolved, not the theme name.** The table assumes the
+fallback surfaces, but a host's `--color-background-primary` may be another shade. Each time the
+host context changes, the panel computes the contrast of each accent against the resolved
+background, using a small luminance function in `model.mjs` with its own unit tests. If an accent
+falls below its threshold (4.5:1 for text, 3:1 for UI parts), that use falls back to the host's
+own `--color-text-primary` or `--color-ring-primary`. The brand colour then stays decorative
+only.
+
 ### Status colours
 
-The secondary colours may mark status (p. 21: "to highlight and add details"), in smaller
-proportions than the primaries. **Status never relies on colour alone**: pair it with a word or
-an icon. As text, green (3.10 on white) and yellow (2.00 on white) fail on light surfaces, and
-red (2.56) and blue (1.98) fail on dark. Use them as fills or markers beside a text label, not as
-the label.
+**Status never relies on colour alone**: pair it with a word or an icon. A status **marker**
+(dot, bar, icon) is a UI part and must still meet **3:1** against its surface.
+
+1. **Prefer the host's semantic status colours:** `--color-text-danger`, `--color-text-success`,
+   `--color-text-warning`, `--color-text-info`, and their `--color-background-*` and
+   `--color-border-*` siblings. They are tuned to the host's surfaces.
+2. **Fall back to the brand secondaries** (p. 21, "to highlight and add details") only where they
+   pass on the resolved surface:
+
+| Marker | on `#ffffff` | on `#f2f2f2` | on `#1a1a1a` |
+|---|---|---|---|
+| Red `#af1e44` | 6.79 ✓ | 6.07 ✓ | 2.56 ✗ |
+| Blue `#1a4b84` | 8.81 ✓ | 7.87 ✓ | 1.98 ✗ |
+| Green `#6fa113` | 3.10 ✓ | 2.77 ✗ | 5.62 ✓ |
+| Yellow `#d1b70d` | 2.00 ✗ | 1.79 ✗ | 8.69 ✓ |
+
+A colour marked ✗ on a surface is **decorative only** there: never a marker, never text. The
+runtime check above applies to markers too. As text (4.5:1), only red and blue on light surfaces,
+and yellow and green on dark, are usable.
 
 ### Gradient
 
@@ -163,9 +189,13 @@ feature 27, N12).
 - [ ] Surfaces, text and font come from the host theme, with fallbacks as above; no brand
       background, gradient behind text, or web font
 - [ ] Accent is purple in light mode and light blue in dark; dark purple only for light-mode
-      headings
-- [ ] All text meets 4.5:1 (3:1 large); focus rings and indicators meet 3:1 in both themes
-- [ ] Status is never colour alone
+      headings; each use is checked against the resolved host surface and falls back to the host
+      colour when it fails
+- [ ] All text meets 4.5:1 (3:1 large); focus rings, markers and indicators meet 3:1 in both
+      themes
+- [ ] Status uses the host's semantic colours first, is never colour alone, and uses no brand
+      secondary marked ✗ for the surface
+- [ ] Host-context updates are merged into the current context, never replacing it
 - [ ] One mark: the official, unaltered SVG at or above its minimum size, correct variant for the
       theme, with clear space (or no mark while the artwork is outstanding)
 - [ ] Left-aligned, ragged right; no centred or justified multi-line text; no text effects
