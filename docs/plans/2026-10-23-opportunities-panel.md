@@ -1,10 +1,11 @@
 # Opportunities panel (the first MCP App panel)
 
 **Updated · 2026-10-23.** Owner: AIPOS (Marty Bradley). Planned; nothing is built here yet.
-The engine side is complete: discovery-engine feature 27 (`27_engine_mcp_opportunities_panel`,
+The engine binding is complete: discovery-engine feature 27 (`27_engine_mcp_opportunities_panel`,
 PRs #151–#156). The engine binds this panel to `list_opportunities` and serves it as
-`ui://aipos/opportunities` once a release is pinned there. This repository authors, brands,
-tests and releases the panel.
+`ui://aipos/opportunities` once a release is pinned there. The SDK decision below requires an
+engine bundle-budget change before that pin. This repository authors, brands, tests and releases
+the panel.
 
 ## Purpose and ownership
 
@@ -38,17 +39,19 @@ Keeping it in a separate top-level folder keeps the two release paths from being
 panels/
   BRAND.md                      # how every panel carries the brand (done in this PR)
   opportunities/
-    template.html  app.mjs  model.mjs  style.css   # source, dependency-free like viewers/portfolio
-    bridge.mjs                  # the MCP Apps host bridge (see "Host bridge")
-    build.py                    # inlines everything into one HTML file; --check for freshness
+    template.html  app.mjs  model.mjs  style.css   # vanilla JavaScript UI; pure model
+    bridge.mjs                  # narrow adapter around the official MCP Apps SDK
+    package.json  package-lock.json  # exact SDK/build-tool pins and locked dependencies
+    build.mjs                   # bundles SDK and source into one HTML file; --check for freshness
     dist/opportunities.html     # committed build output, reviewed as generated code
     model.test.mjs  check-page.mjs  fixtures/
 tests/test_panel_contract.py    # the engine contract, run on dist/ in pytest
 ```
 
-`model.mjs` is pure: it shapes tool results into rows and filters, so it can be shared with
-`viewers/` later. Nothing under `panels/` is packaged into the plugin, so a panel change needs
-no plugin version bump until the "Afterwards" step below.
+`model.mjs` is pure and imports no SDK: it shapes normalized tool data into rows and filters,
+so it can be shared with `viewers/` later. `bridge.mjs` owns SDK integration and normalizes MCP
+results before passing data to the model. Nothing under `panels/` is packaged into the plugin,
+so a panel change needs no plugin version bump until the "Afterwards" step below.
 
 ## Behaviour
 
@@ -93,13 +96,52 @@ The panel speaks JSON-RPC over `postMessage` with the host:
 - `ui/notifications/host-context-changed` follows theme changes;
 - `ui/open-link` opens record links.
 
-Re-check these names against the spec version the target host implements before building.
+These are protocol responsibilities delegated to the SDK, not messages to implement by hand.
+Verify the pinned SDK against the spec version the target host implements in increment 2.
 
-**Decision for increment 2:** a hand-written `bridge.mjs` covering only the messages above, or the
-official SDK `@modelcontextprotocol/ext-apps` (2.0.3 at writing) bundled in. Hand-written keeps the
-file small and dependency-free and makes the tool-name scan trivial to reason about. The SDK
-tracks the spec. Recommendation: hand-written, unless the target host needs negotiation the SDK
-handles. Either way, the contract test below decides.
+**Decision for increment 2 — SDK selected by Marty Bradley, 2026-10-23.** Use the official
+`@modelcontextprotocol/ext-apps` SDK behind a small `bridge.mjs` adapter. Start with exact version
+`2.0.3`, the version measured during review; pin the build tool and commit the dependency lock.
+Use the app-side SDK with a vanilla JavaScript UI. The SDK and all dependencies are bundled
+locally into the HTML; no CDN or runtime package loading is introduced.
+
+The adapter owns initialization, host context, tool-result normalization and the three allowed
+read calls, plus opening record links and the optional conversation hand-back. Register result
+handlers before connecting; handle transport failures and tool-result errors separately. Keep
+the SDK instance private to the adapter and expose named application operations, rather than an
+unrestricted tool-call method. The SDK handles protocol transport and lifecycle; application
+state, loading, errors and selection remain panel responsibilities.
+
+Increment 2 proves a minimal panel in Claude Desktop before the full page is built: receive the
+initial result, make a detail call through the host, follow theme changes and resize. Test the
+hand-back and its rejection path if Q4 puts it in v1. Record the host and SDK versions. A mock
+host supports repeatable tests, but does not replace this early integration check or the final
+release check in increment 6.
+
+### Required engine bundle-budget change
+
+The existing **256,000-byte** ceiling does not fit the straightforward SDK builds measured in
+the 2026-10-23 review. A minimal app exercising the planned bridge methods, bundled with esbuild
+`0.28.2`, minification and tree shaking, produced:
+
+| SDK 2.0.3 entry point | JavaScript bytes, before panel markup and styles |
+|---|---:|
+| `@modelcontextprotocol/ext-apps` | 601,224 |
+| `@modelcontextprotocol/ext-apps/app-with-deps` | 455,884 |
+
+These are probe results, not the final release size or a host performance measurement. Both
+builds passed the forbidden engine-tool identifier scan. Increment 2 records the selected entry
+point, dependency lock, reproducible build command and complete HTML byte count.
+
+**Proposed new ceiling: 1 MiB (1,048,576 bytes) for the complete, uncompressed HTML file.** This
+is a pending cross-repository contract change, not an existing engine allowance. Before the SDK
+panel can be pinned or the early engine/host check can pass, discovery-engine must update its
+loader limit, boundary tests, API handoff and feature 27 budget documentation. Update
+`panels/BRAND.md`'s size constraint and this repository's contract test to the same agreed limit.
+Keep the single-file, UTF-8, hash verification, no-external-requests and allowed-tool rules.
+
+Do not fall back to a hand-written bridge merely to pass the old limit. If the budget change
+cannot proceed, revisit that constraint explicitly; the selected implementation remains the SDK.
 
 ## Brand
 
@@ -116,7 +158,9 @@ Every panel PR carries its checklist and light and dark screenshots, reviewed by
 
 `tests/test_panel_contract.py`, in pytest, so the `validate.yml` pytest job runs it on every PR.
 This is the primary control; the engine's load-time scan is only a tripwire.
-- `dist/opportunities.html` is **at most 256,000 bytes** and valid UTF-8.
+- `dist/opportunities.html` is valid UTF-8 and within the **agreed engine byte limit**. The
+  current limit is 256,000 bytes; the SDK plan proposes 1,048,576 bytes as described above.
+  The panel test must match the engine's revised limit before release, including boundary cases.
 - **No external requests:** no `http(s)://` in `src`, `href` (except record links opened through
   `ui/open-link`), `@import`, `url(…)` or `fetch(`; no `<link rel=stylesheet>`; no web fonts.
 - **Tool names:** names `list_opportunities`, `get_problem` and `list_evidence`, and **none** of
@@ -124,20 +168,25 @@ This is the primary control; the engine's load-time scan is only a tripwire.
   file, comments and bundled code included. The forbidden list mirrors discovery-engine's
   `src/engine/api/mcp/panels.py` `ENGINE_TOOL_NAMES`; the test cites that file so the two are
   updated together.
-- `build.py --check` passes: the committed `dist/` is what the source builds. This and the
-  model's `node --test` need their own `validate.yml` steps, added in increment 4; the existing
-  Node steps cover only `viewers/`.
+- After `npm ci` in `panels/opportunities/`, `node build.mjs --check` passes: the committed
+  `dist/` is what the locked source and dependencies build. This and the model's `node --test`
+  need their own `validate.yml` steps, added in increment 4; the existing Node steps cover only
+  `viewers/`.
 
 ## Increments and acceptance
 
 | Increment | Result | Completion evidence |
 |---|---|---|
 | 1 — Brand and plan | `panels/BRAND.md`; this plan | Reviewed and merged |
-| 2 — Model and fixtures | `model.mjs` (rows, filters, sort, paging state, provenance), fixtures from discovery-engine's published samples (`opportunities.json`, `problem-detail.json`, `problem-evidence.json`), the bridge decision | `node --test panels/opportunities/model.test.mjs`; fixtures cite their source paths and SHA-256 |
-| 3 — Page, bridge, build | `template.html`, `app.mjs`, `style.css`, `bridge.mjs`, `build.py` producing `dist/opportunities.html`; a mock-host page for local checks | `check-page.mjs` drives the mock host with Playwright (reusing the journey viewer's pinned install): open, filter, drill in, error and empty states, a partial host-context update, keyboard only; hand back **only if Q4 put it in v1**, asserting the exact `ui/message` payload; light and dark screenshots |
-| 4 — Contract test and CI | `tests/test_panel_contract.py`; **new `validate.yml` steps** for `python panels/opportunities/build.py --check` and `node --test panels/opportunities/model.test.mjs`. Today's Node steps test only the viewers | Each check proven able to fail (a planted forbidden name, an external URL, an oversized file, a stale `dist/`); the increment is not done until the new steps run on a PR |
+| 2 — SDK integration, model and fixtures | Pinned SDK/build dependencies, minimal `bridge.mjs` and `build.mjs`, early Claude Desktop check after the engine budget change; `model.mjs` (rows, filters, sort, paging state, provenance); domain fixtures from the engine's published samples plus actual MCP result/error fixtures | Reproducible full HTML byte count; initial result, detail call, theme and resize work in the real host; hand-back if Q4 includes it; `node --test panels/opportunities/model.test.mjs`; fixtures cite source paths and SHA-256 |
+| 3 — Page and interactions | `template.html`, `app.mjs`, `style.css`, completed `bridge.mjs` and `build.mjs` producing `dist/opportunities.html`; a mock-host page for local checks | `check-page.mjs` drives the mock host with Playwright (reusing the journey viewer's pinned install): open, filter, drill in, error and empty states, a partial host-context update, keyboard only; hand back **only if Q4 put it in v1**, asserting the exact `ui/message` payload; light and dark screenshots |
+| 4 — Contract test and CI | `tests/test_panel_contract.py`; **new `validate.yml` steps** for panel `npm ci`, `node panels/opportunities/build.mjs --check` and `node --test panels/opportunities/model.test.mjs`. Today's Node steps test only the viewers | Each check proven able to fail (a planted forbidden name, an external URL, an oversized file, a stale `dist/`); the increment is not done until the new steps run on a PR |
 | 5 — Release | Tag `panels-opportunities-v<version>`; `gh release` with `opportunities.html` and its SHA-256 in the notes | Release published; SHA-256 recomputed from the downloaded asset |
-| 6 — Pin and verify in a host | discovery-engine bump PR (its `DEPLOYMENT.md` part F1); the engine run with `ENGINE_MCP_PANELS_ENABLED=true` (stdio for Claude Desktop, or the hosted engine via F2) | `/health` shows `bound` at the release version; the panel renders in Claude Desktop in light and dark; drill-in and hand-back work against the real engine |
+| 6 — Pin and verify in a host | discovery-engine bump PR (its `DEPLOYMENT.md` part F1); the engine run with `ENGINE_MCP_PANELS_ENABLED=true` (stdio for Claude Desktop, or the hosted engine via F2) | `/health` shows `bound` at the release version; the panel renders in Claude Desktop in light and dark; drill-in works against the real engine, and hand-back works if Q4 includes it |
+
+The published domain samples use REST envelopes (`{data, error}`). MCP `structuredContent`
+corresponds to their `data` field. Include captured MCP results and errors in the bridge/mock-host
+fixtures so the tests verify this boundary rather than passing REST envelopes directly to the UI.
 
 **Afterwards:** update the "Native in-chat panel (MCP App): Not available" row in
 `plugins/aipos/references/panel-contract.md`, which is a plugin change and needs a version bump.
@@ -145,8 +194,9 @@ Tell the skills that call `list_opportunities` that a panel may be showing.
 
 ## For the demo
 
-Increments 2–6 must land, in order. The engine side needs nothing more than the pin (6) and the
-switch. For a local demo in Claude Desktop, the engine's server entry in
+Increments 2–6 must land, in order. The engine budget change is a prerequisite for increment 2's
+real-host check; the final demo also needs the release pin (6) and the switch. For a local demo
+in Claude Desktop, the engine's server entry in
 `~/Library/Application Support/Claude/claude_desktop_config.json` needs these in its `env`:
 - `ENGINE_MCP_PANELS_ENABLED=true`;
 - `ENGINE_MCP_TOKEN`;
@@ -155,7 +205,8 @@ switch. For a local demo in Claude Desktop, the engine's server entry in
 
 ## Open questions
 
-1. The bridge implementation: hand-written, or the SDK (decide in increment 2).
+1. Land the engine budget change for the selected SDK: proposed ceiling 1 MiB; confirm the
+   complete bundle size and host loading in increment 2. The bridge implementation is decided.
 2. The official SVG artwork for the mark (`BRAND.md` "Open items"). The panel ships without a mark
    until it arrives.
 3. Brand book discrepancies for the brand owner (`BRAND.md` "Source notes"): the secondary blue
