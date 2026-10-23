@@ -1,0 +1,20 @@
+{
+  "name": "aipos-opportunities-panel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The opportunities MCP App panel, served by discovery-engine as ui://aipos/opportunities. Built into one committed HTML file; never shipped as source.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check",
+    "test": "node --test model.test.mjs bridge.test.mjs"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/ext-apps": "2.0.3",
+    "esbuild": "0.28.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

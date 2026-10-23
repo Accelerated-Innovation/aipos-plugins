@@ -1,0 +1,24 @@
+{
+  "engine-samples": {
+    "repository": "Accelerated-Innovation/discovery-engine",
+    "commit": "6d6d62506950a43a1d4d252ecb92cdcfc9f90b92",
+    "note": "REST envelopes ({data, error}), copied unchanged. MCP structuredContent equals their data field; the panel never reads these envelopes directly.",
+    "files": {
+      "opportunities.json": {
+        "source": "docs/backend/api-contract/samples/opportunities.json",
+        "sha256": "20d63693c022b9d7c1d99aac64828076f6cd87c6f9b8f5dd4dd0d007c9e5b4e0"
+      },
+      "problem-detail.json": {
+        "source": "docs/backend/api-contract/samples/problem-detail.json",
+        "sha256": "691d1a4cc99d5c3c08ca30f6fcf9ff5810733ca4c1612af4d8b8f1ee91dfe0ee"
+      },
+      "problem-evidence.json": {
+        "source": "docs/backend/api-contract/samples/problem-evidence.json",
+        "sha256": "e7a811ba864f7f2fae6ff5d8099881ae46749123edae33b47e58454c440363be"
+      }
+    }
+  },
+  "mcp": {
+    "note": "CallToolResults as a host receives them, captured by capture_mcp.py from the engine's MCP server at the same commit. Each file records its own provenance under captured_from."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "data": {
+    "problem_id": "prob-1a2b3c",
+    "items": [
+      {
+        "provenance_reference": "gong:gong-rec-101",
+        "source_system": "gong",
+        "source_type": "call_transcript",
+        "external_record_id": "gong-rec-101",
+        "occurred_at": "2026-06-26T14:00:00+00:00",
+        "record_url": "https://app.gong.io/call?id=gong-rec-101",
+        "schema_version": 1,
+        "measurement": null
+      },
+      {
+        "provenance_reference": "zendesk:zd-rec-2002",
+        "source_system": "zendesk",
+        "source_type": "support_ticket",
+        "external_record_id": "zd-rec-2002",
+        "occurred_at": "2026-06-26T14:00:00+00:00",
+        "record_url": "https://company.zendesk.com/agent/tickets/zd-rec-2002",
+        "schema_version": 1,
+        "measurement": null
+      },
+      {
+        "provenance_reference": "reops:stu-4821:fnd-0007",
+        "source_system": "reops",
+        "source_type": "study_finding",
+        "external_record_id": "stu-4821:fnd-0007",
+        "occurred_at": "2026-06-20T00:00:00+00:00",
+        "record_url": "https://reops.example.com/studies/stu-4821#finding-fnd-0007",
+        "schema_version": 1,
+        "measurement": {
+          "metric": "export_completion_time",
+          "value": 42.5,
+          "unit": "minutes",
+          "currency": null,
+          "n": 12,
+          "method": "time_study"
+        }
+      }
+    ],
+    "total": 3
+  },
+  "error": null
+}

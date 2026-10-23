@@ -1,0 +1,42 @@
+{
+  "data": {
+    "items": [
+      {
+        "problem_id": "prob-1a2b3c",
+        "title": "CSV export times out for large reports",
+        "composite_score": 0.78,
+        "components": {
+          "evidence_strength": 0.8,
+          "revenue_impact": 0.6,
+          "persona_breadth": 0.9,
+          "recency": 0.7,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 0.9,
+        "weight_config_version": "v1",
+        "links": [],
+        "schema_version": 1
+      },
+      {
+        "problem_id": "prob-4d5e6f",
+        "title": "SSO login fails intermittently for Okta users",
+        "composite_score": 0.64,
+        "components": {
+          "evidence_strength": 0.5,
+          "revenue_impact": 0.4,
+          "persona_breadth": 0.6,
+          "recency": 0.8,
+          "validation_signal": 0.0
+        },
+        "strategic_weight": 0.5,
+        "weight_config_version": "v1",
+        "links": [],
+        "schema_version": 1
+      }
+    ],
+    "total": 2,
+    "offset": 0,
+    "limit": 20
+  },
+  "error": null
+}

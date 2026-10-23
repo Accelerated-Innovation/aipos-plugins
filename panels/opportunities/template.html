@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opportunities</title>
+<style>/*__STYLE__*/</style>
+</head>
+<body>
+<main id="panel" aria-busy="true">
+  <header class="head">
+    <h1>Opportunities</h1>
+    <p id="provenance" class="meta"></p>
+    <p id="stale" class="stale" hidden><strong>Stale:</strong> read over 24 hours ago. Ask again in the conversation before relying on it.</p>
+  </header>
+  <div class="rule" aria-hidden="true"></div>
+
+  <section id="status" role="status" aria-live="polite"></section>
+
+  <section id="list-view" hidden aria-label="Ranked opportunities">
+    <form id="controls" role="search">
+      <label>Search <input id="search" type="search" autocomplete="off" placeholder="Title or problem ID"></label>
+      <label>Work items <select id="linked"></select></label>
+      <label>Sort by <select id="sort"></select></label>
+    </form>
+    <p id="coverage" class="meta" aria-live="polite"></p>
+    <p id="empty" hidden>No opportunities yet. The engine has no scoring run to rank.</p>
+    <p id="no-match" hidden>No loaded opportunity matches these filters.</p>
+    <div id="table-wrap" class="table-wrap">
+      <table>
+        <caption class="visually-hidden">Ranked opportunities, one page of the engine's list</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="num">Rank</th>
+            <th scope="col">Problem</th>
+            <th scope="col" class="num">Score</th>
+            <th scope="col" class="num component">Evidence</th>
+            <th scope="col" class="num component">Revenue</th>
+            <th scope="col" class="num component">Personas</th>
+            <th scope="col" class="num component">Recency</th>
+            <th scope="col" class="num component">Validation</th>
+            <th scope="col">Work items</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="more">
+      <button id="more" type="button" hidden>Load more</button>
+      <div id="more-status" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="detail-view" hidden aria-labelledby="detail-title"></section>
+
+  <footer class="foot meta">
+    <p>Read-only. To act on an opportunity, ask in the conversation.</p>
+    <p id="version"></p>
+  </footer>
+</main>
+<script>/*__SCRIPT__*/</script>
+</body>
+</html>

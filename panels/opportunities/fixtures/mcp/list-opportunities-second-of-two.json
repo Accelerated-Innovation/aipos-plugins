@@ -1,0 +1,55 @@
+{
+  "captured_from": {
+    "repository": "Accelerated-Innovation/discovery-engine",
+    "commit": "6d6d62506950a43a1d4d252ecb92cdcfc9f90b92",
+    "server": "src/engine/api/mcp/server.py build_mcp_server",
+    "seed": "tests/unit/engine/_mcp_fixtures.py EngineFixture",
+    "token": "pm role",
+    "capture": "panels/opportunities/fixtures/capture_mcp.py"
+  },
+  "request": {
+    "name": "list_opportunities",
+    "arguments": {
+      "offset": 1,
+      "limit": 1
+    }
+  },
+  "result": {
+    "_meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "opportunity-engine",
+        "version": "0.1.0"
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"items\": [\n    {\n      \"problem_id\": \"p-2\",\n      \"title\": \"Bulk import silently drops rows\",\n      \"composite_score\": 3.25,\n      \"components\": {\n        \"evidence_strength\": 1.0,\n        \"revenue_impact\": 2.0,\n        \"persona_breadth\": 3.0,\n        \"recency\": 4.0,\n        \"validation_signal\": 5.0\n      },\n      \"strategic_weight\": 1.5,\n      \"weight_config_version\": \"v1\",\n      \"links\": [],\n      \"schema_version\": 1\n    }\n  ],\n  \"total\": 2,\n  \"offset\": 1,\n  \"limit\": 1\n}"
+      }
+    ],
+    "structuredContent": {
+      "items": [
+        {
+          "problem_id": "p-2",
+          "title": "Bulk import silently drops rows",
+          "composite_score": 3.25,
+          "components": {
+            "evidence_strength": 1.0,
+            "revenue_impact": 2.0,
+            "persona_breadth": 3.0,
+            "recency": 4.0,
+            "validation_signal": 5.0
+          },
+          "strategic_weight": 1.5,
+          "weight_config_version": "v1",
+          "links": [],
+          "schema_version": 1
+        }
+      ],
+      "total": 2,
+      "offset": 1,
+      "limit": 1
+    },
+    "isError": false
+  }
+}

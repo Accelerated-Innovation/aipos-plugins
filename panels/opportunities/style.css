@@ -1,0 +1,119 @@
+/* Opportunities panel. Surfaces, text and font come from the host theme (panels/BRAND.md);
+   app.mjs sets the --panel-* and accent properties from the resolved host context, each brand
+   colour already checked against the actual background. Never a brand colour hard-coded here. */
+:root {
+  --panel-bg: #ffffff;
+  --panel-text: #1a1a1a;
+  --accent-text: #5865e7;
+  --accent-ui: #5865e7;
+  --heading: #19004f;
+  --danger: #af1e44;
+  --warning: #1a1a1a;
+  --muted: var(--color-text-secondary, var(--panel-text));
+  --line: var(--color-border-primary, color-mix(in srgb, var(--panel-text) 22%, transparent));
+  --radius: var(--border-radius-md, 6px);
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --panel-bg: #1a1a1a;
+  --panel-text: #f2f2f2;
+  --accent-text: #0abeef;
+  --accent-ui: #0abeef;
+  --heading: #f2f2f2;
+  --danger: #f2f2f2;
+  --warning: #d1b70d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--panel-bg); color: var(--panel-text); }
+body {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: var(--font-text-sm-size, 14px);
+  line-height: var(--font-text-sm-line-height, 1.45);
+  font-weight: 400;
+  text-align: left;
+}
+main { padding: 16px; max-width: 1100px; }
+[hidden] { display: none !important; }
+
+h1, h2, h3 { color: var(--heading); margin: 0; line-height: 1.25; }
+h1 { font-size: var(--font-heading-sm-size, 18px); font-weight: 700; }
+h2 { font-size: var(--font-heading-xs-size, 16px); font-weight: 700; margin-top: 12px; }
+h3 { font-size: var(--font-text-sm-size, 14px); font-weight: 500; margin: 18px 0 6px; }
+h2:focus { outline: none; }
+h2:focus-visible { outline: 2px solid var(--accent-ui); outline-offset: 2px; }
+p { margin: 4px 0; max-width: 70ch; }
+code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.95em; }
+.meta { color: var(--muted); font-size: var(--font-text-xs-size, 12px); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.head { display: grid; gap: 2px; }
+/* The brand gradient, only as a thin decorative rule (BRAND.md "Gradient"). */
+.rule {
+  height: 3px; margin: 10px 0 14px; border-radius: 2px;
+  background: linear-gradient(35deg, #0abeef, #5865e7, #19004f);
+}
+.stale {
+  border-left: 3px solid var(--warning); padding: 4px 8px; color: var(--panel-text);
+}
+
+.icon {
+  width: 1em; height: 1em; vertical-align: -0.125em; fill: none; stroke: currentColor;
+  stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
+.error { color: var(--danger); font-weight: 500; }
+.error-block { border-left: 3px solid var(--danger); padding: 4px 10px; margin: 8px 0; }
+
+a { color: var(--accent-text); text-underline-offset: 2px; }
+a .icon { margin-left: 3px; width: 0.85em; height: 0.85em; }
+button, input, select {
+  font: inherit; color: var(--panel-text); background: var(--panel-bg);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 5px 9px;
+}
+button { cursor: pointer; }
+button:disabled { cursor: progress; opacity: 0.7; }
+:is(a, button, input, select):focus-visible { outline: 2px solid var(--accent-ui); outline-offset: 2px; }
+
+#controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; margin-bottom: 8px; }
+#controls label { display: grid; gap: 3px; font-size: var(--font-text-xs-size, 12px); font-weight: 500; }
+#controls input { min-width: 14rem; }
+
+.table-wrap { overflow-x: auto; margin-top: 6px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; vertical-align: top; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+thead th { font-weight: 500; font-size: var(--font-text-xs-size, 12px); color: var(--muted); white-space: nowrap; }
+tbody th { font-weight: 400; }
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.score { font-weight: 700; }
+button.open {
+  border: 0; padding: 0; background: none; color: var(--accent-text); text-align: left;
+  text-decoration: underline; text-underline-offset: 2px; font-weight: 500;
+}
+.id { display: block; margin-top: 2px; }
+.refs, .evidence { list-style: none; margin: 0; padding: 0; }
+.refs li + li { margin-top: 2px; }
+.refs a { white-space: nowrap; }
+.evidence li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.measure { font-variant-numeric: tabular-nums; }
+
+.more { margin-top: 10px; display: grid; gap: 6px; justify-items: start; }
+
+button.back { display: inline-flex; gap: 4px; align-items: center; }
+.scores { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 6px 16px; margin: 0; }
+.scores div { border-bottom: 1px solid var(--line); padding: 3px 0; display: flex; justify-content: space-between; gap: 8px; }
+.scores dt { color: var(--muted); }
+.scores dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 500; }
+table.compact { width: auto; min-width: 16rem; }
+
+.foot { margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; }
+
+/* Narrow panels keep rank, problem, score and work items; components move to the detail view. */
+@media (max-width: 640px) {
+  .component { display: none; }
+  #controls input { min-width: 0; width: 100%; }
+  #controls label:first-child { flex: 1 1 100%; }
+}

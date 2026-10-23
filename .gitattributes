@@ -1,1 +1,4 @@
 * text=auto eol=lf
+
+# Built panel: reviewed as generated code (panels/opportunities/build.mjs)
+panels/opportunities/dist/** linguist-generated=true
