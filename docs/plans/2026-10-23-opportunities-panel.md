@@ -1,7 +1,8 @@
 # Opportunities panel (the first MCP App panel)
 
-**Updated · 2026-10-23.** Owner: AIPOS (Marty Bradley). Planned; nothing is built here yet.
-The engine binding is complete: discovery-engine feature 27 (`27_engine_mcp_opportunities_panel`,
+**Updated · 2026-10-23.** Owner: AIPOS (Marty Bradley). Increments 2–4 are built in this
+repository, except increment 2's real-host check, which waits for the engine budget change (see
+"Status" below). The engine binding is complete: discovery-engine feature 27 (`27_engine_mcp_opportunities_panel`,
 PRs #151–#156). The engine binds this panel to `list_opportunities` and serves it as
 `ui://aipos/opportunities` once a release is pinned there. The SDK decision below requires an
 engine bundle-budget change before that pin. This repository authors, brands, tests and releases
@@ -37,14 +38,16 @@ Keeping it in a separate top-level folder keeps the two release paths from being
 
 ```
 panels/
-  BRAND.md                      # how every panel carries the brand (done in this PR)
+  BRAND.md                      # how every panel carries the brand
   opportunities/
     template.html  app.mjs  model.mjs  style.css   # vanilla JavaScript UI; pure model
     bridge.mjs                  # narrow adapter around the official MCP Apps SDK
     package.json  package-lock.json  # exact SDK/build-tool pins and locked dependencies
     build.mjs                   # bundles SDK and source into one HTML file; --check for freshness
     dist/opportunities.html     # committed build output, reviewed as generated code
-    model.test.mjs  check-page.mjs  fixtures/
+    model.test.mjs  bridge.test.mjs  check-page.mjs  mock-host.mjs
+    fixtures/                   # engine samples and captured MCP results, with provenance
+    licenses/                   # notices for SDK-bundled libraries not installed separately
 tests/test_panel_contract.py    # the engine contract, run on dist/ in pytest
 ```
 
@@ -68,10 +71,11 @@ the conversation.
    show personas, lineage, and evidence **as provenance references** (source, record link, study
    measurement when present). **No evidence text:** `get_evidence_text` is not allowed, and the
    engine refuses to serve a panel that names it.
-4. **Hand back** (in v1 only if decision Q4 says so; see "Open questions"). Selected
-   opportunities plus an action ("draft Aha! records", "package for gate 1") become a
-   `ui/message` to the conversation. The skill and its confirmation step take it from there. If
-   it is in v1, increment 2 defines the payload and the consumer contract:
+4. **Hand back: not in v1** (Q4, decided by Marty Bradley on 2026-10-23: read-only browsing
+   first). V1 says "Read-only. To act on an opportunity, ask in the conversation." A later
+   increment may add it: selected opportunities plus an action ("draft Aha! records", "package
+   for gate 1") become a `ui/message` to the conversation, and the skill and its confirmation
+   step take it from there. That increment defines the payload and the consumer contract:
    - the message text the model reads;
    - the `problem_id`s it carries;
    - which skill picks it up.
@@ -161,6 +165,8 @@ This is the primary control; the engine's load-time scan is only a tripwire.
 - `dist/opportunities.html` is valid UTF-8 and within the **agreed engine byte limit**. The
   current limit is 256,000 bytes; the SDK plan proposes 1,048,576 bytes as described above.
   The panel test must match the engine's revised limit before release, including boundary cases.
+  The test enforces the proposed 1,048,576 now (`MAX_BYTES`, marked as proposed), with boundary
+  cases at the limit minus one, at the limit and at the limit plus one.
 - **No external requests:** no `http(s)://` in `src`, `href` (except record links opened through
   `ui/open-link`), `@import`, `url(…)` or `fetch(`; no `<link rel=stylesheet>`; no web fonts.
 - **Tool names:** names `list_opportunities`, `get_problem` and `list_evidence`, and **none** of
@@ -188,6 +194,36 @@ The published domain samples use REST envelopes (`{data, error}`). MCP `structur
 corresponds to their `data` field. Include captured MCP results and errors in the bridge/mock-host
 fixtures so the tests verify this boundary rather than passing REST envelopes directly to the UI.
 
+### Status, 2026-10-23
+
+Increments 2–4 are built, with v1 read-only (Q4). What is recorded, and what still waits:
+
+- **Selected entry point:** `@modelcontextprotocol/ext-apps/app-with-deps`, SDK `2.0.3`, with
+  esbuild `0.28.2`, both exact in `package.json` and locked. The default entry point bundles
+  145 KB larger.
+- **Reproducible build:** `npm ci && node build.mjs` in `panels/opportunities/`. Version 0.1.0
+  is **449,252 bytes** (complete HTML, licence notices included). A clean `npm ci` in a separate
+  copy rebuilt it byte for byte. It fits the proposed 1 MiB limit, **not** today's 256,000.
+- **Licences:** the SDK's prebuilt bundle contains zod, `@modelcontextprotocol/core` and
+  `client` (Apache-2.0, MIT for earlier contributions), `@cfworker/json-schema` and
+  `content-type`. Their notices are inside the file. `build.mjs` checks each fingerprint and
+  fails on an SDK version it has not reviewed.
+- **Fixtures:** the three published samples (source paths and SHA-256 in
+  `fixtures/SOURCES.json`), plus eleven `CallToolResult`s captured from the engine's MCP server
+  at discovery-engine `6d6d625` by `fixtures/capture_mcp.py`: successes, paging, an empty list,
+  and `PROBLEM_NOT_FOUND`, `INSUFFICIENT_SCOPE` and `INVALID_TOKEN`. An engine error arrives as
+  `isError` with the text `Error executing tool <name>: <CODE>: <message>` and no
+  `structuredContent`. The bridge parses the code from that text.
+- **Checks:** `model.test.mjs` and `bridge.test.mjs` (32 tests), `check-page.mjs` (the mock host
+  on the SDK's `AppBridge`, sandboxed iframe, default CSP, six scenarios, light and dark
+  screenshots), and `tests/test_panel_contract.py` (45 tests, each rule also run on planted
+  violations). A planted stale `dist/` failed `build.mjs --check`. The new `validate.yml` job
+  (`npm ci`, `npm test`, `node build.mjs --check`) and the pytest job both passed on PR #99,
+  which meets increment 4's completion condition.
+- **Waiting:** the engine budget change; then increment 2's Claude Desktop check (initial
+  result, detail call, theme, resize, with host and SDK versions recorded); then increments 5
+  and 6.
+
 **Afterwards:** update the "Native in-chat panel (MCP App): Not available" row in
 `plugins/aipos/references/panel-contract.md`, which is a plugin change and needs a version bump.
 Tell the skills that call `list_opportunities` that a panel may be showing.
@@ -205,14 +241,15 @@ in Claude Desktop, the engine's server entry in
 
 ## Open questions
 
-1. Land the engine budget change for the selected SDK: proposed ceiling 1 MiB; confirm the
-   complete bundle size and host loading in increment 2. The bridge implementation is decided.
+1. Land the engine budget change for the selected SDK: proposed ceiling 1 MiB. The complete
+   bundle is measured (449,252 bytes at 0.1.0); host loading is confirmed by increment 2's
+   Claude Desktop check after the change. The bridge implementation is decided.
 2. The official SVG artwork for the mark (`BRAND.md` "Open items"). The panel ships without a mark
    until it arrives.
 3. Brand book discrepancies for the brand owner (`BRAND.md` "Source notes"): the secondary blue
    and yellow RGB values against their hex codes, and the wordmark minimum size.
-4. **Hand-back in v1, or read-only browsing first? Decide before increment 2**, because
-   increment 3's tests depend on it. If yes, increment 2 also defines the `ui/message` payload
-   and the receiving skill's contract.
+4. ~~Hand-back in v1, or read-only browsing first?~~ **Decided 2026-10-23: read-only first.**
+   Hand-back becomes a later increment, with its `ui/message` payload and the receiving skill's
+   contract.
 5. Which host versions to verify against: Claude Desktop is the demo host; check whether Claude
    Code renders MCP App panels before relying on it.

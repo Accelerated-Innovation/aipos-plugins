@@ -21,6 +21,9 @@ bound by the engine.
   the host bridge. This is the engine's rule.
 - **One self-contained HTML file, at most 256,000 bytes, valid UTF-8**, with every script and
   style inline. This is also the engine's rule: it serves one pinned file and nothing beside it.
+  The SDK-based opportunities panel needs the ceiling raised to a proposed 1,048,576 bytes, a
+  pending engine change (`docs/plans/2026-10-23-opportunities-panel.md`); until it lands, the
+  engine refuses a larger file.
 - **The CSP the host applies.** The resource declares no CSP origins, so hosts apply the MCP Apps
   default policy (spec 2026-01-26). That allows scripts and styles from `self` and inline, images
   from `self` and `data:`, no connections (`connect-src 'none'`), and no fonts (`font-src` is

@@ -1,0 +1,25 @@
+{
+  "data": {
+    "problem_id": "prob-1a2b3c",
+    "title": "CSV export times out for large reports",
+    "composite_score": 0.78,
+    "evidence_references": [
+      "gong-rec-101",
+      "zd-rec-2002",
+      "zd-rec-2003"
+    ],
+    "personas": [
+      {
+        "name": "Operations Analyst",
+        "confidence": 0.95
+      },
+      {
+        "name": "Administrator",
+        "confidence": 0.9
+      }
+    ],
+    "lineage_ref": "prob-1a2b3c",
+    "schema_version": 1
+  },
+  "error": null
+}

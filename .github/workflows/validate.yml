@@ -100,6 +100,38 @@ jobs:
       - name: Check the committed bundle is current
         run: npm run check-bundle
 
+  panel:
+    name: opportunities panel (node tests + build freshness)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: panels/opportunities
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: panels/opportunities/package-lock.json
+
+      # The MCP Apps SDK and esbuild, pinned exactly and locked, so the rebuild is reproducible.
+      - name: Install panel dependencies
+        run: npm ci
+
+      # The pure model (rows, paging, filters, provenance, colour checks) and the SDK adapter,
+      # against results captured from discovery-engine's MCP server.
+      - name: Run panel tests
+        run: npm test
+
+      # dist/opportunities.html is what discovery-engine serves. Rebuild it and fail if the
+      # committed copy is not what this source and lockfile produce. The engine's release
+      # contract on that file is tests/test_panel_contract.py, in the pytest job.
+      - name: Check the committed panel is current
+        run: node build.mjs --check
+
   version-bump:
     name: plugin version bumped when plugin files change
     if: github.event_name == 'pull_request'
