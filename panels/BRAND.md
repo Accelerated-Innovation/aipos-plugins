@@ -28,8 +28,8 @@ bound by the engine.
   absent, so `default-src 'none'` applies). The inline-only rule comes from the engine, not from
   this policy.
 - Names no engine tool other than the ones the panel may call. For the opportunities panel those
-  are `list_opportunities`, `get_problem`, `list_evidence` and `find_similar_problems`
-  (`get_evidence_text` is allowed by the engine but not yet used by the panel).
+  are `list_opportunities`, `get_problem`, `list_evidence` and `find_similar_problems`.
+  Never `get_evidence_text`: no evidence text reaches the panel (feature 27 N7, a privacy NFR).
 - **No `<form>` submission.** Hosts sandbox the iframe with `allow-scripts` only, so a submit
   event never fires; wire buttons and Enter keys instead.
 

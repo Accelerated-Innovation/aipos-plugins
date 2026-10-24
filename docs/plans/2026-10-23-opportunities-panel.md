@@ -265,8 +265,9 @@ The panel now follows the AIPOS prototype v2 `find` step and its opportunity sid
   highest loaded value because the engine's score scale is not fixed, and no priority band is
   invented from the score.
 - Semantic search calls `find_similar_problems(text, limit=5)` and shows bands, never scores.
-  The engine's allowed set for this panel gains `find_similar_problems` and `get_evidence_text`
-  (discovery-engine `src/engine/api/mcp/panels.py`); the excerpt view is a follow-on.
+  The engine's allowed set for this panel gains `find_similar_problems` (discovery-engine
+  `src/engine/api/mcp/panels.py`). `get_evidence_text` stays out: feature 27 N7 is a privacy
+  NFR, so an excerpt view in the panel needs its own decision, not a tool-set change.
 - Evidence is grouped by `source_type` and each reference opens in its source through
   `ui/open-link`. Evidence text is still not shown.
 - "Add Opportunity to a tracker" is the panel's first non-read action: `ui/message` with a plain
