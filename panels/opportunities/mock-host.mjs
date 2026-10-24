@@ -11,7 +11,7 @@ const DEFAULT_CSP = "default-src 'none'; script-src 'self' 'unsafe-inline'; styl
   + "img-src 'self' data:; media-src 'self' data:; connect-src 'none'";
 
 const config = globalThis.__MOCK__;
-const record = globalThis.__HOST__ = {calls: [], links: [], sizes: [], initialized: false};
+const record = globalThis.__HOST__ = {calls: [], links: [], messages: [], sizes: [], initialized: false};
 
 // A fixture is a captured CallToolResult; `delay` holds a response back for loading-state checks.
 function respond(params) {
@@ -38,6 +38,11 @@ async function start() {
   bridge.onopenlink = async ({url}) => {
     record.links.push(url);
     return url.includes('refuse') ? {isError: true} : {};
+  };
+  // ui/message: the panel hands a user turn to the conversation; the mock records it.
+  bridge.onmessage = async params => {
+    record.messages.push(params);
+    return params.content?.[0]?.text?.includes('refuse') ? {isError: true} : {};
   };
   bridge.onsizechange = ({height}) => {
     record.sizes.push(height);

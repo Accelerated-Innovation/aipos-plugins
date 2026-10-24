@@ -9,7 +9,8 @@
 <body>
 <main id="panel" aria-busy="true">
   <header class="head">
-    <h1>Opportunities</h1>
+    <h1>Explore the Opportunities</h1>
+    <p class="lede">Ranked by the engine from the evidence it holds. Open one to see its score, personas and evidence.</p>
     <p id="provenance" class="meta"></p>
     <p id="stale" class="stale" hidden><strong>Stale:</strong> read over 24 hours ago. Ask again in the conversation before relying on it.</p>
   </header>
@@ -19,27 +20,32 @@
 
   <section id="list-view" hidden aria-label="Ranked opportunities">
     <form id="controls" role="search">
-      <label>Search <input id="search" type="search" autocomplete="off" placeholder="Title or problem ID"></label>
+      <label class="search"><span class="visually-hidden">Search</span>
+        <svg class="icon fs-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm9.5 16-4.4-4.4"/></svg>
+        <input id="search" type="search" autocomplete="off" placeholder="Search by title or problem ID">
+      </label>
       <label>Work items <select id="linked"></select></label>
       <label>Sort by <select id="sort"></select></label>
     </form>
-    <p id="coverage" class="meta" aria-live="polite"></p>
+    <!-- Not a <form>: the host's iframe sandbox has no allow-forms, so submit never fires. -->
+    <div id="ask" class="ask" role="search" aria-label="Describe the opportunity in your own words">
+      <svg class="icon fs-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Zm6 11 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"/></svg>
+      <input id="ask-text" type="text" autocomplete="off" placeholder="Not sure where it fits? Describe it in your own words">
+      <button id="ask-go" type="button">Find similar</button>
+    </div>
+    <section id="similar" class="similar" hidden aria-label="Similar opportunities" aria-live="polite"></section>
+    <p id="coverage" class="meta coverage" aria-live="polite"></p>
     <p id="empty" hidden>No opportunities yet. The engine has no scoring run to rank.</p>
     <p id="no-match" hidden>No loaded opportunity matches these filters.</p>
-    <div id="table-wrap" class="table-wrap">
+    <div id="table-wrap" class="ol">
       <table>
         <caption class="visually-hidden">Ranked opportunities, one page of the engine's list</caption>
         <thead>
           <tr>
-            <th scope="col" class="num">Rank</th>
-            <th scope="col">Problem</th>
+            <th scope="col" class="num">#</th>
+            <th scope="col">Opportunity</th>
+            <th scope="col" class="links-col">Work items</th>
             <th scope="col" class="num">Score</th>
-            <th scope="col" class="num component">Evidence</th>
-            <th scope="col" class="num component">Revenue</th>
-            <th scope="col" class="num component">Personas</th>
-            <th scope="col" class="num component">Recency</th>
-            <th scope="col" class="num component">Validation</th>
-            <th scope="col">Work items</th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -51,10 +57,11 @@
     </div>
   </section>
 
-  <section id="detail-view" hidden aria-labelledby="detail-title"></section>
+  <div id="scrim" class="scrim" hidden></div>
+  <aside id="detail-view" class="opd" hidden role="dialog" aria-modal="true" aria-labelledby="detail-title"></aside>
 
   <footer class="foot meta">
-    <p>Read-only. To act on an opportunity, ask in the conversation.</p>
+    <p>Reads live through the host. Adding an opportunity to a tracker happens in the conversation.</p>
     <p id="version"></p>
   </footer>
 </main>

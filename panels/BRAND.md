@@ -19,18 +19,19 @@ bound by the engine.
 
 - **No external requests:** no web fonts, CDN scripts, remote images or `fetch` to anything but
   the host bridge. This is the engine's rule.
-- **One self-contained HTML file, at most 256,000 bytes, valid UTF-8**, with every script and
-  style inline. This is also the engine's rule: it serves one pinned file and nothing beside it.
-  The SDK-based opportunities panel needs the ceiling raised to a proposed 1,048,576 bytes, a
-  pending engine change (`docs/plans/2026-10-23-opportunities-panel.md`); until it lands, the
-  engine refuses a larger file.
+- **One self-contained HTML file, at most 1,048,576 bytes, valid UTF-8**, with every script and
+  style inline. This is also the engine's rule: it serves one pinned file and nothing beside it
+  (`MAX_BUNDLE_BYTES` in discovery-engine's `composition.py`).
 - **The CSP the host applies.** The resource declares no CSP origins, so hosts apply the MCP Apps
   default policy (spec 2026-01-26). That allows scripts and styles from `self` and inline, images
   from `self` and `data:`, no connections (`connect-src 'none'`), and no fonts (`font-src` is
   absent, so `default-src 'none'` applies). The inline-only rule comes from the engine, not from
   this policy.
 - Names no engine tool other than the ones the panel may call. For the opportunities panel those
-  are `list_opportunities`, `get_problem` and `list_evidence`.
+  are `list_opportunities`, `get_problem`, `list_evidence` and `find_similar_problems`
+  (`get_evidence_text` is allowed by the engine but not yet used by the panel).
+- **No `<form>` submission.** Hosts sandbox the iframe with `allow-scripts` only, so a submit
+  event never fires; wire buttons and Enter keys instead.
 
 ## Colour
 

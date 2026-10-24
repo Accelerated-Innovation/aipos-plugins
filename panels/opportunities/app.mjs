@@ -3,9 +3,9 @@
 // bridge.mjs; all shaping through model.mjs.
 import {connectBridge} from './bridge.mjs';
 import {
-  COMPONENTS, LINK_FILTERS, SORTS, coverage, errorView, evidence, filterRows, formatScore,
-  mergeHostContext, mergePage, palette, personas, provenance, sortRows, validateEvidence,
-  validateProblem,
+  COMPONENTS, LINK_FILTERS, SORTS, barWidth, componentScales, coverage, errorView, evidence,
+  evidenceBySource, filterRows, formatScore, mergeHostContext, mergePage, palette, personas,
+  provenance, similarMatches, sortRows, trackerMessage, validateEvidence, validateProblem,
 } from './model.mjs';
 
 /* global __PANEL_VERSION__ */
@@ -26,6 +26,8 @@ const state = {
   selected: null,
   detail: null,
   more: {busy: false, error: null},
+  tracker: {busy: false, note: null}, // the Add Opportunity hand-off to the conversation
+  similar: null, // {query, busy, error, matches} for the semantic search
 };
 let bridge = null;
 
@@ -49,8 +51,9 @@ function h(tag, attrs = {}, ...children) {
 
 const ICONS = {
   alert: 'M12 3 2 20h20L12 3Zm0 6v5m0 3v.5',
-  back: 'M15 5 8 12l7 7',
+  close: 'M6 6l12 12M18 6 6 18',
   link: 'M14 4h6v6m0-6-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
+  plus: 'M12 5v14M5 12h14',
 };
 function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -148,7 +151,7 @@ async function openLink(event, url) {
 
 function renderList() {
   const view = $('list-view');
-  view.hidden = state.phase !== 'ready' || state.selected !== null;
+  view.hidden = state.phase !== 'ready';
   if (state.phase !== 'ready') return;
   const list = state.list;
   const filtered = state.search.trim() !== '' || state.linked !== 'all';
@@ -160,16 +163,15 @@ function renderList() {
   $('coverage').textContent = coverage(list, rows.length, filtered);
   $('no-match').hidden = !(filtered && rows.length === 0 && list.rows.length > 0);
 
-  $('rows').replaceChildren(...rows.map(row => h('tr', {'data-row': row.problemId},
-    h('td', {class: 'num', text: row.rank}),
+  $('rows').replaceChildren(...rows.map(row => h('tr', {'data-row': row.problemId, class: state.selected === row.problemId ? 'view' : null},
+    h('td', {class: 'num rank', text: row.rank}),
     h('th', {scope: 'row'}, h('button', {
       type: 'button', class: 'open', id: `open-${row.problemId}`,
       'aria-label': `${row.title}, rank ${row.rank}. Open detail`,
       onclick: () => select(row.problemId),
     }, row.title), h('span', {class: 'id meta', text: row.problemId})),
-    h('td', {class: 'num score', text: formatScore(row.score)}),
-    ...COMPONENTS.map(([key]) => h('td', {class: 'num component', text: formatScore(row.components[key])})),
     h('td', {class: 'links'}, workItems(row.links)),
+    h('td', {class: 'num score', text: formatScore(row.score)}),
   )));
 
   const more = $('more');
@@ -180,43 +182,92 @@ function renderList() {
   if (state.more.error) $('more-status').append(errorBlock('The next page could not be read', state.more.error));
 }
 
+function renderSimilar() {
+  const box = $('similar');
+  const sim = state.similar;
+  box.hidden = !sim;
+  box.replaceChildren();
+  if (!sim) return;
+  const head = h('div', {class: 'similar-h'},
+    h('span', {class: 'meta', text: sim.busy ? `Finding opportunities similar to "${sim.query}"…`
+      : sim.error ? `Similar to "${sim.query}"`
+      : sim.matches.length ? `${sim.matches.length} similar to "${sim.query}" · strongest first, no scores`
+      : `Nothing similar to "${sim.query}". The engine holds no near-duplicate; ask in the conversation to propose it.`}),
+    h('button', {type: 'button', class: 'clear', id: 'ask-clear', onclick: clearSimilar, text: 'Clear'}));
+  box.append(head);
+  if (sim.error) {
+    const code = sim.error.code;
+    const note = code === 'TOOL_ERROR' && /unknown tool|not found|not allowed/i.test(sim.error.message || '')
+      ? h('p', {class: 'meta', text: 'Semantic search is not enabled on this engine. Use the title search above.'})
+      : errorBlock('Similar opportunities could not be read', sim.error);
+    return box.append(note);
+  }
+  if (sim.busy || !sim.matches.length) return;
+  box.append(h('ol', {}, sim.matches.map(m => h('li', {},
+    m.row ? h('button', {type: 'button', class: 'open', id: `similar-${m.problemId}`, onclick: () => select(m.problemId)}, m.title)
+      : h('span', {}, h('span', {text: m.title}), h('span', {class: 'meta', text: ` · ${m.problemId} (not in the loaded list)`})),
+    h('span', {class: 'band', text: m.band})))));
+}
+
 function renderDetail() {
   const view = $('detail-view');
-  view.hidden = state.selected === null;
-  if (state.selected === null) return view.replaceChildren();
+  const open = state.selected !== null;
+  view.hidden = !open;
+  $('scrim').hidden = !open;
+  if (!open) return view.replaceChildren();
   const row = state.list.rows.find(r => r.problemId === state.selected);
   const {problem, evidence: refs} = state.detail;
+  const scales = componentScales(state.list.rows);
 
   const personasPart = problem.status === 'loading' ? h('p', {class: 'meta', text: 'Reading personas…'})
     : problem.status === 'error' ? errorBlock('Personas could not be read', problem.error)
     : problem.personas.length === 0 ? h('p', {class: 'meta', text: 'No personas recorded.'})
-    : h('table', {class: 'compact'},
-      h('thead', {}, h('tr', {}, h('th', {scope: 'col', text: 'Persona'}), h('th', {scope: 'col', class: 'num', text: 'Confidence'}))),
-      h('tbody', {}, problem.personas.map(p => h('tr', {}, h('td', {text: p.name}), h('td', {class: 'num', text: p.confidence})))));
+    : h('div', {class: 'opd-chips'}, problem.personas.map(p => h('span', {}, p.name, ' ', h('b', {text: p.confidence}))));
 
+  const evidenceHead = refs.status === 'ready'
+    ? `Evidence · ${refs.total} reference${refs.total === 1 ? '' : 's'} from ${evidenceBySource(refs.items).length} source type${evidenceBySource(refs.items).length === 1 ? '' : 's'}`
+    : 'Evidence';
   const evidencePart = refs.status === 'loading' ? h('p', {class: 'meta', text: 'Reading evidence references…'})
     : refs.status === 'error' ? errorBlock('Evidence references could not be read', refs.error)
-    : h('div', {},
-      h('p', {class: 'meta', text: `${refs.items.length} of ${refs.total} references. References only; evidence text is not shown in this panel.`}),
-      refs.items.length === 0 ? null : h('ul', {class: 'evidence'}, refs.items.map(e => h('li', {},
-        h('p', {}, linkTo(e.reference, e.url, `Open ${e.reference} in ${e.source}`)),
-        h('p', {class: 'meta', text: `${e.type} · ${e.source} · ${e.occurred}`}),
-        e.measurement ? h('p', {class: 'measure', text: e.measurement}) : null))));
+    : refs.items.length === 0 ? h('p', {class: 'meta', text: 'No evidence references recorded.'})
+    : evidenceBySource(refs.items).map(group => h('div', {class: 'ev-group'},
+      h('div', {class: 'ev-group-h'}, h('span', {text: group.type}), h('b', {text: group.items.length})),
+      h('ul', {class: 'evidence'}, group.items.map(e => h('li', {},
+        h('p', {}, linkTo(e.reference, e.url, e.url ? `Open ${e.reference} in ${e.source}` : `${e.reference} has no record link`)),
+        h('p', {class: 'meta', text: `${e.source} · ${e.occurred}`}),
+        e.measurement ? h('p', {class: 'measure', text: e.measurement}) : null)))));
+
+  const footer = h('div', {class: 'opd-ft'},
+    h('button', {type: 'button', class: 'primary', id: 'add', disabled: state.tracker.busy || !bridge, onclick: addToTracker},
+      icon('plus'), state.tracker.busy ? ' Handing to the conversation…' : ' Add Opportunity to a tracker'),
+    h('p', {class: 'meta note', role: 'status', text: state.tracker.note
+      || 'Sends a request to the conversation. Claude uses the tracker you have connected (Aha!, Jira, …).'}));
 
   view.replaceChildren(
-    h('button', {type: 'button', class: 'back', id: 'back', onclick: back}, icon('back'), ' All opportunities'),
-    h('h2', {id: 'detail-title', tabindex: '-1', text: row.title}),
-    h('p', {class: 'meta', text: [row.problemId, `rank ${row.rank}`,
-      problem.status === 'ready' && problem.lineage ? `lineage ${problem.lineage}` : null].filter(Boolean).join(' · ')}),
-    h('h3', {text: 'Score'}),
-    h('dl', {class: 'scores'},
-      h('div', {}, h('dt', {text: 'Composite'}), h('dd', {text: formatScore(row.score)})),
-      COMPONENTS.map(([key, label]) => h('div', {}, h('dt', {text: label}), h('dd', {text: formatScore(row.components[key])}))),
-      h('div', {}, h('dt', {text: 'Strategic weight'}), h('dd', {text: formatScore(row.strategicWeight)})),
-      h('div', {}, h('dt', {text: 'Weight config'}), h('dd', {text: row.weightVersion ?? '—'}))),
-    h('h3', {text: 'Active work items'}), workItems(row.links),
-    h('h3', {text: 'Personas'}), personasPart,
-    h('h3', {text: 'Evidence'}), evidencePart,
+    h('button', {type: 'button', class: 'opd-close', id: 'back', 'aria-label': 'Close details', onclick: back}, icon('close')),
+    h('div', {class: 'opd-body'},
+      h('div', {class: 'opd-hd'},
+        h('span', {class: 'opd-id', text: [row.problemId, `rank ${row.rank}`,
+          problem.status === 'ready' && problem.lineage ? `lineage ${problem.lineage}` : null].filter(Boolean).join(' · ')}),
+        h('h2', {id: 'detail-title', tabindex: '-1', text: row.title})),
+      h('div', {class: 'opd-sec opd-score'},
+        h('div', {}, h('h3', {text: 'Score'}), h('div', {class: 'opd-big', text: formatScore(row.score)})),
+        h('span', {class: 'opd-meta', text: [row.weightVersion ? `weights ${row.weightVersion}` : null,
+          row.strategicWeight != null ? `strategic weight ${formatScore(row.strategicWeight)}` : null].filter(Boolean).join(' · ') || 'Weight config not recorded'})),
+      h('div', {class: 'opd-sec'},
+        h('h3', {text: 'Score components'}),
+        h('ul', {class: 'opd-bars'}, COMPONENTS.map(([key, label]) => h('li', {},
+          h('span', {text: label}),
+          h('span', {class: 'track', 'aria-hidden': 'true'}, h('span', {class: 'fill', style: `width:${barWidth(row.components[key], scales[key])}%`})),
+          h('span', {class: 'val', text: formatScore(row.components[key])})))),
+        h('p', {class: 'meta', text: 'Bars are relative to the highest value among the loaded opportunities.'})),
+      h('div', {class: 'opd-sec'}, h('h3', {text: 'Personas it serves'}), personasPart),
+      h('div', {class: 'opd-sec'}, h('h3', {text: 'Active work items'}), workItems(row.links)),
+      h('div', {class: 'opd-sec'},
+        h('div', {class: 'opd-evh'}, h('h3', {text: evidenceHead})),
+        h('p', {class: 'meta', text: 'References only; each opens in its source system. Evidence text is not shown in this panel.'}),
+        evidencePart)),
+    footer,
   );
 }
 
@@ -227,6 +278,7 @@ function render() {
   renderHeader();
   renderStatus();
   renderList();
+  renderSimilar();
   renderDetail();
   $('panel').setAttribute('aria-busy', String(state.phase === 'connecting' || state.phase === 'waiting'));
   if (focused && document.activeElement?.id !== focused) $(focused)?.focus();
@@ -280,6 +332,7 @@ async function loadMore() {
 async function select(problemId) {
   state.selected = problemId;
   state.detail = {problem: {status: 'loading'}, evidence: {status: 'loading'}};
+  state.tracker = {busy: false, note: null};
   render();
   $('detail-title').focus();
   if (!bridge) {
@@ -313,10 +366,63 @@ function readEvidence(result) {
   }
 }
 
+async function findSimilar() {
+  const query = $('ask-text').value.trim();
+  if (!query || !bridge || state.similar?.busy) return;
+  state.similar = {query, busy: true, error: null, matches: []};
+  render();
+  const result = await bridge.findSimilar(query);
+  if (state.similar?.query !== query) return;
+  if (!result.ok) state.similar = {query, busy: false, error: result, matches: []};
+  else {
+    try {
+      state.similar = {query, busy: false, error: null, matches: similarMatches(result.data, state.list?.rows || [])};
+    } catch (error) {
+      state.similar = {query, busy: false, error: {code: 'MALFORMED_RESULT', message: error.message}, matches: []};
+    }
+  }
+  render();
+}
+
+function clearSimilar() {
+  state.similar = null;
+  render();
+  $('ask-text').focus();
+}
+
+async function addToTracker() {
+  const row = state.list?.rows.find(r => r.problemId === state.selected);
+  if (!row || !bridge || state.tracker.busy) return;
+  state.tracker = {busy: true, note: null};
+  render();
+  const sent = await bridge.sendMessage(trackerMessage(row));
+  if (state.selected !== row.problemId) return;
+  state.tracker = {busy: false, note: sent
+    ? 'Handed to the conversation. Continue there to choose the tracker and confirm.'
+    : 'The host did not accept the message. Ask in the conversation instead.'};
+  render();
+  $('add')?.focus();
+}
+
+// The side panel is modal: Tab cycles inside it, and the scrim or Escape closes it.
+function trapFocus(event) {
+  if (event.key !== 'Tab' || state.selected === null) return;
+  const view = $('detail-view');
+  const focusable = [...view.querySelectorAll('button:not(:disabled), a[href], [tabindex="-1"]')];
+  if (!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (event.shiftKey && (document.activeElement === first || !view.contains(document.activeElement))) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault(); first.focus();
+  }
+}
+
 function back() {
   const id = state.selected;
   state.selected = null;
   state.detail = null;
+  state.tracker = {busy: false, note: null};
   render();
   document.getElementById(`open-${id}`)?.focus();
 }
@@ -333,7 +439,11 @@ function buildControls() {
   $('sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
   $('controls').addEventListener('submit', e => e.preventDefault());
   $('more').addEventListener('click', loadMore);
+  $('ask-go').addEventListener('click', findSimilar);
+  $('ask-text').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); findSimilar(); } });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.selected !== null) back(); });
+  document.addEventListener('keydown', trapFocus);
+  $('scrim').addEventListener('click', () => { if (state.selected !== null) back(); });
   $('version').textContent = `Opportunities panel ${VERSION}`;
 }
 

@@ -1,15 +1,19 @@
 # Opportunities panel
 
 The MCP App panel that discovery-engine serves as `ui://aipos/opportunities` beside
-`list_opportunities`. It is read-only: it browses the ranked list, filters and sorts it, loads more
-pages, and drills into a problem's personas and evidence references. Plan, decisions and status:
+`list_opportunities`, laid out as the "Explore the Opportunities" screen of the AIPOS prototype: a
+ranked list with title search, a semantic search over the engine's `find_similar_problems`, and a
+side panel for the opened opportunity (score, the five components, personas, evidence references
+grouped by source type with their record links). Its one write-shaped action, Add Opportunity,
+hands a plain user message to the conversation (`ui/message`); the conversation chooses the
+tracker (Aha!, Jira, ...) from what the user has connected, never this panel. Plan, decisions and status:
 [`docs/plans/2026-10-23-opportunities-panel.md`](../../docs/plans/2026-10-23-opportunities-panel.md).
 Brand rules and the PR checklist: [`panels/BRAND.md`](../BRAND.md).
 
 | File | Role |
 |---|---|
 | `model.mjs` | Pure shaping: rows, paging, filters, sort, provenance, host-context merge, colour checks. No SDK |
-| `bridge.mjs` | The only code that touches the MCP Apps SDK. It offers named reads and returns normalized results |
+| `bridge.mjs` | The only code that touches the MCP Apps SDK. It offers named reads, `openLink` and `sendMessage`, and returns normalized results |
 | `app.mjs`, `template.html`, `style.css` | The page, in vanilla DOM |
 | `build.mjs` | Bundles everything, the SDK included, into `dist/opportunities.html` with licence notices |
 | `dist/opportunities.html` | The committed build, which is what a release publishes |
@@ -32,7 +36,8 @@ The dev server builds in memory and never writes `dist/`; its toolbar picks a sc
 paging, samples, slow reads, empty, refused, failed evidence, cancelled), a theme and a width. The
 data is the captured fixtures, not a live engine. Run `node build.mjs` before committing.
 
-`check-page.mjs` needs `viewers/journey/node_modules` (`npm ci` there) and Google Chrome.
+`check-page.mjs` needs `viewers/journey/node_modules` (`npm ci` there) and Google Chrome, or
+`PANEL_CHROME=/path/to/chrome` for another Chromium build.
 
 To re-capture the MCP fixtures after an engine change, run `fixtures/capture_mcp.py` from a
 discovery-engine checkout, as its docstring shows, and update `fixtures/SOURCES.json` if the

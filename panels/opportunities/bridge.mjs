@@ -1,8 +1,8 @@
 // The panel's only door to the host: a narrow adapter around the official MCP Apps SDK.
 //
-// The SDK instance stays private here. The rest of the panel gets named, read-only operations
-// (the three tools the engine allows this panel, and opening a record link) and normalized
-// results, never a general tool-call method. The SDK owns the protocol: the ui/initialize
+// The SDK instance stays private here. The rest of the panel gets named operations (the four
+// read tools the engine allows this panel, opening a record link, and handing one message back to
+// the conversation) and normalized results, never a general tool-call method. The SDK owns the protocol: the ui/initialize
 // handshake, tool input and result notifications, host context, size reporting and transport.
 import {App, PostMessageTransport} from '@modelcontextprotocol/ext-apps/app-with-deps';
 
@@ -68,9 +68,23 @@ export async function connectBridge(handlers = {}, {AppClass = App, transport, v
     listOpportunities: ({offset, limit}) => call('list_opportunities', {offset, limit}),
     getProblem: problemId => call('get_problem', {problem_id: problemId}),
     listEvidence: problemId => call('list_evidence', {problem_id: problemId}),
+    // Semantic search: the engine's dedup read, ordinal bands only, at most five matches.
+    findSimilar: text => call('find_similar_problems', {text, limit: 5}),
     openLink: async url => {
       try {
         const result = await app.openLink({url});
+        return !result?.isError;
+      } catch {
+        return false;
+      }
+    },
+    // The panel's one write-shaped operation: a plain-text user message into the conversation
+    // (ui/message). The host shows it as the user's own turn and may ask them to confirm; the
+    // panel never calls another server's tools, so anything that acts on a tracker happens in
+    // the conversation with whatever the user has connected.
+    sendMessage: async text => {
+      try {
+        const result = await app.sendMessage({role: 'user', content: [{type: 'text', text}]});
         return !result?.isError;
       } catch {
         return false;

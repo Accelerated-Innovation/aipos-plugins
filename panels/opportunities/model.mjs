@@ -53,6 +53,29 @@ export function validateEvidence(evidence) {
   return evidence;
 }
 
+export function validateSimilar(result) {
+  if (!isObject(result) || !Array.isArray(result.matches)) fail('The similar-problems result has no matches list.');
+  for (const m of result.matches) {
+    if (!isObject(m) || typeof m.problem_id !== 'string' || typeof m.title !== 'string') {
+      fail('A match in the similar-problems result is missing required fields.');
+    }
+  }
+  return result;
+}
+
+// Semantic matches as the engine ranks them, with the band as a label and never a number. A match
+// that is also a loaded row carries that row, so the panel can open its detail in place.
+export function similarMatches(result, rows = []) {
+  validateSimilar(result);
+  const byId = new Map(rows.map(r => [r.problemId, r]));
+  return result.matches.map(m => ({
+    problemId: m.problem_id,
+    title: m.title,
+    band: m.band === 'strong' ? 'Strong match' : m.band === 'possible' ? 'Possible match' : 'Match',
+    row: byId.get(m.problem_id) || null,
+  }));
+}
+
 // One page of `list_opportunities` as display rows. Rank is the engine's order, counted from the
 // page's offset, so a second page continues the numbering instead of restarting it.
 export function toRows(page) {
@@ -155,6 +178,43 @@ export function evidence(result, format = {}) {
   }));
 }
 
+// Evidence grouped by source type, for the detail view's category list. Order is by count,
+// then name, so the busiest sources lead; each group keeps the engine's reference order.
+export function evidenceBySource(items) {
+  const groups = new Map();
+  for (const item of items) {
+    const key = item.type || 'Other';
+    if (!groups.has(key)) groups.set(key, {type: key, items: []});
+    groups.get(key).items.push(item);
+  }
+  return [...groups.values()].sort((a, b) => b.items.length - a.items.length || a.type.localeCompare(b.type));
+}
+
+// Component bars are drawn relative to the largest value of that component among the loaded
+// rows, because the engine's score scale is not fixed (BRAND.md: never invent a threshold).
+// A row at the loaded maximum fills the bar; a missing value draws nothing.
+export function componentScales(rows) {
+  const scale = {};
+  for (const [key] of COMPONENTS) {
+    const max = Math.max(0, ...rows.map(r => r.components[key]).filter(Number.isFinite));
+    scale[key] = max;
+  }
+  return scale;
+}
+
+export function barWidth(value, max) {
+  if (!Number.isFinite(value) || !(max > 0)) return 0;
+  return Math.max(0, Math.min(100, Math.round((value / max) * 100)));
+}
+
+// The message handed to the conversation when the PM asks to add an opportunity to a tracker.
+// Plain text the host shows as the user's own turn; the conversation chooses the tracker from
+// whatever the user has connected (Aha!, Jira, ...), never this panel.
+export function trackerMessage(row) {
+  const links = row.links.length ? ` It already has active work items: ${row.links.map(l => l.reference).join(', ')}.` : '';
+  return `Add opportunity ${row.problemId} "${row.title}" (engine rank ${row.rank}, composite score ${formatScore(row.score)}) to my product tracker.${links}`;
+}
+
 export function formatMeasurement(m) {
   const value = m.unit === 'currency' ? `${m.value} ${m.currency || ''}`.trim()
     : m.unit === 'percent' ? `${m.value}%` : `${m.value} ${m.unit}`;
@@ -213,6 +273,7 @@ const ERRORS = {
   HOST_ERROR: 'The host could not complete the call.',
   MALFORMED_RESULT: 'The result did not have the expected shape.',
   CANCELLED: 'The call was cancelled before it returned.',
+  SIMILARITY_UNAVAILABLE: 'The engine could not reach its similarity index. This is not an empty result; try again.',
 };
 
 export function errorView({code, message}) {

@@ -253,3 +253,23 @@ in Claude Desktop, the engine's server entry in
    contract.
 5. Which host versions to verify against: Claude Desktop is the demo host; check whether Claude
    Code renders MCP App panels before relying on it.
+
+## 2026-10-24 · Design re-skin (MVP of the "Explore the Opportunities" screen)
+
+The panel now follows the AIPOS prototype v2 `find` step and its opportunity side panel
+(`AIPOS_UI_v3/AIPOS Prototype v2/explore-steps.js`), within the engine contract. Decisions:
+
+- Tabs by product / theme / concept are dropped for this MVP: the engine's rows carry no such
+  attributes. Title search, the work-items filter and sort stay. Product and theme come later.
+- The five engine components are shown as bars in the side panel only; bars scale to the
+  highest loaded value because the engine's score scale is not fixed, and no priority band is
+  invented from the score.
+- Semantic search calls `find_similar_problems(text, limit=5)` and shows bands, never scores.
+  The engine's allowed set for this panel gains `find_similar_problems` and `get_evidence_text`
+  (discovery-engine `src/engine/api/mcp/panels.py`); the excerpt view is a follow-on.
+- Evidence is grouped by `source_type` and each reference opens in its source through
+  `ui/open-link`. Evidence text is still not shown.
+- "Add Opportunity to a tracker" is the panel's first non-read action: `ui/message` with a plain
+  user turn; the conversation picks the tracker from the user's connectors. The design's
+  "Refine" and "Select" actions are not carried.
+- The iframe sandbox has no `allow-forms`, so the panel uses no `<form>` submission.
