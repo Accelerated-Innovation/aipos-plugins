@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {
-  BRAND, contrast, coverage, errorView, evidence, filterRows, formatMeasurement, formatScore,
-  isStale, mergeHostContext, mergePage, palette, parseColor, personas, provenance, safeLink,
-  sortRows, toRows, validatePage,
+  BRAND, barWidth, componentScales, contrast, coverage, errorView, evidence, evidenceBySource,
+  filterRows, formatMeasurement, formatScore, isStale, mergeHostContext, mergePage, palette,
+  parseColor, personas, provenance, safeLink, similarMatches, sortRows, toRows, trackerMessage,
+  validatePage,
 } from './model.mjs';
 
 const read = path => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
@@ -199,4 +200,44 @@ test('status colours: host semantic colours first, brand only where it passes', 
   assert.equal(palette({theme: 'dark'}).danger, BRAND.aiWhite); // red fails on #1a1a1a
   assert.equal(palette({theme: 'dark'}).warning, BRAND.yellow);
   assert.equal(palette({theme: 'light'}).warning, BRAND.black90); // yellow fails on light surfaces
+});
+
+test('evidence groups by source type, busiest first, keeping engine order inside a group', () => {
+  const items = [
+    {reference: 'gong:c-1', type: 'Call transcript'}, {reference: 'zendesk:9', type: 'Support ticket'},
+    {reference: 'gong:c-2', type: 'Call transcript'}, {reference: 'reops:x', type: 'Study finding'},
+  ];
+  assert.deepEqual(evidenceBySource(items).map(g => [g.type, g.items.map(i => i.reference)]), [
+    ['Call transcript', ['gong:c-1', 'gong:c-2']], ['Study finding', ['reops:x']], ['Support ticket', ['zendesk:9']],
+  ]);
+});
+
+test('component bars scale to the loaded maximum and never to an invented threshold', () => {
+  const rows = [{components: {evidence_strength: 1, revenue_impact: null}}, {components: {evidence_strength: 4, revenue_impact: 2}}];
+  const scale = componentScales(rows);
+  assert.equal(scale.evidence_strength, 4);
+  assert.equal(scale.revenue_impact, 2);
+  assert.equal(scale.recency, 0);
+  assert.equal(barWidth(1, 4), 25);
+  assert.equal(barWidth(4, 4), 100);
+  assert.equal(barWidth(null, 4), 0);
+  assert.equal(barWidth(3, 0), 0);
+});
+
+test('the tracker message names the problem, rank, score and any active work items', () => {
+  const row = {problemId: 'p-1', title: 'Exports time out', rank: 1, score: 4.5, links: [{reference: 'aha:OPP-12'}]};
+  assert.equal(trackerMessage(row),
+    'Add opportunity p-1 "Exports time out" (engine rank 1, composite score 4.50) to my product tracker. It already has active work items: aha:OPP-12.');
+  assert.equal(trackerMessage({...row, links: []}),
+    'Add opportunity p-1 "Exports time out" (engine rank 1, composite score 4.50) to my product tracker.');
+});
+
+test('semantic matches keep engine order, label the band and never carry a number', () => {
+  const rows = [{problemId: 'p-1', title: 'Exports time out', rank: 1}];
+  const out = similarMatches({matches: [
+    {problem_id: 'p-1', title: 'Exports time out', band: 'strong', schema_version: 1},
+    {problem_id: 'p-9', title: 'Imports fail', band: 'possible', schema_version: 1},
+  ], schema_version: 1}, rows);
+  assert.deepEqual(out.map(m => [m.problemId, m.band, m.row?.rank ?? null]), [['p-1', 'Strong match', 1], ['p-9', 'Possible match', null]]);
+  assert.throws(() => similarMatches({nope: true}), /no matches list/);
 });

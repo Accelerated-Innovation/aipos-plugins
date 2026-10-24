@@ -9,7 +9,7 @@ import {tmpdir} from 'node:os';
 import {join, resolve} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {buildPanel} from './build.mjs';
-import {DARK_COLOURS, bundleMockHost, fromSample, hostPage, key, result} from './mock-scenarios.mjs';
+import {DARK_COLOURS, SIMILAR_QUERY, bundleMockHost, fromSample, hostPage, key, result} from './mock-scenarios.mjs';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const {chromium} = await import(process.env.PANEL_PLAYWRIGHT_MODULE
@@ -20,7 +20,7 @@ if (shots) mkdirSync(shots, {recursive: true});
 const panel = readFileSync(join(here, 'dist/opportunities.html'), 'utf8');
 assert.equal(panel, (await buildPanel()).html, 'dist/opportunities.html is stale: run node build.mjs first');
 
-const ALLOWED = new Set(['list_opportunities', 'get_problem', 'list_evidence']);
+const ALLOWED = new Set(['list_opportunities', 'get_problem', 'list_evidence', 'find_similar_problems']);
 const mockHost = await bundleMockHost();
 const tmp = mkdtempSync(join(tmpdir(), 'opportunities-panel-'));
 
@@ -30,7 +30,8 @@ function hostPageFile(name, config) {
   return pathToFileURL(file).href;
 }
 
-const browser = await chromium.launch({channel: 'chrome'});
+// Google Chrome by default; PANEL_CHROME points at another Chromium build where Chrome is absent.
+const browser = await chromium.launch(process.env.PANEL_CHROME ? {executablePath: process.env.PANEL_CHROME} : {channel: 'chrome'});
 const problems = [];
 async function open(name, config = {}, viewport = {width: 1000, height: 900}) {
   const page = await browser.newPage({viewport});
@@ -41,7 +42,7 @@ async function open(name, config = {}, viewport = {width: 1000, height: 900}) {
   await page.waitForFunction(() => globalThis.__HOST__?.initialized || globalThis.__HOST__?.error);
   assert.equal(await page.evaluate(() => globalThis.__HOST__.error ?? null), null, `${name}: host failed`);
   const frame = page.frameLocator('iframe');
-  const host = () => page.evaluate(() => ({calls: globalThis.__HOST__.calls, links: globalThis.__HOST__.links, sizes: globalThis.__HOST__.sizes}));
+  const host = () => page.evaluate(() => ({calls: globalThis.__HOST__.calls, links: globalThis.__HOST__.links, messages: globalThis.__HOST__.messages, sizes: globalThis.__HOST__.sizes}));
   const panelFrame = () => page.frames().find(f => f !== page.mainFrame());
   return {page, frame, host, panelFrame};
 }
@@ -74,7 +75,7 @@ try {
     assert.equal(await frame.locator('#rows tr').count(), 1);
     assert.equal(await text(frame.locator('#coverage')), '1 loaded of 2 opportunities.');
     const first = await text(frame.locator('[data-row="p-1"]'));
-    assert.match(first, /Exports time out on large accounts[\s\S]*4\.50[\s\S]*aha:OPP-12/);
+    assert.match(first, /Exports time out on large accounts[\s\S]*aha:OPP-12[\s\S]*4\.50/);
     assert.equal(await frame.locator('#empty').isVisible(), false);
     assert.match(await text(frame.locator('#version')), /^Opportunities panel \d+\.\d+\.\d+$/);
     const font = await frame.locator('body').evaluate(el => getComputedStyle(el).fontFamily);
@@ -113,14 +114,26 @@ try {
     await page.keyboard.press('Enter');
     await frame.locator('.evidence li').first().waitFor();
     assert.equal(await frame.locator('#detail-title').evaluate(el => el === document.activeElement), true);
-    assert.equal(await frame.locator('#list-view').isVisible(), false);
+    // The side panel opens over the list, which stays in place behind the scrim
+    assert.equal(await frame.locator('#list-view').isVisible(), true);
+    assert.equal(await frame.locator('#scrim').isVisible(), true);
+    assert.equal(await frame.locator('[data-row="p-1"]').evaluate(el => el.classList.contains('view')), true);
     const detail = await text(frame.locator('#detail-view'));
     assert.match(detail, /p-1 · rank 1 · lineage lin-1/);
     assert.match(detail, /Ops lead\s+80%/);
-    assert.match(detail, /3 of 3 references\. References only; evidence text is not shown in this panel\./);
+    assert.match(detail, /Evidence · 3 references from 3 source types/i);
+    assert.match(detail, /References only; each opens in its source system\. Evidence text is not shown in this panel\./);
     assert.match(detail, /Export completion time: 42\.5 minutes \(n=12, time study\)/);
-    assert.match(detail, /Call transcript · gong · 1 Jun 2026/);
+    assert.match(detail, /gong · 1 Jun 2026/);
+    assert.match(detail, /Call transcript\s+1/);
     assert.equal(await frame.locator('.evidence li').count(), 3);
+    // Five component bars, scaled to the loaded maximum
+    assert.equal(await frame.locator('.opd-bars li').count(), 5);
+    assert.match(detail, /Evidence\n1\.00[\s\S]*Validation\n5\.00/);
+    // Tab stays inside the dialog
+    await frame.locator('#add').focus();
+    await page.keyboard.press('Tab');
+    assert.equal(await frame.locator('#back').evaluate(el => el === document.activeElement), true);
     const calls = (await host()).calls;
     assert.ok(calls.includes(key('get_problem', {problem_id: 'p-1'})) && calls.includes(key('list_evidence', {problem_id: 'p-1'})));
 
@@ -129,6 +142,14 @@ try {
     await page.waitForFunction(() => globalThis.__HOST__.links.length === 1);
     assert.deepEqual((await host()).links, ['https://app.gong.io/call?id=c-1']);
     await shoot(page, 'light-detail.png');
+
+    // Add Opportunity hands one user message to the conversation (ui/message), nothing else
+    await frame.locator('#add').click();
+    await page.waitForFunction(() => globalThis.__HOST__.messages.length === 1);
+    const [message] = (await host()).messages;
+    assert.equal(message.role, 'user');
+    assert.equal(message.content[0].text, 'Add opportunity p-1 "Exports time out on large accounts" (engine rank 1, composite score 4.50) to my product tracker. It already has active work items: aha:OPP-12.');
+    await frame.locator('#detail-view', {hasText: 'Handed to the conversation'}).waitFor();
 
     // Escape returns to the list with focus on the row it came from
     await page.keyboard.press('Escape');
@@ -140,7 +161,8 @@ try {
     await page.evaluate(() => globalThis.__HOST__.setContext({theme: 'dark'}));
     await frame.locator('html[data-theme="dark"]').waitFor();
     assert.match(await frame.locator('body').evaluate(el => getComputedStyle(el).fontFamily), /Trebuchet MS/);
-    const link = () => frame.locator('#open-p-1').evaluate(el => getComputedStyle(el).color);
+    // The row title is body text in this design; the work-item link carries the accent.
+    const link = () => frame.locator('[data-row="p-1"] .refs a').first().evaluate(el => getComputedStyle(el).color);
     assert.equal(await link(), 'rgb(31, 31, 31)', 'light blue fails on white, so the host text colour is used');
     // Then colour variables only: the font still survives, and the dark accent applies
     await page.evaluate(update => globalThis.__HOST__.setContext(update), DARK_COLOURS);
@@ -153,13 +175,29 @@ try {
     await shoot(page, 'dark-list.png');
     await frame.locator('#open-p-2').click();
     await frame.locator('.evidence li').first().waitFor();
-    assert.match(await text(frame.locator('#detail-view')), /Data admin\s+60%[\s\S]*1 of 1 references/);
+    assert.match(await text(frame.locator('#detail-view')), /Data admin\s+60%[\s\S]*Evidence · 1 reference from 1 source type/i);
     await shoot(page, 'dark-detail.png');
     await frame.locator('#back').click();
 
-    // Narrow: components leave the table for the detail view
+    // Semantic search: the engine's matches with bands, a loaded one opens in place
+    await frame.locator('#ask-text').fill(SIMILAR_QUERY);
+    await frame.locator('#ask-go').click();
+    await frame.locator('#similar ol li').first().waitFor();
+    const similar = await text(frame.locator('#similar'));
+    assert.match(similar, /2 similar to "exports are slow" · strongest first, no scores/);
+    assert.match(similar, /Exports time out on large accounts\s+Strong match/);
+    assert.match(similar, /Nightly jobs overrun on large accounts · p-7 \(not in the loaded list\)\s+Possible match/);
+    assert.doesNotMatch(similar, /0\.\d/);
+    await shoot(page, 'dark-similar.png');
+    await frame.locator('#similar-p-1').click();
+    await frame.locator('#detail-title').waitFor();
+    await page.keyboard.press('Escape');
+    await frame.locator('#ask-clear').click();
+    assert.equal(await frame.locator('#similar').isVisible(), false);
+
+    // Narrow: work items leave the list for the detail view
     await page.setViewportSize({width: 420, height: 900});
-    await frame.locator('td.component').first().waitFor({state: 'hidden'});
+    await frame.locator('td.links').first().waitFor({state: 'hidden'});
     assert.equal(await frame.locator('#open-p-1').isVisible(), true);
     await shoot(page, 'dark-narrow.png');
 
@@ -208,7 +246,7 @@ try {
     const detail = await text(frame.locator('#detail-view'));
     assert.match(detail, /Ops lead\s+80%/);
     assert.match(detail, /Evidence references could not be read: PROBLEM_NOT_FOUND/);
-    assert.doesNotMatch(detail, /of \d+ references/);
+    assert.doesNotMatch(detail, /\d+ references? from/);
     await page.close();
   }
 
@@ -233,7 +271,7 @@ try {
     await frame.locator('.evidence li').nth(2).waitFor();
     const detail = await text(frame.locator('#detail-view'));
     assert.match(detail, /Operations Analyst\s+95%[\s\S]*Administrator\s+90%/);
-    assert.match(detail, /Support ticket · zendesk · 26 Jun 2026/);
+    assert.match(detail, /zendesk · 26 Jun 2026/);
     await shoot(page, 'light-samples-detail.png');
     await page.close();
   }

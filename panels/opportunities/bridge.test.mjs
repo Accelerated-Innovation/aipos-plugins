@@ -67,6 +67,7 @@ function fakeApp({connectFails = false, respond = () => capture('list-opportunit
     }
     async callServerTool(params) { log.push(['call', params]); return respond(params); }
     async openLink(params) { log.push(['openLink', params]); return params.url.includes('refuse') ? {isError: true} : {}; }
+    async sendMessage(params) { log.push(['sendMessage', params]); return params.content[0].text.includes('refuse') ? {isError: true} : {}; }
     getHostContext() { return {theme: 'dark'}; }
     getHostVersion() { return {name: 'Mock host', version: '1'}; }
   }
@@ -106,15 +107,17 @@ test('notifications reach the panel normalized', async () => {
 test('the panel gets named read operations only, with the engine argument names', async () => {
   const {FakeApp, log} = fakeApp({respond: ({name}) => capture(name === 'get_problem' ? 'get-problem' : name === 'list_evidence' ? 'list-evidence' : 'list-opportunities-second-of-two').result});
   const bridge = await connectBridge({}, {AppClass: FakeApp, transport: 'T'});
-  assert.deepEqual(Object.keys(bridge).sort(), ['getProblem', 'hostContext', 'hostVersion', 'listEvidence', 'listOpportunities', 'openLink']);
+  assert.deepEqual(Object.keys(bridge).sort(), ['findSimilar', 'getProblem', 'hostContext', 'hostVersion', 'listEvidence', 'listOpportunities', 'openLink', 'sendMessage']);
   assert.equal(Object.isFrozen(bridge), true);
   assert.equal((await bridge.listOpportunities({offset: 1, limit: 1})).data.offset, 1);
   assert.equal((await bridge.getProblem('p-1')).data.problem_id, 'p-1');
   assert.equal((await bridge.listEvidence('p-1')).data.total, 3);
+  await bridge.findSimilar('exports time out');
   assert.deepEqual(log.filter(e => e[0] === 'call').map(e => e[1]), [
     {name: 'list_opportunities', arguments: {offset: 1, limit: 1}},
     {name: 'get_problem', arguments: {problem_id: 'p-1'}},
     {name: 'list_evidence', arguments: {problem_id: 'p-1'}},
+    {name: 'find_similar_problems', arguments: {text: 'exports time out', limit: 5}},
   ]);
   assert.deepEqual(bridge.hostContext(), {theme: 'dark'});
   assert.deepEqual(bridge.hostVersion(), {name: 'Mock host', version: '1'});
@@ -137,4 +140,12 @@ test('openLink reports whether the host opened the link', async () => {
 test('a failed handshake rejects, so the panel can say it is not connected', async () => {
   const {FakeApp} = fakeApp({connectFails: true});
   await assert.rejects(connectBridge({}, {AppClass: FakeApp, transport: 'T'}), /no host/);
+});
+
+test('sendMessage hands one plain-text user turn to the conversation and reports acceptance', async () => {
+  const {FakeApp, log} = fakeApp();
+  const bridge = await connectBridge({}, {AppClass: FakeApp, transport: 'T'});
+  assert.equal(await bridge.sendMessage('Add opportunity p-1 to my tracker.'), true);
+  assert.deepEqual(log.at(-1), ['sendMessage', {role: 'user', content: [{type: 'text', text: 'Add opportunity p-1 to my tracker.'}]}]);
+  assert.equal(await bridge.sendMessage('please refuse'), false);
 });

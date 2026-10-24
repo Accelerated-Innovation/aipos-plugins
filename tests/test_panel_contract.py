@@ -31,7 +31,9 @@ MAX_BYTES = 1_048_576
 
 #: The tools this panel may call: discovery-engine `src/engine/api/mcp/panels.py`,
 #: `PANELS["opportunities"].allowed_tools`.
-ALLOWED_TOOLS = frozenset({"list_opportunities", "get_problem", "list_evidence"})
+ALLOWED_TOOLS = frozenset(
+    {"list_opportunities", "get_problem", "list_evidence", "find_similar_problems"}
+)
 
 #: Mirrors discovery-engine `src/engine/api/mcp/panels.py` `ENGINE_TOOL_NAMES`: every tool the
 #: engine can advertise. Update the two together; a name missing here is one the engine refuses.
@@ -180,7 +182,7 @@ def test_the_panel_is_one_html_document_with_inline_script_and_style(built: byte
 
 MINIMAL = (
     b"<!doctype html><html><head><style>body{color:red}</style></head><body>"
-    b"<script>call('list_opportunities');call('get_problem');call('list_evidence')</script>"
+    b"<script>call('list_opportunities');call('get_problem');call('list_evidence');call('find_similar_problems')</script>"
     b"</body></html>"
 )
 
