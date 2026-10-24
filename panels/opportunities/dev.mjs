@@ -106,7 +106,7 @@ createServer(async (req, res) => {
     res.writeHead(200, {'content-type': 'text/event-stream', 'cache-control': 'no-cache', connection: 'keep-alive'});
     res.write(': connected\n\n');
     clients.add(res);
-    req.on('close', () => clients.delete(res));
+    res.on('close', () => clients.delete(res));
   } else if (url.pathname === '/') {
     res.writeHead(200, {'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store'});
     res.end(await page(url));
