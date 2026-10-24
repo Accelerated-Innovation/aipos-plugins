@@ -4,12 +4,12 @@
 // results. Reuses the journey viewer's pinned Playwright (set PANEL_PLAYWRIGHT_MODULE to point
 // elsewhere); nothing here ships.
 import assert from 'node:assert/strict';
-import {mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {mkdirSync, mkdtempSync, readFileSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join, resolve} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {build} from 'esbuild';
 import {buildPanel} from './build.mjs';
+import {DARK_COLOURS, bundleMockHost, fromSample, hostPage, key, result} from './mock-scenarios.mjs';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const {chromium} = await import(process.env.PANEL_PLAYWRIGHT_MODULE
@@ -21,48 +21,12 @@ const panel = readFileSync(join(here, 'dist/opportunities.html'), 'utf8');
 assert.equal(panel, (await buildPanel()).html, 'dist/opportunities.html is stale: run node build.mjs first');
 
 const ALLOWED = new Set(['list_opportunities', 'get_problem', 'list_evidence']);
-const READ_AT = '2026-10-23T16:00:00Z';
-const read = path => JSON.parse(readFileSync(join(here, path), 'utf8'));
-const captures = Object.fromEntries(readdirSync(join(here, 'fixtures/mcp')).filter(f => f.endsWith('.json'))
-  .map(f => [f.replace(/\.json$/, ''), read(`fixtures/mcp/${f}`)]));
-const key = (name, args) => `${name} ${JSON.stringify(args)}`;
-const CAPTURED = Object.fromEntries(Object.values(captures).filter(c => !c.result.isError)
-  .map(c => [key(c.request.name, c.request.arguments), c.result]));
-const result = stem => captures[stem].result;
-// The boundary the plan names: MCP structuredContent is the REST sample's data field. Wrap it the
-// way the engine's server does (see any captured success) instead of handing the panel {data, error}.
-const fromSample = name => {
-  const {data} = read(`fixtures/engine-samples/${name}.json`);
-  return {...structuredClone(result('get-problem')), content: [{type: 'text', text: JSON.stringify(data, null, 2)}], structuredContent: data};
-};
-
-const LIGHT = {
-  theme: 'light', locale: 'en-GB', timeZone: 'UTC', platform: 'desktop',
-  styles: {variables: {
-    '--color-background-primary': '#ffffff', '--color-text-primary': '#1f1f1f',
-    '--color-text-secondary': '#595959', '--color-border-primary': '#d9d9d9',
-    '--color-ring-primary': '#2f6feb', '--font-sans': '"Trebuchet MS", system-ui, sans-serif',
-  }},
-};
-const DARK_COLOURS = {styles: {variables: {
-  '--color-background-primary': '#1a1a1a', '--color-text-primary': '#f2f2f2',
-  '--color-text-secondary': '#b8b8b8', '--color-border-primary': '#3d3d3d', '--color-ring-primary': '#7aa7ff',
-}}};
-
-const mockHost = (await build({
-  entryPoints: [join(here, 'mock-host.mjs')], bundle: true, format: 'iife', write: false, logLevel: 'silent',
-})).outputFiles[0].text;
-assert.ok(!/<\/script/i.test(mockHost), 'mock host bundle cannot be inlined');
+const mockHost = await bundleMockHost();
 const tmp = mkdtempSync(join(tmpdir(), 'opportunities-panel-'));
 
-function hostPage(name, config) {
-  const json = JSON.stringify({panel, now: READ_AT, hostContext: LIGHT, input: {offset: 0, limit: 20},
-    initial: result('list-opportunities'), ...config, responses: {...CAPTURED, ...config.responses}})
-    .replace(/</g, '\\u003c');
+function hostPageFile(name, config) {
   const file = join(tmp, `${name}.html`);
-  writeFileSync(file, `<!doctype html><html><head><meta charset="utf-8"><title>Mock host: ${name}</title>
-<style>body{margin:0;background:#8a8a8a;padding:12px}#frame iframe{border:0;width:100%;display:block;min-height:80px}</style>
-</head><body><div id="frame"></div><script>window.__MOCK__=${json}</script><script>${mockHost}</script></body></html>`);
+  writeFileSync(file, hostPage({name, panel, mockHost, config}));
   return pathToFileURL(file).href;
 }
 
@@ -73,7 +37,7 @@ async function open(name, config = {}, viewport = {width: 1000, height: 900}) {
   page.on('pageerror', e => problems.push(`${name}: page error ${e.message}`));
   page.on('console', m => { if (m.type() === 'error') problems.push(`${name}: console error ${m.text()}`); });
   page.on('request', r => { if (!/^(file|data|about|blob):/.test(r.url())) problems.push(`${name}: remote request ${r.url()}`); });
-  await page.goto(hostPage(name, config));
+  await page.goto(hostPageFile(name, config));
   await page.waitForFunction(() => globalThis.__HOST__?.initialized || globalThis.__HOST__?.error);
   assert.equal(await page.evaluate(() => globalThis.__HOST__.error ?? null), null, `${name}: host failed`);
   const frame = page.frameLocator('iframe');
