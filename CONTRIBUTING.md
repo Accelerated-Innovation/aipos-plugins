@@ -142,8 +142,10 @@ gh release create skill-<short-name>-vX.Y.Z --title "<skill> X.Y.Z" --notes "SHA
 ```
 
 The digest is the SHA-256 of the `sha256sum` listing of every regular file in the folder,
-ordered by the bytes of its `./` path. It covers `SKILL.md`, the manifest and `evals/`, so it
-cannot be stored inside the package; the release notes and `docs/rollout.md` carry it.
+ordered by the bytes of its `./` path. `shasum -a 256` (stock macOS) and `sha256sum` (GNU
+coreutils) print the same `<hex>  ./<path>` lines, so either gives the same digest; the manifest
+and the engine state the `sha256sum` form. It covers `SKILL.md`, the manifest and `evals/`, so
+it cannot be stored inside the package; the release notes and `docs/rollout.md` carry it.
 
 ## License
 

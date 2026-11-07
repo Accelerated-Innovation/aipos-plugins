@@ -86,6 +86,7 @@ def package_digest(folder: pathlib.Path) -> str:
 
 
 def front_matter(folder: pathlib.Path) -> dict:
+    """The `SKILL.md` front matter as a mapping; asserts the file opens with one."""
     text = (folder / "SKILL.md").read_text(encoding="utf-8")
     assert text.startswith("---\n"), "SKILL.md has no front matter"
     return yaml.safe_load(text[4 : text.index("\n---", 4)])
@@ -120,7 +121,7 @@ def metadata_problems(folder: pathlib.Path) -> list[str]:
     try:
         doc, digest = manifest(folder)
     except (OSError, ValueError) as exc:
-        return problems + [f"manifest unreadable: {exc}"]
+        return [*problems, f"manifest unreadable: {exc}"]
     if meta["soaa-manifest-digest"] != f"sha256:{digest}":
         problems.append("soaa-manifest-digest does not match the manifest's bytes")
     identity = doc.get("identity") or {}
@@ -200,22 +201,27 @@ def skill_md_problems(folder: pathlib.Path) -> list[str]:
 
 
 def test_the_release_declares_its_manifest_and_identity():
+    """The four `soaa-*` keys are present, flat, and agree with the manifest they point at."""
     assert metadata_problems(SKILL) == []
 
 
 def test_the_manifest_declares_every_area_maps_every_read_and_refuses_every_write():
+    """All eight SOAA areas, the seven-read mapping, and the prohibited writes are declared."""
     assert manifest_problems(SKILL) == []
 
 
 def test_the_release_holds_no_executable_asset():
+    """The folder holds nothing the engine's admission classes as executable."""
     assert asset_problems(SKILL) == []
 
 
 def test_skill_md_still_validates_as_a_plain_agent_skill():
+    """A generic Agent Skills client, ignoring `soaa/`, still sees a valid `SKILL.md`."""
     assert skill_md_problems(SKILL) == []
 
 
 def test_the_evals_the_engine_builds_on_are_still_in_the_package():
+    """The seven eval cases #106 asks to keep are in the release."""
     cases = yaml.safe_load((SKILL / "evals" / "evals.json").read_text(encoding="utf-8"))["evals"]
     assert len(cases) == 7
 
@@ -242,18 +248,21 @@ def test_the_package_digest_is_the_engines_definition(tmp_path):
 
 @pytest.fixture
 def copy(tmp_path):
+    """A writable copy of the skill folder for planting one violation at a time."""
     target = tmp_path / SKILL.name
     shutil.copytree(SKILL, target)
     return target
 
 
 def _rewrite(path: pathlib.Path, old: str, new: str) -> None:
+    """Replaces the first `old` in `path` with `new`, asserting it was there to replace."""
     text = path.read_text(encoding="utf-8")
     assert old in text
     path.write_text(text.replace(old, new, 1), encoding="utf-8")
 
 
 def test_a_changed_manifest_byte_is_a_digest_mismatch(copy):
+    """One extra byte in the manifest changes both the manifest and the package digest."""
     (copy / "soaa" / "manifest.yaml").write_bytes(
         (copy / "soaa" / "manifest.yaml").read_bytes() + b"\n# one more byte\n"
     )
@@ -262,31 +271,37 @@ def test_a_changed_manifest_byte_is_a_digest_mismatch(copy):
 
 
 def test_a_release_id_that_differs_from_the_manifest_is_refused(copy):
+    """A front-matter release id that is not the manifest's is a mismatch."""
     _rewrite(copy / "SKILL.md", "skill-opportunity-package-v", "skill-opportunity-package-vX")
     assert any("soaa-release-id" in p for p in metadata_problems(copy))
 
 
 def test_a_missing_metadata_key_is_refused(copy):
+    """A misspelled `soaa-*` key reads as a missing one."""
     _rewrite(copy / "SKILL.md", "  soaa-profile:", "  soaa-profil:")
     assert any("soaa-profile" in p for p in metadata_problems(copy))
 
 
 def test_a_manifest_outside_the_folder_is_refused(copy):
+    """A manifest path with parent traversal is refused."""
     _rewrite(copy / "SKILL.md", '"soaa/manifest.yaml"', '"../manifest.yaml"')
     assert metadata_problems(copy)
 
 
 def test_an_unmapped_read_is_refused(copy):
+    """Dropping one read from `authority.reads` breaks the seven-read mapping."""
     _rewrite(copy / "soaa" / "manifest.yaml", "    get_lineage: pdg.lineage.read\n", "")
     assert any("authority.reads" in p for p in manifest_problems(copy))
 
 
 def test_a_write_that_is_not_prohibited_is_refused(copy):
+    """Dropping a write from `authority.prohibited` is reported by name."""
     _rewrite(copy / "soaa" / "manifest.yaml", "    - attach_intent\n", "")
     assert any("attach_intent" in p for p in manifest_problems(copy))
 
 
 def test_a_missing_area_is_refused(copy):
+    """Renaming an area is the same as omitting it."""
     _rewrite(copy / "soaa" / "manifest.yaml", "\nevaluation:\n", "\nevaluations:\n")
     assert any("'evaluation'" in p for p in manifest_problems(copy))
 
@@ -302,6 +317,7 @@ def test_a_missing_area_is_refused(copy):
     ids=["script-suffix", "python", "executable-bit", "shebang"],
 )
 def test_an_executable_asset_is_refused(copy, name, content, mode):
+    """A script suffix, a Python file, an executable bit or a shebang each refuse the release."""
     path = copy / name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(content)
@@ -310,6 +326,7 @@ def test_an_executable_asset_is_refused(copy, name, content, mode):
 
 
 def test_a_symlink_is_refused(copy):
+    """A symlink to a file is reported as one."""
     (copy / "link.md").symlink_to(copy / "SKILL.md")
     assert any("symlink" in p for p in asset_problems(copy))
 
@@ -325,6 +342,7 @@ def test_a_symlink_to_a_directory_is_refused_and_never_entered(copy):
 
 
 def test_nested_metadata_fails_plain_validation(copy):
+    """A nested metadata value is not a string, which Agent Skills metadata requires."""
     _rewrite(copy / "SKILL.md", '  soaa-profile: "soaa-agent-skills/0.2"',
              "  soaa-profile:\n    nested: true")  # fmt: skip
     assert any("flat" in p for p in skill_md_problems(copy))
@@ -354,5 +372,6 @@ def test_the_digest_rollout_publishes_is_the_folders():
 
 
 def test_a_stale_published_digest_is_caught(copy):
+    """An edited folder no longer matches the digest rollout.md publishes."""
     (copy / "SKILL.md").write_bytes((copy / "SKILL.md").read_bytes() + b"\n")
     assert published_digest(ROLLOUT.read_text(encoding="utf-8")) != package_digest(copy)
