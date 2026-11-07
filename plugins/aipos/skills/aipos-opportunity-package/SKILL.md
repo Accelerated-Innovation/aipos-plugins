@@ -1,6 +1,11 @@
 ---
 name: aipos-opportunity-package
 description: "Package a graph problem into the four-part Structured Opportunity (evidence, hypothesis, impact estimate, recommended action) a gate 1 reviewer can accept or reject without reading the raw signals. Use when asked to turn a problem, PRB or candidate into a structured opportunity, opportunity package, one-pager for gate 1, or an opportunity brief from a live Product Definition Graph or a supplied graph record. Read-only; this release packages only — proposing or attaching an Intent is a deferred engine write integration, not implemented here. Solution framing and capacity allocation belong to their own skills."
+metadata:
+  soaa-profile: "soaa-agent-skills/0.2"
+  soaa-manifest: "soaa/manifest.yaml"
+  soaa-manifest-digest: "sha256:6f4b65c91441e166d0e418074b6e923605a097e9aad6822192c7741a1c211078"
+  soaa-release-id: "skill-opportunity-package-v1.0.0"
 ---
 
 # PDG Opportunity Package
@@ -143,3 +148,11 @@ empty result — the package must not imply there are no duplicates.
   hands it the package it allocates against.
 
 Gate 1 remains a human decision. The package informs it; the reviewer governs it.
+
+## Governed release
+
+This skill is also published as a pinned, digest-verified release for runtimes that host it
+in-process (first: the discovery engine, ADR-AIG-044). Its governance contract — what it reads,
+what it never calls, and how its package digest is computed — is `soaa/manifest.yaml`, declared by
+the `soaa-*` metadata above. A client that ignores that folder runs the same procedure: the
+manifest declares what the skill needs and grants nothing.

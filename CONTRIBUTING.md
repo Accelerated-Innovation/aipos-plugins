@@ -118,6 +118,33 @@ Record each release:
 
 Tags do not change what users install; they mark what each version was, so versions can be diffed, referenced, and restored.
 
+### Skill releases pinned by the engine
+
+A skill the discovery engine hosts in-process (first: `aipos-opportunity-package`, per
+discovery-engine ADR-AIG-044) also has its own release line, separate from the plugin's: a
+`soaa/manifest.yaml` in the skill folder, four `soaa-*` keys under `metadata` in its `SKILL.md`
+frontmatter, and a tag `skill-<short-name>-v<semver>` whose GitHub release states the package
+digest. The engine vendors that folder byte for byte and verifies the digest at startup, so a
+release is never edited in place: a change is a new version, a new tag and a new digest.
+
+To cut one, bump `identity.version`, `identity.release_id` and `identity.provenance.tag` in the
+manifest, then re-stamp `soaa-manifest-digest` (the SHA-256 of the manifest's exact bytes) and
+`soaa-release-id` in `SKILL.md`. `tests/test_skill_release_contract.py` fails until they agree
+and refuses anything the engine would: a symlink, a script, an executable bit, a `#!`, an
+unmapped read. After the plugin bump merges, tag the merge commit and publish the digest:
+
+```bash
+cd plugins/aipos/skills/<skill>
+find . -type f -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256 | shasum -a 256
+git tag -a skill-<short-name>-vX.Y.Z -m "<skill> X.Y.Z"
+git push origin skill-<short-name>-vX.Y.Z
+gh release create skill-<short-name>-vX.Y.Z --title "<skill> X.Y.Z" --notes "SHA-256: <digest>"
+```
+
+The digest is the SHA-256 of the `sha256sum` listing of every regular file in the folder,
+ordered by the bytes of its `./` path. It covers `SKILL.md`, the manifest and `evals/`, so it
+cannot be stored inside the package; the release notes and `docs/rollout.md` carry it.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
