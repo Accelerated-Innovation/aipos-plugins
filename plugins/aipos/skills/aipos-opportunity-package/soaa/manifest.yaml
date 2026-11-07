@@ -1,0 +1,201 @@
+# SOAA governance manifest for aipos-opportunity-package.
+#
+# The Agent Skills package is SKILL.md and the files beside it; this file is the governance
+# contract a SOAA-aware runtime (first: discovery-engine, ADR-AIG-044 §2A P4) reads before it
+# admits the release. A generic Agent Skills client ignores this folder and loses nothing: the
+# procedure is SKILL.md, and nothing here changes it.
+#
+# A manifest declares what the skill needs. It grants nothing. Effective access is worked out
+# by the runtime from its own policy and the caller's token; the lists under `authority` are
+# requests and refusals, never permissions.
+#
+# The eight declared areas follow the GovKit SOAA extension's SKILL_CONTRACT.md:
+# identity, applicability, procedure, conditions, interfaces, dependencies, authority,
+# evaluation. An area with nothing to declare is written as an explicit empty list.
+#
+# Changing any byte of this file changes `soaa-manifest-digest` in SKILL.md, and any change to
+# the folder changes the package digest stated with the release. Nothing is edited in place
+# once a tag exists: a change is a new version, a new tag and a new digest.
+
+profile: soaa-agent-skills/0.2
+schema_version: 1
+
+identity:
+  name: aipos-opportunity-package
+  lineage_id: aipos-plugins/aipos-opportunity-package
+  release_id: skill-opportunity-package-v1.0.0
+  version: 1.0.0
+  owner: Accelerated Innovation (aipos-plugins maintainers)
+  provenance:
+    repository: https://github.com/Accelerated-Innovation/aipos-plugins
+    path: plugins/aipos/skills/aipos-opportunity-package
+    tag: skill-opportunity-package-v1.0.0
+    plugin: aipos 1.14.0
+    license: MIT (LICENSE at the repository root)
+    first_published_in: aipos 1.10.0
+  integrity:
+    manifest_digest: >-
+      SHA-256 of this file's exact bytes, declared in SKILL.md as `soaa-manifest-digest`.
+    package_digest:
+      algorithm: sha256
+      scope: every regular file in the skill folder, this file and SKILL.md included
+      definition: >-
+        In the skill folder: find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum |
+        sha256sum. The SHA-256 of the sha256sum listing of every regular file, one line per
+        file as "<64 lowercase hex>  ./<path>", ordered by the bytes of the ./-prefixed path.
+        Timestamps and permissions are ignored; directories are not listed, so an empty one
+        does not count. File bytes are LF line endings, as .gitattributes checks them out.
+      value: >-
+        Stated in the GitHub release for the tag above and in docs/rollout.md. It covers this
+        file, so it cannot be recorded inside it.
+    symlinks: none. A release containing one is refused, never followed.
+    executable_assets: []
+
+applicability:
+  triggers:
+    - Turn a problem, PRB or candidate from a Product Definition Graph into a structured
+      opportunity, opportunity package, one-pager for gate 1, or opportunity brief.
+    - Package a supplied graph-style record (file, pasted record, fixture) the same way, in
+      supplied mode.
+  exclusions:
+    - Framing solution options for an accepted problem (aipos-solution-framing).
+    - Deciding which opportunities get exploration capacity (aipos-exploration-planning).
+    - New-product strategic framing and the Product Opportunity Brief (aipos-product-strategy).
+    - Proposing a problem, attaching an Intent, or any other graph write.
+  preconditions:
+    - Either a connected MCP server exposing read tools over a Product Definition Graph, or
+      graph-style records supplied in the session. With neither, the skill stops and says what
+      is missing; it never packages from memory or training data.
+    - One named candidate problem (or one supplied record) to package.
+
+procedure:
+  instructions: SKILL.md
+  heuristics:
+    - >-
+      Every claim carries a provenance mark: [E] evidence-backed, [I] inferred, [A]
+      assumption.
+    - Evidence lines cite graph references; nothing is quoted unmasked.
+    - The impact estimate writes out its formula, uses the denominator a rate was measured on,
+      keeps the modeled baseline apart from achievable savings, and leaves a range TBD when the
+      evidence cannot bound it.
+    - A reference listed only in lineage or originating_sources, with no evidence record read
+      in the session, is named as listed but unread, never as corroboration.
+  references: []
+  examples:
+    - path: evals/files/prb-104.json
+      description: A synthetic supplied-mode record (PRB-104) used by the evaluation cases.
+
+conditions:
+  success:
+    - A four-part Structured Opportunity (evidence, hypothesis, impact estimate, recommended
+      action) opens with its source mode, every claim marked [E], [I] or [A], every evidence
+      line cited to a graph reference or a named field of a supplied record.
+  failure:
+    - A part is missing, a claim is unmarked, a figure has no tool call or supplied record
+      behind it, or a supplied record is presented as live or verified.
+  stop:
+    - No MCP read server is connected and no records are supplied.
+    - The named problem cannot be read and no record for it is supplied.
+  escalation:
+    - >-
+      Gate 1 itself: the package is handed to the human who owns gate 1. The skill informs the
+      decision; it never takes it.
+    - >-
+      A request to propose, attach or record: the package is produced, the request is declined
+      as outside this release, and the human owner of gate 1 is named as the route.
+
+interfaces:
+  inputs:
+    - name: problem
+      type: problem identifier (connected mode) or graph-style record (supplied mode)
+      required: true
+    - name: context
+      type: free text from the requester, such as a volunteered impact figure
+      required: false
+      handling: attributed to the requester and marked [A] unless the graph supports it
+  outputs:
+    - name: structured_opportunity
+      type: text, one page, in four parts, with provenance marks and a source-mode header
+  artifacts: []
+  errors:
+    - name: NO_SOURCE
+      meaning: neither a connected read server nor supplied records exist; nothing is packaged
+    - name: PROBLEM_NOT_FOUND
+      meaning: the named problem could not be read and no record for it was supplied
+    - name: WRITE_REFUSED
+      meaning: a propose, attach or record request was declined as outside this release
+
+dependencies:
+  skills: []
+  tools:
+    # The MCP read vocabulary of the reference server (discovery-engine). Any server exposing
+    # equivalent reads works: map the names and nothing else changes.
+    - get_problem
+    - list_evidence
+    - get_lineage
+    - list_problems
+    - list_opportunities
+    - get_work_item_links
+    - get_evidence_text
+  resources: []
+  runtime:
+    - soaa-agent-skills/0.2
+  model: []
+  protocol:
+    - MCP 2025-11-25 (tool calls over stdio or streamable HTTP)
+  environment: []
+
+authority:
+  required:
+    - Read access to one Product Definition Graph, at the caller's existing read scope.
+  # Each MCP read the skill uses, mapped to the capability it needs. A SOAA runtime that hosts
+  # the skill maps these capabilities to its own in-process operations; an external agent
+  # keeps calling the MCP tools by name. Every read listed under dependencies.tools is here.
+  reads:
+    get_problem: pdg.problem.read
+    list_evidence: pdg.evidence.read
+    get_lineage: pdg.lineage.read
+    list_problems: pdg.problem.list
+    list_opportunities: pdg.opportunity.list
+    get_work_item_links: pdg.work_item_link.read
+    get_evidence_text: pdg.evidence_text.read
+  ceilings:
+    - get_evidence_text is a person-adjacent disclosure, access-logged on the reference
+      server. It is fetched only when the recommended action turns on exact words, and only
+      the quoted fragment the action needs appears in the package.
+    - Numeric limits (records read, excerpts fetched, output size) are the hosting runtime's
+      to set and enforce; the skill declares none of its own.
+  approvals: []
+  prohibited:
+    - propose_problem
+    - attach_intent
+    - find_similar_problems
+    - record_exploration_decision
+    - close_exploration
+    - any other tool that proposes, attaches, records or changes graph state, even where the
+      connected server advertises it and even after the user says yes
+
+evaluation:
+  admission:
+    suite: evals/evals.json
+    cases: 7
+    grading: model-graded against each case's expected_output (evals/run_evals.py)
+    runner_note: >-
+      The cases are a separate, model-graded pass, not the repository's deterministic gate.
+      A hosting runtime builds its own evaluation set on them.
+  regression:
+    suite: evals/evals.json
+    deterministic:
+      - tests/test_eval_cases.py (the cases can run)
+      - tests/test_skill_release_contract.py (this manifest, its digest, the four metadata keys,
+        the read mapping, the prohibited list and the absence of executable assets)
+  evidence:
+    - Every claim in a package is marked [E], [I] or [A]; an [E] traces to a tool call made in
+      the session or to a named field of a supplied record.
+    - The package opens with its source mode (connected, with the server named; or supplied,
+      and synthetic when the records say so).
+    - A requested write that was declined is stated as not recorded, never shown as a
+      simulated write, dry-run preview or confirmation prompt.
+  conformance:
+    - SKILL.md passes standard Agent Skills validation with soaa/ ignored.
+    - The skill behaves the same for a client that ignores soaa/.

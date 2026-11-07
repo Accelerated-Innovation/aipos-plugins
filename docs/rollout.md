@@ -9,6 +9,34 @@ and listed on the [releases page](https://github.com/Accelerated-Innovation/aipo
 The sections below say what an existing user must do when updating to a
 version. The earlier [1.0.1 release record](release-check.md) is historical.
 
+## Updating to 1.14.0
+
+`aipos-opportunity-package` gains a governed release for runtimes that host it in-process
+(discovery-engine feature 31, ADR-AIG-044; requested in #106). Additive only: the procedure in
+`SKILL.md` is unchanged, the seven eval cases are unchanged, and a client that ignores the new
+`soaa/` folder behaves exactly as before. What is new in the skill folder:
+
+- `soaa/manifest.yaml`, the SOAA governance contract: identity and provenance; applicability;
+  the procedure, references and examples; success, failure, stop and escalation conditions;
+  inputs, outputs, artifacts and errors; dependencies; authority, with each of the seven MCP
+  reads mapped to a capability (`get_problem` → `pdg.problem.read`, and so on) and the writes
+  it never calls (`propose_problem`, `attach_intent`, `find_similar_problems`, …) prohibited;
+  and its evaluation obligations. It declares what the skill needs and grants nothing.
+- Four flat string keys under `metadata` in the `SKILL.md` frontmatter: `soaa-profile`,
+  `soaa-manifest`, `soaa-manifest-digest` and `soaa-release-id`.
+
+The skill's first release is `skill-opportunity-package-v1.0.0`, tagged on the merge commit of
+this version. Its package digest, computed in the skill folder as
+`find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum`, is:
+
+```
+9c362290fe244d59acd9bfc99f3b1288856add09f1a369b77d261ae7b9a0526f
+```
+
+`tests/test_skill_release_contract.py` holds the contract: the four keys agree with the
+manifest, every read is mapped, the writes are prohibited, and the folder holds no symlink,
+script, executable bit or `#!`. Existing users need no migration.
+
 ## Updating to 1.13.1
 
 Routing fix: `aipos-map-render` and `aipos-workflow-create` now say which goes first when a journey
