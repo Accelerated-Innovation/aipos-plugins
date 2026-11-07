@@ -62,10 +62,15 @@ PROHIBITED = {"propose_problem", "attach_intent", "find_similar_problems"}
 
 
 def files(folder: pathlib.Path):
-    """Every non-directory entry under `folder` by its `/` path, links included, never entered."""
+    """Every non-directory entry under `folder` by its `/` path, links included, never entered.
+
+    `os.walk` lists a symlink to a directory under `dirs` even with `followlinks=False`, so it
+    is pulled out and yielded as an entry: it is a link, which a release may not contain, and
+    it must never be walked into."""
     for root, dirs, names in os.walk(folder, followlinks=False):
-        dirs.sort()
-        for name in sorted(names):
+        linked = [d for d in dirs if (pathlib.Path(root) / d).is_symlink()]
+        dirs[:] = sorted(d for d in dirs if d not in linked)
+        for name in sorted(names + linked):
             path = pathlib.Path(root) / name
             yield path.relative_to(folder).as_posix(), path
 
@@ -309,6 +314,16 @@ def test_a_symlink_is_refused(copy):
     assert any("symlink" in p for p in asset_problems(copy))
 
 
+def test_a_symlink_to_a_directory_is_refused_and_never_entered(copy):
+    """`os.walk` hides a linked directory under `dirs`; it must surface as a link, and the
+    files behind it must not be listed twice or enter the digest."""
+    (copy / "linked-evals").symlink_to(copy / "evals", target_is_directory=True)
+    names = [name for name, _ in files(copy)]
+    assert "linked-evals" in names and not any(n.startswith("linked-evals/") for n in names)
+    assert any("linked-evals is a symlink" in p for p in asset_problems(copy))
+    assert package_digest(copy) == package_digest(SKILL)  # a link adds no bytes; admission refuses it
+
+
 def test_nested_metadata_fails_plain_validation(copy):
     _rewrite(copy / "SKILL.md", '  soaa-profile: "soaa-agent-skills/0.2"',
              "  soaa-profile:\n    nested: true")  # fmt: skip
@@ -321,13 +336,14 @@ ROLLOUT = pathlib.Path(__file__).resolve().parents[1] / "docs" / "rollout.md"
 
 
 def published_digest(text: str) -> str:
-    """The newest package digest `docs/rollout.md` states for this skill: the first fenced
-    64-hex block after the first mention of its release tag prefix. Sections are newest-first."""
+    """The package digest `docs/rollout.md` states for the release the manifest declares: the
+    first fenced 64-hex block after the first mention of that exact release id."""
     import re
 
-    start = text.index("skill-opportunity-package-v")
-    match = re.search(r"```\n([0-9a-f]{64})\n```", text[start:])
-    assert match, "rollout.md states no digest after the release tag"
+    release_id = manifest(SKILL)[0]["identity"]["release_id"]
+    assert release_id in text, f"rollout.md does not mention {release_id}"
+    match = re.search(r"```\n([0-9a-f]{64})\n```", text[text.index(release_id):])
+    assert match, f"rollout.md states no digest after {release_id}"
     return match.group(1)
 
 
